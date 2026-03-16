@@ -22,11 +22,11 @@ from autofcholv import extract_features
 import pandas as pd
 
 df = pd.DataFrame({'value': [1, 2, 3, 4, 5]})
-features = extract_features(df, column='value')
+features = extract_features(df)
 print(features)
 ```
 
 ### CLI
 ```bash
-autofcholv extract input.csv --output features.csv --column sensor_1
+autofcholv extract input.csv --output features.csv
 ```
