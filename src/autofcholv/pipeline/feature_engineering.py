@@ -12,7 +12,7 @@ SHORT_WINDOW = 20
 LONG_WINDOW = 250
 
 
-def feature_engineering(df):
+def build_features(df):
     tmp_data = df.copy()
     tmp_data['DayHigh'] = tmp_data['High']
     tmp_data['DayLow'] = tmp_data['Low']
