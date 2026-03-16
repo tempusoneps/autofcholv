@@ -2,7 +2,7 @@ import argparse
 import sys
 import pandas as pd
 from pathlib import Path
-from autofcholv.core import extract_features
+from autofcholv import extract_features
 from autofcholv import __version__
 
 def main():
