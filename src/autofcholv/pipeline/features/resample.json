@@ -1,0 +1,22 @@
+{
+    "day_open": {
+        "type": "float",
+        "comment": "Giá mở cửa trong ngày"
+    },
+    "day_high": {
+        "type": "float",
+        "comment": "Giá cao nhất trong ngày"
+    },
+    "day_low": {
+        "type": "float",
+        "comment": "Giá thấp nhất trong ngày"
+    },
+    "day_close": {
+        "type": "float",
+        "comment": "Giá đóng cửa trong ngày"
+    },
+    "day_volume": {
+        "type": "float",
+        "comment": "Khối lượng giao dịch trong ngày"
+    }
+}

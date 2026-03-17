@@ -1,0 +1,70 @@
+{
+    "money_flow": {
+        "type": "float",
+        "comment": "Money Flow = Typical Price * Volume"
+    },
+    "money_flow_type": {
+        "type": "float",
+        "comment": "Positive Flow if typical_price > prev_typical_price else Negative Flow"
+    },
+    "money_flow_score": {
+        "type": "float",
+        "comment": "Money Flow Score = sum(Positive Flow) / sum(Negative Flow)"
+    },
+    "MFM": {
+        "type": "float",
+        "comment": "Money Flow Multiplier (MFM)"
+    },
+    "MFV": {
+        "type": "float",
+        "comment": "Money Flow Volume (MFV)"
+    },
+    "CMF": {
+        "type": "float",
+        "comment": "Chaikin Money Flow (CMF) - volume-weighted momentum"
+    },
+    "CMF_3D": {
+        "type": "float",
+        "comment": "Chaikin Money Flow 3 ngày(3 * 49 bars)"
+    },
+    "CMF_5D": {
+        "type": "float",
+        "comment": "Chaikin Money Flow 5 ngày(5 * 49 bars)"
+    },
+    "CMF_10D": {
+        "type": "float",
+        "comment": "Chaikin Money Flow 10 ngày(10 * 49 bars)"
+    },
+    "MFI_1D": {
+        "type": "float",
+        "comment": "Money Flow Index 1 ngày"
+    },
+    "MFI_3D": {
+        "type": "float",
+        "comment": "Money Flow Index 3 ngày(3 * 49 bars)"
+    },
+    "MFI_5D": {
+        "type": "float",
+        "comment": "Money Flow Index 5 ngày(5 * 49 bars)"
+    },
+    "MFI_10D": {
+        "type": "float",
+        "comment": "Money Flow Index 10 ngày(10 * 49 bars)"
+    },
+    "typical_price": {
+        "type": "float",
+        "comment": "(High+Low+Close)/3"
+    },
+    "DM": {
+        "type": "float",
+        "comment": "Distance Moved (DM) = (Current High + Current Low) / 2 - (Previous High + Previous Low) / 2"
+    },
+    "VBR": {
+        "type": "float",
+        "comment": "Volume Box Ratio = Volume / (High - Low)"
+    },
+    "EOM": {
+        "type": "float",
+        "comment": "Ease of Movement = DM / VBR"
+    }
+}

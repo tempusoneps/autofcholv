@@ -1,0 +1,18 @@
+{
+    "couple_candle_cond_1": {
+        "type": "string",
+        "comment": "Điều kiện 1 cặp nến"
+    },
+    "couple_candle_cond_2": {
+        "type": "string",
+        "comment": "Điều kiện 2 cặp nến"
+    },
+    "couple_candle_signal": {
+        "type": "string",
+        "comment": "Tín hiệu cặp nến"
+    },
+    "ema_cross_signal": {
+        "type": "string",
+        "comment": "Tín hiệu giao cắt EMA20/EMA250"
+    }
+}

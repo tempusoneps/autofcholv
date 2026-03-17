@@ -1,0 +1,14 @@
+{
+    "volume_avg20": {
+        "type": "float",
+        "comment": "Trung bình khối lượng 20 phiên"
+    },
+    "volume_zscore": {
+        "type": "float",
+        "comment": "Z-score khối lượng"
+    },
+    "is_volume_above_avg": {
+        "type": "bool",
+        "comment": "Volume cao hơn trung bình"
+    }
+}

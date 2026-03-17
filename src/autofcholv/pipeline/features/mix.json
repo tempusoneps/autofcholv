@@ -1,0 +1,174 @@
+{
+    "body": {
+        "type": "float",
+        "comment": "Thân nến abs(Close - Open)"
+    },
+    "upper_wick": {
+        "type": "float",
+        "comment": "Bóng nến trên"
+    },
+    "lower_wick": {
+        "type": "float",
+        "comment": "Bóng nến dưới"
+    },
+    "upper_wick_ratio": {
+        "type": "float",
+        "comment": "Tỷ lệ bóng nến trên"
+    },
+    "lower_wick_ratio": {
+        "type": "float",
+        "comment": "Tỷ lệ bóng nến dưới"
+    },
+    "candlestick_height": {
+        "type": "float",
+        "comment": "Chiều cao nến"
+    },
+    "ibs": {
+        "type": "float",
+        "comment": "Internal Bar Strength"
+    },
+    "clv": {
+        "type": "float",
+        "comment": "Close Location Value ((Close-Low) - (High-Close)) / (High - Low)"
+    },
+    "cbr": {
+        "type": "float",
+        "comment": "Candlestick Body Ratio (|Close - Open| / (High - Low))"
+    },
+    "candle_color": {
+        "type": "string",
+        "comment": "Màu nến (green/red/doji)"
+    },
+    "is_fvg": {
+        "type": "bool",
+        "comment": "Fair Value Gap"
+    },
+    "is_lower_low_higher_volume": {
+        "type": "bool",
+        "comment": "Đáy thấp hơn với volume cao hơn"
+    },
+    "high_position": {
+        "type": "string",
+        "comment": "Vị trí High so với Bollinger Band"
+    },
+    "low_position": {
+        "type": "string",
+        "comment": "Vị trí Low"
+    },
+    "EMA20": {
+        "type": "float",
+        "comment": "Exponential Moving Average 20"
+    },
+    "EMA250": {
+        "type": "float",
+        "comment": "Exponential Moving Average 250"
+    },
+    "ATR14": {
+        "type": "float",
+        "comment": "Average True Range 14"
+    },
+    "ADX14": {
+        "type": "float",
+        "comment": "Average Directional Index 14"
+    },
+    "RSI20": {
+        "type": "float",
+        "comment": "Relative Strength Index 20"
+    },
+    "RSI10": {
+        "type": "float",
+        "comment": "Relative Strength Index 10"
+    },
+    "VWAP": {
+        "type": "float",
+        "comment": "Volume Weighted Average Price"
+    },
+    "RSI_slope": {
+        "type": "float",
+        "comment": "Slope của RSI"
+    },
+    "EMA20_slope": {
+        "type": "float",
+        "comment": "Slope của EMA20"
+    },
+    "z_score": {
+        "type": "float",
+        "comment": "Z-score của Close = (Price-MA)/Std"
+    },
+    "pct_change": {
+        "type": "float",
+        "comment": "Phần trăm thay đổi"
+    },
+    "skew_100": {
+        "type": "float",
+        "comment": "df['pct_change'].rolling(100).skew()"
+    },
+    "kurt_100": {
+        "type": "float",
+        "comment": "df['pct_change'].rolling(100).kurt()"
+    },
+    "typical_price": {
+        "type": "float",
+        "comment": "(High+Low+Close)/3"
+    },
+    "DM": {
+        "type": "float",
+        "comment": "Distance Moved (DM) = (Current High + Current Low) / 2 - (Previous High + Previous Low) / 2"
+    },
+    "VBR": {
+        "type": "float",
+        "comment": "Volume Box Ratio = Volume / (High - Low)"
+    },
+    "EOM": {
+        "type": "float",
+        "comment": "Ease of Movement = DM / VBR"
+    },
+    "keltner_channel": {
+        "type": "float",
+        "comment": "Keltner Channel = EMA20 ± ATR14"
+    },
+    "hurst_exponent": {
+        "type": "float",
+        "comment": "Hurst Exponent 10"
+    },
+    "hurst_exponent_100": {
+        "type": "float",
+        "comment": "Hurst Exponent 100"
+    },
+    "parkinson_vol_20": {
+        "type": "float",
+        "comment": "Rolling 20 Parkinson Volatility"
+    },
+    "up_streak": {
+        "type": "int",
+        "comment": "Số phiên tăng liên tiếp"
+    },
+    "down_streak": {
+        "type": "int",
+        "comment": "Số phiên giảm liên tiếp"
+    },
+    "BB_middle": {
+        "type": "float",
+        "comment": "Middle Band (SMA20)"
+    },
+    "BB_std": {
+        "type": "float",
+        "comment": "Độ lệch chuẩn 20 phiên"
+    },
+    "BB_upper": {
+        "type": "float",
+        "comment": "Upper Bollinger Band"
+    },
+    "is_bb_rejection": {
+        "type": "bool",
+        "comment": "Tín hiệu từ chối Bollinger Bands"
+    },
+    "fea_g1_001": {
+        "type": "float",
+        "comment": "100 * (Close - day_close.shift(1)) / day_close.shift(1)"
+    },
+    "fea_g1_002": {
+        "type": "float",
+        "comment": "(Close - close.shift(49)) / (max_high_49bars - min_low_49bars)"
+    }
+}
