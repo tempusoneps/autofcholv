@@ -39,7 +39,7 @@ def main():
 
     try:
         print(f"Reading data from {args.input}...")
-        df = pd.read_csv(args.input)
+        df = pd.read_csv(args.input, parse_dates=['Date'], index_col='Date')
         
         print("Extracting features...")
         features = extract_features(df)

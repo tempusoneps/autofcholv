@@ -83,6 +83,13 @@ def validate_ohlcv_dataset(data: pd.DataFrame) -> Dict[str, Any]:
                 "error": {"Date": "Duplicate date"}
             })
 
+    delta = df.index.to_series().diff().median()
+    if delta >= pd.Timedelta(days=1):
+        errors.append({
+            "index": 1,
+            "error": "Only access dataframe 1m, 5m, 15m, 30m, 1h, 4h"
+        })
+    
     is_valid = len(errors) == 0
     return is_valid, {
         "is_valid": is_valid,
