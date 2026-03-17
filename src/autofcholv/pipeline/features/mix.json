@@ -55,13 +55,9 @@
         "type": "string",
         "comment": "Vị trí Low"
     },
-    "EMA20": {
+    "VWAP": {
         "type": "float",
-        "comment": "Exponential Moving Average 20"
-    },
-    "EMA250": {
-        "type": "float",
-        "comment": "Exponential Moving Average 250"
+        "comment": "Volume Weighted Average Price"
     },
     "ATR14": {
         "type": "float",
@@ -70,22 +66,6 @@
     "ADX14": {
         "type": "float",
         "comment": "Average Directional Index 14"
-    },
-    "RSI20": {
-        "type": "float",
-        "comment": "Relative Strength Index 20"
-    },
-    "RSI10": {
-        "type": "float",
-        "comment": "Relative Strength Index 10"
-    },
-    "VWAP": {
-        "type": "float",
-        "comment": "Volume Weighted Average Price"
-    },
-    "RSI_slope": {
-        "type": "float",
-        "comment": "Slope của RSI"
     },
     "EMA20_slope": {
         "type": "float",

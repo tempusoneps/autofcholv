@@ -1,0 +1,22 @@
+{
+    "EMA20": {
+        "type": "float",
+        "comment": "Exponential Moving Average 20"
+    },
+    "EMA250": {
+        "type": "float",
+        "comment": "Exponential Moving Average 250"
+    },
+    "RSI20": {
+        "type": "float",
+        "comment": "Relative Strength Index 20"
+    },
+    "RSI10": {
+        "type": "float",
+        "comment": "Relative Strength Index 10"
+    },
+    "RSI_slope": {
+        "type": "float",
+        "comment": "Slope của RSI"
+    }
+}
