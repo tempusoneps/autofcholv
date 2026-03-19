@@ -1,18 +1,22 @@
 {
     "hour": {
         "type": "int",
+        "name": "Hour",
         "comment": "Giờ giao dịch"
     },
     "minute": {
         "type": "int",
+        "name": "Minute",
         "comment": "Phút giao dịch"
     },
     "session_progress": {
         "type": "float",
+        "name": "Session Progress",
         "comment": "Vị trí trong phiên"
     },
     "week_day": {
         "type": "int",
+        "name": "Week Day",
         "comment": "Ngày trong tuần"
     }
 }

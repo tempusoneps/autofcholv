@@ -1,154 +1,192 @@
 {
     "body": {
         "type": "float",
+        "name": "Body",
         "comment": "Thân nến abs(Close - Open)"
     },
     "upper_wick": {
         "type": "float",
+        "name": "Upper Wick",
         "comment": "Bóng nến trên"
     },
     "lower_wick": {
         "type": "float",
+        "name": "Lower Wick",
         "comment": "Bóng nến dưới"
     },
     "upper_wick_ratio": {
         "type": "float",
+        "name": "Upper Wick Ratio",
         "comment": "Tỷ lệ bóng nến trên"
     },
     "lower_wick_ratio": {
         "type": "float",
+        "name": "Lower Wick Ratio",
         "comment": "Tỷ lệ bóng nến dưới"
     },
     "candlestick_height": {
         "type": "float",
+        "name": "Candlestick Height",
         "comment": "Chiều cao nến"
     },
     "ibs": {
         "type": "float",
+        "name": "IBS",
         "comment": "Internal Bar Strength"
     },
     "clv": {
         "type": "float",
+        "name": "CLV",
         "comment": "Close Location Value ((Close-Low) - (High-Close)) / (High - Low)"
     },
     "cbr": {
         "type": "float",
+        "name": "CBR",
         "comment": "Candlestick Body Ratio (|Close - Open| / (High - Low))"
     },
     "candle_color": {
         "type": "string",
+        "name": "Candle Color",
         "comment": "Màu nến (green/red/doji)"
     },
     "is_fvg": {
         "type": "bool",
+        "name": "Is FVG",
         "comment": "Fair Value Gap"
     },
     "is_lower_low_higher_volume": {
         "type": "bool",
+        "name": "Is Lower Low Higher Volume",
         "comment": "Đáy thấp hơn với volume cao hơn"
     },
     "high_position": {
         "type": "string",
+        "name": "High Position",
         "comment": "Vị trí High so với Bollinger Band"
     },
     "low_position": {
         "type": "string",
+        "name": "Low Position",
         "comment": "Vị trí Low"
     },
     "VWAP": {
         "type": "float",
+        "name": "VWAP",
         "comment": "Volume Weighted Average Price"
     },
     "ATR14": {
         "type": "float",
+        "name": "Atr 14",
         "comment": "Average True Range 14"
     },
     "ADX14": {
         "type": "float",
+        "name": "Adx 14",
         "comment": "Average Directional Index 14"
     },
     "EMA20_slope": {
         "type": "float",
+        "name": "Ema 20 Slope",
         "comment": "Slope của EMA20"
     },
     "z_score": {
         "type": "float",
+        "name": "Z Score",
         "comment": "Z-score của Close = (Price-MA)/Std"
     },
     "pct_change": {
         "type": "float",
+        "name": "Pct Change",
         "comment": "Phần trăm thay đổi"
     },
     "skew_100": {
         "type": "float",
+        "name": "Skew 100",
         "comment": "df['pct_change'].rolling(100).skew()"
     },
     "kurt_100": {
         "type": "float",
+        "name": "Kurt 100",
         "comment": "df['pct_change'].rolling(100).kurt()"
     },
     "typical_price": {
         "type": "float",
+        "name": "Typical Price",
         "comment": "(High+Low+Close)/3"
     },
     "DM": {
         "type": "float",
+        "name": "DM",
         "comment": "Distance Moved (DM) = (Current High + Current Low) / 2 - (Previous High + Previous Low) / 2"
     },
     "VBR": {
         "type": "float",
+        "name": "VBR",
         "comment": "Volume Box Ratio = Volume / (High - Low)"
     },
     "EOM": {
         "type": "float",
+        "name": "EOM",
         "comment": "Ease of Movement = DM / VBR"
     },
     "keltner_channel": {
         "type": "float",
+        "name": "Keltner Channel",
         "comment": "Keltner Channel = EMA20 ± ATR14"
     },
     "hurst_exponent": {
         "type": "float",
+        "name": "Hurst Exponent",
         "comment": "Hurst Exponent 10"
     },
     "hurst_exponent_100": {
         "type": "float",
+        "name": "Hurst Exponent 100",
         "comment": "Hurst Exponent 100"
     },
     "parkinson_vol_20": {
         "type": "float",
+        "name": "Parkinson Vol 20",
         "comment": "Rolling 20 Parkinson Volatility"
     },
     "up_streak": {
         "type": "int",
+        "name": "Up Streak",
         "comment": "Số phiên tăng liên tiếp"
     },
     "down_streak": {
         "type": "int",
+        "name": "Down Streak",
         "comment": "Số phiên giảm liên tiếp"
     },
     "BB_middle": {
         "type": "float",
+        "name": "BB Middle",
         "comment": "Middle Band (SMA20)"
     },
     "BB_std": {
         "type": "float",
+        "name": "BB Std",
         "comment": "Độ lệch chuẩn 20 phiên"
     },
     "BB_upper": {
         "type": "float",
+        "name": "BB Upper",
         "comment": "Upper Bollinger Band"
     },
     "is_bb_rejection": {
         "type": "bool",
+        "name": "Is BB Rejection",
         "comment": "Tín hiệu từ chối Bollinger Bands"
     },
     "fea_g1_001": {
         "type": "float",
+        "name": "Fea G 1 001",
         "comment": "100 * (Close - day_close.shift(1)) / day_close.shift(1)"
     },
     "fea_g1_002": {
         "type": "float",
+        "name": "Fea G 1 002",
         "comment": "(Close - close.shift(49)) / (max_high_49bars - min_low_49bars)"
     }
 }

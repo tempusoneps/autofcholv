@@ -1,50 +1,62 @@
 {
     "prev_Open": {
         "type": "float",
+        "name": "Prev Open",
         "comment": "Open phiên trước"
     },
     "prev_High": {
         "type": "float",
+        "name": "Prev High",
         "comment": "High phiên trước"
     },
     "prev_Low": {
         "type": "float",
+        "name": "Prev Low",
         "comment": "Low phiên trước"
     },
     "prev_Close": {
         "type": "float",
+        "name": "Prev Close",
         "comment": "Close phiên trước"
     },
     "prev_Volume": {
         "type": "float",
+        "name": "Prev Volume",
         "comment": "Volume phiên trước"
     },
     "prev_body": {
         "type": "float",
+        "name": "Prev Body",
         "comment": "Body phiên trước"
     },
     "prev_upper_wick": {
         "type": "float",
+        "name": "Prev Upper Wick",
         "comment": "Upper wick phiên trước"
     },
     "prev_lower_wick": {
         "type": "float",
+        "name": "Prev Lower Wick",
         "comment": "Lower wick phiên trước"
     },
     "prev_EMA20": {
         "type": "float",
+        "name": "Prev Ema 20",
         "comment": "EMA20 phiên trước"
     },
     "prev_EMA250": {
         "type": "float",
+        "name": "Prev Ema 250",
         "comment": "EMA250 phiên trước"
     },
     "prev_MFI_1D": {
         "type": "float",
+        "name": "Prev Mfi 1d",
         "comment": "MFI phiên trước"
     },
     "prev_ibs": {
         "type": "float",
+        "name": "Prev IBS",
         "comment": "IBS phiên trước"
     }
 }

@@ -1,22 +1,82 @@
 {
-    "EMA20": {
+    "ema": {
         "type": "float",
-        "comment": "Exponential Moving Average 20"
+        "name": "EMA",
+        "comment": "Exponential Moving Average n"
     },
-    "EMA250": {
+    "rsi": {
         "type": "float",
-        "comment": "Exponential Moving Average 250"
+        "name": "RSI",
+        "comment": "Relative Strength Index n"
     },
-    "RSI20": {
+    "rsi_slope": {
         "type": "float",
-        "comment": "Relative Strength Index 20"
+        "name": "RSI Slope",
+        "comment": "df['rsi'].diff().rolling(3).mean()"
     },
-    "RSI10": {
+    "tsi": {
         "type": "float",
-        "comment": "Relative Strength Index 10"
+        "name": "TSI",
+        "comment": "True Strength Index"
     },
-    "RSI_slope": {
+    "ulti_osci": {
         "type": "float",
-        "comment": "Slope của RSI"
+        "name": "Ultimate Oscillator",
+        "comment": "Ultimate Oscillator"
+    },
+    "close_roc": {
+        "type": "float",
+        "name": "ROC of Close",
+        "comment": "Rate of Change của Close"
+    },
+    "close_zscore": {
+        "type": "float",
+        "name": "Z-score of Close",
+        "comment": "Z-score của Close"
+    },
+    "efficiency_ratio": {
+        "type": "float",
+        "name": "Efficiency Ratio",
+        "comment": "ER = change / volatility; change = abs(close - close.shift(n)); volatility = sum(abs(close - close.shift(1)));"
+    },
+    "macd": {
+        "type": "float",
+        "name": "MACD",
+        "comment": "Moving Average Convergence Divergence"
+    },
+    "macd_signal": {
+        "type": "float",
+        "name": "MACD Signal",
+        "comment": "Moving Average Convergence Divergence Signal"
+    },
+    "macd_hist": {
+        "type": "float",
+        "name": "MACD Hist",
+        "comment": "Moving Average Convergence Divergence Histogram"
+    },
+    "ppo": {
+        "type": "float",
+        "name": "PPO",
+        "comment": "Percentage Price Oscillator"
+    },
+    "ppo_signal": {
+        "type": "float",
+        "name": "PPO Signal",
+        "comment": "Percentage Price Oscillator Signal"
+    },
+    "ppo_hist": {
+        "type": "float",
+        "name": "PPO Hist",
+        "comment": "Percentage Price Oscillator Histogram"
+    },
+    "ulcer_index": {
+        "type": "float",
+        "name": "Ulcer Index",
+        "comment": "Ulcer Index"
+    },
+    "cmo": {
+        "type": "float",
+        "name": "CMO",
+        "comment": "Chande Momentum Oscillator"
     }
 }
