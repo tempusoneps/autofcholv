@@ -17,6 +17,13 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
             'day_vol': 'sum'
         })
     daily_data.dropna(subset=['day_high'], inplace=True)
+    daily_data['day_pivot'] = (daily_data['day_high'] + daily_data['day_low'] + daily_data['day_close']) / 3
+    daily_data['prev_day_close'] = daily_data['day_close'].shift(1)
+    daily_data['prev_day_open'] = daily_data['day_open'].shift(1)
+    daily_data['prev_day_high'] = daily_data['day_high'].shift(1)
+    daily_data['prev_day_low'] = daily_data['day_low'].shift(1)
+    daily_data['prev_day_vol'] = daily_data['day_vol'].shift(1)
+    daily_data['prev_day_pivot'] = daily_data['day_pivot'].shift(1)
     #
     data = df.copy()
     data = data.assign(time_d=pd.PeriodIndex(data.index, freq='1D').to_timestamp())

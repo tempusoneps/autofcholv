@@ -1,14 +1,4 @@
 {
-    "couple_candle_cond_1": {
-        "type": "string",
-        "name": "Couple Candle Cond 1",
-        "comment": "Điều kiện 1 cặp nến"
-    },
-    "couple_candle_cond_2": {
-        "type": "string",
-        "name": "Couple Candle Cond 2",
-        "comment": "Điều kiện 2 cặp nến"
-    },
     "couple_candle_signal": {
         "type": "string",
         "name": "Couple Candle Signal",

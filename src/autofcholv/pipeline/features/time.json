@@ -9,6 +9,11 @@
         "name": "Minute",
         "comment": "Phút giao dịch"
     },
+    "time_int": {
+        "type": "int",
+        "name": "Thời gian dạng số",
+        "comment": "Time Int = 100 * hour + minute"
+    },
     "session_progress": {
         "type": "float",
         "name": "Session Progress",
@@ -18,5 +23,20 @@
         "type": "int",
         "name": "Week Day",
         "comment": "Ngày trong tuần"
+    },
+    "day_of_month": {
+        "type": "int",
+        "name": "Day of Month",
+        "comment": "Ngày trong tháng"
+    },
+    "month": {
+        "type": "int",
+        "name": "Month",
+        "comment": "Tháng"
+    },
+    "year": {
+        "type": "int",
+        "name": "Year",
+        "comment": "Năm"
     }
 }
