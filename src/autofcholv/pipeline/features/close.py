@@ -25,6 +25,10 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
 
     # EMA250 – Exponential Moving Average 250
     df["EMA250"] = ta.ema(df["Close"], length=250)
+    df["MB"] = df["Close"].rolling(20).mean()
+    df["STD"] = df["Close"].rolling(20).std()
+    df["UB"] = df["MB"] + 1.5 * df["STD"]
+    df["LB"] = df["MB"] - 1.5 * df["STD"]
 
     # RSI20 – Relative Strength Index 20
     df["RSI20"] = ta.rsi(df["Close"], length=20)

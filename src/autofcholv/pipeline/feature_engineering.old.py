@@ -13,51 +13,19 @@ LONG_WINDOW = 250
 
 
 def build_features(df):
-    tmp_data = df.copy()
-    tmp_data['DayHigh'] = tmp_data['High']
-    tmp_data['DayLow'] = tmp_data['Low']
-    tmp_data['DayClose'] = tmp_data['Close']
-    tmp_data['DayOpen'] = tmp_data['Open']
-    tmp_data['DayVol'] = tmp_data['Volume']
-    daily_data = tmp_data.resample('D').agg({
-            'DayHigh': 'max',
-            'DayLow': 'min',
-            'DayClose': 'last',
-            'DayOpen': 'first',
-            'DayVol': 'sum'
-        })
-    daily_data.dropna(subset=['DayHigh'], inplace=True)
-    #
-    data = df.copy()
-    data = data.assign(time_d=pd.PeriodIndex(data.index, freq='1D').to_timestamp())
-    #
-    merged_data = pd.merge(data, daily_data, left_on="time_d", right_index=True, how="left")
+    
     # Features
-    merged_data['hour'] = merged_data.index.hour
-    merged_data['minute'] = merged_data.index.minute
-    merged_data["session_progress"] = ((merged_data.hour * 60 + merged_data.minute) - 9 * 60) / (51 * 5)
-    merged_data["ema20"] = ta.ema(merged_data["Close"], length=20)
-    merged_data["ema250"] = ta.ema(merged_data["Close"], length=250)
-    merged_data['upper_wick'] = merged_data.apply(lambda r: r["High"] - max(r["Open"], r["Close"]), axis=1)
-    merged_data['lower_shadow'] = merged_data.apply(lambda r: min(r["Open"], r["Close"]) - r["Low"], axis=1)
+    
     merged_data['RSI20'] = ta.rsi(merged_data["Close"], length=20)
     merged_data['RSI10'] = ta.rsi(merged_data["Close"], length=10)
     merged_data['avg20_Volume'] = merged_data['Volume'].rolling(20).mean()
-    merged_data["MB"] = merged_data["Close"].rolling(20).mean()
-    merged_data["STD"] = merged_data["Close"].rolling(20).std()
-    merged_data["UB"] = merged_data["MB"] + 1.5 * merged_data["STD"]
-    merged_data["LB"] = merged_data["MB"] - 1.5 * merged_data["STD"]
+    
     merged_data["MF"] = merged_data.apply(lambda r: get_mfm(r), axis=1)
     merged_data["MF3d_direction"] = merged_data["MF"].rolling(150).sum()
     merged_data["MF5d_direction"] = merged_data["MF"].rolling(250).sum()
-    merged_data['HL_range'] = merged_data.apply(lambda r: (r["High"] - r["Low"]) * 1000 / r["Close"], axis=1)
-    merged_data['candlestick_height'] = merged_data.apply(lambda r: r["High"] - r["Low"], axis=1)
+    
     merged_data['volume_z'] = (merged_data['Volume'] - merged_data['Volume'].rolling(20).mean()) / merged_data['Volume'].rolling(20).std()
-    merged_data['body'] = merged_data.apply(lambda r: r["Close"] - r["Open"], axis=1)
-    merged_data['upper_wick_on_length'] = merged_data.apply(lambda r: 1 if r["candlestick_height"] == 0 else round(r["upper_wick"] * 100 / r["candlestick_height"], 3), axis=1)
-    merged_data['lower_shadow_on_length'] = merged_data.apply(lambda r: 1 if r["candlestick_height"] == 0 else round(r["lower_shadow"] * 100 / r["candlestick_height"], 3), axis=1)
-    merged_data['ibs'] = merged_data.apply(lambda r: 1 if r["High"] == r["Low"] else (r["Close"] - r["Low"]) / (r["High"] - r["Low"]), axis=1)
-    merged_data['color'] = merged_data.apply(lambda r: 'doji' if r["Open"] == r["Close"] else ('green' if r["Open"] < r["Close"] else 'red'), axis=1)
+    
     merged_data['is_FVG'] = (merged_data["Low"] > merged_data["High"].shift(2)) | (merged_data["High"] < merged_data["Low"].shift(2))
     merged_data['Volume_higher_avg'] = merged_data.apply(lambda r: True if r["Volume"] > r["avg20_Volume"] else False, axis=1)
     merged_data['High_position'] = merged_data.apply(lambda r: '> upper BB' if r["High"] > r["UB"] else '< upper BB', axis=1)

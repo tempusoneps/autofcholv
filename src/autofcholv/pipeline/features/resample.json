@@ -22,6 +22,41 @@
     "day_volume": {
         "type": "float",
         "name": "Day Volume",
-        "comment": "Khối lượng giao dịch trong ngày"
+        "comment": "Tổng khối lượng giao dịch trong ngày"
+    },
+    "day_pivot": {
+        "type": "float",
+        "name": "Day Pivot",
+        "comment": "Pivot = (High + Low + Close) / 3"
+    },
+    "prev_day_close": {
+        "type": "float",
+        "name": "Previous Day Close",
+        "comment": "day_close.shift(1)"
+    },
+    "prev_day_open": {
+        "type": "float",
+        "name": "Previous Day Open",
+        "comment": "day_open.shift(1)"
+    },
+    "prev_day_high": {
+        "type": "float",
+        "name": "Previous Day High",
+        "comment": "day_high.shift(1)"
+    },
+    "prev_day_low": {
+        "type": "float",
+        "name": "Previous Day Low",
+        "comment": "day_low.shift(1)"
+    },
+    "prev_day_volume": {
+        "type": "float",
+        "name": "Previous Day Volume",
+        "comment": "day_volume.shift(1)"
+    },
+    "prev_day_pivot": {
+        "type": "float",
+        "name": "Previous Day Pivot",
+        "comment": "day_pivot.shift(1)"
     }
 }

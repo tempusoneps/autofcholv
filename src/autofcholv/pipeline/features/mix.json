@@ -1,53 +1,8 @@
 {
-    "body": {
+    "cs_ibs_n": {
         "type": "float",
-        "name": "Body",
-        "comment": "Thân nến abs(Close - Open)"
-    },
-    "upper_wick": {
-        "type": "float",
-        "name": "Upper Wick",
-        "comment": "Bóng nến trên"
-    },
-    "lower_wick": {
-        "type": "float",
-        "name": "Lower Wick",
-        "comment": "Bóng nến dưới"
-    },
-    "upper_wick_ratio": {
-        "type": "float",
-        "name": "Upper Wick Ratio",
-        "comment": "Tỷ lệ bóng nến trên"
-    },
-    "lower_wick_ratio": {
-        "type": "float",
-        "name": "Lower Wick Ratio",
-        "comment": "Tỷ lệ bóng nến dưới"
-    },
-    "candlestick_height": {
-        "type": "float",
-        "name": "Candlestick Height",
-        "comment": "Chiều cao nến"
-    },
-    "ibs": {
-        "type": "float",
-        "name": "IBS",
-        "comment": "Internal Bar Strength"
-    },
-    "clv": {
-        "type": "float",
-        "name": "CLV",
-        "comment": "Close Location Value ((Close-Low) - (High-Close)) / (High - Low)"
-    },
-    "cbr": {
-        "type": "float",
-        "name": "CBR",
-        "comment": "Candlestick Body Ratio (|Close - Open| / (High - Low))"
-    },
-    "candle_color": {
-        "type": "string",
-        "name": "Candle Color",
-        "comment": "Màu nến (green/red/doji)"
+        "name": "ibs n",
+        "comment": "ibs_n = (close - lowest(n)) / (highest(n) - lowest(n))"
     },
     "is_fvg": {
         "type": "bool",
@@ -84,30 +39,10 @@
         "name": "Adx 14",
         "comment": "Average Directional Index 14"
     },
-    "EMA20_slope": {
-        "type": "float",
-        "name": "Ema 20 Slope",
-        "comment": "Slope của EMA20"
-    },
     "z_score": {
         "type": "float",
         "name": "Z Score",
         "comment": "Z-score của Close = (Price-MA)/Std"
-    },
-    "pct_change": {
-        "type": "float",
-        "name": "Pct Change",
-        "comment": "Phần trăm thay đổi"
-    },
-    "skew_100": {
-        "type": "float",
-        "name": "Skew 100",
-        "comment": "df['pct_change'].rolling(100).skew()"
-    },
-    "kurt_100": {
-        "type": "float",
-        "name": "Kurt 100",
-        "comment": "df['pct_change'].rolling(100).kurt()"
     },
     "typical_price": {
         "type": "float",
@@ -116,18 +51,18 @@
     },
     "DM": {
         "type": "float",
-        "name": "DM",
-        "comment": "Distance Moved (DM) = (Current High + Current Low) / 2 - (Previous High + Previous Low) / 2"
+        "name": "Distance Moved",
+        "comment": "DM = (Current High + Current Low) / 2 - (Previous High + Previous Low) / 2"
     },
     "VBR": {
         "type": "float",
-        "name": "VBR",
-        "comment": "Volume Box Ratio = Volume / (High - Low)"
+        "name": "Volume Box Ratio",
+        "comment": "VBR = Volume / (High - Low)"
     },
     "EOM": {
         "type": "float",
-        "name": "EOM",
-        "comment": "Ease of Movement = DM / VBR"
+        "name": "Ease of Movement",
+        "comment": "EOM = DM / VBR"
     },
     "keltner_channel": {
         "type": "float",

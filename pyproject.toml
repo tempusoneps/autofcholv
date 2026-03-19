@@ -25,6 +25,7 @@ dependencies = [
     "pandas>=2.0.0",
     "scikit-learn>=1.8.0",
     "pandas_ta>=0.4.71",
+    "ta>=0.11.0",
 ]
 
 [project.optional-dependencies]

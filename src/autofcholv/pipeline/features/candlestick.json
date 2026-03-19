@@ -1,0 +1,67 @@
+{
+    "cs_body": {
+        "type": "float",
+        "name": "body",
+        "comment": "candlestick body length (include both negative & positive values)"
+    },
+    "cs_height": {
+        "type": "float",
+        "name": "height",
+        "comment": "candlestick height = high - low"
+    },
+    "cs_upwick": {
+        "type": "float",
+        "name": "upper wick",
+        "comment": "candlestick upper wick length = high - max(open, close)"
+    },
+    "cs_lowwick": {
+        "type": "float",
+        "name": "lower wick",
+        "comment": "candlestick lower wick length = min(open, close) - low"
+    },
+    "cs_upwick_rate": {
+        "type": "float",
+        "name": "upper wick rate",
+        "comment": "upper wick rate = upper wick / height"
+    },
+    "cs_lowwick_rate": {
+        "type": "float",
+        "name": "lower wick rate",
+        "comment": "lower wick rate = lower wick / height"
+    },
+    "cs_body_rate": {
+        "type": "float",
+        "name": "body rate",
+        "comment": "body rate = body / height"
+    },
+    "clv": {
+        "type": "float",
+        "name": "CLV",
+        "comment": "Close Location Value 1 if High = Low else ((Close-Low) - (High-Close)) / (High - Low)"
+    },
+    "cbr": {
+        "type": "float",
+        "name": "cbr",
+        "comment": "Candlestick Body Ratio = abs(close - open) / height"
+    },
+    "cs_ibs": {
+        "type": "float",
+        "name": "ibs",
+        "comment": "ibs = (close - low) / (high - low)"
+    },
+    "cs_color": {
+        "type": "str",
+        "name": "color",
+        "comment": "color"
+    },
+    "wick_imbalance": {
+        "type": "float",
+        "name": "wick imbalance",
+        "comment": "wick imbalance = upper wick - lower wick"
+    },
+    "upwick_ratio": {
+        "type": "float",
+        "name": "upper wick ratio",
+        "comment": "upwick_ratio = upwick / (lowwick + epsilon)"
+    }
+}
