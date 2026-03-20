@@ -1,7 +1,9 @@
 import argparse
 import sys
+import time
 import pandas as pd
 from pathlib import Path
+from dotenv import load_dotenv
 from autofcholv import extract_features
 from autofcholv import __version__
 
@@ -40,12 +42,19 @@ def main():
     try:
         print(f"Reading data from {args.input}...")
         df = pd.read_csv(args.input, parse_dates=['Date'], index_col='Date')
+        print(f"Input CSV length: {len(df)} rows")
         
+        load_dotenv()
         print("Extracting features...")
+        start_time = time.time()
         features = extract_features(df)
+        elapsed = time.time() - start_time
         
         features.to_csv(args.output)
         print(f"Features successfully extracted and saved to {args.output}")
+        print(f"Total extracting time: {elapsed:.2f}s")
+        print(f"Output CSV length: {len(features)} rows")
+        print(f"Output CSV columns: {len(features.columns)} columns")
         print("\nResult Sample:")
         print(features.tail())
         

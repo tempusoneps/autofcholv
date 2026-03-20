@@ -6,9 +6,8 @@ import pandas_ta as ta
 # ─────────────────────────────────────────────
 # Constants
 # ─────────────────────────────────────────────
-_BB_WINDOW = 20
+_BB_WINDOW   = 20
 _BB_STD_MULT = 1.5
-_STREAK_WINDOW = 100   # max look-back for streak counting
 
 
 # ─────────────────────────────────────────────
@@ -18,7 +17,7 @@ _STREAK_WINDOW = 100   # max look-back for streak counting
 def _hurst_exponent(series: pd.Series) -> float:
     """
     Tính Hurst Exponent bằng phương pháp R/S analysis.
-    Trả về 0.5 nếu không đủ dữ liệu hoặc bị lỗi.
+    Trả về np.nan nếu không đủ dữ liệu hoặc bị lỗi.
     """
     n = len(series)
     if n < 4:
@@ -34,7 +33,7 @@ def _hurst_exponent(series: pd.Series) -> float:
         if len(tau) < 2:
             return np.nan
         log_lags = np.log(list(lags[: len(tau)]))
-        log_tau = np.log(tau)
+        log_tau  = np.log(tau)
         poly = np.polyfit(log_lags, log_tau, 1)
         return poly[0]
     except Exception:
@@ -82,10 +81,10 @@ def _vwap_daily(df: pd.DataFrame) -> pd.Series:
     Yêu cầu DatetimeIndex.
     """
     typical = (df["High"] + df["Low"] + df["Close"]) / 3
-    tp_vol = typical * df["Volume"]
+    tp_vol   = typical * df["Volume"]
     date_key = df.index.date
-    cumvol = df.groupby(date_key)["Volume"].cumsum()
-    cumtp = tp_vol.groupby(date_key).cumsum()
+    cumvol   = df.groupby(date_key)["Volume"].cumsum()
+    cumtp    = tp_vol.groupby(date_key).cumsum()
     return cumtp / cumvol
 
 
@@ -98,75 +97,56 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     Tính toán tất cả features được định nghĩa trong mix.json.
 
     Features:
-        Candlestick geometry:
-            body, upper_wick, lower_wick,
-            upper_wick_ratio, lower_wick_ratio, candlestick_height,
-            ibs, clv, cbr, candle_color
-
-        Pattern / position:
-            is_fvg, is_lower_low_higher_volume,
-            high_position, low_position, is_bb_rejection
-
-        Indicators (pandas_ta):
-            ATR14, ADX14, VWAP
-
-        Trend / momentum (derived):
-            EMA20_slope, z_score,
-            pct_change, skew_100, kurt_100,
-            typical_price,
-            DM, VBR, EOM,
-            keltner_channel (upper band),
-            hurst_exponent, hurst_exponent_100,
-            parkinson_vol_20,
-            up_streak, down_streak
-
-        Bollinger Bands:
-            BB_middle, BB_std, BB_upper
-
-        Custom features:
-            fea_g1_001, fea_g1_002
+        cs_ibs_n              : ibs_n = (Close - lowest(n)) / (highest(n) - lowest(n))
+        is_fvg                : Fair Value Gap
+        is_lower_low_higher_volume : Đáy thấp hơn với volume cao hơn
+        high_position         : Vị trí High so với Bollinger Band
+        low_position          : Vị trí Low so với Bollinger Band
+        VWAP                  : Volume Weighted Average Price (reset hàng ngày)
+        ATR14                 : Average True Range 14
+        ADX14                 : Average Directional Index 14
+        z_score               : (Close - MA20) / Std20
+        typical_price         : (High + Low + Close) / 3
+        DM                    : Distance Moved
+        VBR                   : Volume Box Ratio
+        EOM                   : Ease of Movement = DM / VBR
+        keltner_channel       : EMA20 + ATR14
+        hurst_exponent        : Hurst Exponent (window=10)
+        hurst_exponent_100    : Hurst Exponent (window=100)
+        parkinson_vol_20      : Parkinson Volatility (window=20)
+        up_streak             : Số phiên tăng liên tiếp
+        down_streak           : Số phiên giảm liên tiếp
+        fea_g1_001            : 100 * (Close - prev_day_close) / prev_day_close
+        fea_g1_002            : (Close - close.shift(49)) / (max_high_49 - min_low_49)
 
     Args:
-        df: DataFrame với DatetimeIndex chứa các cột:
-            Open, High, Low, Close, Volume.
+        df: DataFrame với DatetimeIndex chứa Open, High, Low, Close, Volume.
             Nếu close.py đã chạy trước, EMA20 cũng sẵn có.
 
     Returns:
         DataFrame được bổ sung các cột features mới.
     """
 
-    # ── Candlestick geometry ──────────────────────────────────────
-    df["candlestick_height"] = df["High"] - df["Low"]
+    hl_safe = (df["High"] - df["Low"]).replace(0, np.nan)
 
-    df["body"] = (df["Close"] - df["Open"]).abs()
+    # ── Bollinger Bands (dùng nội bộ cho các features bên dưới) ──
+    bb_middle = df["Close"].rolling(_BB_WINDOW).mean()
+    bb_std    = df["Close"].rolling(_BB_WINDOW).std()
+    bb_upper  = bb_middle + _BB_STD_MULT * bb_std
+    bb_lower  = bb_middle - _BB_STD_MULT * bb_std
 
-    df["upper_wick"] = df["High"] - df[["Open", "Close"]].max(axis=1)
-    df["lower_wick"] = df[["Open", "Close"]].min(axis=1) - df["Low"]
-
-    hl_safe = df["candlestick_height"].replace(0, np.nan)
-    df["upper_wick_ratio"] = (df["upper_wick"] / hl_safe).round(4)
-    df["lower_wick_ratio"] = (df["lower_wick"] / hl_safe).round(4)
-
-    # IBS – Internal Bar Strength
-    df["ibs"] = ((df["Close"] - df["Low"]) / hl_safe).where(hl_safe.notna(), 1.0)
-
-    # CLV – Close Location Value
-    df["clv"] = ((df["Close"] - df["Low"]) - (df["High"] - df["Close"])) / hl_safe
-
-    # CBR – Candlestick Body Ratio
-    df["cbr"] = (df["body"] / hl_safe).round(4)
-
-    # Candle color
-    df["candle_color"] = np.where(
-        df["Open"] == df["Close"], "doji",
-        np.where(df["Close"] > df["Open"], "green", "red")
-    )
-
-    # ── Bollinger Bands (needed by several features below) ───────
-    df["BB_middle"] = df["Close"].rolling(_BB_WINDOW).mean()
-    df["BB_std"]    = df["Close"].rolling(_BB_WINDOW).std()
-    df["BB_upper"]  = df["BB_middle"] + _BB_STD_MULT * df["BB_std"]
-    bb_lower        = df["BB_middle"] - _BB_STD_MULT * df["BB_std"]
+    # ── cs_ibs_n: (Close - lowest_n) / (highest_n - lowest_n) ───
+    # Dùng n = ONE_DAY_BARS từ env (mặc định 49)
+    _n = int(pd.options.mode.copy_on_write and 49 or 49)  # placeholder, default 49
+    try:
+        import os
+        _n = int(os.environ.get("ONE_DAY_BARS", 49))
+    except (ValueError, TypeError):
+        _n = 49
+    rolling_high_n = df["High"].rolling(_n).max()
+    rolling_low_n  = df["Low"].rolling(_n).min()
+    denom_ibs_n    = (rolling_high_n - rolling_low_n).replace(0, np.nan)
+    df["cs_ibs_n"] = (df["Close"] - rolling_low_n) / denom_ibs_n
 
     # ── Pattern / position ────────────────────────────────────────
     # Fair Value Gap: nến hiện tại tạo khoảng trống với 2 nến trước
@@ -182,13 +162,10 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     # High position vs Bollinger upper band
-    df["high_position"] = np.where(df["High"] > df["BB_upper"], "> upper BB", "< upper BB")
+    df["high_position"] = np.where(df["High"] > bb_upper, "> upper BB", "< upper BB")
 
     # Low position vs Bollinger lower band
     df["low_position"] = np.where(df["Low"] < bb_lower, "< lower BB", "> lower BB")
-
-    # BB rejection: Close vẫn nằm dưới BB upper (từ chối phá vỡ)
-    df["is_bb_rejection"] = df["Close"] < df["BB_upper"]
 
     # ── Indicators ────────────────────────────────────────────────
     # VWAP (reset hàng ngày)
@@ -208,32 +185,22 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
         df["ADX14"] = np.nan
 
     # ── Trend / momentum ─────────────────────────────────────────
-    # EMA20_slope – dùng EMA20 từ close.py nếu đã có, không thì tính lại
-    if "EMA20" not in df.columns:
-        df["EMA20"] = ta.ema(df["Close"], length=20)
-    df["EMA20_slope"] = df["EMA20"] - df["EMA20"].shift(1)
-
     # Z-score của Close
-    df["z_score"] = (df["Close"] - df["BB_middle"]) / df["BB_std"]
-
-    # Percentage change
-    df["pct_change"] = df["Close"].pct_change()
-
-    # Skewness & Kurtosis of pct_change rolling 100
-    df["skew_100"] = df["pct_change"].rolling(100).skew()
-    df["kurt_100"] = df["pct_change"].rolling(100).kurt()
+    df["z_score"] = (df["Close"] - bb_middle) / bb_std
 
     # Typical price
     df["typical_price"] = (df["High"] + df["Low"] + df["Close"]) / 3
 
     # ── Ease of Movement (EOM) ────────────────────────────────────
-    mid_point = (df["High"] + df["Low"]) / 2
-    df["DM"]  = mid_point - mid_point.shift(1)                  # Distance Moved
-    df["VBR"] = df["Volume"] / hl_safe                           # Volume Box Ratio
-    df["EOM"] = df["DM"] / df["VBR"]                            # Ease of Movement
+    mid_point   = (df["High"] + df["Low"]) / 2
+    df["DM"]    = mid_point - mid_point.shift(1)   # Distance Moved
+    df["VBR"]   = df["Volume"] / hl_safe            # Volume Box Ratio
+    df["EOM"]   = df["DM"] / df["VBR"]             # Ease of Movement
 
     # ── Keltner Channel upper band ────────────────────────────────
-    # Upper = EMA20 + ATR14
+    # Dùng EMA20 từ close.py nếu đã có, không thì tính lại
+    if "EMA20" not in df.columns:
+        df["EMA20"] = ta.ema(df["Close"], length=20)
     df["keltner_channel"] = df["EMA20"] + df["ATR14"]
 
     # ── Hurst Exponent ────────────────────────────────────────────
@@ -248,25 +215,19 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     df["down_streak"] = _down_streak(df["Close"])
 
     # ── Custom features ───────────────────────────────────────────
-    # fea_g1_001: 100 * (Close - day_close.shift(1)) / day_close.shift(1)
-    # Dùng Close của phiên cuối ngày (resample daily last)
+    # fea_g1_001: 100 * (Close - prev_day_close) / prev_day_close
     if isinstance(df.index, pd.DatetimeIndex):
-        day_close = df["Close"].resample("D").last().reindex(
-            df.index, method="ffill"
-        )
-        prev_day_close = day_close.groupby(day_close.index.date).transform("first").shift(1)
-        # Dùng shift trên daily rồi map lại intraday
-        daily_last = df["Close"].resample("D").last()
-        daily_prev = daily_last.shift(1)
+        daily_last            = df["Close"].resample("D").last()
+        daily_prev            = daily_last.shift(1)
         prev_day_close_mapped = daily_prev.reindex(df.index, method="ffill")
         df["fea_g1_001"] = 100 * (df["Close"] - prev_day_close_mapped) / prev_day_close_mapped
     else:
         df["fea_g1_001"] = np.nan
 
-    # fea_g1_002: (Close - close.shift(49)) / (max_high_49bars - min_low_49bars)
+    # fea_g1_002: (Close - close.shift(49)) / (max_high_49 - min_low_49)
     rolling_max_high = df["High"].rolling(49).max()
     rolling_min_low  = df["Low"].rolling(49).min()
-    denom = (rolling_max_high - rolling_min_low).replace(0, np.nan)
-    df["fea_g1_002"] = (df["Close"] - df["Close"].shift(49)) / denom
+    denom_g2         = (rolling_max_high - rolling_min_low).replace(0, np.nan)
+    df["fea_g1_002"] = (df["Close"] - df["Close"].shift(49)) / denom_g2
 
     return df

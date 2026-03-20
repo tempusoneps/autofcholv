@@ -94,26 +94,6 @@
         "name": "Down Streak",
         "comment": "Số phiên giảm liên tiếp"
     },
-    "BB_middle": {
-        "type": "float",
-        "name": "BB Middle",
-        "comment": "Middle Band (SMA20)"
-    },
-    "BB_std": {
-        "type": "float",
-        "name": "BB Std",
-        "comment": "Độ lệch chuẩn 20 phiên"
-    },
-    "BB_upper": {
-        "type": "float",
-        "name": "BB Upper",
-        "comment": "Upper Bollinger Band"
-    },
-    "is_bb_rejection": {
-        "type": "bool",
-        "name": "Is BB Rejection",
-        "comment": "Tín hiệu từ chối Bollinger Bands"
-    },
     "fea_g1_001": {
         "type": "float",
         "name": "Fea G 1 001",

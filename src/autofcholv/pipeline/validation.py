@@ -1,8 +1,8 @@
-from typing import Dict, Any
+from typing import Dict, Any, Tuple
 import pandas as pd
 
 
-def validate_ohlcv_dataset(data: pd.DataFrame) -> Dict[str, Any]:
+def validate_ohlcv_dataset(data: pd.DataFrame) -> Tuple[bool, Dict[str, Any]]:
     """
     Validate OHLCV DataFrame với columns:
     Open, High, Low, Close, Volume
@@ -37,7 +37,7 @@ def validate_ohlcv_dataset(data: pd.DataFrame) -> Dict[str, Any]:
     if nan_mask.any():
         for idx in df[nan_mask].index:
             errors.append({
-                "index": int(idx),
+                "index": str(idx),
                 "error": "Contains NaN values"
             })
 
@@ -68,7 +68,7 @@ def validate_ohlcv_dataset(data: pd.DataFrame) -> Dict[str, Any]:
 
         if row_errors:
             errors.append({
-                "index": int(idx),
+                "index": str(idx),
                 "error": row_errors
             })
 
@@ -79,7 +79,7 @@ def validate_ohlcv_dataset(data: pd.DataFrame) -> Dict[str, Any]:
     if dup_mask.any():
         for idx in df[dup_mask].index:
             errors.append({
-                "index": int(idx),
+                "index": str(idx),
                 "error": {"Date": "Duplicate date"}
             })
 

@@ -24,8 +24,9 @@ classifiers = [
 dependencies = [
     "pandas>=2.0.0",
     "scikit-learn>=1.8.0",
-    "pandas_ta>=0.4.71",
+    "pandas_ta>=0.4.1",
     "ta>=0.11.0",
+    "python-dotenv>=1.2.2",
 ]
 
 [project.optional-dependencies]
@@ -34,6 +35,9 @@ dev = [
     "build>=1.0.0",
     "twine>=4.0.0",
 ]
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [project.scripts]
 autofcholv = "autofcholv.cli:main"
