@@ -1,62 +1,52 @@
 {
-    "prev_Open": {
+    "open_lag1": {
         "type": "float",
-        "name": "Prev Open",
+        "name": "Open of previous candlestick",
         "comment": "Open phiên trước"
     },
-    "prev_High": {
+    "high_lag1": {
         "type": "float",
-        "name": "Prev High",
+        "name": "High of previous candlestick",
         "comment": "High phiên trước"
     },
-    "prev_Low": {
+    "low_lag1": {
         "type": "float",
-        "name": "Prev Low",
+        "name": "Low of previous candlestick",
         "comment": "Low phiên trước"
     },
-    "prev_Close": {
+    "close_lag1": {
         "type": "float",
-        "name": "Prev Close",
+        "name": "Close of previous candlestick",
         "comment": "Close phiên trước"
     },
-    "prev_Volume": {
+    "volume_lag1": {
         "type": "float",
-        "name": "Prev Volume",
+        "name": "Volume of previous candlestick",
         "comment": "Volume phiên trước"
     },
-    "prev_body": {
+    "body_lag1": {
         "type": "float",
-        "name": "Prev Body",
+        "name": "Body of previous candlestick",
         "comment": "Body phiên trước"
     },
-    "prev_upper_wick": {
+    "upper_wick_lag1": {
         "type": "float",
-        "name": "Prev Upper Wick",
+        "name": "Upper Wick of previous candlestick",
         "comment": "Upper wick phiên trước"
     },
-    "prev_lower_wick": {
+    "lower_wick_lag1": {
         "type": "float",
-        "name": "Prev Lower Wick",
+        "name": "Lower Wick of previous candlestick",
         "comment": "Lower wick phiên trước"
     },
-    "prev_EMA20": {
+    "ema20_lag1": {
         "type": "float",
-        "name": "Prev Ema 20",
+        "name": "Ema 20 of previous candlestick",
         "comment": "EMA20 phiên trước"
     },
-    "prev_EMA250": {
+    "ibs_lag1": {
         "type": "float",
-        "name": "Prev Ema 250",
-        "comment": "EMA250 phiên trước"
-    },
-    "prev_MFI_1D": {
-        "type": "float",
-        "name": "Prev Mfi 1d",
-        "comment": "MFI phiên trước"
-    },
-    "prev_ibs": {
-        "type": "float",
-        "name": "Prev IBS",
+        "name": "IBS of previous candlestick",
         "comment": "IBS phiên trước"
     }
 }

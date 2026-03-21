@@ -36,17 +36,17 @@
     },
     "clv": {
         "type": "float",
-        "name": "CLV",
-        "comment": "Close Location Value 1 if High = Low else ((Close-Low) - (High-Close)) / (High - Low)"
+        "name": "Close Location Value",
+        "comment": "CLV = 1 if High = Low else ((Close-Low) - (High-Close)) / (High - Low)"
     },
     "cbr": {
         "type": "float",
-        "name": "cbr",
-        "comment": "Candlestick Body Ratio = abs(close - open) / height"
+        "name": "Candlestick Body Ratio",
+        "comment": "cbr = abs(close - open) / height"
     },
     "cs_ibs": {
         "type": "float",
-        "name": "ibs",
+        "name": "Internal Bar Strength",
         "comment": "ibs = (close - low) / (high - low)"
     },
     "cs_color": {

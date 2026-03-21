@@ -1,13 +1,18 @@
 {
     "cs_ibs_n": {
         "type": "float",
-        "name": "ibs n",
-        "comment": "ibs_n = (close - lowest(n)) / (highest(n) - lowest(n))"
+        "name": "Internal Bar Strength look back n bars",
+        "comment": "ibs_n = (close - lowest(n)) / (highest(n) - lowest(n)) with n = IBS_LOOKBACK"
     },
     "is_fvg": {
         "type": "bool",
-        "name": "Is FVG",
-        "comment": "Fair Value Gap"
+        "name": "Is Fair Value Gap",
+        "comment": "is_fvg = "
+    },
+    "ulti_osci": {
+        "type": "float",
+        "name": "Ultimate Oscillator",
+        "comment": "Ultimate Oscillator = ta.ultimate_oscillator(high, low, close, length=n) with n = MOMENTUM_LOOKBACK"
     },
     "is_lower_low_higher_volume": {
         "type": "bool",

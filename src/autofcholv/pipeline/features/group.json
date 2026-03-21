@@ -1,43 +1,43 @@
 {
-    "high_volume_group": {
+    "vol_high_pattern": {
         "type": "string",
-        "name": "High Volume Group",
-        "comment": "Nhóm High và Volume"
+        "name": "Vol High Pattern",
+        "comment": "Volume and High Behavior Pattern"
     },
     "volume_group": {
         "type": "string",
         "name": "Volume Group",
-        "comment": "Nhóm Volume"
+        "comment": "Volume Behavior Pattern"
     },
     "price_body_group": {
         "type": "string",
         "name": "Price Body Group",
-        "comment": "Nhóm giá so với body"
+        "comment": "Price Body Behavior Pattern"
     },
     "upper_wick_group": {
         "type": "string",
         "name": "Upper Wick Group",
-        "comment": "Nhóm upper wick"
+        "comment": "Upper Wick Behavior Pattern"
     },
     "lower_wick_group": {
         "type": "string",
         "name": "Lower Wick Group",
-        "comment": "Nhóm lower wick"
+        "comment": "Lower Wick Behavior Pattern"
     },
     "ibs_volume_group": {
         "type": "string",
         "name": "IBS Volume Group",
-        "comment": "Nhóm IBS và Volume"
+        "comment": "IBS and Volume Behavior Pattern"
     },
     "volume_avg_group": {
         "type": "string",
         "name": "Volume Avg Group",
-        "comment": "Nhóm volume trung bình"
+        "comment": "Volume Average Behavior Pattern"
     },
     "high_rsi_group": {
         "type": "bool",
         "name": "High RSI Group",
-        "comment": "Nhóm High và RSI"
+        "comment": "High and RSI Behavior Pattern"
     },
     "close_position_group": {
         "type": "string",

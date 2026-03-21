@@ -11,84 +11,6 @@ _BB_STD_MULT = 1.5
 
 
 # ─────────────────────────────────────────────
-# Helper functions
-# ─────────────────────────────────────────────
-
-def _hurst_exponent(series: pd.Series) -> float:
-    """
-    Tính Hurst Exponent bằng phương pháp R/S analysis.
-    Trả về np.nan nếu không đủ dữ liệu hoặc bị lỗi.
-    """
-    n = len(series)
-    if n < 4:
-        return np.nan
-    try:
-        lags = range(2, max(3, n // 2))
-        tau = []
-        for lag in lags:
-            diff = series[lag:].values - series[:-lag].values
-            if len(diff) == 0 or np.std(diff) == 0:
-                continue
-            tau.append(np.std(diff))
-        if len(tau) < 2:
-            return np.nan
-        log_lags = np.log(list(lags[: len(tau)]))
-        log_tau  = np.log(tau)
-        poly = np.polyfit(log_lags, log_tau, 1)
-        return poly[0]
-    except Exception:
-        return np.nan
-
-
-def _rolling_hurst(close: pd.Series, window: int) -> pd.Series:
-    return close.rolling(window).apply(_hurst_exponent, raw=False)
-
-
-def _parkinson_vol(high: pd.Series, low: pd.Series, window: int = 20) -> pd.Series:
-    """
-    Parkinson Volatility = sqrt( 1/(4*ln2) * rolling_mean( (ln(H/L))^2 ) )
-    """
-    log_hl = np.log(high / low) ** 2
-    factor = 1.0 / (4.0 * np.log(2))
-    return np.sqrt(factor * log_hl.rolling(window).mean())
-
-
-def _up_streak(close: pd.Series) -> pd.Series:
-    """Số nến tăng liên tiếp tính từ nến hiện tại về trước."""
-    result = np.zeros(len(close), dtype=int)
-    for i in range(1, len(close)):
-        if close.iloc[i] > close.iloc[i - 1]:
-            result[i] = result[i - 1] + 1
-        else:
-            result[i] = 0
-    return pd.Series(result, index=close.index)
-
-
-def _down_streak(close: pd.Series) -> pd.Series:
-    """Số nến giảm liên tiếp tính từ nến hiện tại về trước."""
-    result = np.zeros(len(close), dtype=int)
-    for i in range(1, len(close)):
-        if close.iloc[i] < close.iloc[i - 1]:
-            result[i] = result[i - 1] + 1
-        else:
-            result[i] = 0
-    return pd.Series(result, index=close.index)
-
-
-def _vwap_daily(df: pd.DataFrame) -> pd.Series:
-    """
-    VWAP reset theo từng ngày giao dịch.
-    Yêu cầu DatetimeIndex.
-    """
-    typical = (df["High"] + df["Low"] + df["Close"]) / 3
-    tp_vol   = typical * df["Volume"]
-    date_key = df.index.date
-    cumvol   = df.groupby(date_key)["Volume"].cumsum()
-    cumtp    = tp_vol.groupby(date_key).cumsum()
-    return cumtp / cumvol
-
-
-# ─────────────────────────────────────────────
 # Main feature extractor
 # ─────────────────────────────────────────────
 
@@ -96,36 +18,18 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     """
     Tính toán tất cả features được định nghĩa trong mix.json.
 
-    Features:
-        cs_ibs_n              : ibs_n = (Close - lowest(n)) / (highest(n) - lowest(n))
-        is_fvg                : Fair Value Gap
-        is_lower_low_higher_volume : Đáy thấp hơn với volume cao hơn
-        high_position         : Vị trí High so với Bollinger Band
-        low_position          : Vị trí Low so với Bollinger Band
-        VWAP                  : Volume Weighted Average Price (reset hàng ngày)
-        ATR14                 : Average True Range 14
-        ADX14                 : Average Directional Index 14
-        z_score               : (Close - MA20) / Std20
-        typical_price         : (High + Low + Close) / 3
-        DM                    : Distance Moved
-        VBR                   : Volume Box Ratio
-        EOM                   : Ease of Movement = DM / VBR
-        keltner_channel       : EMA20 + ATR14
-        hurst_exponent        : Hurst Exponent (window=10)
-        hurst_exponent_100    : Hurst Exponent (window=100)
-        parkinson_vol_20      : Parkinson Volatility (window=20)
-        up_streak             : Số phiên tăng liên tiếp
-        down_streak           : Số phiên giảm liên tiếp
-        fea_g1_001            : 100 * (Close - prev_day_close) / prev_day_close
-        fea_g1_002            : (Close - close.shift(49)) / (max_high_49 - min_low_49)
-
     Args:
         df: DataFrame với DatetimeIndex chứa Open, High, Low, Close, Volume.
-            Nếu close.py đã chạy trước, EMA20 cũng sẵn có.
 
     Returns:
         DataFrame được bổ sung các cột features mới.
     """
+
+    cols = ['cs_body_lag1', 'open_lag1', 'close_lag1', 'high_lag1', 'low_lag1', 'volume_lag1', 'cs_ibs', 'cs_ibs_lag1']
+    missing_cols = [col for col in cols if col not in df.columns]
+    if missing_cols:
+        print("Missing:", missing_cols)
+        return df
 
     hl_safe = (df["High"] - df["Low"]).replace(0, np.nan)
 
@@ -231,3 +135,81 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     df["fea_g1_002"] = (df["Close"] - df["Close"].shift(49)) / denom_g2
 
     return df
+
+
+# ─────────────────────────────────────────────
+# Helper functions
+# ─────────────────────────────────────────────
+
+def _hurst_exponent(series: pd.Series) -> float:
+    """
+    Tính Hurst Exponent bằng phương pháp R/S analysis.
+    Trả về np.nan nếu không đủ dữ liệu hoặc bị lỗi.
+    """
+    n = len(series)
+    if n < 4:
+        return np.nan
+    try:
+        lags = range(2, max(3, n // 2))
+        tau = []
+        for lag in lags:
+            diff = series[lag:].values - series[:-lag].values
+            if len(diff) == 0 or np.std(diff) == 0:
+                continue
+            tau.append(np.std(diff))
+        if len(tau) < 2:
+            return np.nan
+        log_lags = np.log(list(lags[: len(tau)]))
+        log_tau  = np.log(tau)
+        poly = np.polyfit(log_lags, log_tau, 1)
+        return poly[0]
+    except Exception:
+        return np.nan
+
+
+def _rolling_hurst(close: pd.Series, window: int) -> pd.Series:
+    return close.rolling(window).apply(_hurst_exponent, raw=False)
+
+
+def _parkinson_vol(high: pd.Series, low: pd.Series, window: int = 20) -> pd.Series:
+    """
+    Parkinson Volatility = sqrt( 1/(4*ln2) * rolling_mean( (ln(H/L))^2 ) )
+    """
+    log_hl = np.log(high / low) ** 2
+    factor = 1.0 / (4.0 * np.log(2))
+    return np.sqrt(factor * log_hl.rolling(window).mean())
+
+
+def _up_streak(close: pd.Series) -> pd.Series:
+    """Số nến tăng liên tiếp tính từ nến hiện tại về trước."""
+    result = np.zeros(len(close), dtype=int)
+    for i in range(1, len(close)):
+        if close.iloc[i] > close.iloc[i - 1]:
+            result[i] = result[i - 1] + 1
+        else:
+            result[i] = 0
+    return pd.Series(result, index=close.index)
+
+
+def _down_streak(close: pd.Series) -> pd.Series:
+    """Số nến giảm liên tiếp tính từ nến hiện tại về trước."""
+    result = np.zeros(len(close), dtype=int)
+    for i in range(1, len(close)):
+        if close.iloc[i] < close.iloc[i - 1]:
+            result[i] = result[i - 1] + 1
+        else:
+            result[i] = 0
+    return pd.Series(result, index=close.index)
+
+
+def _vwap_daily(df: pd.DataFrame) -> pd.Series:
+    """
+    VWAP reset theo từng ngày giao dịch.
+    Yêu cầu DatetimeIndex.
+    """
+    typical = (df["High"] + df["Low"] + df["Close"]) / 3
+    tp_vol   = typical * df["Volume"]
+    date_key = df.index.date
+    cumvol   = df.groupby(date_key)["Volume"].cumsum()
+    cumtp    = tp_vol.groupby(date_key).cumsum()
+    return cumtp / cumvol

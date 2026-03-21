@@ -1,92 +1,92 @@
 {
-    "ema": {
+    "ema_fast": {
         "type": "float",
-        "name": "EMA",
-        "comment": "Exponential Moving Average = ta.ema(close, length=n)"
+        "name": "Fast Exponential Moving Average",
+        "comment": "EMA fast = ta.ema(close, length=n) with n = FAST_TREND_LOOKBACK"
+    },
+    "ema_slow": {
+        "type": "float",
+        "name": "Slow Exponential Moving Average",
+        "comment": "EMA slow = ta.ema(close, length=n) with n = SLOW_TREND_LOOKBACK"
     },
     "rsi": {
         "type": "float",
-        "name": "RSI",
-        "comment": "Relative Strength Index = ta.rsi(close, length=n)"
+        "name": "Relative Strength Index",
+        "comment": "RSI = ta.rsi(close, length=n) with n = MOMENTUM_LOOKBACK"
     },
     "rsi_slope": {
         "type": "float",
         "name": "RSI Slope",
-        "comment": "df['rsi'].diff().rolling(n).mean()"
+        "comment": "df['rsi'].diff()"
     },
     "tsi": {
         "type": "float",
-        "name": "TSI",
-        "comment": "True Strength Index = ta.tsi(close, length=n)"
+        "name": "True Strength Index",
+        "comment": "TSI = ta.tsi(close, length=n) with n = MOMENTUM_LOOKBACK"
     },
-    "ulti_osci": {
+    "roc_close": {
         "type": "float",
-        "name": "Ultimate Oscillator",
-        "comment": "Ultimate Oscillator = ta.ultimate_oscillator(high, low, close, length=n)"
-    },
-    "close_roc": {
-        "type": "float",
-        "name": "ROC of Close",
-        "comment": "Rate of Change của Close = ta.roc(close, length=n)"
+        "name": "Rate of Change of Close",
+        "comment": "ROC = ta.roc(close, length=1)"
     },
     "close_zscore": {
         "type": "float",
         "name": "Z-score of Close",
-        "comment": "Z-score của Close = ta.zscore(close, length=n)"
+        "comment": "Z-score of Close = ta.zscore(close, length=n) with n = MOMENTUM_LOOKBACK"
     },
     "efficiency_ratio": {
         "type": "float",
         "name": "Efficiency Ratio",
-        "comment": "ER = change / volatility; change = abs(close - close.shift(n)); volatility = sum(abs(close - close.shift(1)));"
+        "comment": "ER = change / volatility; change = abs(close - close.shift(n)); volatility = sum(abs(close - close.shift(1))) over n periods; with n = MOMENTUM_LOOKBACK"
     },
     "macd": {
         "type": "float",
-        "name": "MACD",
-        "comment": "Moving Average Convergence Divergence = ta.macd(close, fast=n, slow=n, signal=n)"
+        "name": "Moving Average Convergence Divergence",
+        "comment": "MACD = ta.macd(close, fast=12, slow=26, signal=9)"
     },
     "macd_signal": {
         "type": "float",
-        "name": "MACD Signal",
-        "comment": "Moving Average Convergence Divergence Signal = ta.macd(close, fast=n, slow=n, signal=n)"
+        "name": "Moving Average Convergence Divergence Signal",
+        "comment": "MACD Signal = ta.macd(close, fast=12, slow=26, signal=9)"
     },
     "macd_hist": {
         "type": "float",
-        "name": "MACD Hist",
-        "comment": "Moving Average Convergence Divergence Histogram = ta.macd(close, fast=n, slow=n, signal=n)"
+        "name": "Moving Average Convergence Divergence Histogram",
+        "comment": "MACD Hist = ta.macd(close, fast=12, slow=26, signal=9)"
     },
     "ppo": {
         "type": "float",
-        "name": "PPO",
-        "comment": "Percentage Price Oscillator = ta.ppo(close, fast=n, slow=n, signal=n)"
+        "name": "Percentage Price Oscillator",
+        "comment": "PPO = ta.ppo(close, fast=12, slow=26, signal=9)"
     },
     "ppo_signal": {
         "type": "float",
-        "name": "PPO Signal",
-        "comment": "Percentage Price Oscillator Signal = ta.ppo(close, fast=n, slow=n, signal=n)"
+        "name": "Percentage Price Oscillator Signal",
+        "comment": "PPO Signal = ta.ppo(close, fast=12, slow=26, signal=9)"
     },
     "ppo_hist": {
         "type": "float",
-        "name": "PPO Hist",
-        "comment": "Percentage Price Oscillator Histogram = ta.ppo(close, fast=n, slow=n, signal=n)"
+        "name": "Percentage Price Oscillator Histogram",
+        "comment": "PPO Hist = ta.ppo(close, fast=12, slow=26, signal=9)"
     },
     "ulcer_index": {
         "type": "float",
         "name": "Ulcer Index",
-        "comment": "Ulcer Index = ta.ulcer_index(close, length=n)"
+        "comment": "Ulcer Index = ta.ui(close, length=n) with n = MOMENTUM_LOOKBACK"
     },
     "cmo": {
         "type": "float",
         "name": "Chande Momentum Oscillator",
-        "comment": "CMO = ta.cmo(close, length=n)"
+        "comment": "CMO = ta.cmo(close, length=n) with n = MOMENTUM_LOOKBACK"
     },
-    "skew_n": {
+    "roc_skew": {
         "type": "float",
-        "name": "Skew n",
-        "comment": "df['close_roc'].rolling(n).skew()"
+        "name": "Skew of ROC",
+        "comment": "df['roc_close'].rolling(n).skew() with n = MOMENTUM_LOOKBACK"
     },
-    "kurt_n": {
+    "roc_kurt": {
         "type": "float",
-        "name": "Kurt n",
-        "comment": "df['close_roc'].rolling(n).kurt()"
+        "name": "Kurt of ROC",
+        "comment": "df['roc_close'].rolling(n).kurt() with n = MOMENTUM_LOOKBACK"
     }
 }

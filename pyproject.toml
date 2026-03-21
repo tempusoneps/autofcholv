@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "autofcholv"
-version = "0.1.0"
+version = "1.0.0"
 authors = [
-  { name="TempusOnePs", email="info@example.com" },
+  { name="TempusOnePs", email="magnus.damda@gmail.com" },
 ]
 description = "A Python library for Automatic extraction of relevant features from OHLCV time series"
 readme = "README.md"

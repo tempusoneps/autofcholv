@@ -11,7 +11,7 @@
     },
     "time_int": {
         "type": "int",
-        "name": "Thời gian dạng số",
+        "name": "Time Int",
         "comment": "Time Int = 100 * hour + minute"
     },
     "session_progress": {
@@ -19,9 +19,9 @@
         "name": "Session Progress",
         "comment": "Vị trí trong phiên"
     },
-    "week_day": {
+    "day_of_week": {
         "type": "int",
-        "name": "Week Day",
+        "name": "Day of Week",
         "comment": "Ngày trong tuần"
     },
     "day_of_month": {

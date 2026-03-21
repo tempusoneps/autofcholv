@@ -16,6 +16,8 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     df['day_of_month'] = df.index.day
     df['month'] = df.index.month
     df['year'] = df.index.year
+    df['day_of_week'] = df.index.dayofweek
+    df['time_int'] = df['hour'] * 100 + df['minute']
     df["session_progress"] = ((df.hour * 60 + df.minute) - 9 * 60) / (51 * 5) # update by config in .env later
 
     return df

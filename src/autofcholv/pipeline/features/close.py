@@ -1,39 +1,58 @@
+import os
 import pandas as pd
 import pandas_ta as ta
 
 
 def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Tính toán các features dựa trên cột Close (và High, Low cho ATR/ADX).
-
-    Features (theo close.json):
-        - EMA20   : Exponential Moving Average 20
-        - EMA250  : Exponential Moving Average 250
-        - ATR14   : Average True Range 14
-        - ADX14   : Average Directional Index 14
-        - RSI20   : Relative Strength Index 20
-        - RSI10   : Relative Strength Index 10
+    Calculate features based on Close column.
+    Feature definitions follow close.json.
 
     Args:
         df: DataFrame
 
     Returns:
-        DataFrame gốc được bổ sung 6 cột features mới.
+        DataFrame with new features.
     """
-    # EMA20 – Exponential Moving Average 20
-    df["EMA20"] = ta.ema(df["Close"], length=20)
+    fast_n     = os.getenv("FAST_TREND_LOOKBACK")
+    slow_n     = os.getenv("LOW_TREND_LOOKBACK")
+    momentum_n = os.getenv("MOMENTUM_LOOKBACK")
 
-    # EMA250 – Exponential Moving Average 250
-    df["EMA250"] = ta.ema(df["Close"], length=250)
-    df["MB"] = df["Close"].rolling(20).mean()
-    df["STD"] = df["Close"].rolling(20).std()
-    df["UB"] = df["MB"] + 1.5 * df["STD"]
-    df["LB"] = df["MB"] - 1.5 * df["STD"]
+    df["ema_fast"] = ta.ema(df["Close"], length=fast_n)
+    df["ema_slow"] = ta.ema(df["Close"], length=slow_n)
 
-    # RSI20 – Relative Strength Index 20
-    df["RSI20"] = ta.rsi(df["Close"], length=20)
+    df["rsi"] = ta.rsi(df["Close"], length=momentum_n)
+    df["rsi_slope"] = df["rsi"].diff()
 
-    # RSI10 – Relative Strength Index 10
-    df["RSI10"] = ta.rsi(df["Close"], length=10)
+    tsi_result = ta.tsi(df["Close"])
+    if tsi_result is not None and not tsi_result.empty:
+        df["tsi"] = tsi_result.iloc[:, 0]
+
+    df["roc_close"] = ta.roc(df["Close"], length=1)
+
+    df["close_zscore"] = ta.zscore(df["Close"], length=momentum_n)
+
+    change     = df["Close"].diff(1).abs()
+    net_change = (df["Close"] - df["Close"].shift(momentum_n)).abs()
+    volatility = change.rolling(momentum_n).sum()
+    df["efficiency_ratio"] = net_change / volatility
+
+    macd_result = ta.macd(df["Close"], fast=12, slow=26, signal=9)
+    if macd_result is not None and not macd_result.empty:
+        df["macd"]        = macd_result.iloc[:, 0]
+        df["macd_hist"]   = macd_result.iloc[:, 1]
+        df["macd_signal"] = macd_result.iloc[:, 2]
+
+    ppo_result = ta.ppo(df["Close"], fast=12, slow=26, signal=9)
+    if ppo_result is not None and not ppo_result.empty:
+        df["ppo"]        = ppo_result.iloc[:, 0]
+        df["ppo_hist"]   = ppo_result.iloc[:, 1]
+        df["ppo_signal"] = ppo_result.iloc[:, 2]
+
+    df["ulcer_index"] = ta.ui(df["Close"], length=momentum_n)
+    df["cmo"]         = ta.cmo(df["Close"], length=momentum_n)
+
+    df["roc_skew"] = df["roc_close"].rolling(momentum_n).skew()
+    df["roc_kurt"] = df["roc_close"].rolling(momentum_n).kurt()
 
     return df
