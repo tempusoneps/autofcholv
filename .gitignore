@@ -7,3 +7,4 @@ dist/
 build/
 **.egg-info
 project_guide.md
+.pytest_cache
