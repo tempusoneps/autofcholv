@@ -29,24 +29,34 @@
         "name": "Body of previous candlestick",
         "comment": "Body phiên trước"
     },
-    "upper_wick_lag1": {
-        "type": "float",
+    "upwick_lag1": {
+        "type": "numerical",
         "name": "Upper Wick of previous candlestick",
-        "comment": "Upper wick phiên trước"
+        "comment": ""
     },
-    "lower_wick_lag1": {
-        "type": "float",
+    "lowwick_lag1": {
+        "type": "numerical",
         "name": "Lower Wick of previous candlestick",
-        "comment": "Lower wick phiên trước"
+        "comment": ""
     },
-    "ema20_lag1": {
-        "type": "float",
-        "name": "Ema 20 of previous candlestick",
-        "comment": "EMA20 phiên trước"
+    "prev_ema_fast": {
+        "type": "numerical",
+        "name": "Ema Fast of previous candlestick",
+        "comment": ""
+    },
+    "prev_ema_slow": {
+        "type": "numerical",
+        "name": "Ema Slow of previous candlestick",
+        "comment": ""
     },
     "ibs_lag1": {
-        "type": "float",
+        "type": "numerical",
         "name": "IBS of previous candlestick",
-        "comment": "IBS phiên trước"
+        "comment": ""
+    },
+    "rsi_lag1": {
+        "type": "numerical",
+        "name": "RSI of previous candlestick",
+        "comment": ""
     }
 }

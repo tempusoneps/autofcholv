@@ -5,22 +5,16 @@ from autofcholv.core import extract_features
 
 
 # ─────────────────────────────────────────────
-# Helper: tạo dữ liệu OHLCV 5-minute tổng hợp
+# Helper: make synthetic 5-minute OHLCV data
 # ─────────────────────────────────────────────
 
 def make_ohlcv(n_bars: int = 300) -> pd.DataFrame:
-    """
-    Tạo DataFrame OHLCV với DatetimeIndex dạng 5-minute.
-    Đảm bảo: High >= max(O,C), Low <= min(O,C), không có NaN, không có giá âm.
-    """
     idx = pd.date_range(start="2024-01-02 09:05:00", periods=n_bars, freq="5min")
-    # Loại bỏ các bar 11:30 và 14:30 (cleaning.py sẽ loại, nhưng tốt hơn là không đưa vào)
     idx = idx[(idx.hour * 100 + idx.minute != 1130) & (idx.hour * 100 + idx.minute != 1430)]
 
-    rng = np.random.default_rng(42)
-    close = 100.0 + np.cumsum(rng.normal(0, 0.5, len(idx)))
-    close = np.maximum(close, 10.0)
-
+    rng    = np.random.default_rng(42)
+    close  = 100.0 + np.cumsum(rng.normal(0, 0.5, len(idx)))
+    close  = np.maximum(close, 10.0)
     open_  = close * (1 + rng.normal(0, 0.001, len(idx)))
     high   = close * (1 + np.abs(rng.normal(0, 0.002, len(idx))))
     low    = close * (1 - np.abs(rng.normal(0, 0.002, len(idx))))
@@ -31,11 +25,8 @@ def make_ohlcv(n_bars: int = 300) -> pd.DataFrame:
         index=idx,
     )
     df.index.name = "Date"
-
-    # Đảm bảo tính hợp lệ OHLC
     df["High"] = df[["Open", "Close", "High"]].max(axis=1)
     df["Low"]  = df[["Open", "Close", "Low"]].min(axis=1)
-
     return df
 
 
@@ -44,93 +35,134 @@ def make_ohlcv(n_bars: int = 300) -> pd.DataFrame:
 # ─────────────────────────────────────────────
 
 def test_extract_features_returns_dataframe():
-    """Đầu ra phải là DataFrame không rỗng."""
     result = extract_features(make_ohlcv(300))
     assert isinstance(result, pd.DataFrame)
     assert len(result) > 0
 
 
 def test_extract_features_time_columns():
-    """Kiểm tra các cột từ time.py."""
     result = extract_features(make_ohlcv(300))
-    expected = ["hour", "minute", "day_of_month", "month", "year", "session_progress"]
+    expected = ["hour", "minute", "time_int", "day_of_week", "day_of_month", "month", "year", "session_progress"]
     for col in expected:
-        assert col in result.columns, f"Thiếu cột time: '{col}'"
+        assert col in result.columns, f"Missing time column: '{col}'"
 
 
 def test_extract_features_resample_columns():
-    """Kiểm tra các cột từ resample.py (daily aggregated)."""
     result = extract_features(make_ohlcv(300))
     expected = [
-        "day_high", "day_low", "day_close", "day_open", "day_vol", "day_pivot",
-        "prev_day_close", "prev_day_open", "prev_day_high", "prev_day_low",
-        "prev_day_vol", "prev_day_pivot",
+        "day_open", "day_high", "day_low", "day_close", "day_volume", "day_pivot",
+        "prev_day_open", "prev_day_high", "prev_day_low", "prev_day_close",
+        "prev_day_volume", "prev_day_pivot",
     ]
     for col in expected:
-        assert col in result.columns, f"Thiếu cột resample: '{col}'"
+        assert col in result.columns, f"Missing resample column: '{col}'"
 
 
 def test_extract_features_candlestick_columns():
-    """Kiểm tra các cột từ candlestick.py."""
     result = extract_features(make_ohlcv(300))
     expected = [
-        "cs_body", "cs_height", "cs_upwick", "cs_lowwick",
-        "cs_upwick_rate", "cs_lowwick_rate", "cs_ibs", "cs_color",
+        "body", "height", "upwick", "lowwick",
+        "upwick_rate", "lowwick_rate", "body_rate",
+        "clv", "cbr", "ibs", "color",
+        "wick_imbalance", "upwick_ratio",
     ]
     for col in expected:
-        assert col in result.columns, f"Thiếu cột candlestick: '{col}'"
+        assert col in result.columns, f"Missing candlestick column: '{col}'"
 
 
 def test_extract_features_close_columns():
-    """Kiểm tra các cột từ close.py."""
     result = extract_features(make_ohlcv(300))
-    expected = ["EMA20", "EMA250", "MB", "STD", "UB", "LB", "RSI20", "RSI10"]
+    expected = [
+        "ema_fast", "ema_slow", "rsi", "rsi_slope",
+        "tsi", "roc_close", "close_zscore", "efficiency_ratio",
+        "macd", "macd_signal", "macd_hist",
+        "ppo", "ppo_signal", "ppo_hist",
+        "ulcer_index", "cmo", "roc_skew", "roc_kurt",
+        "mb", "std", "ub", "lb",
+    ]
     for col in expected:
-        assert col in result.columns, f"Thiếu cột close: '{col}'"
+        assert col in result.columns, f"Missing close column: '{col}'"
+
+
+def test_extract_features_volume_columns():
+    result = extract_features(make_ohlcv(300))
+    expected = ["volume_avg", "volume_zscore"]
+    for col in expected:
+        assert col in result.columns, f"Missing volume column: '{col}'"
+
+
+def test_extract_features_lag_columns():
+    result = extract_features(make_ohlcv(300))
+    expected = [
+        "open_lag1", "high_lag1", "low_lag1", "close_lag1",
+        "volume_lag1", "ibs_lag1", "rsi_lag1",
+    ]
+    for col in expected:
+        assert col in result.columns, f"Missing lag column: '{col}'"
 
 
 def test_extract_features_mix_columns():
-    """Kiểm tra các cột từ mix.py (theo mix.json)."""
     result = extract_features(make_ohlcv(300))
     expected = [
-        "cs_ibs_n",
-        "is_fvg", "is_lower_low_higher_volume",
-        "high_position", "low_position",
-        "VWAP", "ATR14", "ADX14",
-        "z_score", "typical_price",
-        "DM", "VBR", "EOM",
-        "keltner_channel",
-        "hurst_exponent", "hurst_exponent_100",
-        "parkinson_vol_20",
-        "up_streak", "down_streak",
-        "fea_g1_001", "fea_g1_002",
+        "ibs_n", "is_fvg",
+        "ulti_osci", "vwap", "atr", "adx",
+        "dm", "eom",
+        "direction", "streak",
+        "custom_001", "custom_002",
     ]
     for col in expected:
-        assert col in result.columns, f"Thiếu cột mix: '{col}'"
+        assert col in result.columns, f"Missing mix column: '{col}'"
+
+
+def test_extract_features_group_columns():
+    result = extract_features(make_ohlcv(300))
+    expected = [
+        "volume_group", "upper_wick_group", "lower_wick_group",
+        "vol_high_pattern", "ibs_volume_pattern",
+        "volume_avg_group", "high_rsi_pattern",
+        "high_ub_pattern", "low_lb_pattern",
+    ]
+    for col in expected:
+        assert col in result.columns, f"Missing group column: '{col}'"
+
+
+def test_extract_features_signal_columns():
+    result = extract_features(make_ohlcv(300))
+    expected = ["couple_cs_signal", "ema_cross_signal"]
+    for col in expected:
+        assert col in result.columns, f"Missing signal column: '{col}'"
 
 
 def test_extract_features_no_nan_in_ohlcv():
-    """Các cột OHLCV gốc không được có NaN sau pipeline."""
     result = extract_features(make_ohlcv(300))
     assert result[["Open", "High", "Low", "Close", "Volume"]].isnull().sum().sum() == 0
 
 
-def test_extract_features_cs_color_values():
-    """cs_color chỉ được chứa 'green', 'red', hoặc 'doji'."""
+def test_extract_features_color_values():
     result = extract_features(make_ohlcv(300))
-    assert set(result["cs_color"].unique()).issubset({"green", "red", "doji"})
+    assert set(result["color"].unique()).issubset({"green", "red", "doji"})
+
+
+def test_extract_features_direction_values():
+    result = extract_features(make_ohlcv(300))
+    assert set(result["direction"].unique()).issubset({1, -1})
+
+
+def test_extract_features_signal_values():
+    result = extract_features(make_ohlcv(300))
+    valid = {"None", "Bullish", "Bearish"}
+    assert set(result["couple_cs_signal"].unique()).issubset(valid)
+    assert set(result["ema_cross_signal"].unique()).issubset(valid)
 
 
 def test_extract_features_candlestick_non_negative():
-    """cs_height, cs_upwick, cs_lowwick không được âm."""
     result = extract_features(make_ohlcv(300))
-    assert (result["cs_height"] >= 0).all()
-    assert (result["cs_upwick"] >= 0).all()
-    assert (result["cs_lowwick"] >= 0).all()
+    assert (result["height"] >= 0).all()
+    assert (result["upwick"] >= 0).all()
+    assert (result["lowwick"] >= 0).all()
 
 
 def test_extract_features_missing_columns_raises():
-    """Thiếu cột OHLCV phải raise ValueError."""
     df = pd.DataFrame({"Close": [100.0, 101.0], "Volume": [1000.0, 1100.0]})
     df.index = pd.date_range("2024-01-02 09:05", periods=2, freq="5min")
     with pytest.raises(ValueError):
@@ -138,7 +170,6 @@ def test_extract_features_missing_columns_raises():
 
 
 def test_extract_features_negative_price_raises():
-    """Giá âm phải raise ValueError."""
     df = make_ohlcv(50)
     df.iloc[5, df.columns.get_loc("Close")] = -1.0
     df.iloc[5, df.columns.get_loc("Low")]   = -1.0

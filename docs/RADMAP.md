@@ -1,3 +1,23 @@
+"keltner_channel": {
+    "type": "float",
+    "name": "Keltner Channel",
+    "comment": "Keltner Channel = EMA20 ± ATR14"
+},
+"hurst_exponent": {
+    "type": "float",
+    "name": "Hurst Exponent",
+    "comment": "Hurst Exponent = ta.hurst_exponent(close, length=n) with n = HURST_LOOKBACK"
+},
+"hurst_exponent_100": {
+    "type": "float",
+    "name": "Hurst Exponent 100",
+    "comment": "Hurst Exponent 100"
+},
+"parkinson_vol_20": {
+    "type": "float",
+    "name": "Parkinson Vol 20",
+    "comment": "Rolling 20 Parkinson Volatility"
+},
 {
     "money_flow": {
         "type": "float",

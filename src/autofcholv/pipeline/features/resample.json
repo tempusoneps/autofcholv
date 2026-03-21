@@ -22,7 +22,7 @@
     "day_volume": {
         "type": "float",
         "name": "Day Volume",
-        "comment": "Tổng khối lượng giao dịch trong ngày"
+        "comment": "day_volume theo ngày"
     },
     "day_pivot": {
         "type": "float",

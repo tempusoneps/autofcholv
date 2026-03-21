@@ -14,9 +14,9 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         DataFrame with new features.
     """
-    fast_n     = os.getenv("FAST_TREND_LOOKBACK")
-    slow_n     = os.getenv("LOW_TREND_LOOKBACK")
-    momentum_n = os.getenv("MOMENTUM_LOOKBACK")
+    fast_n     = int(os.getenv("FAST_TREND_LOOKBACK", 24))
+    slow_n     = int(os.getenv("LOW_TREND_LOOKBACK", 245))
+    momentum_n = int(os.getenv("MOMENTUM_LOOKBACK", 24))
 
     df["ema_fast"] = ta.ema(df["Close"], length=fast_n)
     df["ema_slow"] = ta.ema(df["Close"], length=slow_n)
@@ -54,5 +54,11 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
 
     df["roc_skew"] = df["roc_close"].rolling(momentum_n).skew()
     df["roc_kurt"] = df["roc_close"].rolling(momentum_n).kurt()
+
+    df['mb'] = df['Close'].rolling(fast_n).mean()
+    df['std'] = df['Close'].rolling(fast_n).std()
+
+    df['ub'] = df['mb'] + 2 * df['std']
+    df['lb'] = df['mb'] - 2 * df['std']
 
     return df

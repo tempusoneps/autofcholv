@@ -28,7 +28,7 @@ pip install -e .[dev]
 ```
 
 ### Requirements
-*   Python >= 3.10
+*   Python >= 3.12
 *   `pandas`
 *   `numpy`
 *   `pandas_ta`
@@ -75,4 +75,7 @@ print(features_df.tail())
 ---
 ## Other Resources
 
+Please refer to the [Pipeline Overview](src/autofcholv/pipeline/README.md) for a comprehensive list of all generated features.
+
 Please refer to the [Extracted Features Catalog](src/autofcholv/pipeline/features/README.md) for a comprehensive list of all generated features.
+

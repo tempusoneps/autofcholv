@@ -88,5 +88,25 @@
         "type": "float",
         "name": "Kurt of ROC",
         "comment": "df['roc_close'].rolling(n).kurt() with n = MOMENTUM_LOOKBACK"
+    },
+    "mb": {
+        "type": "float",
+        "name": "Middle Bollinger Band",
+        "comment": "Middle Bollinger Band = ta.sma(close, length=n) with n = TREND_LOOKBACK"
+    },
+    "std": {
+        "type": "float",
+        "name": "Standard Deviation",
+        "comment": "Standard Deviation = ta.stdev(close, length=n) with n = TREND_LOOKBACK"
+    },
+    "ub": {
+        "type": "float",
+        "name": "Upper Bollinger Band",
+        "comment": "Upper Bollinger Band = ta.sma(close, length=n) + 2 * ta.stdev(close, length=n) with n = TREND_LOOKBACK"
+    },
+    "lb": {
+        "type": "float",
+        "name": "Lower Bollinger Band",
+        "comment": "Lower Bollinger Band = ta.sma(close, length=n) - 2 * ta.stdev(close, length=n) with n = TREND_LOOKBACK"
     }
 }

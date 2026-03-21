@@ -1,5 +1,5 @@
 {
-    "cs_ibs_n": {
+    "ibs_n": {
         "type": "float",
         "name": "Internal Bar Strength look back n bars",
         "comment": "ibs_n = (close - lowest(n)) / (highest(n) - lowest(n)) with n = IBS_LOOKBACK"
@@ -7,106 +7,56 @@
     "is_fvg": {
         "type": "bool",
         "name": "Is Fair Value Gap",
-        "comment": "is_fvg = "
+        "comment": "is_fvg = True if (high_prev > low_curr) or (low_prev < high_curr) else False"
     },
     "ulti_osci": {
         "type": "float",
         "name": "Ultimate Oscillator",
-        "comment": "Ultimate Oscillator = ta.ultimate_oscillator(high, low, close, length=n) with n = MOMENTUM_LOOKBACK"
+        "comment": "Ultimate Oscillator = ta.ultimate_oscillator(high, low, close, length=n) with n = VOLATILITY_LOOKBACK"
     },
-    "is_lower_low_higher_volume": {
-        "type": "bool",
-        "name": "Is Lower Low Higher Volume",
-        "comment": "Đáy thấp hơn với volume cao hơn"
-    },
-    "high_position": {
-        "type": "string",
-        "name": "High Position",
-        "comment": "Vị trí High so với Bollinger Band"
-    },
-    "low_position": {
-        "type": "string",
-        "name": "Low Position",
-        "comment": "Vị trí Low"
-    },
-    "VWAP": {
+    "vwap": {
         "type": "float",
-        "name": "VWAP",
-        "comment": "Volume Weighted Average Price"
+        "name": "Volume Weighted Average Price",
+        "comment": "vwap = ta.vwap(high, low, close, volume)"
     },
-    "ATR14": {
+    "atr": {
         "type": "float",
-        "name": "Atr 14",
-        "comment": "Average True Range 14"
+        "name": "Average True Range",
+        "comment": "atr = ta.atr(high, low, close, length=n) with n = VOLATILITY_LOOKBACK"
     },
-    "ADX14": {
+    "adx": {
         "type": "float",
-        "name": "Adx 14",
-        "comment": "Average Directional Index 14"
+        "name": "Average Directional Index",
+        "comment": "adx = ta.adx(high, low, close, length=n) with n = ADX_VOLATILITY_LOOKBACKLOOKBACK"
     },
-    "z_score": {
-        "type": "float",
-        "name": "Z Score",
-        "comment": "Z-score của Close = (Price-MA)/Std"
-    },
-    "typical_price": {
-        "type": "float",
-        "name": "Typical Price",
-        "comment": "(High+Low+Close)/3"
-    },
-    "DM": {
+    "dm": {
         "type": "float",
         "name": "Distance Moved",
-        "comment": "DM = (Current High + Current Low) / 2 - (Previous High + Previous Low) / 2"
+        "comment": "dm = (High + Low) / 2 - (high_lag1 + low_lag1) / 2"
     },
-    "VBR": {
-        "type": "float",
-        "name": "Volume Box Ratio",
-        "comment": "VBR = Volume / (High - Low)"
-    },
-    "EOM": {
+    "eom": {
         "type": "float",
         "name": "Ease of Movement",
-        "comment": "EOM = DM / VBR"
+        "comment": "eom = dm / vbr"
     },
-    "keltner_channel": {
-        "type": "float",
-        "name": "Keltner Channel",
-        "comment": "Keltner Channel = EMA20 ± ATR14"
-    },
-    "hurst_exponent": {
-        "type": "float",
-        "name": "Hurst Exponent",
-        "comment": "Hurst Exponent 10"
-    },
-    "hurst_exponent_100": {
-        "type": "float",
-        "name": "Hurst Exponent 100",
-        "comment": "Hurst Exponent 100"
-    },
-    "parkinson_vol_20": {
-        "type": "float",
-        "name": "Parkinson Vol 20",
-        "comment": "Rolling 20 Parkinson Volatility"
-    },
-    "up_streak": {
+    "direction": {
         "type": "int",
-        "name": "Up Streak",
-        "comment": "Số phiên tăng liên tiếp"
+        "name": "Direction",
+        "comment": "direction = 1 if close > open else -1"
     },
-    "down_streak": {
+    "streak": {
         "type": "int",
-        "name": "Down Streak",
-        "comment": "Số phiên giảm liên tiếp"
+        "name": "Up/Down Streak",
+        "comment": "up_streak = 0 if direction != direction_lag1 else direction + up_streak_lag1"
     },
-    "fea_g1_001": {
+    "custom_001": {
         "type": "float",
-        "name": "Fea G 1 001",
-        "comment": "100 * (Close - day_close.shift(1)) / day_close.shift(1)"
+        "name": "Custom Feature 001",
+        "comment": "100 * (Close - prev_day_close) / prev_day_close"
     },
-    "fea_g1_002": {
+    "custom_002": {
         "type": "float",
-        "name": "Fea G 1 002",
-        "comment": "(Close - close.shift(49)) / (max_high_49bars - min_low_49bars)"
+        "name": "Custom Feature 002",
+        "comment": "(Close - close.shift(n)) / (High.rolling(n).max() - Low.rolling(n).min()) with n = ONE_DAY_BARS"
     }
 }

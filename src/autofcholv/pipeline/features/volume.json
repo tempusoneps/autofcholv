@@ -1,17 +1,12 @@
 {
-    "volume_ma20": {
+    "volume_avg": {
         "type": "float",
-        "name": "Volume MA 20",
-        "comment": "Trung bình khối lượng 20 phiên"
+        "name": "Volume Average",
+        "comment": "Trung bình khối lượng n phiên"
     },
     "volume_zscore": {
         "type": "float",
         "name": "Z-score of Volume",
         "comment": "Z-score khối lượng"
-    },
-    "is_volume_above_avg": {
-        "type": "bool",
-        "name": "Is Volume Above Avg",
-        "comment": "Volume cao hơn trung bình"
     }
 }

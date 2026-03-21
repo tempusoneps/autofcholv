@@ -1,12 +1,12 @@
 {
-    "couple_candle_signal": {
-        "type": "string",
+    "couple_cs_signal": {
+        "type": "categorical",
         "name": "Couple Candle Signal",
-        "comment": "Tín hiệu cặp nến"
+        "comment": "None | Bullish | Bearish"
     },
     "ema_cross_signal": {
         "type": "string",
         "name": "EMA Cross Signal",
-        "comment": "Tín hiệu giao cắt EMA20/EMA250"
+        "comment": "None | Bullish | Bearish"
     }
 }

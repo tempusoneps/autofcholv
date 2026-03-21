@@ -1,35 +1,35 @@
 {
-    "cs_body": {
+    "body": {
         "type": "float",
         "name": "body",
         "comment": "candlestick body length (include both negative & positive values)"
     },
-    "cs_height": {
+    "height": {
         "type": "float",
         "name": "height",
         "comment": "candlestick height = high - low"
     },
-    "cs_upwick": {
+    "upwick": {
         "type": "float",
         "name": "upper wick",
         "comment": "candlestick upper wick length = high - max(open, close)"
     },
-    "cs_lowwick": {
+    "lowwick": {
         "type": "float",
         "name": "lower wick",
         "comment": "candlestick lower wick length = min(open, close) - low"
     },
-    "cs_upwick_rate": {
+    "upwick_rate": {
         "type": "float",
         "name": "upper wick rate",
         "comment": "upper wick rate = upper wick / height"
     },
-    "cs_lowwick_rate": {
+    "lowwick_rate": {
         "type": "float",
         "name": "lower wick rate",
         "comment": "lower wick rate = lower wick / height"
     },
-    "cs_body_rate": {
+    "body_rate": {
         "type": "float",
         "name": "body rate",
         "comment": "body rate = body / height"
@@ -37,19 +37,24 @@
     "clv": {
         "type": "float",
         "name": "Close Location Value",
-        "comment": "CLV = 1 if High = Low else ((Close-Low) - (High-Close)) / (High - Low)"
+        "comment": "clv = 1 if High = Low else ((Close-Low) - (High-Close)) / (High - Low)"
     },
     "cbr": {
         "type": "float",
         "name": "Candlestick Body Ratio",
         "comment": "cbr = abs(close - open) / height"
     },
-    "cs_ibs": {
+    "vbr": {
+        "type": "float",
+        "name": "Volume Box Ratio",
+        "comment": "vbr = Volume / (High - Low)"
+    },
+    "ibs": {
         "type": "float",
         "name": "Internal Bar Strength",
         "comment": "ibs = (close - low) / (high - low)"
     },
-    "cs_color": {
+    "color": {
         "type": "str",
         "name": "color",
         "comment": "color"

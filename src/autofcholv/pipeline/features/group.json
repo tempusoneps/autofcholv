@@ -1,52 +1,47 @@
 {
-    "vol_high_pattern": {
-        "type": "string",
-        "name": "Vol High Pattern",
-        "comment": "Volume and High Behavior Pattern"
-    },
     "volume_group": {
         "type": "string",
-        "name": "Volume Group",
-        "comment": "Volume Behavior Pattern"
-    },
-    "price_body_group": {
-        "type": "string",
-        "name": "Price Body Group",
-        "comment": "Price Body Behavior Pattern"
+        "name": "Volume Behavior Pattern",
+        "comment": "volume_group = comapre(Volume, vol_lag1) = VolUp | Voldown"
     },
     "upper_wick_group": {
         "type": "string",
         "name": "Upper Wick Group",
-        "comment": "Upper Wick Behavior Pattern"
+        "comment": "upper_wick_group = compare(upper_wick, prev_upper_wick) = Longer | Shorter"
     },
     "lower_wick_group": {
         "type": "string",
         "name": "Lower Wick Group",
-        "comment": "Lower Wick Behavior Pattern"
+        "comment": "lower_wick_group = compare(lower_wick, prev_lower_wick) = Longer | Shorter"
     },
-    "ibs_volume_group": {
+    "vol_high_pattern": {
         "type": "string",
-        "name": "IBS Volume Group",
-        "comment": "IBS and Volume Behavior Pattern"
+        "name": "Volume and High Behavior Pattern",
+        "comment": "vol_high_pattern = compare(Volume, vol_lag1) + compare(High, high_lag1) = VolUp_HighUp | VolUp_HighDown | VolDown_HighUp | VolDown_HighDown"
+    },
+    "ibs_volume_pattern": {
+        "type": "string",
+        "name": "IBS and Volume Behavior Pattern",
+        "comment": "ibs_volume_group = compare(Volume, vol_lag1) + compare(IBS, ibs_lag1) = VolUp_IBSUp | VolUp_IBSDown | VolDown_IBSUp | VolDown_IBSDown"
     },
     "volume_avg_group": {
         "type": "string",
         "name": "Volume Avg Group",
-        "comment": "Volume Average Behavior Pattern"
+        "comment": "volume_avg_group = comapre(Volume, vol_avg) = VolAboveAvg | VolBelowAvg"
     },
-    "high_rsi_group": {
-        "type": "bool",
-        "name": "High RSI Group",
-        "comment": "High and RSI Behavior Pattern"
-    },
-    "close_position_group": {
+    "high_rsi_pattern": {
         "type": "string",
-        "name": "Close Position Group",
-        "comment": "Nhóm vị trí Close"
+        "name": "High & RSI Pattern",
+        "comment": "high_rsi_pattern = compare(High, high_lag1) + compare(RSI, rsi_lag1) = HighUp_RSIUp | HighUp_RSIDown | HighDown_RSIUp | HighDown_RSIDown"
     },
-    "open_position_group": {
+    "high_ub_pattern": {
         "type": "string",
-        "name": "Open Position Group",
-        "comment": "Nhóm vị trí Open"
+        "name": "High and Upper Bollinger Band",
+        "comment": "high_ub_pattern = compare(High, ub) = HighAboveUB | HighBelowUB"
+    },
+    "low_lb_pattern": {
+        "type": "string",
+        "name": "Low and Lower Bollinger Band",
+        "comment": "low_lb_pattern = compare(Low, lb) = LowAboveLB | LowBelowLB"
     }
 }

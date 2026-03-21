@@ -6,6 +6,8 @@ from autofcholv.pipeline.features.resample import extract_features as extract_re
 from autofcholv.pipeline.features.candlestick import extract_features as extract_candlestick_features
 from autofcholv.pipeline.features.lag import extract_features as extract_lag_features
 from autofcholv.pipeline.features.group import extract_features as extract_group_features
+from autofcholv.pipeline.features.signal import extract_features as extract_signal_features
+from autofcholv.pipeline.features.volume import extract_features as extract_volume_features
 
 
 def build_features(df: pd.DataFrame) -> pd.DataFrame:
@@ -13,7 +15,9 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
     df = extract_resample_features(df)
     df = extract_candlestick_features(df)
     df = extract_close_features(df)
+    df = extract_volume_features(df)
     df = extract_lag_features(df)
     df = extract_mix_features(df)
     df = extract_group_features(df)
+    df = extract_signal_features(df)
     return df
