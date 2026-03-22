@@ -8,16 +8,23 @@ from autofcholv.pipeline.features.lag import extract_features as extract_lag_fea
 from autofcholv.pipeline.features.group import extract_features as extract_group_features
 from autofcholv.pipeline.features.signal import extract_features as extract_signal_features
 from autofcholv.pipeline.features.volume import extract_features as extract_volume_features
+from autofcholv.utils.timing import timing, timeit
 
 
+@timing
 def build_features(df: pd.DataFrame) -> pd.DataFrame:
-    df = extract_time_features(df)
-    df = extract_resample_features(df)
-    df = extract_candlestick_features(df)
-    df = extract_close_features(df)
-    df = extract_volume_features(df)
-    df = extract_lag_features(df)
-    df = extract_mix_features(df)
-    df = extract_group_features(df)
-    df = extract_signal_features(df)
+    steps = [
+        ("time_features", extract_time_features),
+        ("resample_features", extract_resample_features),
+        ("candlestick_features", extract_candlestick_features),
+        ("close_features", extract_close_features),
+        ("volume_features", extract_volume_features),
+        ("lag_features", extract_lag_features),
+        ("mix_features", extract_mix_features),
+        ("group_features", extract_group_features),
+        ("signal_features", extract_signal_features),
+    ]
+    for name, func in steps:
+        with timeit(name):
+            df = func(df)
     return df

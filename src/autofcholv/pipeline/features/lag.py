@@ -21,6 +21,6 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     df['lowwick_lag1'] = df['lowwick'].shift(1)
     df['ibs_lag1'] = df['ibs'].shift(1)
     df['rsi_lag1'] = df['rsi'].shift(1)
-    df['prev_ema_fast'] = df['ema_fast'].shift(1)
-    df['prev_ema_slow'] = df['ema_slow'].shift(1)
+    df['ema_fast_lag1'] = df['ema_fast'].shift(1)
+    df['ema_slow_lag1'] = df['ema_slow'].shift(1)
     return df

@@ -3,7 +3,6 @@ import sys
 import time
 import pandas as pd
 from pathlib import Path
-from dotenv import load_dotenv
 from autofcholv import extract_features
 from autofcholv import __version__
 
@@ -44,7 +43,6 @@ def main():
         df = pd.read_csv(args.input, parse_dates=['Date'], index_col='Date')
         print(f"Input CSV length: {len(df)} rows")
         
-        load_dotenv()
         print("Extracting features...")
         start_time = time.time()
         features = extract_features(df)

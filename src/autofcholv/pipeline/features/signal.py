@@ -1,39 +1,29 @@
 import pandas as pd
+import numpy as np
 
 
 def extract_features(df: pd.DataFrame) -> pd.DataFrame:
-    df['couple_cs_signal'] = df.apply(get_couple_candleticks_signal, axis=1)
-    df["ema_cross_signal"] = df.apply(get_ema_cross_signal, axis=1)
-    return df
+    cols = ['high_lag1', 'low_lag1', 'ema_slow_lag1', 'ema_fast_lag1']
+    missing_cols = [col for col in cols if col not in df.columns]
+    if missing_cols:
+        raise ValueError(f"Missing columns: {missing_cols}")
+
+    # Vectorized Couple Candlesticks Signal
+    cond1_S = (df['Open'] > df['Close']) & (df['Close'] >= df['Low'] + 0.1)
+    cond1_L = (df['Open'] < df['Close']) & (df['Close'] <= df['High'] - 0.1)
     
+    cond2_S = (df['Open'] > df['Close']) & (df['Close'] == df['Low']) & (df['Low'] < df['low_lag1'])
+    cond2_L = (df['Open'] < df['Close']) & (df['Close'] == df['High']) & (df['High'] > df['high_lag1'])
+    
+    is_bearish = cond1_S & cond2_S
+    is_bullish = cond1_L & cond2_L
+    
+    df['couple_cs_signal'] = np.where(is_bullish, 'Bullish', np.where(is_bearish, 'Bearish', 'None'))
 
-def get_couple_candleticks_signal(r):
-    _1st_cond = ''
-    if r['Open'] > r['Close'] >= r['Low'] + 0.1:
-        # Do va co bong nen duoi
-        _1st_cond = 'S'
-    elif r['Open'] < r['Close'] <= r['High'] - 0.1:
-        # Xanh va co bong nen tren
-        _1st_cond = 'L'
-    _2nd_cond = ''
-    if r['Open'] > r['Close'] == r['Low'] and r['Low'] < r['prev_Low']:
-        # Do va khong co bong nen duoi
-        _2nd_cond = 'S'
-    elif r['Open'] < r['Close'] == r['High'] and r['High'] > r['prev_High']:
-        # Xanh va khong co bong nen tren
-        _2nd_cond = 'L'
-    signal = 'None'
-    if _1st_cond == 'S' and _2nd_cond == 'S':
-        signal = 'Bearish'
-    elif _1st_cond == 'L' and _2nd_cond == 'L':
-        signal = 'Bullish'
-    return signal
-
-
-def get_ema_cross_signal(r):
-    signal = 'None'
-    if r['ema_fast'] > r['ema_slow'] and r['prev_ema_fast'] <= r['prev_ema_slow']:
-        signal = 'Bullish'
-    elif r['ema_fast'] < r['ema_slow'] and r['prev_ema_fast'] >= r['prev_ema_slow']:
-        signal = 'Bearish'
-    return signal
+    # Vectorized EMA Cross Signal
+    ema_bullish = (df['ema_fast'] > df['ema_slow']) & (df['ema_fast_lag1'] <= df['ema_slow_lag1'])
+    ema_bearish = (df['ema_fast'] < df['ema_slow']) & (df['ema_fast_lag1'] >= df['ema_slow_lag1'])
+    
+    df['ema_cross_signal'] = np.where(ema_bullish, 'Bullish', np.where(ema_bearish, 'Bearish', 'None'))
+    
+    return df

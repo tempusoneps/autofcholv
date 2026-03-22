@@ -1,8 +1,10 @@
 import pandas as pd
+from dotenv import load_dotenv
 from autofcholv.pipeline.validation import validate_ohlcv_dataset
 from autofcholv.pipeline.cleaning import clean_ohlcv
 from autofcholv.pipeline.feature_engineering import build_features
 from autofcholv.pipeline.preprocessing import preprocess_data
+
 
 def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -11,6 +13,7 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: A dataframe with added features.
     """
+    load_dotenv()
     validate_env()
     # do step 1: validate data
     is_valid, error_details = validate_ohlcv_dataset(df)
