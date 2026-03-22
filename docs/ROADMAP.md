@@ -1,0 +1,107 @@
+"keltner_channel": {
+    "type": "float",
+    "name": "Keltner Channel",
+    "comment": "Keltner Channel = EMA20 ± ATR14"
+},
+"hurst_exponent": {
+    "type": "float",
+    "name": "Hurst Exponent",
+    "comment": "Hurst Exponent = ta.hurst_exponent(close, length=n) with n = HURST_LOOKBACK"
+},
+"hurst_exponent_100": {
+    "type": "float",
+    "name": "Hurst Exponent 100",
+    "comment": "Hurst Exponent 100"
+},
+"parkinson_vol_20": {
+    "type": "float",
+    "name": "Parkinson Vol 20",
+    "comment": "Rolling 20 Parkinson Volatility"
+},
+{
+    "money_flow": {
+        "type": "float",
+        "name": "Money Flow",
+        "comment": "Money Flow = Typical Price * Volume"
+    },
+    "money_flow_type": {
+        "type": "float",
+        "name": "Money Flow Type",
+        "comment": "Positive Flow if typical_price > prev_typical_price else Negative Flow"
+    },
+    "money_flow_score": {
+        "type": "float",
+        "name": "Money Flow Score",
+        "comment": "Money Flow Score = sum(Positive Flow) / sum(Negative Flow)"
+    },
+    "MFM": {
+        "type": "float",
+        "name": "Mfm",
+        "comment": "Money Flow Multiplier (MFM)"
+    },
+    "MFV": {
+        "type": "float",
+        "name": "Mfv",
+        "comment": "Money Flow Volume (MFV)"
+    },
+    "CMF": {
+        "type": "float",
+        "name": "Cmf",
+        "comment": "Chaikin Money Flow (CMF) - volume-weighted momentum"
+    },
+    "CMF_3D": {
+        "type": "float",
+        "name": "Cmf 3d",
+        "comment": "Chaikin Money Flow 3 ngày(3 * 49 bars)"
+    },
+    "CMF_5D": {
+        "type": "float",
+        "name": "Cmf 5d",
+        "comment": "Chaikin Money Flow 5 ngày(5 * 49 bars)"
+    },
+    "CMF_10D": {
+        "type": "float",
+        "name": "Cmf 10d",
+        "comment": "Chaikin Money Flow 10 ngày(10 * 49 bars)"
+    },
+    "MFI_1D": {
+        "type": "float",
+        "name": "Mfi 1d",
+        "comment": "Money Flow Index 1 ngày"
+    },
+    "MFI_3D": {
+        "type": "float",
+        "name": "Mfi 3d",
+        "comment": "Money Flow Index 3 ngày(3 * 49 bars)"
+    },
+    "MFI_5D": {
+        "type": "float",
+        "name": "Mfi 5d",
+        "comment": "Money Flow Index 5 ngày(5 * 49 bars)"
+    },
+    "MFI_10D": {
+        "type": "float",
+        "name": "Mfi 10d",
+        "comment": "Money Flow Index 10 ngày(10 * 49 bars)"
+    },
+    "typical_price": {
+        "type": "float",
+        "name": "Typical Price",
+        "comment": "(High+Low+Close)/3"
+    },
+    "DM": {
+        "type": "float",
+        "name": "DM",
+        "comment": "Distance Moved (DM) = (Current High + Current Low) / 2 - (Previous High + Previous Low) / 2"
+    },
+    "VBR": {
+        "type": "float",
+        "name": "VBR",
+        "comment": "Volume Box Ratio = Volume / (High - Low)"
+    },
+    "EOM": {
+        "type": "float",
+        "name": "EOM",
+        "comment": "Ease of Movement = DM / VBR"
+    }
+}

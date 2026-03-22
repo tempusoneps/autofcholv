@@ -1,0 +1,62 @@
+{
+    "open_lag1": {
+        "type": "float",
+        "name": "Open of previous candlestick",
+        "comment": "Open phiên trước"
+    },
+    "high_lag1": {
+        "type": "float",
+        "name": "High of previous candlestick",
+        "comment": "High phiên trước"
+    },
+    "low_lag1": {
+        "type": "float",
+        "name": "Low of previous candlestick",
+        "comment": "Low phiên trước"
+    },
+    "close_lag1": {
+        "type": "float",
+        "name": "Close of previous candlestick",
+        "comment": "Close phiên trước"
+    },
+    "volume_lag1": {
+        "type": "float",
+        "name": "Volume of previous candlestick",
+        "comment": "Volume phiên trước"
+    },
+    "body_lag1": {
+        "type": "float",
+        "name": "Body of previous candlestick",
+        "comment": "Body phiên trước"
+    },
+    "upwick_lag1": {
+        "type": "numerical",
+        "name": "Upper Wick of previous candlestick",
+        "comment": ""
+    },
+    "lowwick_lag1": {
+        "type": "numerical",
+        "name": "Lower Wick of previous candlestick",
+        "comment": ""
+    },
+    "prev_ema_fast": {
+        "type": "numerical",
+        "name": "Ema Fast of previous candlestick",
+        "comment": ""
+    },
+    "prev_ema_slow": {
+        "type": "numerical",
+        "name": "Ema Slow of previous candlestick",
+        "comment": ""
+    },
+    "ibs_lag1": {
+        "type": "numerical",
+        "name": "IBS of previous candlestick",
+        "comment": ""
+    },
+    "rsi_lag1": {
+        "type": "numerical",
+        "name": "RSI of previous candlestick",
+        "comment": ""
+    }
+}

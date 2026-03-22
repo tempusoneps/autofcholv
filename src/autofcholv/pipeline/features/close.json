@@ -1,0 +1,112 @@
+{
+    "ema_fast": {
+        "type": "float",
+        "name": "Fast Exponential Moving Average",
+        "comment": "EMA fast = ta.ema(close, length=n) with n = FAST_TREND_LOOKBACK"
+    },
+    "ema_slow": {
+        "type": "float",
+        "name": "Slow Exponential Moving Average",
+        "comment": "EMA slow = ta.ema(close, length=n) with n = SLOW_TREND_LOOKBACK"
+    },
+    "rsi": {
+        "type": "float",
+        "name": "Relative Strength Index",
+        "comment": "RSI = ta.rsi(close, length=n) with n = MOMENTUM_LOOKBACK"
+    },
+    "rsi_slope": {
+        "type": "float",
+        "name": "RSI Slope",
+        "comment": "df['rsi'].diff()"
+    },
+    "tsi": {
+        "type": "float",
+        "name": "True Strength Index",
+        "comment": "TSI = ta.tsi(close, length=n) with n = MOMENTUM_LOOKBACK"
+    },
+    "roc_close": {
+        "type": "float",
+        "name": "Rate of Change of Close",
+        "comment": "ROC = ta.roc(close, length=1)"
+    },
+    "close_zscore": {
+        "type": "float",
+        "name": "Z-score of Close",
+        "comment": "Z-score of Close = ta.zscore(close, length=n) with n = MOMENTUM_LOOKBACK"
+    },
+    "efficiency_ratio": {
+        "type": "float",
+        "name": "Efficiency Ratio",
+        "comment": "ER = change / volatility; change = abs(close - close.shift(n)); volatility = sum(abs(close - close.shift(1))) over n periods; with n = MOMENTUM_LOOKBACK"
+    },
+    "macd": {
+        "type": "float",
+        "name": "Moving Average Convergence Divergence",
+        "comment": "MACD = ta.macd(close, fast=12, slow=26, signal=9)"
+    },
+    "macd_signal": {
+        "type": "float",
+        "name": "Moving Average Convergence Divergence Signal",
+        "comment": "MACD Signal = ta.macd(close, fast=12, slow=26, signal=9)"
+    },
+    "macd_hist": {
+        "type": "float",
+        "name": "Moving Average Convergence Divergence Histogram",
+        "comment": "MACD Hist = ta.macd(close, fast=12, slow=26, signal=9)"
+    },
+    "ppo": {
+        "type": "float",
+        "name": "Percentage Price Oscillator",
+        "comment": "PPO = ta.ppo(close, fast=12, slow=26, signal=9)"
+    },
+    "ppo_signal": {
+        "type": "float",
+        "name": "Percentage Price Oscillator Signal",
+        "comment": "PPO Signal = ta.ppo(close, fast=12, slow=26, signal=9)"
+    },
+    "ppo_hist": {
+        "type": "float",
+        "name": "Percentage Price Oscillator Histogram",
+        "comment": "PPO Hist = ta.ppo(close, fast=12, slow=26, signal=9)"
+    },
+    "ulcer_index": {
+        "type": "float",
+        "name": "Ulcer Index",
+        "comment": "Ulcer Index = ta.ui(close, length=n) with n = MOMENTUM_LOOKBACK"
+    },
+    "cmo": {
+        "type": "float",
+        "name": "Chande Momentum Oscillator",
+        "comment": "CMO = ta.cmo(close, length=n) with n = MOMENTUM_LOOKBACK"
+    },
+    "roc_skew": {
+        "type": "float",
+        "name": "Skew of ROC",
+        "comment": "df['roc_close'].rolling(n).skew() with n = MOMENTUM_LOOKBACK"
+    },
+    "roc_kurt": {
+        "type": "float",
+        "name": "Kurt of ROC",
+        "comment": "df['roc_close'].rolling(n).kurt() with n = MOMENTUM_LOOKBACK"
+    },
+    "mb": {
+        "type": "float",
+        "name": "Middle Bollinger Band",
+        "comment": "Middle Bollinger Band = ta.sma(close, length=n) with n = TREND_LOOKBACK"
+    },
+    "std": {
+        "type": "float",
+        "name": "Standard Deviation",
+        "comment": "Standard Deviation = ta.stdev(close, length=n) with n = TREND_LOOKBACK"
+    },
+    "ub": {
+        "type": "float",
+        "name": "Upper Bollinger Band",
+        "comment": "Upper Bollinger Band = ta.sma(close, length=n) + 2 * ta.stdev(close, length=n) with n = TREND_LOOKBACK"
+    },
+    "lb": {
+        "type": "float",
+        "name": "Lower Bollinger Band",
+        "comment": "Lower Bollinger Band = ta.sma(close, length=n) - 2 * ta.stdev(close, length=n) with n = TREND_LOOKBACK"
+    }
+}

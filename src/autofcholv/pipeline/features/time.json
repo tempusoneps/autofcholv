@@ -1,0 +1,42 @@
+{
+    "hour": {
+        "type": "int",
+        "name": "Hour",
+        "comment": "Giờ giao dịch"
+    },
+    "minute": {
+        "type": "int",
+        "name": "Minute",
+        "comment": "Phút giao dịch"
+    },
+    "time_int": {
+        "type": "int",
+        "name": "Time Int",
+        "comment": "Time Int = 100 * hour + minute"
+    },
+    "session_progress": {
+        "type": "float",
+        "name": "Session Progress",
+        "comment": "Vị trí trong phiên"
+    },
+    "day_of_week": {
+        "type": "int",
+        "name": "Day of Week",
+        "comment": "Ngày trong tuần"
+    },
+    "day_of_month": {
+        "type": "int",
+        "name": "Day of Month",
+        "comment": "Ngày trong tháng"
+    },
+    "month": {
+        "type": "int",
+        "name": "Month",
+        "comment": "Tháng"
+    },
+    "year": {
+        "type": "int",
+        "name": "Year",
+        "comment": "Năm"
+    }
+}

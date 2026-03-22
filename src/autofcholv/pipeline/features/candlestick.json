@@ -1,0 +1,72 @@
+{
+    "body": {
+        "type": "float",
+        "name": "body",
+        "comment": "candlestick body length (include both negative & positive values)"
+    },
+    "height": {
+        "type": "float",
+        "name": "height",
+        "comment": "candlestick height = high - low"
+    },
+    "upwick": {
+        "type": "float",
+        "name": "upper wick",
+        "comment": "candlestick upper wick length = high - max(open, close)"
+    },
+    "lowwick": {
+        "type": "float",
+        "name": "lower wick",
+        "comment": "candlestick lower wick length = min(open, close) - low"
+    },
+    "upwick_rate": {
+        "type": "float",
+        "name": "upper wick rate",
+        "comment": "upper wick rate = upper wick / height"
+    },
+    "lowwick_rate": {
+        "type": "float",
+        "name": "lower wick rate",
+        "comment": "lower wick rate = lower wick / height"
+    },
+    "body_rate": {
+        "type": "float",
+        "name": "body rate",
+        "comment": "body rate = body / height"
+    },
+    "clv": {
+        "type": "float",
+        "name": "Close Location Value",
+        "comment": "clv = 1 if High = Low else ((Close-Low) - (High-Close)) / (High - Low)"
+    },
+    "cbr": {
+        "type": "float",
+        "name": "Candlestick Body Ratio",
+        "comment": "cbr = abs(close - open) / height"
+    },
+    "vbr": {
+        "type": "float",
+        "name": "Volume Box Ratio",
+        "comment": "vbr = Volume / (High - Low)"
+    },
+    "ibs": {
+        "type": "float",
+        "name": "Internal Bar Strength",
+        "comment": "ibs = (close - low) / (high - low)"
+    },
+    "color": {
+        "type": "str",
+        "name": "color",
+        "comment": "color"
+    },
+    "wick_imbalance": {
+        "type": "float",
+        "name": "wick imbalance",
+        "comment": "wick imbalance = upper wick - lower wick"
+    },
+    "upwick_ratio": {
+        "type": "float",
+        "name": "upper wick ratio",
+        "comment": "upwick_ratio = upwick / (lowwick + epsilon)"
+    }
+}

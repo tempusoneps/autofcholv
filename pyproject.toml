@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "autofcholv"
+version = "0.1.0"
+authors = [
+  { name="TempusOnePs", email="magnus.damda@gmail.com" },
+]
+description = "A Python library for Automatic extraction of relevant features from OHLCV time series"
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+dependencies = [
+    "pandas>=2.0.0",
+    "scikit-learn>=1.8.0",
+    "pandas_ta>=0.4.71b0",
+    "ta>=0.11.0",
+    "python-dotenv>=1.2.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "build>=1.0.0",
+    "twine>=4.0.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+autofcholv = "autofcholv.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/tempusoneps/autofcholv"
+"Bug Tracker" = "https://github.com/tempusoneps/autofcholv/issues"

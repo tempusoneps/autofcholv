@@ -1,0 +1,12 @@
+{
+    "volume_avg": {
+        "type": "float",
+        "name": "Volume Average",
+        "comment": "Trung bình khối lượng n phiên"
+    },
+    "volume_zscore": {
+        "type": "float",
+        "name": "Z-score of Volume",
+        "comment": "Z-score khối lượng"
+    }
+}

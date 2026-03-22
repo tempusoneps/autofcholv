@@ -1,0 +1,62 @@
+{
+    "ibs_n": {
+        "type": "float",
+        "name": "Internal Bar Strength look back n bars",
+        "comment": "ibs_n = (close - lowest(n)) / (highest(n) - lowest(n)) with n = IBS_LOOKBACK"
+    },
+    "is_fvg": {
+        "type": "bool",
+        "name": "Is Fair Value Gap",
+        "comment": "is_fvg = True if (high_prev > low_curr) or (low_prev < high_curr) else False"
+    },
+    "ulti_osci": {
+        "type": "float",
+        "name": "Ultimate Oscillator",
+        "comment": "Ultimate Oscillator = ta.ultimate_oscillator(high, low, close, length=n) with n = VOLATILITY_LOOKBACK"
+    },
+    "vwap": {
+        "type": "float",
+        "name": "Volume Weighted Average Price",
+        "comment": "vwap = ta.vwap(high, low, close, volume)"
+    },
+    "atr": {
+        "type": "float",
+        "name": "Average True Range",
+        "comment": "atr = ta.atr(high, low, close, length=n) with n = VOLATILITY_LOOKBACK"
+    },
+    "adx": {
+        "type": "float",
+        "name": "Average Directional Index",
+        "comment": "adx = ta.adx(high, low, close, length=n) with n = ADX_VOLATILITY_LOOKBACKLOOKBACK"
+    },
+    "dm": {
+        "type": "float",
+        "name": "Distance Moved",
+        "comment": "dm = (High + Low) / 2 - (high_lag1 + low_lag1) / 2"
+    },
+    "eom": {
+        "type": "float",
+        "name": "Ease of Movement",
+        "comment": "eom = dm / vbr"
+    },
+    "direction": {
+        "type": "int",
+        "name": "Direction",
+        "comment": "direction = 1 if close > open else -1"
+    },
+    "streak": {
+        "type": "int",
+        "name": "Up/Down Streak",
+        "comment": "up_streak = 0 if direction != direction_lag1 else direction + up_streak_lag1"
+    },
+    "custom_001": {
+        "type": "float",
+        "name": "Custom Feature 001",
+        "comment": "100 * (Close - prev_day_close) / prev_day_close"
+    },
+    "custom_002": {
+        "type": "float",
+        "name": "Custom Feature 002",
+        "comment": "(Close - close.shift(n)) / (High.rolling(n).max() - Low.rolling(n).min()) with n = ONE_DAY_BARS"
+    }
+}
