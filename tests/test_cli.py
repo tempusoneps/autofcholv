@@ -11,8 +11,12 @@ import pytest
 # Helper
 # ─────────────────────────────────────────────
 
-def _cli_path() -> str:
-    return os.path.join(os.path.dirname(__file__), "..", "venv", "bin", "autofcholv")
+import sys
+
+def _cli_command() -> list:
+    # Use the current python executable to run the module
+    # This is more robust than looking for a venv script
+    return [sys.executable, "-m", "autofcholv.cli"]
 
 
 def _make_ohlcv_csv(path: str, n_bars: int = 300) -> None:
@@ -42,24 +46,24 @@ def _make_ohlcv_csv(path: str, n_bars: int = 300) -> None:
 # ─────────────────────────────────────────────
 
 def test_cli_help():
-    result = subprocess.run([_cli_path(), "--help"], capture_output=True, text=True)
+    result = subprocess.run([*_cli_command(), "--help"], capture_output=True, text=True)
     assert result.returncode == 0
     assert "autofcholv" in result.stdout
 
 
 def test_cli_version():
-    result = subprocess.run([_cli_path(), "--version"], capture_output=True, text=True)
+    result = subprocess.run([*_cli_command(), "--version"], capture_output=True, text=True)
     assert result.returncode == 0
 
 
 def test_cli_no_input_prints_help():
-    result = subprocess.run([_cli_path()], capture_output=True, text=True)
+    result = subprocess.run([*_cli_command()], capture_output=True, text=True)
     assert result.returncode == 0
 
 
 def test_cli_nonexistent_file():
     result = subprocess.run(
-        [_cli_path(), "extract", "nonexistent_file_xyz.csv"],
+            [*_cli_command(), "extract", "nonexistent_file_xyz.csv"],
         capture_output=True, text=True,
     )
     assert result.returncode == 1
@@ -73,7 +77,7 @@ def test_cli_successful_extraction():
         _make_ohlcv_csv(input_path, n_bars=300)
 
         result = subprocess.run(
-            [_cli_path(), "extract", input_path, "--output", output_path],
+            [*_cli_command(), "extract", input_path, "--output", output_path],
             capture_output=True, text=True,
         )
 
@@ -106,7 +110,7 @@ def test_cli_output_log_messages():
         _make_ohlcv_csv(input_path, n_bars=300)
 
         result = subprocess.run(
-            [_cli_path(), "extract", input_path, "--output", output_path],
+            [*_cli_command(), "extract", input_path, "--output", output_path],
             capture_output=True, text=True,
         )
 
@@ -121,7 +125,7 @@ def test_cli_generate_config():
         config_path = os.path.join(tmpdir, "config.env")
 
         result = subprocess.run(
-            [_cli_path(), "generate-config", "--path", config_path],
+            [*_cli_command(), "generate-config", "--path", config_path],
             capture_output=True, text=True,
         )
 
@@ -142,7 +146,7 @@ def test_cli_invalid_csv_no_ohlcv():
         bad_df.to_csv(input_path, index=False)
 
         result = subprocess.run(
-            [_cli_path(), "extract", input_path, "--output", output_path],
+            [*_cli_command(), "extract", input_path, "--output", output_path],
             capture_output=True, text=True,
         )
 

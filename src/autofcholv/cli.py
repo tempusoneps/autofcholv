@@ -31,6 +31,10 @@ def main():
         default="output_features.csv",
         help="Path to save the extracted features (default: output_features.csv)"
     )
+    parser_extract.add_argument(
+        "--config", "-c",
+        help="Path to a custom configuration file (JSON/YAML)"
+    )
 
     # Subcommand: generate-config
     parser_config = subparsers.add_parser("generate-config", help="Generate default configuration .env file")
@@ -61,6 +65,15 @@ def main():
         if not input_path.exists():
             print(f"Error: Input file '{args.input}' does not exist.", file=sys.stderr)
             sys.exit(1)
+        
+        # Load custom config if provided
+        if args.config:
+            from autofcholv.config.config import load_config
+            try:
+                load_config(args.config)
+            except Exception as e:
+                print(f"Error loading config: {e}", file=sys.stderr)
+                sys.exit(1)
 
     try:
         print(f"Reading data from {args.input}...")

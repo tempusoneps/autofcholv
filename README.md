@@ -13,7 +13,15 @@ A Python library for Automated extraction of relevant features from OHLCV time s
 
 ## 📦 Installation
 
-To install `autofcholv` into your environment, use `pip`. It is recommended to use a virtual environment (`venv`).
+To install `autofcholv` into your environment, use `pip`. 
+
+It is recommended to use a virtual environment (`venv`).
+
+```bash
+pip install autofcholv
+```
+
+Or from source:
 
 ```bash
 # Clone the repository
