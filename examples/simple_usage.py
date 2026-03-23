@@ -1,15 +1,5 @@
-import os
 import pandas as pd
 import numpy as np
-from dotenv import load_dotenv
-
-# Load environment variables required by the pipeline
-# The .env.example should be present in the root of the project
-env_path = os.path.join(os.path.dirname(__file__), "..", ".env.example")
-if os.path.exists(env_path):
-    load_dotenv(env_path)
-else:
-    print("Warning: .env.example not found, please ensure required environment variables are set.")
 
 from autofcholv.core import extract_features
 

@@ -42,16 +42,39 @@ pip install -e .[dev]
 
 After installing, the `autofcholv` command is immediately available in your terminal.
 
+#### `extract` — Extract features from a CSV file
+
 ```bash
-autofcholv input.csv --output my_features.csv
+autofcholv extract input.csv --output my_features.csv
 ```
 
 **Options:**
 *   `input`: Path to your input OHLCV CSV file. It **must** contain `Date`, `Open`, `High`, `Low`, `Close`, and `Volume` columns.
 *   `--output`, `-o`: The path where the output features CSV will be saved (default: `output_features.csv`).
-*   `--version`, `-v`: Print library version.
 
-*Note: Environment variables for specific feature behaviors can be placed in a `.env` file in the working directory (e.g., `ONE_DAY_BARS=49`).*
+#### `generate-config` — Generate a default configuration file
+
+```bash
+autofcholv generate-config --path .env
+```
+
+**Options:**
+*   `--path`, `-p`: Path to save the generated config file (default: `.env`).
+
+This creates a `.env` file pre-filled with all default configuration values. Edit it to customise feature behaviour (e.g. `ONE_DAY_BARS=49`, `SELECTED_TIME_FRAME=15m`).
+
+#### Global options
+
+*   `--version`, `-v`: Print library version.
+*   `--help`, `-h`: Show help message.
+
+#### Configuration loading priority
+
+`autofcholv` resolves configuration in the following order (first match wins):
+
+1. **Environment variables** — all required keys must be present in the environment.
+2. **Config file** — a JSON or YAML file passed explicitly via the API (`load_config(path)`).
+3. **Built-in defaults** — sensible defaults are applied automatically if neither of the above is available.
 
 ### Using the Python API
 
