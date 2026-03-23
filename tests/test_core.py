@@ -1,7 +1,12 @@
+import json
+import os
+import tempfile
+
 import pandas as pd
 import numpy as np
 import pytest
 from autofcholv.core import extract_features
+from autofcholv.config.config import load_config, DEFAULT_CONFIG
 
 
 # ─────────────────────────────────────────────
@@ -175,3 +180,45 @@ def test_extract_features_negative_price_raises():
     df.iloc[5, df.columns.get_loc("Low")]   = -1.0
     with pytest.raises(ValueError):
         extract_features(df)
+
+
+# ─────────────────────────────────────────────
+# Config tests
+# ─────────────────────────────────────────────
+
+def test_load_config_sets_defaults():
+    for key in DEFAULT_CONFIG:
+        os.environ.pop(key, None)
+    load_config()
+    for key, value in DEFAULT_CONFIG.items():
+        assert os.environ.get(key) == value, f"Missing default for {key}"
+
+
+def test_load_config_from_json_file():
+    for key in DEFAULT_CONFIG:
+        os.environ.pop(key, None)
+
+    custom = dict(DEFAULT_CONFIG)
+    custom["SELECTED_TIME_FRAME"] = "15m"
+
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+        json.dump(custom, f)
+        json_path = f.name
+
+    try:
+        load_config(json_path)
+        assert os.environ.get("SELECTED_TIME_FRAME") == "15m"
+    finally:
+        os.unlink(json_path)
+        for key in DEFAULT_CONFIG:
+            os.environ.pop(key, None)
+
+
+def test_load_config_env_takes_priority():
+    for key, value in DEFAULT_CONFIG.items():
+        os.environ[key] = value
+    os.environ["SELECTED_TIME_FRAME"] = "1h"
+    load_config()
+    assert os.environ.get("SELECTED_TIME_FRAME") == "1h"
+    for key in DEFAULT_CONFIG:
+        os.environ.pop(key, None)
