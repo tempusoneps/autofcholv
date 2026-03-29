@@ -1,4 +1,6 @@
+import os
 import pandas as pd
+import pandas_ta as ta
 import numpy as np
 
 
@@ -24,5 +26,20 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     df['high_rsi_pattern']    = high_state + "_" + rsi_state
     df['high_ub_pattern']     = np.where(df["High"] > df["ub"], "HighAboveUB", "HighBelowUB")
     df['low_lb_pattern']      = np.where(df["Low"]  < df["lb"], "LowBelowLB",  "LowAboveLB")
+
+    _1day_bars     = int(os.getenv("ONE_DAY_BARS", 49))
+    _1month_bars   = _1day_bars * 22
+    _6month_bars   = _1month_bars * 6
+    if len(df) < _6month_bars:
+        raise ValueError(f"Not enough data to calculate long trend. Need {_6month_bars} bars, got {len(df)}")
+    ema_1month = ta.ema(df["Close"], length=_1month_bars)
+    ema_6month = ta.ema(df["Close"], length=_6month_bars)
+    mask = ema_1month.notna() & ema_6month.notna()   
+    df["long_trend"] = None
+    df.loc[mask, "long_trend"] = np.where(
+        ema_1month[mask] > ema_6month[mask],
+        "StrongUp",
+        "StrongDown"
+    )
 
     return df
