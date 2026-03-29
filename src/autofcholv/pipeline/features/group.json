@@ -43,5 +43,10 @@
         "type": "string",
         "name": "Low and Lower Bollinger Band",
         "comment": "low_lb_pattern = compare(Low, lb) = LowAboveLB | LowBelowLB"
+    },
+    "long_trend": {
+        "type": "string",
+        "name": "Long Trend",
+        "comment": "StrongUp | StrongDown = EMA_1month > EMA_6months | EMA_1month < EMA_6months"
     }
 }
