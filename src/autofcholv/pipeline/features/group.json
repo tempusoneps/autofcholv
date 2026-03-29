@@ -48,5 +48,265 @@
         "type": "string",
         "name": "Long Trend",
         "comment": "StrongUp | StrongDown = EMA_1month > EMA_6months | EMA_1month < EMA_6months"
+    },
+    "body_size_group": {
+        "type": "string",
+        "name": "Body Size Comparison",
+        "comment": "body_size_group = compare(abs(Close-Open), prev_abs_body) = Expanding | Contracting"
+    },
+    "candle_color_sequence": {
+        "type": "string",
+        "name": "Color Continuity",
+        "comment": "sequence = current_color + prev_color = Bull_Bull | Bull_Bear | Bear_Bull | Bear_Bear"
+    },
+    "gap_pattern": {
+        "type": "string",
+        "name": "Opening Gap Pattern",
+        "comment": "gap_pattern = compare(Open, prev_Close) = GapUp | GapDown | Flat"
+    },
+    "atr_regime": {
+        "type": "string",
+        "name": "ATR Volatility Regime",
+        "comment": "atr_regime = compare(ATR, ATR_avg) = HighVol | LowVol"
+    },
+    "bb_width_group": {
+        "type": "string",
+        "name": "Bollinger Band Squeeze",
+        "comment": "bb_width_group = compare(BB_Width, prev_BB_Width) = Expanding | Squeezing"
+    },
+    "range_position": {
+        "type": "string",
+        "name": "Day Range Position",
+        "comment": "range_pos = (Close - Low) / (High - Low) = Top_Third | Mid_Third | Bottom_Third"
+    },
+    "ma_cross_pattern": {
+        "type": "string",
+        "name": "Moving Average Interaction",
+        "comment": "ma_cross = compare(Close, EMA_20) = PriceAboveMA | PriceBelowMA"
+    },
+    "distance_from_ma": {
+        "type": "string",
+        "name": "Mean Reversion Distance",
+        "comment": "dist_ma = (Close - EMA_20) / ATR = Overextended_Up | Neutral | Overextended_Down"
+    },
+    "rsi_extreme_group": {
+        "type": "string",
+        "name": "RSI Extreme Levels",
+        "comment": "rsi_group = RSI > 70 ? Overbought : (RSI < 30 ? Oversold : Neutral)"
+    },
+    "volume_price_divergence": {
+        "type": "string",
+        "name": "Volume Price Confirmation",
+        "comment": "vol_price = compare(Vol, vol_lag1) + compare(Abs_Return, abs_ret_lag1) = Effort_Confirmed | Effort_Divergence"
+    },
+    "obv_trend": {
+        "type": "string",
+        "name": "On-Balance Volume Trend",
+        "comment": "obv_trend = compare(OBV, OBV_lag1) = Accumulation | Distribution"
+    },
+    "effort_result_pattern": {
+        "type": "string",
+        "name": "Effort vs Result",
+        "comment": "effort_result = compare(Volume, vol_lag1) + compare(abs(Close-Open), abs_body_lag1) = HighEffort_LowResult | HighEffort_HighResult | LowEffort_HighResult | LowEffort_LowResult"
+    },
+    "spread_group": {
+        "type": "string",
+        "name": "Relative Spread Group",
+        "comment": "spread_group = compare(High-Low, avg_range_20) = WideSpread | NarrowSpread"
+    },
+    "stopping_volume_pattern": {
+        "type": "string",
+        "name": "Stopping Volume Signal",
+        "comment": "stopping_vol = (Volume > vol_avg_20) + (ibs > 0.8 | ibs < 0.2) = Potential_Climax | Normal_Flow"
+    },
+    "ma_distance_group": {
+        "type": "string",
+        "name": "Distance from MA 20",
+        "comment": "ma_dist = (Close - EMA20) / ATR = Extreme_Upper | Above_Mean | Below_Mean | Extreme_Lower"
+    },
+    "bollinger_bandwidth_regime": {
+        "type": "string",
+        "name": "BB Bandwidth Regime",
+        "comment": "bb_regime = compare(bb_width, bb_width_avg_100) = High_Vol_Expansion | Low_Vol_Squeeze"
+    },
+    "consecutive_days_group": {
+        "type": "string",
+        "name": "Consecutive Color Count",
+        "comment": "consecutive_group = count_consecutive(Close > Open) = 3_Up_Days | 3_Down_Days | Mixed"
+    },
+    "rsi_velocity_pattern": {
+        "type": "string",
+        "name": "RSI Velocity",
+        "comment": "rsi_velocity = compare(RSI, rsi_lag1) + compare(RSI, rsi_lag2) = Accelerating_Up | Decelerating_Up | Accelerating_Down | Decelerating_Down"
+    },
+    "price_rsi_divergence": {
+        "type": "string",
+        "name": "Price RSI Divergence Hint",
+        "comment": "div_hint = compare(High, high_lag1) + compare(RSI, rsi_lag1) = Bullish_Confirm | Bearish_Divergence | Bearish_Confirm | Bullish_Divergence"
+    },
+    "volatility_regime_shift": {
+        "type": "string",
+        "name": "Volatility Change",
+        "comment": "vol_shift = compare(ATR_short, ATR_long) = Vol_Rising | Vol_Falling"
+    },
+    "ma_slope_direction": {
+        "type": "string",
+        "name": "Trend Slope Direction",
+        "comment": "ma_slope = compare(EMA_20, EMA_20_lag1) = Uptrend | Downtrend | Sideways"
+    },
+    "ma_ribbon_position": {
+        "type": "string",
+        "name": "MA Ribbon Position",
+        "comment": "ribbon_pos = compare(Close, EMA_50) = Above_Ribbon | Below_Ribbon"
+    },
+    "ma_cross_count": {
+        "type": "string",
+        "name": "MA Cross Frequency",
+        "comment": "cross_count = count_cross(EMA_20, EMA_50) = Frequent_Cross | Rare_Cross"
+    },
+    "close_return_group": {
+        "type": "string",
+        "name": "Close Return Behavior",
+        "comment": "close_return = compare(Close, close_lag1) = Up | Down | Flat"
+    },
+    "return_magnitude_group": {
+        "type": "string",
+        "name": "Return Magnitude",
+        "comment": "ret_mag = abs(Return) compare ret_avg = LargeMove | NormalMove | SmallMove"
+    },
+    "high_low_expansion": {
+        "type": "string",
+        "name": "Range Expansion Pattern",
+        "comment": "range_expansion = compare(High-Low, prev_range) = Expansion | Contraction"
+    },
+    "close_position_vs_prev_range": {
+        "type": "string",
+        "name": "Close vs Previous Range",
+        "comment": "close_pos_prev = (Close - prev_Low) / (prev_High - prev_Low) = BreakAbove | Inside | BreakBelow"
+    },
+    "open_position_vs_prev_range": {
+        "type": "string",
+        "name": "Open vs Previous Range",
+        "comment": "open_pos_prev = (Open - prev_Low) / (prev_High - prev_Low) = GapBreakUp | Inside | GapBreakDown"
+    },
+    "wick_to_body_ratio": {
+        "type": "string",
+        "name": "Wick vs Body Strength",
+        "comment": "wick_body = (upper_wick + lower_wick) / body = WickDominant | Balanced | BodyDominant"
+    },
+    "upper_lower_wick_balance": {
+        "type": "string",
+        "name": "Wick Balance",
+        "comment": "wick_balance = compare(upper_wick, lower_wick) = UpperDominant | LowerDominant | Symmetric"
+    },
+    "volume_spike_pattern": {
+        "type": "string",
+        "name": "Volume Spike Detection",
+        "comment": "vol_spike = Volume > 2 * vol_avg_20 = Spike | Normal"
+    },
+    "price_acceleration": {
+        "type": "string",
+        "name": "Price Acceleration",
+        "comment": "price_acc = compare(Return, return_lag1) = Accelerating | Decelerating"
+    },
+    "multi_timeframe_trend_alignment": {
+        "type": "string",
+        "name": "Multi TF Trend Alignment",
+        "comment": "mtf_trend = EMA_20 > EMA_50 > EMA_200 = StrongBull | StrongBear | Mixed"
+    },
+    "ema_compression_pattern": {
+        "type": "string",
+        "name": "EMA Compression",
+        "comment": "ema_compress = std(EMA_20, EMA_50, EMA_100) = Tight | Expanding"
+    },
+    "price_vs_vwap": {
+        "type": "string",
+        "name": "VWAP Position",
+        "comment": "price_vwap = compare(Close, VWAP) = AboveVWAP | BelowVWAP"
+    },
+    "vwap_deviation_group": {
+        "type": "string",
+        "name": "VWAP Deviation",
+        "comment": "vwap_dev = (Close - VWAP) / ATR = Overextended | Neutral"
+    },
+    "intraday_trend_pattern": {
+        "type": "string",
+        "name": "Intraday Trend Bias",
+        "comment": "intra_trend = compare(Open, Close) + compare(Close, High/Low) = TrendUp | TrendDown | Chop"
+    },
+    "breakout_strength": {
+        "type": "string",
+        "name": "Breakout Strength",
+        "comment": "breakout = (Close > prev_High) + volume_condition = StrongBreak | WeakBreak | NoBreak"
+    },
+    "false_break_pattern": {
+        "type": "string",
+        "name": "False Break Detection",
+        "comment": "false_break = (High > prev_High AND Close < prev_High) OR (Low < prev_Low AND Close > prev_Low) = BullTrap | BearTrap | None"
+    },
+    "liquidity_sweep_pattern": {
+        "type": "string",
+        "name": "Liquidity Sweep",
+        "comment": "liq_sweep = sweep(prev_high/low) + rejection = SweepHighReject | SweepLowReject | NoSweep"
+    },
+    "orderflow_proxy_pattern": {
+        "type": "string",
+        "name": "Orderflow Proxy",
+        "comment": "orderflow = compare(body_size, wick_size) + volume = AggressiveBuy | AggressiveSell | Passive"
+    },
+    "imbalance_candle_pattern": {
+        "type": "string",
+        "name": "Imbalance Candle",
+        "comment": "imbalance = body >> wick AND range_expansion = ImbalanceUp | ImbalanceDown | Balanced"
+    },
+    "mean_reversion_signal": {
+        "type": "string",
+        "name": "Mean Reversion Signal",
+        "comment": "mean_rev = distance_from_ma + rsi_extreme = RevertDown | RevertUp | Neutral"
+    },
+    "trend_exhaustion_pattern": {
+        "type": "string",
+        "name": "Trend Exhaustion",
+        "comment": "exhaustion = HighUp + RSI_Down OR LowDown + RSI_Up = BullExhaust | BearExhaust | None"
+    },
+    "compression_breakout_setup": {
+        "type": "string",
+        "name": "Compression Breakout Setup",
+        "comment": "compression = BB squeeze + low ATR = ReadyBreakout | NotReady"
+    },
+    "volatility_cluster_pattern": {
+        "type": "string",
+        "name": "Volatility Clustering",
+        "comment": "vol_cluster = consecutive HighVol OR LowVol = ClusterHigh | ClusterLow | Mixed"
+    },
+    "price_efficiency_ratio": {
+        "type": "string",
+        "name": "Price Efficiency",
+        "comment": "efficiency = abs(Close - Close_n) / sum(abs(return)) = EfficientTrend | Noisy"
+    },
+    "swing_structure_pattern": {
+        "type": "string",
+        "name": "Swing Structure",
+        "comment": "structure = HH_HL | LH_LL | Range"
+    },
+    "micro_trend_pattern": {
+        "type": "string",
+        "name": "Micro Trend",
+        "comment": "micro_trend = compare(Close, Close_lag3) = MicroUp | MicroDown | Flat"
+    },
+    "range_compression_ratio": {
+        "type": "string",
+        "name": "Range Compression Ratio",
+        "comment": "range_ratio = (High-Low)/avg_range_10 = Compressed | Normal | Expanded"
+    },
+    "volume_trend_alignment": {
+        "type": "string",
+        "name": "Volume Trend Alignment",
+        "comment": "vol_trend = compare(Volume_trend, Price_trend) = Confirmed | Diverging"
+    },
+    "breakout_failure_strength": {
+        "type": "string",
+        "name": "Breakout Failure Strength",
+        "comment": "failure = breakout_attempt + reversal_strength = StrongFailure | WeakFailure | None"
     }
 }
