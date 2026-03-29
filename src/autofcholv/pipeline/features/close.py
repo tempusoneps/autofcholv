@@ -15,7 +15,7 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
         DataFrame with new features.
     """
     fast_n     = int(os.getenv("FAST_TREND_LOOKBACK", 24))
-    slow_n     = int(os.getenv("LOW_TREND_LOOKBACK", 245))
+    slow_n     = int(os.getenv("SLOW_TREND_LOOKBACK", 245))
     momentum_n = int(os.getenv("MOMENTUM_LOOKBACK", 24))
 
     df["ema_fast"] = ta.ema(df["Close"], length=fast_n)
