@@ -15,7 +15,7 @@ def validate_ohlcv_dataset(data: pd.DataFrame) -> Tuple[bool, Dict[str, Any]]:
     # ==============================
     missing_cols = [c for c in required_cols if c not in data.columns]
     if missing_cols:
-        return {
+        return False, {
             "is_valid": False,
             "error": f"Missing columns: {missing_cols}"
         }
@@ -83,7 +83,7 @@ def validate_ohlcv_dataset(data: pd.DataFrame) -> Tuple[bool, Dict[str, Any]]:
                 "error": {"Date": "Duplicate date"}
             })
 
-    delta = df.index.to_series().diff().median()
+    delta = df.index.to_series().diff().dropna().min()
     if delta >= pd.Timedelta(days=1):
         errors.append({
             "index": 1,
