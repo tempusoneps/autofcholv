@@ -1,5 +1,4 @@
 import pandas as pd
-import pandas_ta as ta
 
 
 def extract_features(df: pd.DataFrame) -> pd.DataFrame:
@@ -30,4 +29,5 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     #
     merged_data = pd.merge(data, daily_data, left_on="time_d", right_index=True, how="left")
     merged_data = merged_data.drop(columns=['time_d'])
+    merged_data.index = data.index
     return merged_data

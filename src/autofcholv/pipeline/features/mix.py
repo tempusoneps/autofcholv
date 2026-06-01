@@ -54,9 +54,7 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     midpoint = (df["High"] + df["Low"]) / 2
     df["dm"] = midpoint - midpoint.shift(1)
 
-    hl_range  = df["High"] - df["Low"]
-    vbr       = np.where(hl_range != 0, df["Volume"] / hl_range, np.nan)
-    df["eom"] = np.where(vbr != 0, df["dm"] / vbr, np.nan)
+    df["eom"] = np.where(df["vbr"] != 0, df["dm"] / df["vbr"], np.nan)
 
     df["direction"] = np.where(df["Close"] > df["Open"], 1, -1)
 
@@ -72,10 +70,9 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     prev_day_close   = df["Close"].shift(one_day_bars)
     df["custom_001"] = 100.0 * (df["Close"] - prev_day_close) / prev_day_close
 
-    close_n          = df["Close"].shift(one_day_bars)
     high_n           = df["High"].rolling(one_day_bars).max()
     low_n            = df["Low"].rolling(one_day_bars).min()
     denom2           = high_n - low_n
-    df["custom_002"] = np.where(denom2 != 0, (df["Close"] - close_n) / denom2, np.nan)
+    df["custom_002"] = np.where(denom2 != 0, (df["Close"] - prev_day_close) / denom2, np.nan)
 
     return df

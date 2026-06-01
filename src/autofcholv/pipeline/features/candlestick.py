@@ -31,7 +31,7 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     df['body_rate']    = (df['body'].abs() * 100 / height_safe).round(2).fillna(0)
     
     clv = np.where(df['height'] == 0, 1, ((df['Close'] - df['Low']) - (df['High'] - df['Close'])) / height_safe)
-    df['clv'] = pd.Series(clv).fillna(0)
+    df['clv'] = clv
     
     df['cbr'] = (df['body'].abs() / height_safe).fillna(0)
     df['vbr'] = (df['Volume'] / height_safe).fillna(0)
