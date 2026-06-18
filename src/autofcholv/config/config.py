@@ -6,7 +6,6 @@ from typing import Any, Dict, Optional
 
 DEFAULT_CONFIG = {
     "SELECTED_TIME_FRAME": "5m",
-    "OLD_1DAY_BARS": "51",
     "ONE_DAY_BARS": "49",
     "ONE_HOUR_BARS": "12",
     "ONE_WEEK_BARS": "245",
@@ -104,5 +103,6 @@ def _load_from_env() -> bool:
 
 def _load_from_defaults() -> bool:
     for key, value in DEFAULT_CONFIG.items():
-        os.environ[key] = value
+        if not os.getenv(key):
+            os.environ[key] = value
     return True

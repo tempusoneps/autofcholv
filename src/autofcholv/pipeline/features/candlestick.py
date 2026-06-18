@@ -28,6 +28,17 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     df['lowwick'] = body_bottom - df['Low']
 
     height_safe = df['height'].replace(0, np.nan)
+    df['upwick_rate']  = (df['upwick']  * 100 / height_safe).round(2).fillna(0)
+    df['lowwick_rate'] = (df['lowwick'] * 100 / height_safe).round(2).fillna(0)
+    df['body_rate']    = (df['body'].abs() * 100 / height_safe).round(2).fillna(0)
+    
+    clv = np.where(df['height'] == 0, 1, ((df['Close'] - df['Low']) - (df['High'] - df['Close'])) / height_safe)
+    df['clv'] = clv
+    
+    df['cbr'] = (df['body'].abs() / height_safe).fillna(0)
+    df['vbr'] = (df['Volume'] / height_safe).fillna(0)
+    
+    df['ibs'] = ((df['Close'] - df['Low']) / height_safe).fillna(0)
 
     # ratios
     df['body_ratio'] = (df['body'].abs() / (height_safe + epsilon)).fillna(0)

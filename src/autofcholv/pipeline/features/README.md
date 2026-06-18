@@ -108,9 +108,10 @@ The pipeline executes in the order listed below.
 | `close_lag1` | float | Close phiên trước |
 | `volume_lag1` | float | Volume phiên trước |
 | `body_lag1` | float | Body phiên trước |
-| `upper_wick_lag1` | float | Upper wick phiên trước |
-| `lower_wick_lag1` | float | Lower wick phiên trước |
-| `ema20_lag1` | float | EMA20 phiên trước |
+| `upwick_lag1` | float | Upper wick phiên trước |
+| `lowwick_lag1` | float | Lower wick phiên trước |
+| `ema_fast_lag1` | float | EMA fast phiên trước |
+| `ema_slow_lag1` | float | EMA slow phiên trước |
 | `ibs_lag1` | float | IBS phiên trước |
 | `rsi_lag1` | float | RSI phiên trước |
 
