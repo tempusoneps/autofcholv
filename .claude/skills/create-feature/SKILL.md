@@ -7,22 +7,22 @@ description: Use when adding a new feature to the autofcholv pipeline — covers
 
 ## Overview
 
-Quy trình chuẩn để thêm một feature mới vào pipeline autofcholv. Gồm 6 bước tuần tự — không bỏ bước nào.
+Standard process for adding a new feature to the autofcholv pipeline. Consists of 6 sequential steps — do not skip any.
 
 ---
 
 ## Step 1 — Requirement
 
-Xác định rõ trước khi viết bất kỳ dòng code nào:
+Clarify all of the following before writing any code:
 
-- **Tên cột output** (ví dụ: `parkinson_vol`, `roc_3`)
-- **Kiểu dữ liệu** (`float` / `int` / `str` / `bool`)
-- **Công thức / logic**
-- **Cột phụ thuộc** — feature này cần cột nào từ bước trước?
-- **Config key** — có cần lookback period không? Dùng key nào trong `DEFAULT_CONFIG`?
-- **Module** — thêm vào file `.py` nào? (file mới hay ghép vào file có sẵn?)
+- **Output column name** (e.g. `parkinson_vol`, `roc_3`)
+- **Data type** (`float` / `int` / `str` / `bool`)
+- **Formula / logic**
+- **Dependency columns** — which columns from previous steps does this feature require?
+- **Config key** — is a lookback period needed? Which key in `DEFAULT_CONFIG`?
+- **Module** — which `.py` file to add it to? (new file or append to an existing one?)
 
-**Thứ tự pipeline hiện tại** (phụ thuộc phải đứng TRƯỚC):
+**Current pipeline order** (dependencies must come BEFORE):
 ```
 1. time        2. resample    3. candlestick  4. close
 5. volume      6. lag         7. mix          8. group
@@ -33,23 +33,23 @@ Xác định rõ trước khi viết bất kỳ dòng code nào:
 
 ## Step 2 — Check Roadmap
 
-Mở `docs/ROADMAP.md`, tìm feature theo tên:
+Open `docs/ROADMAP.md` and find the feature by name:
 
 ```
 - [ ] `parkinson_vol` = Parkinson Volatility = ...
 ```
 
-- Nếu **có** → feature đã được plan, tiếp tục bước 3.
-- Nếu **không có** → thêm dòng mới vào đúng nhóm trong ROADMAP trước khi implement.
+- If **found** → feature is already planned, proceed to step 3.
+- If **not found** → add a new line to the correct group in ROADMAP before implementing.
 
 ---
 
 ## Step 3 — Update JSON File
 
-Mỗi feature module có file JSON tương ứng tại:
+Each feature module has a corresponding JSON file at:
 `src/autofcholv/pipeline/features/{module}.json`
 
-Thêm entry cho từng cột output mới:
+Add an entry for each new output column:
 
 ```json
 {
@@ -61,16 +61,16 @@ Thêm entry cho từng cột output mới:
 }
 ```
 
-**Format bắt buộc:**
+**Required format:**
 - `type`: `"float"` | `"int"` | `"str"` | `"bool"`
-- `name`: Tên hiển thị (viết hoa chữ đầu)
-- `comment`: Công thức hoặc mô tả ngắn
+- `name`: Display name (title case)
+- `comment`: Formula or short description
 
 ---
 
 ## Step 4 — Implement Code
 
-### 4a. Tạo / sửa file feature
+### 4a. Create / edit the feature file
 
 `src/autofcholv/pipeline/features/{module}.py`
 
@@ -80,7 +80,7 @@ import numpy as np
 import pandas as pd
 
 def extract_features(df: pd.DataFrame) -> pd.DataFrame:
-    # Guard: kiểm tra cột phụ thuộc nếu có
+    # Guard: check dependency columns if any
     deps = ['High', 'Low']
     missing = [c for c in deps if c not in df.columns]
     if missing:
@@ -95,21 +95,21 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 ```
 
-**Lưu ý bắt buộc:**
-- Tên hàm phải là `extract_features`
-- Luôn `return df`
-- Gán numpy array trực tiếp (`df['col'] = arr`), không wrap qua `pd.Series()` để tránh lệch index
-- Dùng `os.getenv("KEY", default)` để đọc config
+**Required rules:**
+- Function name must be `extract_features`
+- Always `return df`
+- Assign numpy arrays directly (`df['col'] = arr`), do not wrap with `pd.Series()` to avoid index misalignment
+- Use `os.getenv("KEY", default)` to read config
 
-### 4b. Đăng ký vào pipeline
+### 4b. Register in the pipeline
 
 `src/autofcholv/pipeline/feature_engineering.py`:
 
 ```python
-# Thêm import
+# Add import
 from autofcholv.pipeline.features.volatility import extract_features as extract_volatility_features
 
-# Thêm vào steps[] đúng vị trí thứ tự phụ thuộc
+# Add to steps[] at the correct position respecting dependency order
 steps = [
     ...
     ("volatility_features", extract_volatility_features),
@@ -117,9 +117,9 @@ steps = [
 ]
 ```
 
-### 4c. Thêm config key (nếu cần)
+### 4c. Add config key (if needed)
 
-`src/autofcholv/config/config.py` — thêm vào `DEFAULT_CONFIG`:
+`src/autofcholv/config/config.py` — add to `DEFAULT_CONFIG`:
 
 ```python
 DEFAULT_CONFIG = {
@@ -132,7 +132,7 @@ DEFAULT_CONFIG = {
 
 ## Step 5 — Unit Test
 
-Thêm test vào `tests/test_core.py` theo đúng pattern hiện có:
+Add tests to `tests/test_core.py` following the existing pattern:
 
 ```python
 def test_extract_features_volatility_columns():
@@ -146,36 +146,36 @@ def test_parkinson_vol_non_negative():
     assert (result["parkinson_vol"].dropna() >= 0).all()
 ```
 
-Chạy test:
+Run tests:
 ```bash
 pytest tests/test_core.py -v
 ```
 
-Test phải **pass** trước khi sang bước 6.
+Tests must **pass** before moving to step 6.
 
 ---
 
 ## Step 6 — Update Roadmap
 
-Mở `docs/ROADMAP.md`, đổi `[ ]` → `[x]`:
+Open `docs/ROADMAP.md` and change `[ ]` → `[x]`:
 
 ```
 - [x] `parkinson_vol` = Parkinson Volatility = ...
 ```
 
-Sau đó cập nhật `src/autofcholv/pipeline/features/README.md` — thêm cột mới vào bảng của module tương ứng.
+Then update `src/autofcholv/pipeline/features/README.md` — add the new column to the table for the corresponding module.
 
 ---
 
 ## Checklist
 
 ```
-□ 1. Requirement: tên cột, kiểu, công thức, phụ thuộc, config, module
-□ 2. Check ROADMAP.md — thêm nếu chưa có
-□ 3. Thêm entry vào {module}.json
-□ 4a. Implement extract_features() trong {module}.py
-□ 4b. Đăng ký trong feature_engineering.py
-□ 4c. Thêm DEFAULT_CONFIG key nếu cần
-□ 5. Viết + chạy unit test (pytest pass)
-□ 6. Đổi [ ] → [x] trong ROADMAP.md + cập nhật features/README.md
+□ 1. Requirement: column name, type, formula, dependencies, config, module
+□ 2. Check ROADMAP.md — add entry if missing
+□ 3. Add entry to {module}.json
+□ 4a. Implement extract_features() in {module}.py
+□ 4b. Register in feature_engineering.py
+□ 4c. Add DEFAULT_CONFIG key if needed
+□ 5. Write + run unit tests (pytest pass)
+□ 6. Change [ ] → [x] in ROADMAP.md + update features/README.md
 ```
