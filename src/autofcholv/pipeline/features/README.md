@@ -24,18 +24,15 @@ The pipeline executes in the order listed below.
 
 | Column | Type | Description |
 |---|---|---|
-| `day_open` | float | Giá mở cửa trong ngày |
-| `day_high` | float | Giá cao nhất trong ngày |
-| `day_low` | float | Giá thấp nhất trong ngày |
-| `day_close` | float | Giá đóng cửa trong ngày |
-| `day_volume` | float | Tổng khối lượng trong ngày |
-| `day_pivot` | float | `(High + Low + Close) / 3` |
 | `prev_day_open` | float | `day_open.shift(1)` |
 | `prev_day_high` | float | `day_high.shift(1)` |
 | `prev_day_low` | float | `day_low.shift(1)` |
 | `prev_day_close` | float | `day_close.shift(1)` |
 | `prev_day_volume` | float | `day_volume.shift(1)` |
 | `prev_day_pivot` | float | `day_pivot.shift(1)` |
+
+Current-day daily aggregates are used only as intermediate values to compute
+`prev_day_*`, then dropped to avoid intraday look-ahead leakage.
 
 ---
 

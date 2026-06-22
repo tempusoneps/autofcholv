@@ -23,6 +23,14 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     daily_data['prev_day_low'] = daily_data['day_low'].shift(1)
     daily_data['prev_day_volume'] = daily_data['day_volume'].shift(1)
     daily_data['prev_day_pivot'] = daily_data['day_pivot'].shift(1)
+    daily_data = daily_data[[
+        'prev_day_close',
+        'prev_day_open',
+        'prev_day_high',
+        'prev_day_low',
+        'prev_day_volume',
+        'prev_day_pivot',
+    ]]
     #
     data = df.copy()
     data = data.assign(time_d=pd.PeriodIndex(data.index, freq='1D').to_timestamp())
