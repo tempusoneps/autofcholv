@@ -1,0 +1,80 @@
+# Roadmaps
+
+- [x] `adx` = Average Directional Index
+- [x] `rsi_slope` = RSI slope = `rsi.diff()`
+- [x] `close_zscore` = Z-score of Close over `MOMENTUM_LOOKBACK`
+- [x] `body_rate` = `abs(body) / height`
+- [x] `upwick_rate` = `upwick / height`
+- [x] `lowwick_rate` = `lowwick / height`
+- [x] `streak` = Consecutive candles same direction (signed)
+- [x] `vwap` = Volume Weighted Average Price
+- [x] `DM` = Distance Moved = `midpoint - midpoint.shift(1)`
+- [x] `VBR` = Volume Box Ratio = `Volume / (High - Low)`
+- [x] `EOM` = Ease of Movement = `DM / VBR`
+- [x] `roc_skew` = Rolling skew of ROC
+- [x] `roc_kurt` = Rolling kurtosis of ROC
+- [ ] `adx_slope` = Slope of ADX = `adx.diff()`
+- [ ] `hurst_exponent` = Hurst Exponent over `HURST_LOOKBACK`
+- [ ] `hurst_100` = Hurst Exponent rolling 100 bars
+- [ ] `hurst_regime` = `'trend'` if hurst > 0.55 else `'mean_revert'`
+- [ ] `strong_trend` = `ADX > 25`
+- [ ] `atr_norm` = `atr / Close`
+- [ ] `parkinson_vol` = Parkinson Volatility = `sqrt(1/(4n*ln2) * sum(ln(H/L)^2))`
+- [ ] `rolling_std` = Rolling StdDev of Close (standalone)
+- [ ] `volatility_spike` = `ATR > ATR.rolling(20).mean()`
+- [ ] `rsi7` = RSI with length = 7
+- [ ] `macd_hist_deriv` = `macd_hist.diff()`
+- [ ] `ema_fast_slope` = Slope of `ema_fast`
+- [ ] `roc_3` = Rate of Change length = 3
+- [ ] `roc_6` = Rate of Change length = 6
+- [ ] `roc_12` = Rate of Change length = 12
+- [ ] `bullish_momentum` = `ROC_3 > 0 & ROC_6 > 0 & ROC_12 > 0`
+- [ ] `momentum_accel` = `ROC_3 > ROC_6 & ROC_6 > ROC_12`
+- [ ] `dist_vwap` = `Close - vwap`
+- [ ] `long_bias` = `Close > vwap`
+- [ ] `session_flag` = Binary flag per session window (London, NY…)
+- [ ] `up_streak` = Consecutive bullish candles count
+- [ ] `down_streak` = Consecutive bearish candles count
+- [ ] `keltner_upper` = `ema_fast + atr`
+- [ ] `keltner_lower` = `ema_fast - atr`
+- [ ] `sin_hour` = `sin(2π * hour / 24)`
+- [ ] `cos_hour` = `cos(2π * hour / 24)`
+- [ ] `minutes_from_session_open` = Minutes since session open
+- [ ] `higher_high_flag` = `High > prev swing High`
+- [ ] `lower_low_flag` = `Low < prev swing Low`
+- [ ] `dist_swing_high` = Distance from Close to nearest swing High
+- [ ] `bos_flag` = Break of Structure detection
+- [ ] `liquidity_sweep_up` = High breaks above prev high but Close below it
+- [ ] `liquidity_sweep_down` = Low breaks below prev low but Close above it
+- [ ] `h1_trend_direction` = H1 trend direction (-1 / 0 / 1)
+- [ ] `h1_adx` = ADX value on H1
+- [ ] `h1_rsi` = RSI value on H1
+- [ ] `m15_structure_bias` = Structure bias on M15
+- [ ] `entropy_20` = Shannon entropy of returns (rolling 20)
+- [ ] `skew_100` = Rolling skewness of returns (100 bars)
+- [ ] `kurt_100` = Rolling kurtosis of returns (100 bars)
+- [ ] `crash_risk` = `skew_100 < -1 & kurt_100 > 3`
+- [ ] `volume_imbalance` = Up-volume / Down-volume ratio proxy
+- [ ] `delta_candle` = `(Close - Open) * Volume`
+- [ ] `volume_acceleration` = `Volume - volume_avg`
+- [ ] `rsi_squared` = `rsi ^ 2`
+- [ ] `atr_adx` = `atr * adx`
+- [ ] `zscore_x_volume` = `close_zscore * Volume`
+- [ ] `momentum_vol_ratio` = `roc_3 / atr`
+- [ ] `spread_atr_ratio` = `spread / atr`
+- [ ] `news_proximity_flag` = Within 30m of high-impact event
+- [ ] `drawdown_state` = Current equity drawdown %
+- [ ] `typical_price` = `(High + Low + Close) / 3`
+- [ ] `money_flow` = `typical_price * Volume`
+- [ ] `money_flow_type` = Positive / Negative based on `typical_price` vs prev
+- [ ] `money_flow_score` = `sum(positive_flow) / sum(negative_flow)`
+- [ ] `MFM` = Money Flow Multiplier
+- [ ] `MFV` = Money Flow Volume
+- [ ] `CMF` = Chaikin Money Flow = `ta.cmf()`
+- [ ] `CMF_3D` = CMF over 3 days (`3 * ONE_DAY_BARS`)
+- [ ] `CMF_5D` = CMF over 5 days (`5 * ONE_DAY_BARS`)
+- [ ] `CMF_10D` = CMF over 10 days (`10 * ONE_DAY_BARS`)
+- [ ] `MFI_1D` = Money Flow Index 1 day = `ta.mfi()`
+- [ ] `MFI_3D` = MFI over 3 days (`3 * ONE_DAY_BARS`)
+- [ ] `MFI_5D` = MFI over 5 days (`5 * ONE_DAY_BARS`)
+- [ ] `MFI_10D` = MFI over 10 days (`10 * ONE_DAY_BARS`)
