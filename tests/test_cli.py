@@ -90,7 +90,7 @@ def test_cli_successful_extraction():
         # Spot-check one key column per module
         expected_cols = [
             "hour", "session_progress",          # time.py
-            "day_high", "prev_day_close",         # resample.py
+            "prev_day_high", "prev_day_close",    # resample.py
             "body", "color",                      # candlestick.py
             "ema_fast", "ema_slow", "rsi",        # close.py
             "volume_avg", "volume_zscore",        # volume.py

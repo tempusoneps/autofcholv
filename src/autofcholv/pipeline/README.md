@@ -61,7 +61,7 @@ Runs 9 sub-modules in order. Each module adds columns according to its `.json` s
 | # | Module | File | Key outputs |
 |---|---|---|---|
 | 1 | Time | `time.py` | `hour`, `minute`, `time_int`, `session_progress`, `day_of_week`, … |
-| 2 | Resample | `resample.py` | `day_open/high/low/close/volume/pivot`, `prev_day_*` |
+| 2 | Resample | `resample.py` | `prev_day_*` daily aggregates |
 | 3 | Candlestick | `candlestick.py` | `body`, `height`, `upwick`, `lowwick`, `ibs`, `clv`, `cbr`, `vbr`, … |
 | 4 | Close | `close.py` | `ema_fast`, `ema_slow`, `rsi`, `macd`, `mb`, `ub`, `lb`, … |
 | 5 | Volume | `volume.py` | `volume_avg`, `volume_zscore` |

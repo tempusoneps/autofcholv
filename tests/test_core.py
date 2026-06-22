@@ -55,12 +55,17 @@ def test_extract_features_time_columns():
 def test_extract_features_resample_columns():
     result = extract_features(make_ohlcv(300))
     expected = [
-        "day_open", "day_high", "day_low", "day_close", "day_volume", "day_pivot",
         "prev_day_open", "prev_day_high", "prev_day_low", "prev_day_close",
         "prev_day_volume", "prev_day_pivot",
     ]
     for col in expected:
         assert col in result.columns, f"Missing resample column: '{col}'"
+
+    leaking_cols = [
+        "day_open", "day_high", "day_low", "day_close", "day_volume", "day_pivot",
+    ]
+    for col in leaking_cols:
+        assert col not in result.columns, f"Leaking current-day column should be dropped: '{col}'"
 
 
 def test_extract_features_candlestick_columns():
