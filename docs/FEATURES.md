@@ -80,19 +80,190 @@ The pipeline executes in the order listed below.
 | `std` | float | Standard Deviation = ta.stdev(close, length=n) with n = TREND_LOOKBACK |
 | `ub` | float | Upper Bollinger Band = ta.sma(close, length=n) + 2 * ta.stdev(close, length=n) with n = TREND_LOOKBACK |
 | `lb` | float | Lower Bollinger Band = ta.sma(close, length=n) - 2 * ta.stdev(close, length=n) with n = TREND_LOOKBACK |
+| `cci` | float | CCI = (typical_price - rolling mean typical_price) / (0.015 * mean absolute deviation) |
+| `kdj_k` | float | Smoothed stochastic RSV over MOMENTUM_LOOKBACK adapted from quant-ohlcv-feature |
+| `kdj_d` | float | Smoothed KDJ K line |
+| `kdj_j` | float | kdj_j = 3 * kdj_k - 2 * kdj_d |
+| `fisher` | float | Fisher transform of median price position within the rolling high-low range |
+| `kama` | float | Adaptive moving average weighted by efficiency ratio |
+| `kama_bias` | float | kama_bias = Close / kama - 1 |
+| `high_ma_bias` | float | (High - rolling mean High) / rolling mean High with n = FAST_TREND_LOOKBACK |
+| `bollinger_width` | float | (ub - lb) / mb |
+| `bollinger_percent_b` | float | (Close - lb) / (ub - lb) |
+| `change_std` | float | Close.pct_change(n) * rolling std of one-bar returns adapted from quant-ohlcv-feature |
+| `dpo` | float | (Close - shifted rolling mean Close) / rolling mean Close |
+| `pfe` | float | Direction-signed price efficiency based on direct distance divided by path distance |
+| `williams_r` | float | (rolling high - Close) / (rolling high - rolling low) * 100 |
+| `slow_stoch_d` | float | Slow stochastic oscillator D line adapted from SKDJ |
+| `coppock` | float | Rolling mean of combined n-period and 2n-period close ROC |
+| `pmo` | float | Double-smoothed close ROC momentum oscillator |
+| `smi` | float | Smoothed close distance from rolling high-low midpoint |
+| `psy` | float | Percent of bars in lookback where Close rose |
+| `return_autocorr` | float | Rolling correlation of one-bar returns with lagged returns |
+| `demarker` | float | Rolling positive high movement divided by positive high plus low movement |
+| `imi` | float | Rolling close-open up movement divided by total close-open movement |
+| `rvi` | float | Upward close volatility divided by upward plus downward close volatility |
+| `bop` | float | Rolling mean of (Close - Open) / (High - Low) |
+| `ultimate_oscillator_src` | float | Triple-timeframe buying pressure oscillator adapted from quant-ohlcv-feature |
+| `kst` | float | Weighted multi-horizon close ROC oscillator normalized by its rolling mean |
+| `rmi` | float | Four-bar positive close momentum divided by rolling absolute close movement |
+| `tii` | float | Normalized ratio of positive close deviations from rolling mean |
+| `ar` | float | 100 * rolling sum(High - Open) / rolling sum(Open - Low) |
+| `br` | float | 100 * rolling sum(High - previous Close) / rolling sum(previous Close - Low) |
+| `cr` | float | 100 * rolling upward pressure over previous typical price divided by downward pressure |
+| `adtm` | float | (rolling DTM - rolling DBM) / max(rolling DTM, rolling DBM) |
+| `qstick` | float | (Close - Open) normalized by rolling mean Close - Open |
+| `mtm` | float | (Close / Close.shift(n) - 1) * 100 |
+| `bias` | float | Close / rolling mean Close - 1 |
+| `rbias` | float | One-bar rate of change of Close / rolling mean Close |
+| `mtm_mean` | float | Rolling mean of n-period close momentum |
+| `mtm_max_diff` | float | Current n-period momentum minus prior rolling max momentum |
+| `sroc` | float | Rate of change of EMA-smoothed Close over 2n bars |
+| `rsi_mean` | float | Rolling mean of RSI scaled to 0-1, adapted from quant-ohlcv Rsimean |
+| `tdi` | float | Rolling-normalized spread between RSI price and signal lines |
+| `osc` | float | Rolling mean of close minus its 2n-period moving average |
+| `short_quiet_momentum` | float | Sum of n-period returns from the lowest-amplitude 70 percent of bars in the short window |
+| `long_quiet_momentum` | float | Sum of n-period returns from the lowest-amplitude 70 percent of bars in a 10n window |
+| `price_volume_momentum` | float | EMA-smoothed price momentum multiplied by EMA-smoothed quote-volume momentum |
+| `dbcd` | float | Rolling average of close moving-average bias divergence |
+| `pmarp` | float | Percentile rank of absolute close-to-moving-average ratio |
+| `pos` | float | Position of current n-period return within its rolling min-max range |
+| `bias36` | float | Rolling-normalized difference between 3-bar and 6-bar moving-average spread and its mean |
+| `swing_index` | float | Weighted price movement index adapted from quant-ohlcv Si |
 
 ---
 
-## 5. Volume — `volume.py`
+## 5. Price Derived Indicators — `price.py`
+
+| Column | Type | Description |
+|---|---|---|
+| `typical_price` | float | typical_price = (High + Low + Close) / 3 |
+| `weighted_close` | float | weighted_close = (High + Low + 2 * Close) / 4 |
+| `typical_price_momentum` | float | Z-scored spread between fast EMA and slow EMA of typical_price |
+| `weighted_close_bias` | float | weighted_close EMA(n) / weighted_close EMA(2n) - 1 with n = MOMENTUM_LOOKBACK |
+| `rolling_vwap` | float | rolling_vwap = rolling sum(typical_price * Volume) / rolling sum(Volume) |
+| `vwap_bias` | float | rolling_vwap / rolling mean(rolling_vwap, n) - 1 with n = MOMENTUM_LOOKBACK |
+| `close_to_vwap` | float | close_to_vwap = Close / rolling_vwap - 1 |
+| `vwap_range_position` | float | Rolling VWAP normalized within its rolling min/max range |
+| `vwap_to_high` | float | rolling_vwap / High - 1 |
+| `vwap_to_low` | float | rolling_vwap / Low - 1 |
+| `close_ma_price` | float | Rolling mean Close over MOMENTUM_LOOKBACK |
+| `typical_to_vwap` | float | typical_price / rolling_vwap - 1 |
+
+---
+
+## 6. Trend Indicators — `trend.py`
+
+| Column | Type | Description |
+|---|---|---|
+| `dema_bias` | float | Double EMA normalized by single EMA minus 1 |
+| `tema_bias` | float | EMA divided by triple EMA minus 1 |
+| `trix` | float | One-bar percent change of triple-smoothed EMA |
+| `aroon_up` | float | Relative recency of rolling high on a 0-100 scale |
+| `aroon_down` | float | Relative recency of rolling low on a 0-100 scale |
+| `aroon_osc` | float | aroon_up - aroon_down |
+| `vortex_plus` | float | Rolling positive vortex movement divided by rolling true range |
+| `vortex_minus` | float | Rolling negative vortex movement divided by rolling true range |
+| `vortex_diff` | float | vortex_plus - vortex_minus |
+| `regression_bias` | float | Close / rolling linear-regression estimate - 1 |
+| `regression_slope` | float | Rolling linear-regression slope normalized by rolling mean close |
+| `hullma_bias` | float | Low-lag Hull-style EMA component divided by its sqrt-window EMA smoother minus 1 |
+| `ichimoku_cloud_ratio` | float | Ichimoku span A divided by span B using trend lookback multiples |
+| `t3_bias` | float | Close / Tillson T3 moving average - 1 |
+| `ma_signal` | float | Rolling-normalized close minus moving average trend signal |
+| `bbi_ratio` | float | Bull and Bear Index moving-average blend divided by close |
+| `bbi_bias` | float | Close divided by Bull and Bear Index minus 1 |
+| `adxr_diff` | float | Lag-smoothed DI+ minus DI- directional trend spread |
+| `wma_ma_gap` | float | Weighted MA minus simple MA normalized by rolling absolute gap |
+
+---
+
+## 7. Volatility Indicators — `volatility.py`
+
+| Column | Type | Description |
+|---|---|---|
+| `quote_volume_std` | float | Rolling standard deviation of Close * Volume proxy |
+| `amplitude_max` | float | Rolling max of max(\|High/Open - 1\|, \|Low/Open - 1\|) |
+| `positive_amplitude_rank` | float | Rolling percentile rank of positive-price-change amplitude mean |
+| `apz_width` | float | Double EMA high-low volatility divided by double EMA close |
+| `pac_width_bias` | float | PAC width divided by rolling mean PAC width minus 1 |
+| `pac_position` | float | (Close - PAC lower) / PAC width |
+| `env_position` | float | Close position inside +/-5 percent moving-average envelope |
+| `realized_volatility` | float | Rolling standard deviation of one-bar returns |
+| `realized_volatility_zscore` | float | Z-score of realized_volatility over VOLATILITY_LOOKBACK |
+| `rwi` | float | Close normalized within upward/downward Random Walk Index range |
+| `mssi` | float | Max of average drawdown from rolling high and reverse drawdown from rolling low |
+| `vix_bw` | float | Signed adaptive bandwidth of n-period close return |
+| `adaptive_bollinger_width` | float | Adaptive z-score Bollinger bandwidth normalized by close moving average |
+| `vwap_bbw_efficiency` | float | Rolling VWAP change times Bollinger-width change normalized by quote-volume proxy |
+| `chaikin_volatility` | float | Rate of change of EMA high-low range |
+| `keltner_width` | float | Keltner channel width normalized by EMA middle band |
+| `keltner_upper_signal` | float | Rolling-normalized Keltner upper band |
+| `keltner_lower_signal` | float | Rolling-normalized Keltner lower band |
+| `env_upper_signal` | float | Rolling-normalized 5 percent envelope upper band |
+| `env_lower_signal` | float | Rolling-normalized 5 percent envelope lower band |
+| `fibonacci_band_width` | float | Fibonacci ATR channel width normalized by rolling close mean |
+| `fibonacci_band_position` | float | Close position inside first Fibonacci ATR channel |
+| `donchian_mid_signal` | float | Close minus Donchian channel midpoint |
+
+---
+
+## 8. Volume — `volume.py`
 
 | Column | Type | Description |
 |---|---|---|
 | `volume_avg` | float | Trung bình khối lượng n phiên |
 | `volume_zscore` | float | Z-score khối lượng |
+| `pvt` | float | pvt = Close.pct_change() * Volume |
+| `pvt_signal` | float | Rolling normalized PVT signal adapted from quant-ohlcv-feature |
+| `volume_up_ratio` | float | Rolling share of volume on bars where Close rises |
+| `volume_down_ratio` | float | Rolling share of volume on bars where Close falls |
+| `money_flow_index` | float | Volume-weighted positive and negative money flow oscillator |
+| `pvi` | float | Cumulative close return on bars where Volume rises |
+| `nvi` | float | Cumulative close return on bars where Volume falls |
+| `clv_ma` | float | Rolling mean of (2 * Close - Low - High) / (High - Low) |
+| `wad` | float | Cumulative Williams AD normalized by its rolling mean |
+| `tmf` | float | EMA of true-range volume flow divided by EMA volume |
+| `obv_clv` | float | Rolling CLV-weighted volume normalized by its rolling mean |
+| `cmf` | float | Rolling CLV-weighted volume divided by rolling volume |
+| `emv` | float | Midpoint move divided by volume density per price range |
+| `force_index` | float | EMA-smoothed z-score of Volume * Close.diff() |
+| `pvo` | float | (EMA(Volume,n) - EMA(Volume,2n)) / EMA(Volume,2n) |
+| `directional_volume_change` | float | Rolling maximum of quote-volume proxy change signed by close direction |
+| `quote_volume_reg` | float | Rolling linear-regression fitted value of Close * Volume proxy |
+| `quote_volume_tsf` | float | One-step rolling linear-regression forecast of Close * Volume proxy |
+| `price_volume_corr` | float | Rolling correlation between Close and Close * Volume proxy |
+| `quote_volume_sum` | float | Rolling sum of Close * Volume quote-volume proxy |
+| `volume_bias_short_long` | float | Short-window quote-volume proxy mean divided by long-window mean minus 1 |
+| `volume_ratio_amount` | float | (up amount + flat amount / 2) / (down amount + flat amount / 2) |
+| `adosc` | float | Normalized EMA spread of cumulative CLV-weighted volume |
+| `wvad` | float | Normalized rolling sum of body-weighted volume |
+| `klinger_oscillator` | float | Normalized EMA spread of signed volume by typical price direction |
+| `vra` | float | Dual-horizon price ROC multiplied by rolling close volatility |
+| `ke` | float | Signed squared n-period price change amplified by normalized volume |
+| `roc_volume` | float | Volume / Volume.shift(n) - 1 |
+| `volume_ma_bias` | float | Volume divided by its moving average minus 1 |
+| `amv_signal` | float | Rolling-normalized volume-weighted average of open-close midpoint |
+| `volume_ratio` | float | Up-volume plus half neutral volume divided by down-volume plus half neutral volume |
+| `macd_volume_ratio` | float | Volume MACD divided by its rolling signal minus 1 |
+| `volume_analysis_oscillator` | float | Short minus long average of volume weighted by close position versus candle midpoint |
 
 ---
 
-## 6. Lag Features — `lag.py`
+## 9. Liquidity / Composite Proxies — `liquidity.py`
+
+| Column | Type | Description |
+|---|---|---|
+| `market_placement` | float | Close relative to EMA quote-volume/volume holding-cost proxy |
+| `path_liquidity` | float | Rolling quote-volume proxy per normalized shortest intrabar price path |
+| `spread_proxy` | float | Rolling mean log high-low range as an OHLC bid-ask spread proxy |
+| `spread_volatility_ratio` | float | spread_proxy divided by rolling close-return volatility |
+| `price_volume_resistance` | float | Price move magnitude per volume move magnitude adapted from PriceVolumeResist |
+| `coppock_atr_volume` | float | Coppock momentum multiplied by normalized ATR and volume pressure |
+
+---
+
+## 10. Lag Features — `lag.py`
 
 | Column | Type | Description |
 |---|---|---|
@@ -111,7 +282,7 @@ The pipeline executes in the order listed below.
 
 ---
 
-## 7. Mixed / Advanced Indicators — `mix.py`
+## 11. Mixed / Advanced Indicators — `mix.py`
 
 | Column | Type | Description |
 |---|---|---|
@@ -120,6 +291,7 @@ The pipeline executes in the order listed below.
 | `ulti_osci` | float | Ultimate Oscillator = ta.ultimate_oscillator(high, low, close, length=n) with n = VOLATILITY_LOOKBACK |
 | `vwap` | float | vwap = ta.vwap(high, low, close, volume) |
 | `atr` | float | atr = ta.atr(high, low, close, length=n) with n = VOLATILITY_LOOKBACK |
+| `atr_pct` | float | atr_pct = atr / Close |
 | `adx` | float | adx = ta.adx(high, low, close, length=n) with n = ADX_VOLATILITY_LOOKBACKLOOKBACK |
 | `dm` | float | dm = (High + Low) / 2 - (high_lag1 + low_lag1) / 2 |
 | `eom` | float | eom = dm / vbr |
@@ -127,10 +299,18 @@ The pipeline executes in the order listed below.
 | `streak` | int | up_streak = 0 if direction != direction_lag1 else direction + up_streak_lag1 |
 | `custom_001` | float | 100 * (Close - prev_day_close) / prev_day_close |
 | `custom_002` | float | (Close - close.shift(n)) / (High.rolling(n).max() - Low.rolling(n).min()) with n = ONE_DAY_BARS |
+| `donchian_width` | float | (rolling max High - rolling min Low) / channel midpoint with n = VOLATILITY_LOOKBACK |
+| `donchian_position` | float | (Close - rolling min Low) / (rolling max High - rolling min Low) with n = VOLATILITY_LOOKBACK |
+| `amihud_liquidity` | float | Rolling quote-volume proxy per normalized intraday shortest path adapted from quant-ohlcv-feature |
+| `keltner_position` | float | (Close - EMA(Close,n) + 2 * ATR) / (4 * ATR) adapted from quant-ohlcv-feature |
+| `true_range_pct` | float | True range divided by Close |
+| `gap_pct` | float | (Open - previous Close) / previous Close |
+| `range_position` | float | (Close - Low) / (High - Low) |
+| `body_to_true_range` | float | Absolute candlestick body divided by true range |
 
 ---
 
-## 8. Group / Pattern Features — `group.py`
+## 12. Group / Pattern Features — `group.py`
 
 | Column | Type | Description |
 |---|---|---|
@@ -199,7 +379,7 @@ The pipeline executes in the order listed below.
 
 ---
 
-## 9. Signals — `signal.py`
+## 13. Signals — `signal.py`
 
 | Column | Type | Description |
 |---|---|---|
