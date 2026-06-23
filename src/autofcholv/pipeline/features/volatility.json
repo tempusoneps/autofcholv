@@ -113,5 +113,50 @@
         "type": "float",
         "name": "Donchian Mid Signal",
         "comment": "Close minus Donchian channel midpoint"
+    },
+    "atr_pct": {
+        "type": "float",
+        "name": "ATR Percent",
+        "comment": "ATR divided by close"
+    },
+    "rwi_high": {
+        "type": "float",
+        "name": "Random Walk Index High",
+        "comment": "RWI high component based on upward range"
+    },
+    "rwi_low": {
+        "type": "float",
+        "name": "Random Walk Index Low",
+        "comment": "RWI low component based on downward range"
+    },
+    "bbw_signal": {
+        "type": "float",
+        "name": "BBW Signal",
+        "comment": "Bollinger bandwidth change times n-period momentum and RSI-like close pressure"
+    },
+    "kc_signal": {
+        "type": "float",
+        "name": "Keltner Channel Signal",
+        "comment": "Close position inside Keltner channel using ATR bands"
+    },
+    "atr_upper": {
+        "type": "float",
+        "name": "ATR Upper",
+        "comment": "ATR-based upper channel ratio normalized by moving average"
+    },
+    "atr_lower": {
+        "type": "float",
+        "name": "ATR Lower",
+        "comment": "ATR-based lower channel ratio normalized by moving average"
+    },
+    "fb_upper_signal": {
+        "type": "float",
+        "name": "Fibonacci Band Upper Signal",
+        "comment": "Close position relative to Fibonacci upper ATR band"
+    },
+    "pac_width_signal": {
+        "type": "float",
+        "name": "PAC Width Signal",
+        "comment": "PAC width normalized by its rolling mean minus 1"
     }
 }

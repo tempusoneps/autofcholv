@@ -173,5 +173,55 @@
         "type": "float",
         "name": "Volume Analysis Oscillator",
         "comment": "Short minus long average of volume weighted by close position versus candle midpoint"
+    },
+    "force_ratio": {
+        "type": "float",
+        "name": "Force Ratio",
+        "comment": "Force index divided by its rolling mean"
+    },
+    "quote_volume_mean": {
+        "type": "float",
+        "name": "Quote Volume Mean",
+        "comment": "Rolling mean of Close * Volume proxy"
+    },
+    "quote_volume_ratio": {
+        "type": "float",
+        "name": "Quote Volume Ratio",
+        "comment": "Quote-volume proxy divided by its rolling mean"
+    },
+    "v1": {
+        "type": "float",
+        "name": "V1 Composite",
+        "comment": "Momentum composite amplified by ATR-based volatility factors"
+    },
+    "v1_up": {
+        "type": "float",
+        "name": "V1 Upper Distance",
+        "comment": "Distance from V1 to its adaptive upper Bollinger-like band"
+    },
+    "v1_down": {
+        "type": "float",
+        "name": "V1 Lower Distance",
+        "comment": "Distance from V1 to its adaptive lower Bollinger-like band"
+    },
+    "mfi_standard": {
+        "type": "float",
+        "name": "Money Flow Index Standard",
+        "comment": "Typical-price money flow index using positive and negative flow sums"
+    },
+    "chla_fancy": {
+        "type": "float",
+        "name": "CHLA Fancy",
+        "comment": "CLV-weighted quote-volume proxy rolling sum"
+    },
+    "net_vol_fancy": {
+        "type": "float",
+        "name": "Net Volume Fancy",
+        "comment": "Return-signed quote-volume proxy rolling sum"
+    },
+    "srocvol": {
+        "type": "float",
+        "name": "SROC Volume",
+        "comment": "Rate of change of long EMA-smoothed volume"
     }
 }

@@ -167,4 +167,62 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     donchian_mid = (df["High"].rolling(volatility_n, min_periods=1).max() + df["Low"].rolling(volatility_n, min_periods=1).min()) / 2.0
     df["donchian_mid_signal"] = df["Close"] - donchian_mid
 
+
+    prev_close_for_atr = df["Close"].shift(1)
+    atr_tr = pd.concat(
+        [
+            (df["High"] - df["Low"]).abs(),
+            (df["High"] - prev_close_for_atr).abs(),
+            (prev_close_for_atr - df["Low"]).abs(),
+        ],
+        axis=1,
+    ).max(axis=1)
+    atr_pct = atr_tr.rolling(volatility_n, min_periods=1).mean() / (df["Close"] + EPS)
+    df["atr_pct"] = atr_pct
+
+    rwi_atr = atr_tr.rolling(volatility_n, min_periods=1).mean()
+    df["rwi_high"] = (df["High"] - df["Low"].shift(1)) / (rwi_atr * np.sqrt(volatility_n) + EPS)
+    df["rwi_low"] = (df["High"].shift(1) - df["Low"]) / (rwi_atr * np.sqrt(volatility_n) + EPS)
+
+
+    close_dif = df["Close"].diff()
+    bbw_up = pd.Series(np.where(close_dif > 0, close_dif, 0.0), index=df.index)
+    bbw_down = pd.Series(np.where(close_dif < 0, -close_dif, 0.0), index=df.index)
+    bbw_up_sum = bbw_up.rolling(volatility_n, min_periods=1).sum()
+    bbw_down_sum = bbw_down.rolling(volatility_n, min_periods=1).sum()
+    bbw_rsi = 100.0 * bbw_up_sum / (bbw_up_sum + bbw_down_sum + EPS)
+    bbw_median = df["Close"].rolling(volatility_n, min_periods=1).mean()
+    bbw_std = df["Close"].rolling(volatility_n, min_periods=1).std(ddof=0)
+    bbw = (bbw_std / (bbw_median + EPS)).diff(volatility_n)
+    df["bbw_signal"] = bbw * (df["Close"].pct_change(volatility_n) + EPS) * bbw_rsi
+
+
+
+    tr = pd.concat(
+        [
+            (df["High"] - df["Low"]).abs(),
+            (df["High"] - df["Close"].shift(1)).abs(),
+            (df["Low"] - df["Close"].shift(1)).abs(),
+        ],
+        axis=1,
+    ).max(axis=1)
+    atr = tr.rolling(volatility_n, min_periods=1).mean()
+    kc_middle = df["Close"].ewm(span=volatility_n, adjust=False, min_periods=1).mean()
+    kc_upper = kc_middle + 2.0 * atr
+    kc_lower = kc_middle - 2.0 * atr
+    df["kc_signal"] = (df["Close"] - kc_middle + 2.0 * atr) / (4.0 * atr + EPS)
+    df["atr_upper"] = (df["Low"].rolling(max(1, volatility_n // 2), min_periods=1).min() + 3.0 * atr) / (df["Close"].rolling(volatility_n, min_periods=1).mean() + EPS)
+    df["atr_lower"] = (df["Close"].rolling(volatility_n, min_periods=1).mean() - 0.2 * volatility_n * atr) / (df["Close"].rolling(volatility_n, min_periods=1).mean() + EPS)
+
+    fb_middle = df["Close"].rolling(volatility_n, min_periods=1).mean()
+    fb_upper = fb_middle + 1.618 * atr
+    fb_lower = fb_middle - 1.618 * atr
+    df["fb_upper_signal"] = (df["Close"] - fb_middle - 1.618 * atr) / (fb_upper - fb_lower + EPS)
+
+    pac_upper = df["High"].ewm(span=volatility_n, adjust=False).mean()
+    pac_lower = df["Low"].ewm(span=volatility_n, adjust=False).mean()
+    pac_width = pac_upper - pac_lower
+    df["pac_width_signal"] = pac_width / (pac_width.rolling(volatility_n, min_periods=1).mean() + EPS) - 1.0
+
+
     return df

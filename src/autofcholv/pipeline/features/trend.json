@@ -93,5 +93,185 @@
         "type": "float",
         "name": "WMA MA Gap",
         "comment": "Weighted MA minus simple MA normalized by rolling absolute gap"
+    },
+    "adx_strength": {
+        "type": "float",
+        "name": "ADX Strength",
+        "comment": "Rolling normalized positive and negative directional movement over true range"
+    },
+    "adx_di_plus": {
+        "type": "float",
+        "name": "ADX DI Plus",
+        "comment": "Positive directional index component"
+    },
+    "adx_di_minus": {
+        "type": "float",
+        "name": "ADX DI Minus",
+        "comment": "Negative directional index component"
+    },
+    "vi_plus": {
+        "type": "float",
+        "name": "Vortex Plus",
+        "comment": "Vortex-style positive movement over true range"
+    },
+    "vi_minus": {
+        "type": "float",
+        "name": "Vortex Minus",
+        "comment": "Vortex-style negative movement over true range"
+    },
+    "turtle_breakout": {
+        "type": "float",
+        "name": "Turtle Breakout",
+        "comment": "Close breakout distance relative to Turtle channel width"
+    },
+    "turtle_distance": {
+        "type": "float",
+        "name": "Turtle Distance",
+        "comment": "Signed distance of close from Turtle channel boundary"
+    },
+    "ma_ratio": {
+        "type": "float",
+        "name": "MA Ratio",
+        "comment": "Rolling mean close divided by close"
+    },
+    "dema_bias2": {
+        "type": "float",
+        "name": "DEMA Bias 2",
+        "comment": "Double-smoothed close trend bias"
+    },
+    "tema_bias2": {
+        "type": "float",
+        "name": "TEMA Bias 2",
+        "comment": "Triple-smoothed close trend bias"
+    },
+    "hma_ratio": {
+        "type": "float",
+        "name": "HMA Ratio",
+        "comment": "High price relative to rolling mean of high"
+    },
+    "vidya_bias": {
+        "type": "float",
+        "name": "VIDYA Bias",
+        "comment": "VIDYA-style adaptive average bias"
+    },
+    "tma_bias2": {
+        "type": "float",
+        "name": "TMA Bias 2",
+        "comment": "Close versus double-smoothed moving average"
+    },
+    "vma_ratio": {
+        "type": "float",
+        "name": "VMA Ratio",
+        "comment": "Average price relative to its moving average"
+    },
+    "lma_ratio": {
+        "type": "float",
+        "name": "LMA Ratio",
+        "comment": "Low price relative to its moving average"
+    },
+    "mm_ratio": {
+        "type": "float",
+        "name": "MM Ratio",
+        "comment": "Fast MA divided by slow MA minus 1"
+    },
+    "reg_angle": {
+        "type": "float",
+        "name": "Regression Angle",
+        "comment": "Angle of rolling close regression slope in degrees"
+    },
+    "expma_ratio": {
+        "type": "float",
+        "name": "EXPMA Ratio",
+        "comment": "Fast EMA divided by slower EMA minus 1"
+    },
+    "diff_ema_ratio": {
+        "type": "float",
+        "name": "Diff EMA Ratio",
+        "comment": "EMA spread normalized by its own EMA"
+    },
+    "regema_bias": {
+        "type": "float",
+        "name": "Regression EMA Bias",
+        "comment": "Close divided by linear regression of EMA minus 1"
+    },
+    "regtema_bias": {
+        "type": "float",
+        "name": "Regression TEMA Bias",
+        "comment": "TEMA divided by linear regression of TEMA minus 1"
+    },
+    "trtrix": {
+        "type": "float",
+        "name": "Trix Velocity",
+        "comment": "One-bar percent change of the EMA trend line"
+    },
+    "trv": {
+        "type": "float",
+        "name": "Trend Velocity",
+        "comment": "Smoothed percentage change of the rolling close mean"
+    },
+    "mac_v4": {
+        "type": "float",
+        "name": "MAC v4",
+        "comment": "Moving average channel using rolling high/low extremes and open price"
+    },
+    "mac_v5": {
+        "type": "float",
+        "name": "MAC v5",
+        "comment": "Moving average channel using rolling high/low extremes and close price"
+    },
+    "acs": {
+        "type": "float",
+        "name": "ACS",
+        "comment": "Rolling standard deviation of normalized ADX strength"
+    },
+    "mak": {
+        "type": "float",
+        "name": "MAK",
+        "comment": "Amplified one-bar change of the rolling close mean"
+    },
+    "sgcz": {
+        "type": "float",
+        "name": "SGCZ",
+        "comment": "Close relative to the rolling mean of high prices"
+    },
+    "gap_ratio": {
+        "type": "float",
+        "name": "Gap Ratio",
+        "comment": "Weighted moving average gap normalized by rolling absolute gap"
+    },
+    "angle_reg": {
+        "type": "float",
+        "name": "Regression Angle",
+        "comment": "Angle of rolling regression slope in degrees"
+    },
+    "cse": {
+        "type": "float",
+        "name": "CSE",
+        "comment": "Time-series normalized close smoothed by EMA"
+    },
+    "madis_placed": {
+        "type": "float",
+        "name": "MA Displaced",
+        "comment": "Close divided by displaced moving average minus 1"
+    },
+    "trrq": {
+        "type": "float",
+        "name": "TRRQ",
+        "comment": "Typical price regression return normalized by volume proxy"
+    },
+    "mreg": {
+        "type": "float",
+        "name": "MREG",
+        "comment": "Rolling mean of close versus linear regression residual"
+    },
+    "adxr_pos": {
+        "type": "float",
+        "name": "ADXR Positive",
+        "comment": "Smoothed positive directional index component"
+    },
+    "adxr_neg": {
+        "type": "float",
+        "name": "ADXR Negative",
+        "comment": "Smoothed negative directional index component"
     }
 }
