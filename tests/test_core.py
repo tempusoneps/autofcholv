@@ -98,7 +98,7 @@ def test_extract_features_close_columns():
         "return_autocorr", "demarker", "imi", "rvi", "bop", "ultimate_oscillator_src",
         "kst", "rmi", "tii",
         "ar", "br", "cr", "adtm", "qstick", "mtm",
-        "bias", "rbias", "mtm_mean", "mtm_max_diff", "sroc", "rsi_mean", "tdi", "osc", "short_quiet_momentum", "long_quiet_momentum", "price_volume_momentum", "dbcd", "pmarp", "pos", "bias36", "swing_index",
+        "bias", "rbias", "mtm_mean", "mtm_max_diff", "sroc", "rsi_mean", "tdi", "osc", "short_quiet_momentum", "long_quiet_momentum", "price_volume_momentum", "dbcd", "pmarp", "pos", "bias36", "swing_index", "rsi_v2", "cmo_v2", "bias_v13", "abs_chg", "stc", "return_autocorr_2", "erbull", "erbear", "er_balance", "burr", "do", "po", "cci_magic", "cs_mtm", "rsi_bbw", "rccd", "rccd_v2", "bias_vol", "bias_cubic_v2", "srocvol", "copp_min_route", "adtm_v2", "adtm_v3", "mtm_mean_gap", "cmo_v3", "rsis_v2", "mtm_vol_resonance", "tii_signal", "tii_signal_v2", "macd_v2", "ppo_v1", "sroc_v2", "pmo_tema", "fisher_v2", "fisher_v3", "arbr_ar", "arbr_br",
     ]
     for col in expected:
         assert col in result.columns, f"Missing close column: '{col}'"
@@ -110,7 +110,7 @@ def test_extract_features_trend_columns():
         "dema_bias", "tema_bias", "trix",
         "aroon_up", "aroon_down", "aroon_osc",
         "vortex_plus", "vortex_minus", "vortex_diff",
-        "regression_bias", "regression_slope", "ma_signal", "bbi_ratio", "bbi_bias", "adxr_diff", "wma_ma_gap",
+        "regression_bias", "regression_slope", "ma_signal", "bbi_ratio", "bbi_bias", "adxr_diff", "wma_ma_gap", "adx_strength", "adx_di_plus", "adx_di_minus", "vi_plus", "vi_minus", "turtle_breakout", "turtle_distance", "ma_ratio", "dema_bias2", "tema_bias2", "hma_ratio", "vidya_bias", "tma_bias2", "vma_ratio", "lma_ratio", "mm_ratio", "reg_angle", "expma_ratio", "diff_ema_ratio", "regema_bias", "regtema_bias", "trtrix", "trv", "mac_v4", "mac_v5", "gap_ratio", "angle_reg", "cse", "madis_placed", "trrq", "mreg", "adxr_pos", "adxr_neg", "acs", "mak", "sgcz",
         "hullma_bias", "ichimoku_cloud_ratio", "t3_bias",
     ]
     for col in expected:
@@ -124,7 +124,7 @@ def test_extract_features_volatility_columns():
         "apz_width", "pac_width_bias", "pac_position", "env_position",
         "realized_volatility", "realized_volatility_zscore",
         "rwi", "mssi", "vix_bw",
-        "adaptive_bollinger_width", "vwap_bbw_efficiency", "chaikin_volatility", "keltner_width", "keltner_upper_signal", "keltner_lower_signal", "env_upper_signal", "env_lower_signal", "fibonacci_band_width", "fibonacci_band_position", "donchian_mid_signal",
+        "adaptive_bollinger_width", "vwap_bbw_efficiency", "chaikin_volatility", "keltner_width", "keltner_upper_signal", "keltner_lower_signal", "env_upper_signal", "env_lower_signal", "fibonacci_band_width", "fibonacci_band_position", "donchian_mid_signal", "bbw_signal", "kc_signal", "atr_upper", "atr_lower", "fb_upper_signal", "pac_width_signal",
     ]
     for col in expected:
         assert col in result.columns, f"Missing volatility column: '{col}'"
@@ -142,7 +142,7 @@ def test_extract_features_volume_columns():
         "quote_volume_reg", "quote_volume_tsf", "price_volume_corr",
         "quote_volume_sum", "volume_bias_short_long", "volume_ratio_amount",
         "adosc", "wvad", "klinger_oscillator", "vra", "ke",
-        "roc_volume", "volume_ma_bias", "amv_signal", "volume_ratio", "macd_volume_ratio", "volume_analysis_oscillator",
+        "roc_volume", "volume_ma_bias", "amv_signal", "volume_ratio", "macd_volume_ratio", "volume_analysis_oscillator", "quote_volume_mean", "quote_volume_ratio", "v1", "v1_up", "v1_down", "mfi_standard", "chla_fancy", "net_vol_fancy", "force_ratio",
     ]
     for col in expected:
         assert col in result.columns, f"Missing volume column: '{col}'"

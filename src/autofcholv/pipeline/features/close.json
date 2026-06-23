@@ -358,5 +358,185 @@
         "type": "float",
         "name": "Swing Index",
         "comment": "Weighted price movement index adapted from quant-ohlcv Si"
+    },
+    "rsi_v2": {
+        "type": "float",
+        "name": "RSI v2",
+        "comment": "Rolling-sum RSI variant using up/down close moves"
+    },
+    "cmo_v2": {
+        "type": "float",
+        "name": "CMO v2",
+        "comment": "Rolling-sum CMO variant using up/down close moves"
+    },
+    "bias_v13": {
+        "type": "float",
+        "name": "Bias v13",
+        "comment": "Rolling mean of short MA divided by long MA minus 1"
+    },
+    "abs_chg": {
+        "type": "float",
+        "name": "Absolute Change",
+        "comment": "Absolute n-period close return"
+    },
+    "stc": {
+        "type": "float",
+        "name": "Schaff Trend Cycle",
+        "comment": "Double-stochastic oscillator of MACD-like close momentum"
+    },
+    "return_autocorr_2": {
+        "type": "float",
+        "name": "Return Autocorrelation 2",
+        "comment": "Rolling lag-1 autocorrelation of close returns"
+    },
+    "erbull": {
+        "type": "float",
+        "name": "Bull Power",
+        "comment": "High minus EMA(close) normalized by EMA(close)"
+    },
+    "erbear": {
+        "type": "float",
+        "name": "Bear Power",
+        "comment": "Low minus EMA(close) normalized by EMA(close)"
+    },
+    "er_balance": {
+        "type": "float",
+        "name": "Bull Bear Power Balance",
+        "comment": "Bull power plus bear power"
+    },
+    "burr": {
+        "type": "float",
+        "name": "Burr",
+        "comment": "Pullback depth or rebound height conditioned on N-bar trend direction"
+    },
+    "do": {
+        "type": "float",
+        "name": "DO",
+        "comment": "Double-smoothed RSI variant"
+    },
+    "po": {
+        "type": "float",
+        "name": "PO",
+        "comment": "Percent oscillator from short and long EMAs"
+    },
+    "cci_magic": {
+        "type": "float",
+        "name": "CCI Magic",
+        "comment": "Smoothed CCI variant using MA of OHLC prices"
+    },
+    "cs_mtm": {
+        "type": "float",
+        "name": "CS MTM",
+        "comment": "Composite momentum: close momentum x std momentum x volume momentum"
+    },
+    "rsi_bbw": {
+        "type": "float",
+        "name": "RSI BBW",
+        "comment": "Bollinger bandwidth change times momentum and RSI"
+    },
+    "rccd": {
+        "type": "float",
+        "name": "RCCD",
+        "comment": "Smoothed difference of moving averages applied to smoothed close ratio"
+    },
+    "rccd_v2": {
+        "type": "float",
+        "name": "RCCD v2",
+        "comment": "SMA-smoothed variant of RCCD"
+    },
+    "bias_vol": {
+        "type": "float",
+        "name": "Bias Volume",
+        "comment": "Volume relative to its moving average minus 1"
+    },
+    "bias_cubic_v2": {
+        "type": "float",
+        "name": "Bias Cubic v2",
+        "comment": "Product of three bias terms amplified by quote-volume proxy"
+    },
+    "copp_min_route": {
+        "type": "float",
+        "name": "Coppock Min Route",
+        "comment": "Coppock curve divided by normalized shortest intraday route"
+    },
+    "adtm_v2": {
+        "type": "float",
+        "name": "ADTM v2",
+        "comment": "Open-price sentiment normalized to 0-1"
+    },
+    "adtm_v3": {
+        "type": "float",
+        "name": "ADTM v3",
+        "comment": "Open-price sentiment contrasted against close-adjusted term"
+    },
+    "mtm_mean_gap": {
+        "type": "float",
+        "name": "MTM Mean Gap",
+        "comment": "Close momentum divided by candle body gap mean"
+    },
+    "cmo_v3": {
+        "type": "float",
+        "name": "CMO v3",
+        "comment": "Rolling mean of a smoothed Chande Momentum Oscillator"
+    },
+    "rsis_v2": {
+        "type": "float",
+        "name": "RSIS v2",
+        "comment": "RSI scaled within its rolling min-max band"
+    },
+    "mtm_vol_resonance": {
+        "type": "float",
+        "name": "MTM Volume Resonance",
+        "comment": "Close momentum blended with quote-volume expansion"
+    },
+    "tii_signal": {
+        "type": "float",
+        "name": "TII Signal",
+        "comment": "EMA-smoothed Traders Intensity Index"
+    },
+    "tii_signal_v2": {
+        "type": "float",
+        "name": "TII Signal v2",
+        "comment": "Normalized spread between TII and its signal line"
+    },
+    "macd_v2": {
+        "type": "float",
+        "name": "MACD v2",
+        "comment": "MACD histogram variant on midpoint price (High+Low)/2"
+    },
+    "ppo_v1": {
+        "type": "float",
+        "name": "PPO v1",
+        "comment": "EMA acceleration product variant of PPO"
+    },
+    "sroc_v2": {
+        "type": "float",
+        "name": "SROC v2",
+        "comment": "Smoothed rate of change of an adaptive moving average proxy"
+    },
+    "pmo_tema": {
+        "type": "float",
+        "name": "PMO TEMA",
+        "comment": "PMO computed from TEMA-smoothed close prices"
+    },
+    "fisher_v2": {
+        "type": "float",
+        "name": "Fisher v2",
+        "comment": "Fisher transform variant with stronger smoothing"
+    },
+    "fisher_v3": {
+        "type": "float",
+        "name": "Fisher v3",
+        "comment": "Fisher transform variant with alternate smoothing and log mapping"
+    },
+    "arbr_ar": {
+        "type": "float",
+        "name": "ARBR AR",
+        "comment": "AR-style range sentiment using high-open and open-low sums"
+    },
+    "arbr_br": {
+        "type": "float",
+        "name": "ARBR BR",
+        "comment": "BR-style range sentiment using high-prev-close and prev-close-low sums"
     }
 }

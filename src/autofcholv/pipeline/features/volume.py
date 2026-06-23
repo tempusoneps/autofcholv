@@ -240,4 +240,81 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
         min_periods=1,
     ).mean()
 
+
+    force = df["Volume"] * (df["Close"] - df["Close"].shift(1))
+    force_ma = force.rolling(momentum_n, min_periods=1).mean()
+    df["force_ratio"] = force / (force_ma + EPS)
+
+
+    quote_volume_mean = quote_volume_proxy.rolling(momentum_n, min_periods=1).mean()
+    df["quote_volume_mean"] = quote_volume_mean
+    df["quote_volume_ratio"] = quote_volume_proxy / (quote_volume_mean + EPS)
+
+
+
+    mtm = df["Close"] / df["Close"].shift(momentum_n) - 1.0
+    mtm_mean = mtm.rolling(window=momentum_n, min_periods=1).mean()
+
+    c1 = df["High"] - df["Low"]
+    c2 = (df["High"] - df["Close"].shift(1)).abs()
+    c3 = (df["Low"] - df["Close"].shift(1)).abs()
+    tr = pd.Series(np.max(np.array([c1, c2, c3]), axis=0), index=df.index)
+    atr = tr.rolling(window=momentum_n, min_periods=1).mean()
+    avg_price = df["Close"].rolling(window=momentum_n, min_periods=1).mean()
+    wd_atr = atr / (avg_price + EPS)
+
+    mtm_l = df["Low"] / (df["Low"].shift(momentum_n) + EPS) - 1.0
+    mtm_h = df["High"] / (df["High"].shift(momentum_n) + EPS) - 1.0
+    mtm_c = df["Close"] / (df["Close"].shift(momentum_n) + EPS) - 1.0
+    mtm_c1 = mtm_h - mtm_l
+    mtm_c2 = (mtm_h - mtm_c.shift(1)).abs()
+    mtm_c3 = (mtm_l - mtm_c.shift(1)).abs()
+    mtm_tr = pd.Series(np.max(np.array([mtm_c1, mtm_c2, mtm_c3]), axis=0), index=df.index)
+    mtm_atr = mtm_tr.rolling(window=momentum_n, min_periods=1).mean()
+
+    mtm_l_mean = mtm_l.rolling(window=momentum_n, min_periods=1).mean()
+    mtm_h_mean = mtm_h.rolling(window=momentum_n, min_periods=1).mean()
+    mtm_c_mean = mtm_c.rolling(window=momentum_n, min_periods=1).mean()
+    mtm_c1 = mtm_h_mean - mtm_l_mean
+    mtm_c2 = (mtm_h_mean - mtm_c_mean.shift(1)).abs()
+    mtm_c3 = (mtm_l_mean - mtm_c_mean.shift(1)).abs()
+    mtm_tr_mean = pd.Series(np.max(np.array([mtm_c1, mtm_c2, mtm_c3]), axis=0), index=df.index)
+    mtm_atr_mean = mtm_tr_mean.rolling(window=momentum_n, min_periods=1).mean()
+
+    v1 = mtm_mean * wd_atr * mtm_atr * mtm_atr_mean
+    df["v1"] = v1
+
+    median = v1.rolling(window=momentum_n, min_periods=1).mean()
+    std = v1.rolling(momentum_n, min_periods=1).std(ddof=0)
+    z_score = (v1 - median).abs() / (std + EPS)
+    m1 = z_score.rolling(window=momentum_n, min_periods=1).max().shift(1)
+    upper = median + std * m1
+    lower = median - std * m1
+    df["v1_up"] = upper - v1
+    df["v1_down"] = lower - v1
+
+
+
+    typical_price = (df["High"] + df["Low"] + df["Close"]) / 3.0
+    mf = typical_price * df["Volume"]
+    mf_pos = pd.Series(np.where(typical_price >= typical_price.shift(1), mf, 0.0), index=df.index).rolling(momentum_n, min_periods=1).sum()
+    mf_neg = pd.Series(np.where(typical_price <= typical_price.shift(1), mf, 0.0), index=df.index).rolling(momentum_n, min_periods=1).sum()
+    df["mfi_standard"] = 100.0 - 100.0 / (1.0 + mf_pos / (mf_neg + EPS))
+
+
+
+    quote_volume_proxy = df["Close"] * df["Volume"]
+    chla_div = (df["High"] - df["Low"]).replace(0, np.nan)
+    chla = ((2.0 * df["Close"] - df["High"] - df["Low"]) / chla_div) * quote_volume_proxy
+    df["chla_fancy"] = chla.rolling(momentum_n, min_periods=1).sum()
+
+    ret_sign = np.sign(df["Close"].pct_change())
+    df["net_vol_fancy"] = (ret_sign * quote_volume_proxy).rolling(momentum_n, min_periods=1).sum()
+
+
+
+    emap = df["Volume"].ewm(span=2 * momentum_n, adjust=False).mean()
+    df["srocvol"] = (emap - emap.shift(momentum_n)) / (emap.shift(momentum_n) + EPS)
+
+
     return df
