@@ -1,0 +1,117 @@
+{
+    "quote_volume_std": {
+        "type": "float",
+        "name": "Quote Volume Standard Deviation",
+        "comment": "Rolling standard deviation of Close * Volume proxy"
+    },
+    "amplitude_max": {
+        "type": "float",
+        "name": "Maximum Candle Amplitude",
+        "comment": "Rolling max of max(|High/Open - 1|, |Low/Open - 1|)"
+    },
+    "positive_amplitude_rank": {
+        "type": "float",
+        "name": "Positive Amplitude Rank",
+        "comment": "Rolling percentile rank of positive-price-change amplitude mean"
+    },
+    "apz_width": {
+        "type": "float",
+        "name": "Adaptive Price Zone Width",
+        "comment": "Double EMA high-low volatility divided by double EMA close"
+    },
+    "pac_width_bias": {
+        "type": "float",
+        "name": "Price Acceleration Channel Width Bias",
+        "comment": "PAC width divided by rolling mean PAC width minus 1"
+    },
+    "pac_position": {
+        "type": "float",
+        "name": "Price Acceleration Channel Position",
+        "comment": "(Close - PAC lower) / PAC width"
+    },
+    "env_position": {
+        "type": "float",
+        "name": "Envelope Channel Position",
+        "comment": "Close position inside +/-5 percent moving-average envelope"
+    },
+    "realized_volatility": {
+        "type": "float",
+        "name": "Realized Volatility",
+        "comment": "Rolling standard deviation of one-bar returns"
+    },
+    "realized_volatility_zscore": {
+        "type": "float",
+        "name": "Realized Volatility Z-score",
+        "comment": "Z-score of realized_volatility over VOLATILITY_LOOKBACK"
+    },
+    "rwi": {
+        "type": "float",
+        "name": "Random Walk Index Composite",
+        "comment": "Close normalized within upward/downward Random Walk Index range"
+    },
+    "mssi": {
+        "type": "float",
+        "name": "Market Sentiment Stability Index",
+        "comment": "Max of average drawdown from rolling high and reverse drawdown from rolling low"
+    },
+    "vix_bw": {
+        "type": "float",
+        "name": "VIX-like Bandwidth",
+        "comment": "Signed adaptive bandwidth of n-period close return"
+    },
+    "adaptive_bollinger_width": {
+        "type": "float",
+        "name": "Adaptive Bollinger Width",
+        "comment": "Adaptive z-score Bollinger bandwidth normalized by close moving average"
+    },
+    "vwap_bbw_efficiency": {
+        "type": "float",
+        "name": "VWAP BBW Efficiency",
+        "comment": "Rolling VWAP change times Bollinger-width change normalized by quote-volume proxy"
+    },
+    "chaikin_volatility": {
+        "type": "float",
+        "name": "Chaikin Volatility",
+        "comment": "Rate of change of EMA high-low range"
+    },
+    "keltner_width": {
+        "type": "float",
+        "name": "Keltner Width",
+        "comment": "Keltner channel width normalized by EMA middle band"
+    },
+    "keltner_upper_signal": {
+        "type": "float",
+        "name": "Keltner Upper Signal",
+        "comment": "Rolling-normalized Keltner upper band"
+    },
+    "keltner_lower_signal": {
+        "type": "float",
+        "name": "Keltner Lower Signal",
+        "comment": "Rolling-normalized Keltner lower band"
+    },
+    "env_upper_signal": {
+        "type": "float",
+        "name": "Envelope Upper Signal",
+        "comment": "Rolling-normalized 5 percent envelope upper band"
+    },
+    "env_lower_signal": {
+        "type": "float",
+        "name": "Envelope Lower Signal",
+        "comment": "Rolling-normalized 5 percent envelope lower band"
+    },
+    "fibonacci_band_width": {
+        "type": "float",
+        "name": "Fibonacci Band Width",
+        "comment": "Fibonacci ATR channel width normalized by rolling close mean"
+    },
+    "fibonacci_band_position": {
+        "type": "float",
+        "name": "Fibonacci Band Position",
+        "comment": "Close position inside first Fibonacci ATR channel"
+    },
+    "donchian_mid_signal": {
+        "type": "float",
+        "name": "Donchian Mid Signal",
+        "comment": "Close minus Donchian channel midpoint"
+    }
+}

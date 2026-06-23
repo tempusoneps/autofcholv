@@ -1,0 +1,32 @@
+{
+    "market_placement": {
+        "type": "float",
+        "name": "Market Placement",
+        "comment": "Close relative to EMA quote-volume/volume holding-cost proxy"
+    },
+    "path_liquidity": {
+        "type": "float",
+        "name": "Shortest Path Liquidity",
+        "comment": "Rolling quote-volume proxy per normalized shortest intrabar price path"
+    },
+    "spread_proxy": {
+        "type": "float",
+        "name": "Spread Proxy",
+        "comment": "Rolling mean log high-low range as an OHLC bid-ask spread proxy"
+    },
+    "spread_volatility_ratio": {
+        "type": "float",
+        "name": "Spread Volatility Ratio",
+        "comment": "spread_proxy divided by rolling close-return volatility"
+    },
+    "price_volume_resistance": {
+        "type": "float",
+        "name": "Price Volume Resistance",
+        "comment": "Price move magnitude per volume move magnitude adapted from PriceVolumeResist"
+    },
+    "coppock_atr_volume": {
+        "type": "float",
+        "name": "Coppock ATR Volume Composite",
+        "comment": "Coppock momentum multiplied by normalized ATR and volume pressure"
+    }
+}

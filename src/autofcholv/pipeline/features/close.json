@@ -108,5 +108,255 @@
         "type": "float",
         "name": "Lower Bollinger Band",
         "comment": "Lower Bollinger Band = ta.sma(close, length=n) - 2 * ta.stdev(close, length=n) with n = TREND_LOOKBACK"
+    },
+    "cci": {
+        "type": "float",
+        "name": "Commodity Channel Index",
+        "comment": "CCI = (typical_price - rolling mean typical_price) / (0.015 * mean absolute deviation)"
+    },
+    "kdj_k": {
+        "type": "float",
+        "name": "KDJ K",
+        "comment": "Smoothed stochastic RSV over MOMENTUM_LOOKBACK adapted from quant-ohlcv-feature"
+    },
+    "kdj_d": {
+        "type": "float",
+        "name": "KDJ D",
+        "comment": "Smoothed KDJ K line"
+    },
+    "kdj_j": {
+        "type": "float",
+        "name": "KDJ J",
+        "comment": "kdj_j = 3 * kdj_k - 2 * kdj_d"
+    },
+    "fisher": {
+        "type": "float",
+        "name": "Fisher Transform",
+        "comment": "Fisher transform of median price position within the rolling high-low range"
+    },
+    "kama": {
+        "type": "float",
+        "name": "Kaufman Adaptive Moving Average",
+        "comment": "Adaptive moving average weighted by efficiency ratio"
+    },
+    "kama_bias": {
+        "type": "float",
+        "name": "KAMA Bias",
+        "comment": "kama_bias = Close / kama - 1"
+    },
+    "high_ma_bias": {
+        "type": "float",
+        "name": "High Price MA Bias",
+        "comment": "(High - rolling mean High) / rolling mean High with n = FAST_TREND_LOOKBACK"
+    },
+    "bollinger_width": {
+        "type": "float",
+        "name": "Bollinger Band Width",
+        "comment": "(ub - lb) / mb"
+    },
+    "bollinger_percent_b": {
+        "type": "float",
+        "name": "Bollinger Percent B",
+        "comment": "(Close - lb) / (ub - lb)"
+    },
+    "change_std": {
+        "type": "float",
+        "name": "Return Change Std",
+        "comment": "Close.pct_change(n) * rolling std of one-bar returns adapted from quant-ohlcv-feature"
+    },
+    "dpo": {
+        "type": "float",
+        "name": "Detrended Price Oscillator",
+        "comment": "(Close - shifted rolling mean Close) / rolling mean Close"
+    },
+    "pfe": {
+        "type": "float",
+        "name": "Polarized Fractal Efficiency",
+        "comment": "Direction-signed price efficiency based on direct distance divided by path distance"
+    },
+    "williams_r": {
+        "type": "float",
+        "name": "Williams %R",
+        "comment": "(rolling high - Close) / (rolling high - rolling low) * 100"
+    },
+    "slow_stoch_d": {
+        "type": "float",
+        "name": "Slow Stochastic D",
+        "comment": "Slow stochastic oscillator D line adapted from SKDJ"
+    },
+    "coppock": {
+        "type": "float",
+        "name": "Coppock Curve",
+        "comment": "Rolling mean of combined n-period and 2n-period close ROC"
+    },
+    "pmo": {
+        "type": "float",
+        "name": "Price Momentum Oscillator",
+        "comment": "Double-smoothed close ROC momentum oscillator"
+    },
+    "smi": {
+        "type": "float",
+        "name": "Stochastic Momentum Index",
+        "comment": "Smoothed close distance from rolling high-low midpoint"
+    },
+    "psy": {
+        "type": "float",
+        "name": "Psychological Line",
+        "comment": "Percent of bars in lookback where Close rose"
+    },
+    "return_autocorr": {
+        "type": "float",
+        "name": "Return Autocorrelation",
+        "comment": "Rolling correlation of one-bar returns with lagged returns"
+    },
+    "demarker": {
+        "type": "float",
+        "name": "DeMarker",
+        "comment": "Rolling positive high movement divided by positive high plus low movement"
+    },
+    "imi": {
+        "type": "float",
+        "name": "Intraday Momentum Index",
+        "comment": "Rolling close-open up movement divided by total close-open movement"
+    },
+    "rvi": {
+        "type": "float",
+        "name": "Relative Volatility Index",
+        "comment": "Upward close volatility divided by upward plus downward close volatility"
+    },
+    "bop": {
+        "type": "float",
+        "name": "Balance of Power",
+        "comment": "Rolling mean of (Close - Open) / (High - Low)"
+    },
+    "ultimate_oscillator_src": {
+        "type": "float",
+        "name": "Ultimate Oscillator Source",
+        "comment": "Triple-timeframe buying pressure oscillator adapted from quant-ohlcv-feature"
+    },
+    "kst": {
+        "type": "float",
+        "name": "Know Sure Thing",
+        "comment": "Weighted multi-horizon close ROC oscillator normalized by its rolling mean"
+    },
+    "rmi": {
+        "type": "float",
+        "name": "Relative Momentum Index",
+        "comment": "Four-bar positive close momentum divided by rolling absolute close movement"
+    },
+    "tii": {
+        "type": "float",
+        "name": "Trend Intensity Index",
+        "comment": "Normalized ratio of positive close deviations from rolling mean"
+    },
+    "ar": {
+        "type": "float",
+        "name": "Atmosphere Ratio",
+        "comment": "100 * rolling sum(High - Open) / rolling sum(Open - Low)"
+    },
+    "br": {
+        "type": "float",
+        "name": "Bull Bear Ratio",
+        "comment": "100 * rolling sum(High - previous Close) / rolling sum(previous Close - Low)"
+    },
+    "cr": {
+        "type": "float",
+        "name": "Closing Rate",
+        "comment": "100 * rolling upward pressure over previous typical price divided by downward pressure"
+    },
+    "adtm": {
+        "type": "float",
+        "name": "Advance Dynamic Trend Momentum",
+        "comment": "(rolling DTM - rolling DBM) / max(rolling DTM, rolling DBM)"
+    },
+    "qstick": {
+        "type": "float",
+        "name": "Qstick",
+        "comment": "(Close - Open) normalized by rolling mean Close - Open"
+    },
+    "mtm": {
+        "type": "float",
+        "name": "Momentum",
+        "comment": "(Close / Close.shift(n) - 1) * 100"
+    },
+    "bias": {
+        "type": "float",
+        "name": "Price Bias",
+        "comment": "Close / rolling mean Close - 1"
+    },
+    "rbias": {
+        "type": "float",
+        "name": "Rate of Bias",
+        "comment": "One-bar rate of change of Close / rolling mean Close"
+    },
+    "mtm_mean": {
+        "type": "float",
+        "name": "Momentum Mean",
+        "comment": "Rolling mean of n-period close momentum"
+    },
+    "mtm_max_diff": {
+        "type": "float",
+        "name": "Momentum Max Difference",
+        "comment": "Current n-period momentum minus prior rolling max momentum"
+    },
+    "sroc": {
+        "type": "float",
+        "name": "Smoothed ROC",
+        "comment": "Rate of change of EMA-smoothed Close over 2n bars"
+    },
+    "rsi_mean": {
+        "type": "float",
+        "name": "RSI Mean",
+        "comment": "Rolling mean of RSI scaled to 0-1, adapted from quant-ohlcv Rsimean"
+    },
+    "tdi": {
+        "type": "float",
+        "name": "Traders Dynamic Index",
+        "comment": "Rolling-normalized spread between RSI price and signal lines"
+    },
+    "osc": {
+        "type": "float",
+        "name": "Close Moving Average Oscillator",
+        "comment": "Rolling mean of close minus its 2n-period moving average"
+    },
+    "short_quiet_momentum": {
+        "type": "float",
+        "name": "Short Quiet Momentum",
+        "comment": "Sum of n-period returns from the lowest-amplitude 70 percent of bars in the short window"
+    },
+    "long_quiet_momentum": {
+        "type": "float",
+        "name": "Long Quiet Momentum",
+        "comment": "Sum of n-period returns from the lowest-amplitude 70 percent of bars in a 10n window"
+    },
+    "price_volume_momentum": {
+        "type": "float",
+        "name": "Price Volume Momentum",
+        "comment": "EMA-smoothed price momentum multiplied by EMA-smoothed quote-volume momentum"
+    },
+    "dbcd": {
+        "type": "float",
+        "name": "Divergence of Bias",
+        "comment": "Rolling average of close moving-average bias divergence"
+    },
+    "pmarp": {
+        "type": "float",
+        "name": "PMARP",
+        "comment": "Percentile rank of absolute close-to-moving-average ratio"
+    },
+    "pos": {
+        "type": "float",
+        "name": "Return Position",
+        "comment": "Position of current n-period return within its rolling min-max range"
+    },
+    "bias36": {
+        "type": "float",
+        "name": "Bias36",
+        "comment": "Rolling-normalized difference between 3-bar and 6-bar moving-average spread and its mean"
+    },
+    "swing_index": {
+        "type": "float",
+        "name": "Swing Index",
+        "comment": "Weighted price movement index adapted from quant-ohlcv Si"
     }
 }
