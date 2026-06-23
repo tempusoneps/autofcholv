@@ -1,0 +1,97 @@
+{
+    "dema_bias": {
+        "type": "float",
+        "name": "DEMA Bias",
+        "comment": "Double EMA normalized by single EMA minus 1"
+    },
+    "tema_bias": {
+        "type": "float",
+        "name": "TEMA Bias",
+        "comment": "EMA divided by triple EMA minus 1"
+    },
+    "trix": {
+        "type": "float",
+        "name": "TRIX",
+        "comment": "One-bar percent change of triple-smoothed EMA"
+    },
+    "aroon_up": {
+        "type": "float",
+        "name": "Aroon Up",
+        "comment": "Relative recency of rolling high on a 0-100 scale"
+    },
+    "aroon_down": {
+        "type": "float",
+        "name": "Aroon Down",
+        "comment": "Relative recency of rolling low on a 0-100 scale"
+    },
+    "aroon_osc": {
+        "type": "float",
+        "name": "Aroon Oscillator",
+        "comment": "aroon_up - aroon_down"
+    },
+    "vortex_plus": {
+        "type": "float",
+        "name": "Vortex Plus",
+        "comment": "Rolling positive vortex movement divided by rolling true range"
+    },
+    "vortex_minus": {
+        "type": "float",
+        "name": "Vortex Minus",
+        "comment": "Rolling negative vortex movement divided by rolling true range"
+    },
+    "vortex_diff": {
+        "type": "float",
+        "name": "Vortex Difference",
+        "comment": "vortex_plus - vortex_minus"
+    },
+    "regression_bias": {
+        "type": "float",
+        "name": "Regression Bias",
+        "comment": "Close / rolling linear-regression estimate - 1"
+    },
+    "regression_slope": {
+        "type": "float",
+        "name": "Regression Slope",
+        "comment": "Rolling linear-regression slope normalized by rolling mean close"
+    },
+    "hullma_bias": {
+        "type": "float",
+        "name": "Hull MA Bias",
+        "comment": "Low-lag Hull-style EMA component divided by its sqrt-window EMA smoother minus 1"
+    },
+    "ichimoku_cloud_ratio": {
+        "type": "float",
+        "name": "Ichimoku Cloud Ratio",
+        "comment": "Ichimoku span A divided by span B using trend lookback multiples"
+    },
+    "t3_bias": {
+        "type": "float",
+        "name": "T3 Bias",
+        "comment": "Close / Tillson T3 moving average - 1"
+    },
+    "ma_signal": {
+        "type": "float",
+        "name": "Moving Average Signal",
+        "comment": "Rolling-normalized close minus moving average trend signal"
+    },
+    "bbi_ratio": {
+        "type": "float",
+        "name": "BBI Ratio",
+        "comment": "Bull and Bear Index moving-average blend divided by close"
+    },
+    "bbi_bias": {
+        "type": "float",
+        "name": "BBI Bias",
+        "comment": "Close divided by Bull and Bear Index minus 1"
+    },
+    "adxr_diff": {
+        "type": "float",
+        "name": "ADXR Directional Difference",
+        "comment": "Lag-smoothed DI+ minus DI- directional trend spread"
+    },
+    "wma_ma_gap": {
+        "type": "float",
+        "name": "WMA MA Gap",
+        "comment": "Weighted MA minus simple MA normalized by rolling absolute gap"
+    }
+}

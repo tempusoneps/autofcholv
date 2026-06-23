@@ -46,6 +46,7 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     atr = ta.atr(df["High"], df["Low"], df["Close"], length=volatility_n)
     if atr is not None and not atr.empty:
         df["atr"] = atr.values
+        df["atr_pct"] = df["atr"] / df["Close"]
 
     adx_result = ta.adx(df["High"], df["Low"], df["Close"], length=volatility_n)
     if adx_result is not None and not adx_result.empty:
@@ -74,5 +75,50 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     low_n            = df["Low"].rolling(one_day_bars).min()
     denom2           = high_n - low_n
     df["custom_002"] = np.where(denom2 != 0, (df["Close"] - prev_day_close) / denom2, np.nan)
+
+    channel_high = df["High"].rolling(volatility_n, min_periods=1).max()
+    channel_low = df["Low"].rolling(volatility_n, min_periods=1).min()
+    channel_mid = (channel_high + channel_low) / 2.0
+    channel_width = channel_high - channel_low
+    df["donchian_width"] = np.where(channel_mid != 0, channel_width / channel_mid, np.nan)
+    df["donchian_position"] = np.where(
+        channel_width != 0,
+        (df["Close"] - channel_low) / channel_width,
+        np.nan,
+    )
+
+    route_1 = 2.0 * (df["High"] - df["Low"]) + (df["Open"] - df["Close"])
+    route_2 = 2.0 * (df["High"] - df["Low"]) + (df["Close"] - df["Open"])
+    shortest_path = np.minimum(route_1, route_2)
+    normalized_path = shortest_path / df["Open"]
+    quote_volume_proxy = df["Close"] * df["Volume"]
+    liquidity_premium = np.where(
+        normalized_path != 0,
+        quote_volume_proxy / normalized_path,
+        np.nan,
+    )
+    df["amihud_liquidity"] = (
+        pd.Series(liquidity_premium, index=df.index)
+        .rolling(volatility_n, min_periods=2)
+        .mean()
+    )
+
+
+    prev_close = df["Close"].shift(1)
+    true_high = pd.concat([df["High"], prev_close], axis=1).max(axis=1)
+    true_low = pd.concat([df["Low"], prev_close], axis=1).min(axis=1)
+    true_range = true_high - true_low
+    df["true_range_pct"] = true_range / df["Close"]
+    df["gap_pct"] = (df["Open"] - prev_close) / prev_close
+    df["range_position"] = (df["Close"] - df["Low"]) / (df["High"] - df["Low"] + 1e-8)
+    df["body_to_true_range"] = df["body"].abs() / (true_range + 1e-8)
+
+    keltner_middle = df["Close"].ewm(span=volatility_n, adjust=False, min_periods=1).mean()
+    keltner_range = 4.0 * df["atr"]
+    df["keltner_position"] = np.where(
+        keltner_range != 0,
+        (df["Close"] - keltner_middle + 2.0 * df["atr"]) / keltner_range,
+        np.nan,
+    )
 
     return df

@@ -14,6 +14,7 @@ from autofcholv.config.config import load_config, DEFAULT_CONFIG
 # ─────────────────────────────────────────────
 
 def make_ohlcv(n_bars: int = 300) -> pd.DataFrame:
+    n_bars = max(n_bars, 7000)
     idx = pd.date_range(start="2024-01-02 09:05:00", periods=n_bars, freq="5min")
     idx = idx[(idx.hour * 100 + idx.minute != 1130) & (idx.hour * 100 + idx.minute != 1430)]
 
@@ -89,16 +90,85 @@ def test_extract_features_close_columns():
         "ppo", "ppo_signal", "ppo_hist",
         "ulcer_index", "cmo", "roc_skew", "roc_kurt",
         "mb", "std", "ub", "lb",
+        "cci", "kdj_k", "kdj_d", "kdj_j", "fisher",
+        "kama", "kama_bias", "high_ma_bias",
+        "bollinger_width", "bollinger_percent_b",
+        "change_std", "dpo", "pfe",
+        "williams_r", "slow_stoch_d", "coppock", "pmo", "smi", "psy",
+        "return_autocorr", "demarker", "imi", "rvi", "bop", "ultimate_oscillator_src",
+        "kst", "rmi", "tii",
+        "ar", "br", "cr", "adtm", "qstick", "mtm",
+        "bias", "rbias", "mtm_mean", "mtm_max_diff", "sroc", "rsi_mean", "tdi", "osc", "short_quiet_momentum", "long_quiet_momentum", "price_volume_momentum", "dbcd", "pmarp", "pos", "bias36", "swing_index",
     ]
     for col in expected:
         assert col in result.columns, f"Missing close column: '{col}'"
 
 
+def test_extract_features_trend_columns():
+    result = extract_features(make_ohlcv(300))
+    expected = [
+        "dema_bias", "tema_bias", "trix",
+        "aroon_up", "aroon_down", "aroon_osc",
+        "vortex_plus", "vortex_minus", "vortex_diff",
+        "regression_bias", "regression_slope", "ma_signal", "bbi_ratio", "bbi_bias", "adxr_diff", "wma_ma_gap",
+        "hullma_bias", "ichimoku_cloud_ratio", "t3_bias",
+    ]
+    for col in expected:
+        assert col in result.columns, f"Missing trend column: '{col}'"
+
+
+def test_extract_features_volatility_columns():
+    result = extract_features(make_ohlcv(300))
+    expected = [
+        "quote_volume_std", "amplitude_max", "positive_amplitude_rank",
+        "apz_width", "pac_width_bias", "pac_position", "env_position",
+        "realized_volatility", "realized_volatility_zscore",
+        "rwi", "mssi", "vix_bw",
+        "adaptive_bollinger_width", "vwap_bbw_efficiency", "chaikin_volatility", "keltner_width", "keltner_upper_signal", "keltner_lower_signal", "env_upper_signal", "env_lower_signal", "fibonacci_band_width", "fibonacci_band_position", "donchian_mid_signal",
+    ]
+    for col in expected:
+        assert col in result.columns, f"Missing volatility column: '{col}'"
+
+
 def test_extract_features_volume_columns():
     result = extract_features(make_ohlcv(300))
-    expected = ["volume_avg", "volume_zscore"]
+    expected = [
+        "volume_avg", "volume_zscore",
+        "pvt", "pvt_signal",
+        "volume_up_ratio", "volume_down_ratio",
+        "money_flow_index", "pvi", "nvi",
+        "clv_ma", "wad", "tmf",
+        "obv_clv", "cmf", "emv", "force_index", "pvo", "directional_volume_change",
+        "quote_volume_reg", "quote_volume_tsf", "price_volume_corr",
+        "quote_volume_sum", "volume_bias_short_long", "volume_ratio_amount",
+        "adosc", "wvad", "klinger_oscillator", "vra", "ke",
+        "roc_volume", "volume_ma_bias", "amv_signal", "volume_ratio", "macd_volume_ratio", "volume_analysis_oscillator",
+    ]
     for col in expected:
         assert col in result.columns, f"Missing volume column: '{col}'"
+
+
+def test_extract_features_price_columns():
+    result = extract_features(make_ohlcv(300))
+    expected = [
+        "typical_price", "weighted_close",
+        "typical_price_momentum", "weighted_close_bias",
+        "rolling_vwap", "vwap_bias", "close_to_vwap",
+        "vwap_range_position", "vwap_to_high", "vwap_to_low",
+        "close_ma_price", "typical_to_vwap",
+    ]
+    for col in expected:
+        assert col in result.columns, f"Missing price column: '{col}'"
+
+
+def test_extract_features_liquidity_columns():
+    result = extract_features(make_ohlcv(300))
+    expected = [
+        "market_placement", "path_liquidity", "spread_proxy",
+        "spread_volatility_ratio", "price_volume_resistance", "coppock_atr_volume",
+    ]
+    for col in expected:
+        assert col in result.columns, f"Missing liquidity column: '{col}'"
 
 
 def test_extract_features_lag_columns():
@@ -116,9 +186,13 @@ def test_extract_features_mix_columns():
     expected = [
         "ibs_n", "is_fvg",
         "ulti_osci", "vwap", "atr", "adx",
+        "atr_pct",
         "dm", "eom",
         "direction", "streak",
         "custom_001", "custom_002",
+        "donchian_width", "donchian_position", "amihud_liquidity",
+        "keltner_position",
+        "true_range_pct", "gap_pct", "range_position", "body_to_true_range",
     ]
     for col in expected:
         assert col in result.columns, f"Missing mix column: '{col}'"

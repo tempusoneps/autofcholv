@@ -1,0 +1,62 @@
+{
+    "typical_price": {
+        "type": "float",
+        "name": "Typical Price",
+        "comment": "typical_price = (High + Low + Close) / 3"
+    },
+    "weighted_close": {
+        "type": "float",
+        "name": "Weighted Close",
+        "comment": "weighted_close = (High + Low + 2 * Close) / 4"
+    },
+    "typical_price_momentum": {
+        "type": "float",
+        "name": "Typical Price Momentum",
+        "comment": "Z-scored spread between fast EMA and slow EMA of typical_price"
+    },
+    "weighted_close_bias": {
+        "type": "float",
+        "name": "Weighted Close Bias",
+        "comment": "weighted_close EMA(n) / weighted_close EMA(2n) - 1 with n = MOMENTUM_LOOKBACK"
+    },
+    "rolling_vwap": {
+        "type": "float",
+        "name": "Rolling VWAP",
+        "comment": "rolling_vwap = rolling sum(typical_price * Volume) / rolling sum(Volume)"
+    },
+    "vwap_bias": {
+        "type": "float",
+        "name": "VWAP Bias",
+        "comment": "rolling_vwap / rolling mean(rolling_vwap, n) - 1 with n = MOMENTUM_LOOKBACK"
+    },
+    "close_to_vwap": {
+        "type": "float",
+        "name": "Close to VWAP",
+        "comment": "close_to_vwap = Close / rolling_vwap - 1"
+    },
+    "vwap_range_position": {
+        "type": "float",
+        "name": "VWAP Range Position",
+        "comment": "Rolling VWAP normalized within its rolling min/max range"
+    },
+    "vwap_to_high": {
+        "type": "float",
+        "name": "VWAP to High",
+        "comment": "rolling_vwap / High - 1"
+    },
+    "vwap_to_low": {
+        "type": "float",
+        "name": "VWAP to Low",
+        "comment": "rolling_vwap / Low - 1"
+    },
+    "close_ma_price": {
+        "type": "float",
+        "name": "Close Moving Average Price",
+        "comment": "Rolling mean Close over MOMENTUM_LOOKBACK"
+    },
+    "typical_to_vwap": {
+        "type": "float",
+        "name": "Typical Price to VWAP",
+        "comment": "typical_price / rolling_vwap - 1"
+    }
+}

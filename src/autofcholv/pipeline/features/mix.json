@@ -24,6 +24,11 @@
         "name": "Average True Range",
         "comment": "atr = ta.atr(high, low, close, length=n) with n = VOLATILITY_LOOKBACK"
     },
+    "atr_pct": {
+        "type": "float",
+        "name": "Average True Range Percent",
+        "comment": "atr_pct = atr / Close"
+    },
     "adx": {
         "type": "float",
         "name": "Average Directional Index",
@@ -58,5 +63,45 @@
         "type": "float",
         "name": "Custom Feature 002",
         "comment": "(Close - close.shift(n)) / (High.rolling(n).max() - Low.rolling(n).min()) with n = ONE_DAY_BARS"
+    },
+    "donchian_width": {
+        "type": "float",
+        "name": "Donchian Channel Width",
+        "comment": "(rolling max High - rolling min Low) / channel midpoint with n = VOLATILITY_LOOKBACK"
+    },
+    "donchian_position": {
+        "type": "float",
+        "name": "Donchian Channel Position",
+        "comment": "(Close - rolling min Low) / (rolling max High - rolling min Low) with n = VOLATILITY_LOOKBACK"
+    },
+    "amihud_liquidity": {
+        "type": "float",
+        "name": "Amihud Liquidity Proxy",
+        "comment": "Rolling quote-volume proxy per normalized intraday shortest path adapted from quant-ohlcv-feature"
+    },
+    "keltner_position": {
+        "type": "float",
+        "name": "Keltner Channel Position",
+        "comment": "(Close - EMA(Close,n) + 2 * ATR) / (4 * ATR) adapted from quant-ohlcv-feature"
+    },
+    "true_range_pct": {
+        "type": "float",
+        "name": "True Range Percent",
+        "comment": "True range divided by Close"
+    },
+    "gap_pct": {
+        "type": "float",
+        "name": "Gap Percent",
+        "comment": "(Open - previous Close) / previous Close"
+    },
+    "range_position": {
+        "type": "float",
+        "name": "Range Position",
+        "comment": "(Close - Low) / (High - Low)"
+    },
+    "body_to_true_range": {
+        "type": "float",
+        "name": "Body to True Range",
+        "comment": "Absolute candlestick body divided by true range"
     }
 }

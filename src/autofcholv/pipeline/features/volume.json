@@ -2,11 +2,176 @@
     "volume_avg": {
         "type": "float",
         "name": "Volume Average",
-        "comment": "Trung bình khối lượng n phiên"
+        "comment": "Trung b\u00ecnh kh\u1ed1i l\u01b0\u1ee3ng n phi\u00ean"
     },
     "volume_zscore": {
         "type": "float",
         "name": "Z-score of Volume",
-        "comment": "Z-score khối lượng"
+        "comment": "Z-score kh\u1ed1i l\u01b0\u1ee3ng"
+    },
+    "pvt": {
+        "type": "float",
+        "name": "Price Volume Trend",
+        "comment": "pvt = Close.pct_change() * Volume"
+    },
+    "pvt_signal": {
+        "type": "float",
+        "name": "Price Volume Trend Signal",
+        "comment": "Rolling normalized PVT signal adapted from quant-ohlcv-feature"
+    },
+    "volume_up_ratio": {
+        "type": "float",
+        "name": "Up Volume Ratio",
+        "comment": "Rolling share of volume on bars where Close rises"
+    },
+    "volume_down_ratio": {
+        "type": "float",
+        "name": "Down Volume Ratio",
+        "comment": "Rolling share of volume on bars where Close falls"
+    },
+    "money_flow_index": {
+        "type": "float",
+        "name": "Money Flow Index",
+        "comment": "Volume-weighted positive and negative money flow oscillator"
+    },
+    "pvi": {
+        "type": "float",
+        "name": "Positive Volume Index",
+        "comment": "Cumulative close return on bars where Volume rises"
+    },
+    "nvi": {
+        "type": "float",
+        "name": "Negative Volume Index",
+        "comment": "Cumulative close return on bars where Volume falls"
+    },
+    "clv_ma": {
+        "type": "float",
+        "name": "Close Location Value MA",
+        "comment": "Rolling mean of (2 * Close - Low - High) / (High - Low)"
+    },
+    "wad": {
+        "type": "float",
+        "name": "Williams Accumulation Distribution",
+        "comment": "Cumulative Williams AD normalized by its rolling mean"
+    },
+    "tmf": {
+        "type": "float",
+        "name": "Twiggs Money Flow",
+        "comment": "EMA of true-range volume flow divided by EMA volume"
+    },
+    "obv_clv": {
+        "type": "float",
+        "name": "CLV-weighted OBV",
+        "comment": "Rolling CLV-weighted volume normalized by its rolling mean"
+    },
+    "cmf": {
+        "type": "float",
+        "name": "Chaikin Money Flow",
+        "comment": "Rolling CLV-weighted volume divided by rolling volume"
+    },
+    "emv": {
+        "type": "float",
+        "name": "Ease of Movement",
+        "comment": "Midpoint move divided by volume density per price range"
+    },
+    "force_index": {
+        "type": "float",
+        "name": "Force Index",
+        "comment": "EMA-smoothed z-score of Volume * Close.diff()"
+    },
+    "pvo": {
+        "type": "float",
+        "name": "Percentage Volume Oscillator",
+        "comment": "(EMA(Volume,n) - EMA(Volume,2n)) / EMA(Volume,2n)"
+    },
+    "directional_volume_change": {
+        "type": "float",
+        "name": "Directional Volume Change",
+        "comment": "Rolling maximum of quote-volume proxy change signed by close direction"
+    },
+    "quote_volume_reg": {
+        "type": "float",
+        "name": "Quote Volume Regression",
+        "comment": "Rolling linear-regression fitted value of Close * Volume proxy"
+    },
+    "quote_volume_tsf": {
+        "type": "float",
+        "name": "Quote Volume Time Series Forecast",
+        "comment": "One-step rolling linear-regression forecast of Close * Volume proxy"
+    },
+    "price_volume_corr": {
+        "type": "float",
+        "name": "Price Volume Correlation",
+        "comment": "Rolling correlation between Close and Close * Volume proxy"
+    },
+    "quote_volume_sum": {
+        "type": "float",
+        "name": "Quote Volume Sum",
+        "comment": "Rolling sum of Close * Volume quote-volume proxy"
+    },
+    "volume_bias_short_long": {
+        "type": "float",
+        "name": "Volume Bias Short Long",
+        "comment": "Short-window quote-volume proxy mean divided by long-window mean minus 1"
+    },
+    "volume_ratio_amount": {
+        "type": "float",
+        "name": "Amount Volume Ratio",
+        "comment": "(up amount + flat amount / 2) / (down amount + flat amount / 2)"
+    },
+    "adosc": {
+        "type": "float",
+        "name": "Accumulation Distribution Oscillator",
+        "comment": "Normalized EMA spread of cumulative CLV-weighted volume"
+    },
+    "wvad": {
+        "type": "float",
+        "name": "Williams Variable Accumulation Distribution",
+        "comment": "Normalized rolling sum of body-weighted volume"
+    },
+    "klinger_oscillator": {
+        "type": "float",
+        "name": "Klinger Oscillator",
+        "comment": "Normalized EMA spread of signed volume by typical price direction"
+    },
+    "vra": {
+        "type": "float",
+        "name": "Volatility-adjusted Rate Composite",
+        "comment": "Dual-horizon price ROC multiplied by rolling close volatility"
+    },
+    "ke": {
+        "type": "float",
+        "name": "Momentum Volume Energy",
+        "comment": "Signed squared n-period price change amplified by normalized volume"
+    },
+    "roc_volume": {
+        "type": "float",
+        "name": "Volume Rate of Change",
+        "comment": "Volume / Volume.shift(n) - 1"
+    },
+    "volume_ma_bias": {
+        "type": "float",
+        "name": "Volume MA Bias",
+        "comment": "Volume divided by its moving average minus 1"
+    },
+    "amv_signal": {
+        "type": "float",
+        "name": "AMV Signal",
+        "comment": "Rolling-normalized volume-weighted average of open-close midpoint"
+    },
+    "volume_ratio": {
+        "type": "float",
+        "name": "Volume Ratio",
+        "comment": "Up-volume plus half neutral volume divided by down-volume plus half neutral volume"
+    },
+    "macd_volume_ratio": {
+        "type": "float",
+        "name": "MACD Volume Ratio",
+        "comment": "Volume MACD divided by its rolling signal minus 1"
+    },
+    "volume_analysis_oscillator": {
+        "type": "float",
+        "name": "Volume Analysis Oscillator",
+        "comment": "Short minus long average of volume weighted by close position versus candle midpoint"
     }
 }
