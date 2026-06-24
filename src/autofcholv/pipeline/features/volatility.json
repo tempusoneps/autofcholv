@@ -158,5 +158,580 @@
         "type": "float",
         "name": "PAC Width Signal",
         "comment": "PAC width normalized by its rolling mean minus 1"
+    },
+    "volume_std": {
+        "type": "float",
+        "name": "Volume Standard Deviation",
+        "comment": "Rolling standard deviation of Volume"
+    },
+    "grid": {
+        "type": "float",
+        "name": "Grid",
+        "comment": "N-period percent change of rolling z-score position"
+    },
+    "lcsd": {
+        "type": "float",
+        "name": "Lcsd",
+        "comment": "Low price versus close moving average normalized by low"
+    },
+    "atr_count": {
+        "type": "float",
+        "name": "ATR Count",
+        "comment": "Count of closes outside an ATR band over the lookback"
+    },
+    "zfabsmean": {
+        "type": "float",
+        "name": "ZfAbsMean",
+        "comment": "Ranked mean positive amplitude after filtering on average-price change"
+    },
+    "bbw": {
+        "type": "float",
+        "name": "Bbw",
+        "comment": "Bollinger bandwidth change multiplied by momentum and RSI"
+    },
+    "apz": {
+        "type": "float",
+        "name": "Apz",
+        "comment": "Adaptive Price Zone channel width normalized by double EMA close"
+    },
+    "apz_upper": {
+        "type": "float",
+        "name": "ApzUpper",
+        "comment": "Upper Adaptive Price Zone channel normalized to rolling range"
+    },
+    "apz_lower": {
+        "type": "float",
+        "name": "ApzLower",
+        "comment": "Lower Adaptive Price Zone channel normalized to rolling range"
+    },
+    "bolling": {
+        "type": "float",
+        "name": "Bolling",
+        "comment": "Bollinger breakout distance normalized by standard deviation"
+    },
+    "bolling_width": {
+        "type": "float",
+        "name": "BollingWidth",
+        "comment": "Adaptive Bollinger width based on rolling z-score mean"
+    },
+    "cv": {
+        "type": "float",
+        "name": "Cv",
+        "comment": "Rate of change of high-low EMA amplitude"
+    },
+    "dc": {
+        "type": "float",
+        "name": "Dc",
+        "comment": "Distance between close and Donchian middle channel normalized by channel width"
+    },
+    "dc_signal": {
+        "type": "float",
+        "name": "DcSignal",
+        "comment": "Close minus Donchian middle channel"
+    },
+    "dc_v2": {
+        "type": "float",
+        "name": "Dc_v2",
+        "comment": "Close relative to Donchian middle channel"
+    },
+    "kcupper": {
+        "type": "float",
+        "name": "KcUpper",
+        "comment": "Keltner channel upper band normalized to rolling range"
+    },
+    "kclower": {
+        "type": "float",
+        "name": "KcLower",
+        "comment": "Keltner channel lower band normalized to rolling range"
+    },
+    "pac": {
+        "type": "float",
+        "name": "Pac",
+        "comment": "PAC width normalized by its rolling mean"
+    },
+    "pacupper": {
+        "type": "float",
+        "name": "PacUpper",
+        "comment": "PAC upper band normalized to rolling range"
+    },
+    "paclower": {
+        "type": "float",
+        "name": "PacLower",
+        "comment": "PAC lower band normalized to rolling range"
+    },
+    "pacupper_v2": {
+        "type": "float",
+        "name": "PacUpper_v2",
+        "comment": "Close minus PAC upper band, rolling averaged"
+    },
+    "paclower_v2": {
+        "type": "float",
+        "name": "PacLower_v2",
+        "comment": "PAC lower band minus close, rolling averaged"
+    },
+    "rwih": {
+        "type": "float",
+        "name": "RwiH",
+        "comment": "Random Walk Index high-side measure"
+    },
+    "rwil": {
+        "type": "float",
+        "name": "RwiL",
+        "comment": "Random Walk Index low-side measure"
+    },
+    "Bolling": {
+        "type": "float",
+        "name": "Bolling",
+        "comment": "Bollinger breakout distance normalized by standard deviation"
+    },
+    "Bolling_v2": {
+        "type": "float",
+        "name": "Bolling_v2",
+        "comment": "Normalized width of a ±0.5σ Bollinger band"
+    },
+    "Bolling_v3": {
+        "type": "float",
+        "name": "Bolling_v3",
+        "comment": "Rate of change of the Bollinger upper band"
+    },
+    "Bolling_fancy": {
+        "type": "float",
+        "name": "Bolling_fancy",
+        "comment": "Close price z-score inside the Bollinger window"
+    },
+    "EnvSignal": {
+        "type": "float",
+        "name": "EnvSignal",
+        "comment": "Price position inside a ±5% envelope around the moving average"
+    },
+    "EnvUpper": {
+        "type": "float",
+        "name": "EnvUpper",
+        "comment": "Normalized envelope upper band"
+    },
+    "EnvLower": {
+        "type": "float",
+        "name": "EnvLower",
+        "comment": "Normalized envelope lower band"
+    },
+    "KcSignal": {
+        "type": "float",
+        "name": "KcSignal",
+        "comment": "Close position relative to the Keltner channel"
+    },
+    "KcUpperSignal": {
+        "type": "float",
+        "name": "KcUpperSignal",
+        "comment": "Normalized Keltner upper-band signal"
+    },
+    "KcLowerSignal": {
+        "type": "float",
+        "name": "KcLowerSignal",
+        "comment": "Normalized Keltner lower-band signal"
+    },
+    "VwapBbw": {
+        "type": "float",
+        "name": "VwapBbw",
+        "comment": "VWAP change times Bollinger bandwidth change normalized by quote-volume proxy"
+    },
+    "RetBoll_fancy": {
+        "type": "float",
+        "name": "RetBoll_fancy",
+        "comment": "Return z-score within a rolling window"
+    },
+    "Lchc_fancy": {
+        "type": "float",
+        "name": "Lchc_fancy",
+        "comment": "Normalized distance between rolling low, rolling high, and close"
+    },
+    "AdaptBollingv3": {
+        "type": "float",
+        "name": "AdaptBollingv3",
+        "comment": "Adaptive Bollinger-style volatility composite using MTM and ATR ratios"
+    },
+    "Bollcount_dem": {
+        "type": "float",
+        "name": "Bollcount_dem",
+        "comment": "Rolling count of DeMarker overbought and oversold states"
+    },
+    "DzcciLower": {
+        "type": "float",
+        "name": "DzcciLower",
+        "comment": "CCI lower Bollinger band minus CCI short moving average"
+    },
+    "DzcciUpper": {
+        "type": "float",
+        "name": "DzcciUpper",
+        "comment": "Normalized CCI upper Bollinger band"
+    },
+    "DzrsiLowerSignal": {
+        "type": "float",
+        "name": "DzrsiLowerSignal",
+        "comment": "Z-scored RSI lower-band gap versus half-period RSI average"
+    },
+    "DzrsiUpperSignal": {
+        "type": "float",
+        "name": "DzrsiUpperSignal",
+        "comment": "Normalized RSI half-period average gap versus upper Bollinger band"
+    },
+    "FbLower": {
+        "type": "float",
+        "name": "FbLower",
+        "comment": "Normalized Fibonacci lower ATR band"
+    },
+    "FbUpper": {
+        "type": "float",
+        "name": "FbUpper",
+        "comment": "Normalized Fibonacci upper ATR band"
+    },
+    "DzcciLowerSignal": {
+        "type": "float",
+        "name": "DzcciLowerSignal",
+        "comment": "Z-scored gap between CCI lower band and close"
+    },
+    "DzcciLowerSignal_v2": {
+        "type": "float",
+        "name": "DzcciLowerSignal_v2",
+        "comment": "Normalized gap between CCI lower band and short CCI mean"
+    },
+    "DzcciUpperSignal": {
+        "type": "float",
+        "name": "DzcciUpperSignal",
+        "comment": "Normalized gap between close and CCI upper band"
+    },
+    "DzcciUpperSignal_v2": {
+        "type": "float",
+        "name": "DzcciUpperSignal_v2",
+        "comment": "Normalized gap between short CCI mean and CCI upper band"
+    },
+    "FbLowerSignal": {
+        "type": "float",
+        "name": "FbLowerSignal",
+        "comment": "Normalized close distance below the first Fibonacci lower ATR band"
+    },
+    "FbLowerSignal_v2": {
+        "type": "float",
+        "name": "FbLowerSignal_v2",
+        "comment": "Normalized close distance below the second Fibonacci lower ATR band"
+    },
+    "FbLowerSignal_v3": {
+        "type": "float",
+        "name": "FbLowerSignal_v3",
+        "comment": "Normalized close distance below the third Fibonacci lower ATR band"
+    },
+    "FbUpperSignal": {
+        "type": "float",
+        "name": "FbUpperSignal",
+        "comment": "Normalized close distance above the first Fibonacci upper ATR band"
+    },
+    "FbUpperSignal_v2": {
+        "type": "float",
+        "name": "FbUpperSignal_v2",
+        "comment": "Normalized close distance above the second Fibonacci upper ATR band"
+    },
+    "FbUpperSignal_v3": {
+        "type": "float",
+        "name": "FbUpperSignal_v3",
+        "comment": "Normalized close distance above the third Fibonacci upper ATR band"
+    },
+    "VixBw": {
+        "type": "float",
+        "name": "VixBw",
+        "comment": "Signed VIX-style Bollinger width based on return volatility"
+    },
+    "VolumeStd": {
+        "type": "float",
+        "name": "VolumeStd",
+        "comment": "Alias for volume_std"
+    },
+    "Grid": {
+        "type": "float",
+        "name": "Grid",
+        "comment": "Alias for grid"
+    },
+    "Lcsd": {
+        "type": "float",
+        "name": "Lcsd",
+        "comment": "Alias for lcsd"
+    },
+    "Apz": {
+        "type": "float",
+        "name": "Apz",
+        "comment": "Alias for apz"
+    },
+    "ApzUpper": {
+        "type": "float",
+        "name": "ApzUpper",
+        "comment": "Alias for apz_upper"
+    },
+    "ApzLower": {
+        "type": "float",
+        "name": "ApzLower",
+        "comment": "Alias for apz_lower"
+    },
+    "Bbw": {
+        "type": "float",
+        "name": "Bbw",
+        "comment": "Alias for bbw"
+    },
+    "Cv": {
+        "type": "float",
+        "name": "Cv",
+        "comment": "Alias for cv"
+    },
+    "Dc": {
+        "type": "float",
+        "name": "Dc",
+        "comment": "Alias for dc"
+    },
+    "DcSignal": {
+        "type": "float",
+        "name": "DcSignal",
+        "comment": "Alias for dc_signal"
+    },
+    "Dc_v2": {
+        "type": "float",
+        "name": "Dc_v2",
+        "comment": "Alias for dc_v2"
+    },
+    "EnvUpperSignal": {
+        "type": "float",
+        "name": "EnvUpperSignal",
+        "comment": "Alias for env_upper_signal"
+    },
+    "EnvLowerSignal": {
+        "type": "float",
+        "name": "EnvLowerSignal",
+        "comment": "Alias for env_lower_signal"
+    },
+    "Rwi": {
+        "type": "float",
+        "name": "Rwi",
+        "comment": "Alias for rwi"
+    },
+    "RwiH": {
+        "type": "float",
+        "name": "RwiH",
+        "comment": "Alias for rwi_high"
+    },
+    "RwiL": {
+        "type": "float",
+        "name": "RwiL",
+        "comment": "Alias for rwi_low"
+    },
+    "Atr": {
+        "type": "float",
+        "name": "Atr",
+        "comment": "Alias for atr"
+    },
+    "AtrPct": {
+        "type": "float",
+        "name": "AtrPct",
+        "comment": "Alias for atr_pct"
+    },
+    "AtrUpper": {
+        "type": "float",
+        "name": "AtrUpper",
+        "comment": "Alias for atr_upper"
+    },
+    "AtrLower": {
+        "type": "float",
+        "name": "AtrLower",
+        "comment": "Alias for atr_lower"
+    },
+    "Pac": {
+        "type": "float",
+        "name": "Pac",
+        "comment": "Alias for pac"
+    },
+    "PacUpper": {
+        "type": "float",
+        "name": "PacUpper",
+        "comment": "Alias for pacupper"
+    },
+    "PacLower": {
+        "type": "float",
+        "name": "PacLower",
+        "comment": "Alias for paclower"
+    },
+    "PacUpper_v2": {
+        "type": "float",
+        "name": "PacUpper_v2",
+        "comment": "Alias for pacupper_v2"
+    },
+    "PacLower_v2": {
+        "type": "float",
+        "name": "PacLower_v2",
+        "comment": "Alias for paclower_v2"
+    },
+    "Pfe": {
+        "type": "float",
+        "name": "Pfe",
+        "comment": "Direction-signed price efficiency"
+    },
+    "ChangeStd": {
+        "type": "float",
+        "name": "ChangeStd",
+        "comment": "N-period return multiplied by rolling return std"
+    },
+    "FbLowerSignal": {
+        "type": "float",
+        "name": "FbLowerSignal",
+        "comment": "Alias for fb_lower_signal"
+    },
+    "FbLowerSignal_v2": {
+        "type": "float",
+        "name": "FbLowerSignal_v2",
+        "comment": "Alias for fb_lower_signal_v2"
+    },
+    "FbLowerSignal_v3": {
+        "type": "float",
+        "name": "FbLowerSignal_v3",
+        "comment": "Alias for fb_lower_signal_v3"
+    },
+    "FbUpperSignal": {
+        "type": "float",
+        "name": "FbUpperSignal",
+        "comment": "Alias for fb_upper_signal"
+    },
+    "FbUpperSignal_v2": {
+        "type": "float",
+        "name": "FbUpperSignal_v2",
+        "comment": "Alias for fb_upper_signal_v2"
+    },
+    "FbUpperSignal_v3": {
+        "type": "float",
+        "name": "FbUpperSignal_v3",
+        "comment": "Alias for fb_upper_signal_v3"
+    },
+    "VixBw": {
+        "type": "float",
+        "name": "VixBw",
+        "comment": "Alias for vix_bw"
+    },
+    "DzcciLowerSignal": {
+        "type": "float",
+        "name": "DzcciLowerSignal",
+        "comment": "Alias for dzcci_lower_signal"
+    },
+    "DzcciLowerSignal_v2": {
+        "type": "float",
+        "name": "DzcciLowerSignal_v2",
+        "comment": "Alias for dzcci_lower_signal_v2"
+    },
+    "DzcciUpperSignal": {
+        "type": "float",
+        "name": "DzcciUpperSignal",
+        "comment": "Alias for dzcci_upper_signal"
+    },
+    "DzcciUpperSignal_v2": {
+        "type": "float",
+        "name": "DzcciUpperSignal_v2",
+        "comment": "Alias for dzcci_upper_signal_v2"
+    },
+    "DzcciLower": {
+        "type": "float",
+        "name": "DzcciLower",
+        "comment": "Alias for dzcci_lower"
+    },
+    "DzcciUpper": {
+        "type": "float",
+        "name": "DzcciUpper",
+        "comment": "Alias for dzcci_upper"
+    },
+    "DzrsiLowerSignal": {
+        "type": "float",
+        "name": "DzrsiLowerSignal",
+        "comment": "Alias for dzrsi_lower_signal"
+    },
+    "DzrsiUpperSignal": {
+        "type": "float",
+        "name": "DzrsiUpperSignal",
+        "comment": "Alias for dzrsi_upper_signal"
+    },
+    "FbLower": {
+        "type": "float",
+        "name": "FbLower",
+        "comment": "Alias for fb_lower"
+    },
+    "FbUpper": {
+        "type": "float",
+        "name": "FbUpper",
+        "comment": "Alias for fb_upper"
+    },
+    "AdaptBollingv3": {
+        "type": "float",
+        "name": "AdaptBollingv3",
+        "comment": "Alias for adapt_bollingv3"
+    },
+    "Bollcount_dem": {
+        "type": "float",
+        "name": "Bollcount_dem",
+        "comment": "Alias for bollcount_dem"
+    },
+    "Bolling": {
+        "type": "float",
+        "name": "Bolling",
+        "comment": "Alias for bolling"
+    },
+    "Bolling_v2": {
+        "type": "float",
+        "name": "Bolling_v2",
+        "comment": "Alias for bolling_v2"
+    },
+    "Bolling_v3": {
+        "type": "float",
+        "name": "Bolling_v3",
+        "comment": "Alias for bolling_v3"
+    },
+    "Bolling_fancy": {
+        "type": "float",
+        "name": "Bolling_fancy",
+        "comment": "Alias for bolling_fancy"
+    },
+    "EnvSignal": {
+        "type": "float",
+        "name": "EnvSignal",
+        "comment": "Alias for env_signal"
+    },
+    "EnvUpper": {
+        "type": "float",
+        "name": "EnvUpper",
+        "comment": "Alias for env_upper"
+    },
+    "EnvLower": {
+        "type": "float",
+        "name": "EnvLower",
+        "comment": "Alias for env_lower"
+    },
+    "KcSignal": {
+        "type": "float",
+        "name": "KcSignal",
+        "comment": "Alias for kc_signal"
+    },
+    "KcUpperSignal": {
+        "type": "float",
+        "name": "KcUpperSignal",
+        "comment": "Alias for kc_upper_signal"
+    },
+    "KcLowerSignal": {
+        "type": "float",
+        "name": "KcLowerSignal",
+        "comment": "Alias for kc_lower_signal"
+    },
+    "VwapBbw": {
+        "type": "float",
+        "name": "VwapBbw",
+        "comment": "Alias for vwap_bbw"
+    },
+    "RetBoll_fancy": {
+        "type": "float",
+        "name": "RetBoll_fancy",
+        "comment": "Alias for ret_boll_fancy"
+    },
+    "Lchc_fancy": {
+        "type": "float",
+        "name": "Lchc_fancy",
+        "comment": "Alias for lchc_fancy"
     }
 }

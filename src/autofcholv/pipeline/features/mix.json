@@ -103,5 +103,75 @@
         "type": "float",
         "name": "Body to True Range",
         "comment": "Absolute candlestick body divided by true range"
+    },
+    "fear_greed_yidai_v1": {
+        "type": "float",
+        "name": "Fear Greed Yidai v1",
+        "comment": "Weighted momentum of bullish and bearish true-range amplitudes"
+    },
+    "damaov10": {
+        "type": "float",
+        "name": "Damaov10",
+        "comment": "Coppock, Bollinger width, and ATR composite"
+    },
+    "adx_mtm": {
+        "type": "float",
+        "name": "ADX MTM",
+        "comment": "Positive directional movement multiplied by rolling momentum"
+    },
+    "Cvr_v0": {
+        "type": "float",
+        "name": "Calmar-Volume Ratio",
+        "comment": "Cumulative return over rolling return volatility multiplied by relative quote volume"
+    },
+    "Cbr_v1": {
+        "type": "float",
+        "name": "Coppock Bollinger Ratio v1",
+        "comment": "Coppock-style momentum multiplied by Bollinger bandwidth and price-volume correlation"
+    },
+    "Fbnq_pct_v5": {
+        "type": "float",
+        "name": "Fibonacci momentum volatility composite",
+        "comment": "Fibonacci EMA momentum percent change multiplied by average Bollinger bandwidth"
+    },
+    "PriceVolumeResist": {
+        "type": "float",
+        "name": "Price Volume Resistance",
+        "comment": "Close-to-volume breakout difficulty ratio normalized by window length"
+    },
+    "adx_mtm": {
+        "type": "float",
+        "name": "ADX MTM",
+        "comment": "Positive directional movement multiplied by rolling momentum"
+    },
+    "Mtam": {
+        "type": "float",
+        "name": "Mtam",
+        "comment": "Momentum times taker buy ratio times ATR volatility composite"
+    },
+    "Msbt": {
+        "type": "float",
+        "name": "Msbt",
+        "comment": "Momentum, std momentum, BBW, and taker buy composite"
+    },
+    "CoppAtrBull": {
+        "type": "float",
+        "name": "CoppAtrBull",
+        "comment": "Coppock momentum times ATR times taker buy activity"
+    },
+    "adx_mtm_neg": {
+        "type": "float",
+        "name": "ADX MTM Neg",
+        "comment": "Negative directional movement multiplied by rolling momentum"
+    },
+    "Damaov10": {
+        "type": "float",
+        "name": "Damaov10",
+        "comment": "Alias for damaov10"
+    },
+    "FearGreed_Yidai_v1": {
+        "type": "float",
+        "name": "FearGreed_Yidai_v1",
+        "comment": "Alias for fear_greed_yidai_v1"
     }
 }

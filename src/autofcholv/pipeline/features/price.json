@@ -58,5 +58,144 @@
         "type": "float",
         "name": "Typical Price to VWAP",
         "comment": "typical_price / rolling_vwap - 1"
+    },
+    "avgprice": {
+        "type": "float",
+        "name": "AvgPrice",
+        "comment": "Rolling VWAP normalized within its rolling range"
+    },
+    "avgpricetohigh": {
+        "type": "float",
+        "name": "AvgPriceToHigh",
+        "comment": "VWAP relative to current high"
+    },
+    "avgpricetolow": {
+        "type": "float",
+        "name": "AvgPriceToLow",
+        "comment": "VWAP relative to current low"
+    },
+    "AvgPrice": {
+        "type": "float",
+        "name": "AvgPrice",
+        "comment": "Alias for avgprice"
+    },
+    "AvgPriceToHigh": {
+        "type": "float",
+        "name": "AvgPriceToHigh",
+        "comment": "Alias for avgpricetohigh"
+    },
+    "AvgPriceToLow": {
+        "type": "float",
+        "name": "AvgPriceToLow",
+        "comment": "Alias for avgpricetolow"
+    },
+    "LowPrice": {
+        "type": "float",
+        "name": "LowPrice",
+        "comment": "Alias for lowprice"
+    },
+    "Typ": {
+        "type": "float",
+        "name": "Typ",
+        "comment": "Alias for typ"
+    },
+    "VwapSignal": {
+        "type": "float",
+        "name": "VwapSignal",
+        "comment": "Alias for vwap_signal"
+    },
+    "WVAD": {
+        "type": "float",
+        "name": "WVAD",
+        "comment": "Normalized rolling candle-body volume accumulation"
+    },
+    "Vwapbias": {
+        "type": "float",
+        "name": "Vwapbias",
+        "comment": "Rolling VWAP divided by its moving average minus 1"
+    },
+
+    "Vwap": {
+        "type": "float",
+        "name": "Vwap",
+        "comment": "Alias for rolling_vwap"
+    },
+
+    "Wc": {
+        "type": "float",
+        "name": "Wc",
+        "comment": "Alias for wc"
+    },
+
+    "lowprice": {
+        "type": "float",
+        "name": "LowPrice",
+        "comment": "Rolling mean close price"
+    },
+    "typ": {
+        "type": "float",
+        "name": "Typ",
+        "comment": "Typical price (H+L+C)/3"
+    },
+    "vwap_signal": {
+        "type": "float",
+        "name": "VwapSignal",
+        "comment": "Typical price relative to rolling VWAP minus 1"
+    },
+    "wc": {
+        "type": "float",
+        "name": "Wc",
+        "comment": "Weighted close EMA ratio"
+    },
+    "AvgPrice": {
+        "type": "float",
+        "name": "AvgPrice",
+        "comment": "Alias for avgprice"
+    },
+    "AvgPriceToHigh": {
+        "type": "float",
+        "name": "AvgPriceToHigh",
+        "comment": "Alias for avgpricetohigh"
+    },
+    "AvgPriceToLow": {
+        "type": "float",
+        "name": "AvgPriceToLow",
+        "comment": "Alias for avgpricetolow"
+    },
+    "LowPrice": {
+        "type": "float",
+        "name": "LowPrice",
+        "comment": "Alias for lowprice"
+    },
+    "Typ": {
+        "type": "float",
+        "name": "Typ",
+        "comment": "Alias for typ"
+    },
+    "VwapSignal": {
+        "type": "float",
+        "name": "VwapSignal",
+        "comment": "Alias for vwap_signal"
+    },
+    "WVAD": {
+        "type": "float",
+        "name": "WVAD",
+        "comment": "Normalized rolling candle-body volume accumulation"
+    },
+    "Vwapbias": {
+        "type": "float",
+        "name": "Vwapbias",
+        "comment": "Rolling VWAP divided by its moving average minus 1"
+    },
+    "Vwap": {
+        "type": "float",
+        "name": "Vwap",
+        "comment": "Alias for rolling_vwap"
+    },
+
+    "Wc": {
+        "type": "float",
+        "name": "Wc",
+        "comment": "Alias for wc"
     }
 }
