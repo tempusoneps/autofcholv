@@ -429,6 +429,11 @@
         "name": "CS MTM",
         "comment": "Composite momentum: close momentum x std momentum x volume momentum"
     },
+    "cs_mtm_v2": {
+        "type": "float",
+        "name": "CS MTM v2",
+        "comment": "Composite momentum using close momentum, std momentum, and quote-volume momentum"
+    },
     "rsi_bbw": {
         "type": "float",
         "name": "RSI BBW",
@@ -538,5 +543,285 @@
         "type": "float",
         "name": "ARBR BR",
         "comment": "BR-style range sentiment using high-prev-close and prev-close-low sums"
+    },
+    "bias_v3": {
+        "type": "float",
+        "name": "Bias v3",
+        "comment": "Log close-to-moving-average bias normalized by 0.03"
+    },
+    "bias_v4": {
+        "type": "float",
+        "name": "Bias v4",
+        "comment": "Typical price divided by its moving average minus 1"
+    },
+    "bias_v11": {
+        "type": "float",
+        "name": "Bias v11",
+        "comment": "EMA-smoothed close bias weighted by quote-volume proxy"
+    },
+    "bias_v14": {
+        "type": "float",
+        "name": "Bias v14",
+        "comment": "Rolling fast/slow MA bias weighted by quote-volume proxy"
+    },
+    "bias36ma": {
+        "type": "float",
+        "name": "Bias36 MA",
+        "comment": "Rolling mean of the 3-period minus 6-period close MA spread"
+    },
+    "bir": {
+        "type": "float",
+        "name": "Breakout Indicator",
+        "comment": "Four-price average breakout pressure over rolling extrema"
+    },
+    "copp_v3": {
+        "type": "float",
+        "name": "Coppock v3",
+        "comment": "Coppock-style average of N and 1.618N close rates of change"
+    },
+    "roc": {
+        "type": "float",
+        "name": "Rate of Change",
+        "comment": "Close divided by its N-period lag minus 1"
+    },
+    "cci_v2": {
+        "type": "float",
+        "name": "CCI v2",
+        "comment": "WMA-based CCI using all four prices"
+    },
+    "cci_v3": {
+        "type": "float",
+        "name": "CCI v3",
+        "comment": "EMA-smoothed CCI using all four prices"
+    },
+    "rsimean": {
+        "type": "float",
+        "name": "RSI Mean",
+        "comment": "Rolling mean of RSI"
+    },
+    "short_moment": {
+        "type": "float",
+        "name": "Short Moment",
+        "comment": "Quiet-candle momentum over a short rolling window"
+    },
+    "long_moment": {
+        "type": "float",
+        "name": "Long Moment",
+        "comment": "Quiet-candle momentum over a long rolling window"
+    },
+    "rsis": {
+        "type": "float",
+        "name": "RSIS",
+        "comment": "RSI normalized to its rolling min-max range"
+    },
+    "pmarp_yidai_v1": {
+        "type": "float",
+        "name": "PMARP Yidai v1",
+        "comment": "Rolling percentile rank of absolute close-to-MA ratio"
+    },
+    "dbcd_v2": {
+        "type": "float",
+        "name": "DBCD v2",
+        "comment": "EWM-smoothed change in close-to-MA bias"
+    },
+    "smi_v2": {
+        "type": "float",
+        "name": "SMI v2",
+        "comment": "Smoothed stochastic midpoint oscillator"
+    },
+    "dbcd_v3": {
+        "type": "float",
+        "name": "DBCD v3",
+        "comment": "SMA-smoothed bias divergence"
+    },
+    "micd": {
+        "type": "float",
+        "name": "MICD",
+        "comment": "Momentum indicator based on shifted MTM averages"
+    },
+    "rsj": {
+        "type": "float",
+        "name": "RSJ",
+        "comment": "Asymmetry of upside vs downside realized variance"
+    },
+    "mtm_max": {
+        "type": "float",
+        "name": "MTM Max",
+        "comment": "Current momentum minus rolling maximum prior momentum"
+    },
+    "bias_v2": {
+        "type": "float",
+        "name": "Bias v2",
+        "comment": "Volume-weighted bias on regression-smoothed close"
+    },
+    "rsiv": {
+        "type": "float",
+        "name": "RSIV",
+        "comment": "Volume-based RSI analogue"
+    },
+    "rsih": {
+        "type": "float",
+        "name": "RSIH",
+        "comment": "RSI minus its EMA signal line"
+    },
+    "fi": {
+        "type": "float",
+        "name": "Fi",
+        "comment": "Force Index z-score smoothed by EMA"
+    },
+    "fi_rsi": {
+        "type": "float",
+        "name": "Fi RSI",
+        "comment": "RSI of Force Index smoothed by EMA"
+    },
+    "force": {
+        "type": "float",
+        "name": "Force",
+        "comment": "Quote-volume force index relative to its moving average"
+    },
+    "ko": {
+        "type": "float",
+        "name": "KO",
+        "comment": "Klinger oscillator variant normalized to rolling range"
+    },
+    "vramt": {
+        "type": "float",
+        "name": "VRAMT",
+        "comment": "Volume ratio computed from up/down/flat volume buckets"
+    },
+    "v1_v2": {
+        "type": "float",
+        "name": "V1 v2",
+        "comment": "V1 composite momentum-volatility factor"
+    },
+    "v1up_v2": {
+        "type": "float",
+        "name": "V1 Up v2",
+        "comment": "Upper adaptive band distance for V1"
+    },
+    "v1dn_v2": {
+        "type": "float",
+        "name": "V1 Down v2",
+        "comment": "Lower adaptive band distance for V1"
+    },
+    "mtmmean_v10": {
+        "type": "float",
+        "name": "MTM Mean v10",
+        "comment": "Momentum mean multiplied by combined long-range and intrabar volatility"
+    },
+    "mtmmean_v12": {
+        "type": "float",
+        "name": "MtmMean_v12",
+        "comment": "MTM weighted by taker-buy volume ratio and averaged over a rolling window"
+    },
+    "mtmhcm": {
+        "type": "float",
+        "name": "MTM HCM",
+        "comment": "High-based momentum mean relative to close moving-average compression"
+    },
+    "si": {
+        "type": "float",
+        "name": "Si",
+        "comment": "Weighted price-movement strength normalized by range components"
+    },
+    "wr": {
+        "type": "float",
+        "name": "Williams %R",
+        "comment": "Position of close within the rolling high-low range"
+    },
+    "rocvol": {
+        "type": "float",
+        "name": "ROC Vol",
+        "comment": "Volume rate of change over the momentum lookback"
+    },
+    "mtmmean_v4": {
+        "type": "float",
+        "name": "MTM Mean v4",
+        "comment": "Rolling regression of N-period momentum"
+    },
+    "uos": {
+        "type": "float",
+        "name": "Ultimate Oscillator",
+        "comment": "Triple-timeframe momentum oscillator over close and true range"
+    },
+    "zlmacd": {
+        "type": "float",
+        "name": "Zero-Lag MACD",
+        "comment": "DEMA-based MACD variant normalized by the spread between zero-lag averages"
+    },
+    "tma_bias": {
+        "type": "float",
+        "name": "TMA Bias",
+        "comment": "Close divided by double-smoothed moving average minus 1"
+    },
+    "mtmmean_v8": {
+        "type": "float",
+        "name": "MTM Mean v8",
+        "comment": "Momentum mean multiplied by high-low range volatility"
+    },
+    "mtmvolmean": {
+        "type": "float",
+        "name": "MTM Vol Mean",
+        "comment": "EMA-smoothed price momentum times EMA-smoothed quote-volume momentum"
+    },
+    "autocorrelation": {
+        "type": "float",
+        "name": "Autocorrelation",
+        "comment": "Rolling lag-1 autocorrelation of close returns"
+    },
+    "copp": {
+        "type": "float",
+        "name": "Copp",
+        "comment": "Coppock-style moving average of combined close ROC"
+    },
+    "demaker": {
+        "type": "float",
+        "name": "Demaker",
+        "comment": "DeMarker ratio of upward and downward pressure"
+    },
+    "er": {
+        "type": "float",
+        "name": "Er",
+        "comment": "Bull power plus bear power around EMA baseline"
+    },
+    "kdjdk": {
+        "type": "float",
+        "name": "KdjdK",
+        "comment": "K line from the KDJD oscillator"
+    },
+    "kdjdd": {
+        "type": "float",
+        "name": "KdjdD",
+        "comment": "D line from the KDJD oscillator"
+    },
+    "skdj": {
+        "type": "float",
+        "name": "Skdj",
+        "comment": "Slow KDJ oscillator"
+    },
+    "magiccci": {
+        "type": "float",
+        "name": "MagicCci",
+        "comment": "CCI variant using OHLC EWM-smoothed typical price"
+    },
+    "magiccci_v2": {
+        "type": "float",
+        "name": "MagicCci_v2",
+        "comment": "CCI variant using HLC EWM-smoothed typical price"
+    },
+    "short_moment": {
+        "type": "float",
+        "name": "short_moment",
+        "comment": "Momentum based on the lowest-amplitude candles in a short window"
+    },
+    "long_moment": {
+        "type": "float",
+        "name": "long_moment",
+        "comment": "Momentum based on the lowest-amplitude candles in a long window"
+    },
+    "Fi": {
+        "type": "float",
+        "name": "Fi",
+        "comment": "Alias for fi"
     }
 }

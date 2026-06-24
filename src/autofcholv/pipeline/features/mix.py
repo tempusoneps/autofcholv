@@ -2,7 +2,17 @@ import os
 
 import numpy as np
 import pandas as pd
+EPS = 1e-8
 import pandas_ta as ta
+
+
+def _wma(series: pd.Series, k: int) -> pd.Series:
+    weights = np.arange(1, k + 1, dtype=float)
+    return series.rolling(k, min_periods=1).apply(lambda x: np.dot(x, weights[-len(x):]) / weights[-len(x):].sum(), raw=True)
+
+
+def _sma(series: pd.Series, k: int) -> pd.Series:
+    return series.rolling(k, min_periods=1).mean()
 
 
 def extract_features(df: pd.DataFrame) -> pd.DataFrame:
@@ -120,5 +130,128 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
         (df["Close"] - keltner_middle + 2.0 * df["atr"]) / keltner_range,
         np.nan,
     )
+
+    c1 = df["High"] - df["Low"]
+    c2 = (df["High"] - df["Close"].shift(1)).abs()
+    c3 = (df["Low"] - df["Close"].shift(1)).abs()
+    tr = pd.concat([c1, c2, c3], axis=1).max(axis=1)
+    sma = _sma(df["Close"], volatility_n)
+    str_ = tr / (sma + 1e-8)
+    tr_up = np.where(df["Close"] > df["Close"].shift(1), str_, 0.0)
+    tr_dn = np.where(df["Close"] < df["Close"].shift(1), str_, 0.0)
+    wmatr_up_1 = _wma(pd.Series(tr_up, index=df.index), volatility_n)
+    wmatr_dn_1 = _wma(pd.Series(tr_dn, index=df.index), volatility_n)
+    wmatr_up_2 = _wma(pd.Series(tr_up, index=df.index), 2 * volatility_n)
+    wmatr_dn_2 = _wma(pd.Series(tr_dn, index=df.index), 2 * volatility_n)
+    fast_diff = wmatr_up_1 - wmatr_dn_1
+    slow_diff = wmatr_up_2 - wmatr_dn_2
+    fast_minus_slow = fast_diff - slow_diff
+    df["fear_greed_yidai_v1"] = _wma(pd.Series(fast_minus_slow, index=df.index), volatility_n)
+
+    rc = 100.0 * ((df["Close"] - df["Close"].shift(volatility_n)) / (df["Close"].shift(volatility_n) + 1e-8) + (df["Close"] - df["Close"].shift(2 * volatility_n)) / (df["Close"].shift(2 * volatility_n) + 1e-8))
+    rc_mean = rc.rolling(volatility_n, min_periods=1).mean()
+    median = df["Close"].rolling(volatility_n, min_periods=1).mean()
+    std = df["Close"].rolling(volatility_n, min_periods=1).std(ddof=0)
+    z_score = (df["Close"] - median).abs() / (std + 1e-8)
+    m = z_score.rolling(volatility_n, min_periods=1).mean()
+    bbw = std * m * 2.0 / (median + 1e-8)
+    bbw_mean = bbw.rolling(volatility_n, min_periods=1).mean()
+    c1 = df["High"] - df["Low"]
+    c2 = (df["High"] - df["Close"].shift(1)).abs()
+    c3 = (df["Low"] - df["Close"].shift(1)).abs()
+    tr = pd.concat([c1, c2, c3], axis=1).max(axis=1)
+    atr = tr.rolling(volatility_n, min_periods=1).mean()
+    df["damaov10"] = rc_mean * bbw_mean * (atr / (median + 1e-8))
+
+    up_move = np.where(df["High"] > df["High"].shift(1), df["High"] - df["High"].shift(1), 0.0)
+    down_move = np.where(df["Low"].shift(1) > df["Low"], df["Low"].shift(1) - df["Low"], 0.0)
+    xpdm = np.where(up_move > down_move, df["High"] - df["High"].shift(1), 0.0)
+    pdm = pd.Series(xpdm, index=df.index).rolling(volatility_n, min_periods=1).sum()
+    tr = pd.concat([
+        (df["High"] - df["Low"]).abs(),
+        (df["High"] - df["Close"]).abs(),
+        (df["Low"] - df["Close"]).abs(),
+    ], axis=1).max(axis=1)
+    tr_sum = tr.rolling(volatility_n, min_periods=1).sum()
+    di_plus = pdm / (tr_sum + 1e-8)
+    mtm = (df["Close"] / (df["Close"].shift(volatility_n) + 1e-8) - 1.0).rolling(window=volatility_n, min_periods=1).mean()
+    cvr_n = volatility_n
+    pc = df["Close"].pct_change()
+    vol = pc.rolling(cvr_n).std()
+    ret = pc.rolling(cvr_n).sum()
+    cvr = (ret / (vol + 1e-8)) * (df["Close"] * df["Volume"] / ((df["Close"] * df["Volume"]).rolling(cvr_n, min_periods=1).mean()))
+    df["Cvr_v0"] = cvr.rolling(cvr_n, min_periods=1).mean()
+
+    rc = 100.0 * (
+        (df["Close"] - df["Close"].shift(volatility_n)) / (df["Close"].shift(volatility_n) + 1e-8)
+        + (df["Close"] - df["Close"].shift(2 * volatility_n)) / (df["Close"].shift(2 * volatility_n) + 1e-8)
+    )
+    rc = rc.rolling(volatility_n, min_periods=1).mean()
+    median = df["Close"].rolling(volatility_n, min_periods=1).mean()
+    std = df["Close"].rolling(volatility_n, min_periods=1).std(ddof=0)
+    bbw = std / (median + 1e-8)
+    corr = df["Close"].rolling(volatility_n).corr(df["Volume"]).fillna(0.0) + 1.0
+    corr = corr.rolling(volatility_n, min_periods=1).mean()
+    df["Cbr_v1"] = rc * bbw * corr
+
+    params = [5, 8, 13, 21, 34, 55, 89]
+    fbnq_mean = 0.0
+    bbw_ori = 0.0
+    for pn in params:
+        fbnq_mean += df["Close"].ewm(span=pn, adjust=False).mean()
+        bbw_ori += df["Close"].rolling(volatility_n).std(ddof=0) / df["Close"].rolling(volatility_n, min_periods=1).mean()
+    fbnq_mean = fbnq_mean / len(params)
+    fbnq_mean = fbnq_mean.pct_change(volatility_n)
+    bbw_ori = bbw_ori / len(params)
+    df["Fbnq_pct_v5"] = fbnq_mean * bbw_ori
+
+    close_shift = df["Close"].shift(volatility_n)
+    volume_shift = df["Volume"].shift(volatility_n)
+    close_ratio = (df["Close"] - close_shift.rolling(volatility_n).mean()).abs() / close_shift
+    volume_ratio = (df["Volume"] - volume_shift.rolling(volatility_n).mean()) / volume_shift
+    angle = close_ratio * volume_ratio
+    direction = np.ones(len(df), dtype=float)
+    adj = np.ones(len(df), dtype=float)
+    condition = angle < 0
+    direction[condition.to_numpy()] = -1
+    adj[condition.to_numpy()] = np.inf
+    price_volume_resist = close_ratio / volume_ratio * direction * adj
+    df["PriceVolumeResist"] = price_volume_resist / volatility_n
+    adx_up_move = np.where(df["High"] > df["High"].shift(1), df["High"] - df["High"].shift(1), 0.0)
+    adx_down_move = np.where(df["Low"].shift(1) > df["Low"], df["Low"].shift(1) - df["Low"], 0.0)
+    adx_xpdm = np.where(adx_up_move > adx_down_move, df["High"] - df["High"].shift(1), 0.0)
+    adx_pdm = pd.Series(adx_xpdm, index=df.index).rolling(volatility_n, min_periods=1).sum()
+    adx_tr = pd.concat([
+        (df["High"] - df["Low"]).abs(),
+        (df["High"] - df["Close"].shift(1)).abs(),
+        (df["Low"] - df["Close"].shift(1)).abs(),
+    ], axis=1).max(axis=1)
+    adx_tr_sum = adx_tr.rolling(volatility_n, min_periods=1).sum()
+    adx_di_plus = adx_pdm / (adx_tr_sum + EPS)
+    adx_mtm = (df["Close"] / (df["Close"].shift(volatility_n) + EPS) - 1.0).rolling(volatility_n, min_periods=1).mean()
+    df["adx_mtm"] = adx_di_plus * adx_mtm
+    adx_xndm = np.where(adx_down_move > adx_up_move, df["Low"].shift(1) - df["Low"], 0.0)
+    adx_ndm = pd.Series(adx_xndm, index=df.index).rolling(volatility_n, min_periods=1).sum()
+    adx_di_minus = adx_ndm / (adx_tr_sum + EPS)
+    df["adx_mtm_neg"] = adx_di_minus * adx_mtm
+    taker_buy = df.get("taker_buy_quote_asset_volume", pd.Series(np.where(df["Close"] > df["Close"].shift(1), df["Close"] * df["Volume"], 0.0), index=df.index))
+    quote_volume = df.get("quote_volume", df["Close"] * df["Volume"])
+    taker_ratio = taker_buy.rolling(volatility_n, min_periods=1).sum() / (quote_volume.rolling(volatility_n, min_periods=1).sum() + EPS)
+    atr = adx_tr.rolling(volatility_n, min_periods=1).mean()
+    avg_price = df["Close"].rolling(volatility_n, min_periods=1).mean()
+    wd_atr = atr / (avg_price + EPS)
+    mtm = df["Close"] / (df["Close"].shift(volatility_n) + EPS) - 1.0
+    df["Mtam"] = (mtm * taker_ratio * wd_atr).rolling(volatility_n, min_periods=1).mean()
+    mtm_std = df["Close"].rolling(volatility_n, min_periods=1).std(ddof=0)
+    mtm_std_mtm = (mtm_std / (mtm_std.shift(volatility_n) + EPS) - 1.0).rolling(volatility_n, min_periods=1).mean()
+    bbw = mtm_std / (df["Close"].rolling(volatility_n, min_periods=1).mean() + EPS)
+    bbw_mean = bbw.rolling(volatility_n, min_periods=1).mean()
+    taker_buy_ratio = taker_buy.rolling(volatility_n, min_periods=1).sum() / (taker_buy.rolling(max(1, int(0.5 * volatility_n)), min_periods=1).sum() + EPS)
+    df["Msbt"] = mtm.rolling(volatility_n, min_periods=1).mean() * mtm_std_mtm * bbw_mean * taker_buy_ratio
+    rc = 100.0 * ((df["Close"] - df["Close"].shift(volatility_n)) / (df["Close"].shift(volatility_n) + EPS) + (df["Close"] - df["Close"].shift(2 * volatility_n)) / (df["Close"].shift(2 * volatility_n) + EPS))
+    rc_mean = rc.rolling(volatility_n, min_periods=1).mean()
+    df["Damaov10"] = df["damaov10"]
+    df["FearGreed_Yidai_v1"] = df["fear_greed_yidai_v1"]
+    df["CoppAtrBull"] = rc_mean * wd_atr * taker_ratio
 
     return df
