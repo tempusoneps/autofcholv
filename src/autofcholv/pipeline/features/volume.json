@@ -134,6 +134,11 @@
         "name": "Klinger Oscillator",
         "comment": "Normalized EMA spread of signed volume by typical price direction"
     },
+    "ko": {
+        "type": "float",
+        "name": "Ko",
+        "comment": "Klinger oscillator variant normalized to rolling range"
+    },
     "vra": {
         "type": "float",
         "name": "Volatility-adjusted Rate Composite",
@@ -223,5 +228,353 @@
         "type": "float",
         "name": "SROC Volume",
         "comment": "Rate of change of long EMA-smoothed volume"
+    },
+    "roc_vol": {
+        "type": "float",
+        "name": "ROC Volume",
+        "comment": "Volume divided by its N-period lag minus 1"
+    },
+    "macdvol": {
+        "type": "float",
+        "name": "MACD Volume",
+        "comment": "Volume-based MACD normalized by its signal line"
+    },
+    "volume_reg": {
+        "type": "float",
+        "name": "Volume Reg",
+        "comment": "Linear regression of quote-volume proxy"
+    },
+    "volume_tsf": {
+        "type": "float",
+        "name": "Volume TSF",
+        "comment": "Time series forecast of quote-volume proxy"
+    },
+    "amv": {
+        "type": "float",
+        "name": "AMV",
+        "comment": "Volume-weighted moving average of open-close midpoint"
+    },
+    "mfi": {
+        "type": "float",
+        "name": "MFI",
+        "comment": "Money Flow Index based on typical price and volume"
+    },
+    "obv": {
+        "type": "float",
+        "name": "OBV",
+        "comment": "CLV-weighted On Balance Volume variant"
+    },
+    "pvt_v2": {
+        "type": "float",
+        "name": "PVT v2",
+        "comment": "Price Volume Trend normalized by rolling score"
+    },
+    "pvt_v3": {
+        "type": "float",
+        "name": "PVT v3",
+        "comment": "Price Volume Trend short versus long score spread"
+    },
+    "pvt_v4": {
+        "type": "float",
+        "name": "PVT v4",
+        "comment": "Price Volume Trend normalized by rolling score"
+    },
+    "vr": {
+        "type": "float",
+        "name": "VR",
+        "comment": "Volume ratio of up-day and down-day volume"
+    },
+    "vao": {
+        "type": "float",
+        "name": "VAO",
+        "comment": "Volume analysis oscillator from midpoint-weighted volume"
+    },
+    "vao_v2": {
+        "type": "float",
+        "name": "VAO v2",
+        "comment": "Normalized volume analysis oscillator"
+    },
+    "volume_bias": {
+        "type": "float",
+        "name": "Volume Bias",
+        "comment": "Short-window quote-volume proxy mean divided by long-window mean minus 1"
+    },
+    "volume": {
+        "type": "float",
+        "name": "Volume",
+        "comment": "Rolling sum of quote-volume proxy"
+    },
+    "volumechg": {
+        "type": "float",
+        "name": "Volume Chg",
+        "comment": "Direction-weighted quote-volume change"
+    },
+    "maamt": {
+        "type": "float",
+        "name": "MAAMT",
+        "comment": "Volume relative to its rolling mean"
+    },
+    "upnum_fancy": {
+        "type": "float",
+        "name": "UpNum Fancy",
+        "comment": "Rolling count of positive close changes"
+    },
+    "trade_num": {
+        "type": "float",
+        "name": "Trade Num",
+        "comment": "Rolling sum of trade count proxy"
+    },
+    "buy_vol_ratio_fancy": {
+        "type": "float",
+        "name": "Buy Vol Ratio Fancy",
+        "comment": "Taker-buy quote volume divided by quote volume"
+    },
+
+    "taker_by_ratio": {
+        "type": "float",
+        "name": "Taker By Ratio",
+        "comment": "Rolling taker-buy quote volume divided by rolling quote volume"
+    },
+    "taker_by_ratio_per_trade": {
+        "type": "float",
+        "name": "Taker By Ratio Per Trade",
+        "comment": "Taker-buy ratio normalized by rolling trade count"
+    },
+    "vol_per_trade_fancy": {
+        "type": "float",
+        "name": "Vol Per Trade Fancy",
+        "comment": "Rolling quote volume divided by rolling trade count"
+    },
+    "mtm_tb": {
+        "type": "float",
+        "name": "Mtm Tb",
+        "comment": "EMA-smoothed close momentum multiplied by taker-buy pressure"
+    },
+    "dbcd_taker": {
+        "type": "float",
+        "name": "Dbcd Taker",
+        "comment": "DBCD bias oscillator multiplied by taker-buy ratio"
+    },
+    "mtm_bull": {
+        "type": "float",
+        "name": "Mtm Bull",
+        "comment": "Momentum, ATR, and taker-buy composite"
+    },
+    "mtm_bear": {
+        "type": "float",
+        "name": "Mtm Bear",
+        "comment": "Momentum, ATR, and taker-sell composite"
+    },
+
+    "buy_vwap_div_vwap_fancy": {
+        "type": "float",
+        "name": "Buy VWAP Div VWAP Fancy",
+        "comment": "Taker-buy VWAP divided by rolling VWAP"
+    },
+
+    "Pvo": {
+        "type": "float",
+        "name": "Pvo",
+        "comment": "Percentage volume oscillator from short and long EMA of volume"
+    },
+    "Vramt": {
+        "type": "float",
+        "name": "Vramt",
+        "comment": "Volume ratio based on up, down, and unchanged bars"
+    },
+    "v1": {
+        "type": "float",
+        "name": "V1",
+        "comment": "V1 momentum-volatility composite"
+    },
+    "v1up": {
+        "type": "float",
+        "name": "V1Up",
+        "comment": "Upper adaptive band distance for the V1 composite"
+    },
+    "v1_v2": {
+        "type": "float",
+        "name": "V1_v2",
+        "comment": "V1 momentum-volatility composite using mean-based z-score bands"
+    },
+    "v1up_v2": {
+        "type": "float",
+        "name": "V1Up_v2",
+        "comment": "Upper adaptive band distance for the V1_v2 composite"
+    },
+    "v1dn_v2": {
+        "type": "float",
+        "name": "V1Dn_v2",
+        "comment": "Lower adaptive band distance for the V1_v2 composite"
+    },
+    "v1dn": {
+        "type": "float",
+        "name": "V1Dn",
+        "comment": "Lower adaptive band distance for the V1 composite"
+    },
+    "Volume_Bias": {
+        "type": "float",
+        "name": "Volume_Bias",
+        "comment": "Alias for volume_bias"
+    },
+    "QuoteVolumeMean": {
+        "type": "float",
+        "name": "QuoteVolumeMean",
+        "comment": "Alias for quote_volume_mean"
+    },
+    "QuoteVolumeRatio": {
+        "type": "float",
+        "name": "QuoteVolumeRatio",
+        "comment": "Alias for quote_volume_ratio"
+    },
+    "VolumeReg": {
+        "type": "float",
+        "name": "VolumeReg",
+        "comment": "Alias for volume_reg"
+    },
+    "VolumeTSF": {
+        "type": "float",
+        "name": "VolumeTSF",
+        "comment": "Alias for volume_tsf"
+    },
+    "TradeNum": {
+        "type": "float",
+        "name": "TradeNum",
+        "comment": "Alias for trade_num"
+    },
+    "BuyVolRatio_fancy": {
+        "type": "float",
+        "name": "BuyVolRatio_fancy",
+        "comment": "Alias for buy_vol_ratio_fancy"
+    },
+    "VolPerTrade_fancy": {
+        "type": "float",
+        "name": "VolPerTrade_fancy",
+        "comment": "Alias for vol_per_trade_fancy"
+    },
+    "BuyVwapDivVwap_fancy": {
+        "type": "float",
+        "name": "BuyVwapDivVwap_fancy",
+        "comment": "Alias for buy_vwap_div_vwap_fancy"
+    },
+    "TakerByRatio": {
+        "type": "float",
+        "name": "TakerByRatio",
+        "comment": "Alias for taker_by_ratio"
+    },
+    "TakerByRatioPerTrade": {
+        "type": "float",
+        "name": "TakerByRatioPerTrade",
+        "comment": "Alias for taker_by_ratio_per_trade"
+    },
+    "V1": {
+        "type": "float",
+        "name": "V1",
+        "comment": "Alias for v1"
+    },
+    "V1Up": {
+        "type": "float",
+        "name": "V1Up",
+        "comment": "Alias for v1up"
+    },
+    "V1Dn": {
+        "type": "float",
+        "name": "V1Dn",
+        "comment": "Alias for v1dn"
+    },
+    "V1_v2": {
+        "type": "float",
+        "name": "V1_v2",
+        "comment": "Alias for v1_v2"
+    },
+    "V1Up_v2": {
+        "type": "float",
+        "name": "V1Up_v2",
+        "comment": "Alias for v1up_v2"
+    },
+    "V1Dn_v2": {
+        "type": "float",
+        "name": "V1Dn_v2",
+        "comment": "Alias for v1dn_v2"
+    },
+    "Mfi": {
+        "type": "float",
+        "name": "Mfi",
+        "comment": "Alias for mfi"
+    },
+    "Vr": {
+        "type": "float",
+        "name": "Vr",
+        "comment": "Alias for vr"
+    },
+    "Vao": {
+        "type": "float",
+        "name": "Vao",
+        "comment": "Alias for vao"
+    },
+    "Vao_v2": {
+        "type": "float",
+        "name": "Vao_v2",
+        "comment": "Alias for vao_v2"
+    },
+    "Volumechg": {
+        "type": "float",
+        "name": "Volumechg",
+        "comment": "Alias for volumechg"
+    },
+    "Wvad": {
+        "type": "float",
+        "name": "Wvad",
+        "comment": "Alias for wvad"
+    },
+    "QuanlityPriceCorr": {
+        "type": "float",
+        "name": "QuanlityPriceCorr",
+        "comment": "Alias for price_volume_corr"
+    },
+    "Volume": {
+        "type": "float",
+        "name": "Volume",
+        "comment": "Alias for volume"
+    },
+    "Force": {
+        "type": "float",
+        "name": "Force",
+        "comment": "Alias for force_index"
+    },
+    "Cmf": {
+        "type": "float",
+        "name": "Cmf",
+        "comment": "Alias for cmf"
+    },
+    "Obv": {
+        "type": "float",
+        "name": "Obv",
+        "comment": "Alias for obv"
+    },
+    "Pvo": {
+        "type": "float",
+        "name": "Pvo",
+        "comment": "Alias for pvo"
+    },
+    "VRA": {
+        "type": "float",
+        "name": "VRA",
+        "comment": "Alias for vra"
+    },
+    "Chla_fancy": {
+        "type": "float",
+        "name": "Chla_fancy",
+        "comment": "Alias for chla_fancy"
+    },
+    "NetVol_fancy": {
+        "type": "float",
+        "name": "NetVol_fancy",
+        "comment": "Alias for net_vol_fancy"
+    },
+    "Amv": {
+        "type": "float",
+        "name": "Amv",
+        "comment": "Alias for amv"
     }
 }

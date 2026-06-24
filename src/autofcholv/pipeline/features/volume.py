@@ -315,6 +315,276 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
 
     emap = df["Volume"].ewm(span=2 * momentum_n, adjust=False).mean()
     df["srocvol"] = (emap - emap.shift(momentum_n)) / (emap.shift(momentum_n) + EPS)
+    df["roc_vol"] = df["Volume"] / (df["Volume"].shift(momentum_n) + EPS) - 1.0
 
+    quote_volume_proxy = df["Close"] * df["Volume"]
+    df["volume_reg"] = quote_volume_proxy.rolling(momentum_n, min_periods=1).apply(lambda x: x.iloc[-1] if len(x) else np.nan, raw=False)
+    df["volume_tsf"] = quote_volume_proxy.rolling(momentum_n, min_periods=1).mean().shift(-1)
+
+    volume_ema_1 = df["Volume"].ewm(span=2 * momentum_n, adjust=False).mean()
+    volume_ema_2 = df["Volume"].ewm(span=4 * momentum_n, adjust=False).mean()
+    macdv = volume_ema_1 - volume_ema_2
+    macdv_signal = macdv.rolling(momentum_n, min_periods=1).mean()
+    df["macdvol"] = macdv / (macdv_signal + EPS) - 1.0
+
+
+    df = df.copy()
+
+    amov = df["Volume"] * (df["Open"] + df["Close"]) / 2.0
+    amv1 = amov.rolling(momentum_n, min_periods=1).sum() / (df["Volume"].rolling(momentum_n, min_periods=1).sum() + EPS)
+    df["amv"] = (amv1 - amv1.rolling(momentum_n, min_periods=1).min()) / (
+        amv1.rolling(momentum_n, min_periods=1).max() - amv1.rolling(momentum_n, min_periods=1).min() + EPS
+    )
+
+    typ_price = (df["High"] + df["Low"] + df["Close"]) / 3.0
+    mf = typ_price * df["Volume"]
+    mf_pos = pd.Series(np.where(typ_price >= typ_price.shift(1), mf, 0.0), index=df.index).rolling(momentum_n, min_periods=1).sum()
+    mf_neg = pd.Series(np.where(typ_price <= typ_price.shift(1), mf, 0.0), index=df.index).rolling(momentum_n, min_periods=1).sum()
+    df["mfi"] = 100.0 - 100.0 / (1.0 + mf_pos / (mf_neg + EPS))
+
+    clv = (2.0 * df["Close"] - df["Low"] - df["High"]) / (df["High"] - df["Low"] + EPS)
+    obv_va = clv * df["Volume"]
+    obv_sum = obv_va.rolling(momentum_n, min_periods=1).sum()
+    df["obv"] = obv_sum / (obv_sum.rolling(momentum_n, min_periods=1).mean() + EPS)
+
+    pvt = df["Close"].pct_change() * df["Volume"]
+    pvt_score = (pvt - pvt.rolling(momentum_n, min_periods=1).mean()) / (pvt.rolling(momentum_n, min_periods=1).std() + EPS)
+    pvt_sum = pvt_score.rolling(momentum_n, min_periods=1).sum()
+    df["pvt_v2"] = pvt / (pvt_sum.rolling(momentum_n, min_periods=1).mean() + EPS) - 1.0
+    df["pvt_v3"] = pvt_sum.rolling(momentum_n, min_periods=1).mean() - pvt_sum.rolling(2 * momentum_n, min_periods=1).mean()
+    df["pvt_v4"] = pvt / (pvt_sum.rolling(momentum_n, min_periods=1).mean() + EPS) - 1.0
+
+    av = np.where(df["Close"] > df["Close"].shift(1), df["Volume"], 0.0)
+    bv = np.where(df["Close"] < df["Close"].shift(1), df["Volume"], 0.0)
+    cv = np.where(df["Close"] == df["Close"].shift(1), df["Volume"], 0.0)
+    avs = pd.Series(av, index=df.index).rolling(momentum_n, min_periods=1).sum()
+    bvs = pd.Series(bv, index=df.index).rolling(momentum_n, min_periods=1).sum()
+    cvs = pd.Series(cv, index=df.index).rolling(momentum_n, min_periods=1).sum()
+    df["vr"] = (avs + 0.5 * cvs) / (bvs + 0.5 * cvs + EPS)
+
+    wv = df["Volume"] * (df["Close"] - 0.5 * df["High"] - 0.5 * df["Low"])
+    vao = wv + wv.shift(1)
+    vao_ma1 = vao.rolling(momentum_n, min_periods=1).mean()
+    vao_ma2 = vao.rolling(3 * momentum_n, min_periods=1).mean()
+    df["vao"] = vao_ma1 - vao_ma2
+    df["vao_v2"] = vao / (df["vao"] + EPS) - 1.0
+
+    quote_volume_proxy = df["Close"] * df["Volume"]
+    short_window = max(1, momentum_n // 4)
+    df["volume_bias"] = quote_volume_proxy.rolling(short_window, min_periods=1).mean() / (
+        quote_volume_proxy.rolling(momentum_n, min_periods=1).mean() + EPS
+    ) - 1.0
+
+    df["volume"] = quote_volume_proxy.rolling(momentum_n, min_periods=1).sum()
+    close_delta = df["Close"].pct_change()
+    direction = np.where(close_delta > 0, 1.0, np.where(close_delta < 0, -1.0, 0.0))
+    volume_change = quote_volume_proxy / (quote_volume_proxy.shift(1) + EPS) * direction
+    df["volumechg"] = volume_change.rolling(momentum_n, min_periods=1).max()
+
+    df["maamt"] = (df["Volume"] - df["Volume"].rolling(momentum_n, min_periods=1).mean()) / (
+        df["Volume"].rolling(momentum_n, min_periods=1).mean() + EPS
+    )
+
+    df["upnum_fancy"] = pd.Series((df["Close"].pct_change() > 0).astype(float), index=df.index).rolling(momentum_n, min_periods=1).sum()
+
+    trade_num_proxy = df["Volume"]
+    quote_volume_series = df.get("quote_volume", quote_volume_proxy)
+    taker_buy_quote_asset_volume = df.get(
+        "taker_buy_quote_asset_volume",
+        pd.Series(np.where(df["Close"] > df["Close"].shift(1), quote_volume_proxy, 0.0), index=df.index),
+    )
+    taker_buy_base_asset_volume = df.get(
+        "taker_buy_base_asset_volume",
+        pd.Series(np.where(df["Close"] > df["Close"].shift(1), df["Volume"], 0.0), index=df.index),
+    )
+
+    df["trade_num"] = trade_num_proxy.rolling(momentum_n, min_periods=1).sum()
+    taker_by_ratio = taker_buy_quote_asset_volume.rolling(momentum_n, min_periods=1).sum() / (
+        quote_volume_series.rolling(momentum_n, min_periods=1).sum() + EPS
+    )
+    df["taker_by_ratio"] = taker_by_ratio
+    df["buy_vol_ratio_fancy"] = taker_by_ratio
+
+    df["taker_by_ratio_per_trade"] = taker_by_ratio / (
+        trade_num_proxy.rolling(momentum_n, min_periods=1).mean() + EPS
+    )
+    df["vol_per_trade_fancy"] = quote_volume_series.rolling(momentum_n, min_periods=1).sum() / (
+        trade_num_proxy.rolling(momentum_n, min_periods=1).sum() + EPS
+    )
+    vwap = quote_volume_series.rolling(momentum_n, min_periods=1).sum() / (
+        df["Volume"].rolling(momentum_n, min_periods=1).sum() + EPS
+    )
+    buy_vwap = taker_buy_quote_asset_volume.rolling(momentum_n, min_periods=1).sum() / (
+        taker_buy_base_asset_volume.rolling(momentum_n, min_periods=1).sum() + EPS
+    )
+    df["buy_vwap_div_vwap_fancy"] = buy_vwap / (vwap + EPS)
+
+    mtm_base = df["Close"] / (df["Close"].shift(momentum_n) + EPS) - 1.0
+    mtm_mean = mtm_base.ewm(span=momentum_n, adjust=False).mean()
+    vma = quote_volume_series.rolling(momentum_n, min_periods=1).mean()
+    taker_buy_ma = taker_buy_quote_asset_volume / (vma + EPS) * 100.0
+    taker_buy_mean = taker_buy_ma.rolling(momentum_n, min_periods=1).mean()
+    df["mtm_tb"] = mtm_mean * taker_buy_mean
+
+    ma = df["Close"].rolling(momentum_n, min_periods=1).mean()
+    bias = (df["Close"] - ma) / (ma + EPS) * 100.0
+    bias_dif = bias - bias.shift(3 * momentum_n)
+    df["dbcd_taker"] = bias_dif.rolling(3 * momentum_n + 2, min_periods=1).mean() * taker_by_ratio
+
+    ma_bull = df["Close"].rolling(window=momentum_n, min_periods=1).mean()
+    mtm_bull = (df["Close"] / (ma_bull.shift(momentum_n) + EPS) - 1.0) * 100.0
+    mtm_bull_mean = mtm_bull.rolling(window=momentum_n, min_periods=1).mean()
+    tr1 = df["High"] - df["Low"]
+    tr2 = (df["High"] - df["Close"].shift(1)).abs()
+    tr3 = (df["Low"] - df["Close"].shift(1)).abs()
+    tr_bull = pd.DataFrame({"tr1": tr1, "tr2": tr2, "tr3": tr3}).max(axis=1)
+    atr_abs_bull = tr_bull.rolling(window=momentum_n, min_periods=1).mean()
+    atr_bull = atr_abs_bull / (ma_bull + EPS) * 100.0
+    taker_buy_ma_bull = taker_buy_quote_asset_volume / (vma + EPS) * 100.0
+    taker_buy_mean_bull = taker_buy_ma_bull.rolling(window=momentum_n, min_periods=1).mean()
+    df["mtm_bull"] = mtm_bull_mean * atr_bull * taker_buy_mean_bull
+
+    taker_sell_quote_asset_volume = quote_volume_series - taker_buy_quote_asset_volume
+    taker_sell_ma = taker_sell_quote_asset_volume / (vma + EPS) * 100.0
+    taker_sell_mean = taker_sell_ma.rolling(window=momentum_n, min_periods=1).mean()
+    df["mtm_bear"] = mtm_bull_mean * atr_bull * taker_sell_mean
+
+    mtm = df["Close"] / (df["Close"].shift(momentum_n) + EPS) - 1.0
+    mtm_mean = mtm.rolling(window=momentum_n, min_periods=1).mean()
+    c1 = df["High"] - df["Low"]
+    c2 = abs(df["High"] - df["Close"].shift(1))
+    c3 = abs(df["Low"] - df["Close"].shift(1))
+    tr = np.max(np.array([c1, c2, c3]), axis=0)
+    atr = pd.Series(tr, index=df.index).rolling(window=momentum_n, min_periods=1).mean()
+    avg_price = df["Close"].rolling(window=momentum_n, min_periods=1).mean()
+    wd_atr = atr / (avg_price + EPS)
+    mtm_l = df["Low"] / (df["Low"].shift(momentum_n) + EPS) - 1.0
+    mtm_h = df["High"] / (df["High"].shift(momentum_n) + EPS) - 1.0
+    mtm_c = df["Close"] / (df["Close"].shift(momentum_n) + EPS) - 1.0
+    mtm_c1 = mtm_h - mtm_l
+    mtm_c2 = abs(mtm_h - mtm_c.shift(1))
+    mtm_c3 = abs(mtm_l - mtm_c.shift(1))
+    mtm_tr = np.max(np.array([mtm_c1, mtm_c2, mtm_c3]), axis=0)
+    mtm_atr = pd.Series(mtm_tr, index=df.index).rolling(window=momentum_n, min_periods=1).mean()
+    mtm_l_mean = mtm_l.rolling(window=momentum_n, min_periods=1).mean()
+    mtm_h_mean = mtm_h.rolling(window=momentum_n, min_periods=1).mean()
+    mtm_c_mean = mtm_c.rolling(window=momentum_n, min_periods=1).mean()
+    mtm_c1 = mtm_h_mean - mtm_l_mean
+    mtm_c2 = abs(mtm_h_mean - mtm_c_mean.shift(1))
+    mtm_c3 = abs(mtm_l_mean - mtm_c_mean.shift(1))
+    mtm_tr_mean = np.max(np.array([mtm_c1, mtm_c2, mtm_c3]), axis=0)
+    mtm_atr_mean = pd.Series(mtm_tr_mean, index=df.index).rolling(window=momentum_n, min_periods=1).mean()
+    v1 = mtm_mean * wd_atr * mtm_atr * mtm_atr_mean
+    median = v1.rolling(window=momentum_n, min_periods=1).mean()
+    std = v1.rolling(momentum_n, min_periods=1).std(ddof=0)
+    z_score = (v1 - median).abs() / (std + EPS)
+    m1 = z_score.rolling(window=momentum_n, min_periods=1).max().shift(1)
+    upper = median + std * m1
+    lower = median - std * m1
+    df["v1dn"] = lower - v1
+
+    emap_1 = df["Volume"].ewm(span=momentum_n, adjust=False, min_periods=1).mean()
+    emap_2 = df["Volume"].ewm(span=2 * momentum_n, adjust=False, min_periods=1).mean()
+    df["Pvo"] = (emap_1 - emap_2) / (emap_2 + EPS)
+
+    av = np.where(df["Close"] > df["Close"].shift(1), df["Volume"], 0.0)
+    bv = np.where(df["Close"] < df["Close"].shift(1), df["Volume"], 0.0)
+    cv = np.where(df["Close"] == df["Close"].shift(1), df["Volume"], 0.0)
+    avs = pd.Series(av, index=df.index).rolling(momentum_n, min_periods=1).sum()
+    bvs = pd.Series(bv, index=df.index).rolling(momentum_n, min_periods=1).sum()
+    cvs = pd.Series(cv, index=df.index).rolling(momentum_n, min_periods=1).sum()
+    df["Vramt"] = (avs + 0.5 * cvs) / (bvs + 0.5 * cvs + EPS)
+
+    mtm_v1 = df["Close"] / (df["Close"].shift(momentum_n) + EPS) - 1.0
+    mtm_v1_mean = mtm_v1.rolling(window=momentum_n, min_periods=1).mean()
+    c1 = df["High"] - df["Low"]
+    c2 = abs(df["High"] - df["Close"].shift(1))
+    c3 = abs(df["Low"] - df["Close"].shift(1))
+    tr_v1 = np.max(np.array([c1, c2, c3]), axis=0)
+    atr_v1 = pd.Series(tr_v1, index=df.index).rolling(window=momentum_n, min_periods=1).mean()
+    avg_price_v1 = df["Close"].rolling(window=momentum_n, min_periods=1).mean()
+    wd_atr_v1 = atr_v1 / (avg_price_v1 + EPS)
+    mtm_l_v1 = df["Low"] / (df["Low"].shift(momentum_n) + EPS) - 1.0
+    mtm_h_v1 = df["High"] / (df["High"].shift(momentum_n) + EPS) - 1.0
+    mtm_c_v1 = df["Close"] / (df["Close"].shift(momentum_n) + EPS) - 1.0
+    mtm_c1_v1 = mtm_h_v1 - mtm_l_v1
+    mtm_c2_v1 = abs(mtm_h_v1 - mtm_c_v1.shift(1))
+    mtm_c3_v1 = abs(mtm_l_v1 - mtm_c_v1.shift(1))
+    mtm_tr_v1 = np.max(np.array([mtm_c1_v1, mtm_c2_v1, mtm_c3_v1]), axis=0)
+    mtm_atr_v1 = pd.Series(mtm_tr_v1, index=df.index).rolling(window=momentum_n, min_periods=1).mean()
+    mtm_l_mean_v1 = mtm_l_v1.rolling(window=momentum_n, min_periods=1).mean()
+    mtm_h_mean_v1 = mtm_h_v1.rolling(window=momentum_n, min_periods=1).mean()
+    mtm_c_mean_v1 = mtm_c_v1.rolling(window=momentum_n, min_periods=1).mean()
+    mtm_c1_mean_v1 = mtm_h_mean_v1 - mtm_l_mean_v1
+    mtm_c2_mean_v1 = abs(mtm_h_mean_v1 - mtm_c_mean_v1.shift(1))
+    mtm_c3_mean_v1 = abs(mtm_l_mean_v1 - mtm_c_mean_v1.shift(1))
+    mtm_tr_mean_v1 = np.max(np.array([mtm_c1_mean_v1, mtm_c2_mean_v1, mtm_c3_mean_v1]), axis=0)
+    mtm_atr_mean_v1 = pd.Series(mtm_tr_mean_v1, index=df.index).rolling(window=momentum_n, min_periods=1).mean()
+    v1_v2 = mtm_v1_mean * wd_atr_v1 * mtm_atr_v1 * mtm_atr_mean_v1
+    median_v1 = v1_v2.rolling(window=momentum_n, min_periods=1).mean()
+    std_v1 = v1_v2.rolling(momentum_n, min_periods=1).std(ddof=0)
+    z_score_v1 = abs(v1_v2 - median_v1) / (std_v1 + EPS)
+    m1_v1 = pd.Series(z_score_v1, index=df.index).rolling(window=momentum_n, min_periods=1).mean()
+    upper_v1 = median_v1 + std_v1 * m1_v1
+    lower_v1 = median_v1 - std_v1 * m1_v1
+    df["v1_v2"] = v1_v2
+    df["v1up_v2"] = upper_v1 - v1_v2
+    df["v1dn_v2"] = lower_v1 - v1_v2
+
+    df["v1"] = v1
+    df["v1up"] = upper - v1
+
+    df["ko"] = (ko - ko.rolling(momentum_n, min_periods=1).min()) / (ko.rolling(momentum_n, min_periods=1).max() - ko.rolling(momentum_n, min_periods=1).min() + EPS)
+
+    df["Amv"] = df["amv"]
+    df["Volume_Bias"] = df["volume_bias"]
+    df["QuoteVolumeMean"] = df["quote_volume_mean"]
+    df["QuoteVolumeRatio"] = df["quote_volume_ratio"]
+    df["VolumeReg"] = df["volume_reg"]
+    df["VolumeTSF"] = df["volume_tsf"]
+    df["TradeNum"] = df["trade_num"]
+    df["BuyVolRatio_fancy"] = df["buy_vol_ratio_fancy"]
+    df["VolPerTrade_fancy"] = df["vol_per_trade_fancy"]
+    df["BuyVwapDivVwap_fancy"] = df["buy_vwap_div_vwap_fancy"]
+    df["TakerByRatio"] = df["taker_by_ratio"]
+    df["TakerByRatioPerTrade"] = df["taker_by_ratio_per_trade"]
+    df["V1"] = df["v1"]
+    df["V1Up"] = df["v1up"]
+    df["V1Dn"] = df["v1dn"]
+    df["V1_v2"] = df["v1_v2"]
+    df["V1Up_v2"] = df["v1up_v2"]
+    df["V1Dn_v2"] = df["v1dn_v2"]
+
+    df["Pvt"] = df["pvt"]
+    df["Pvt_v2"] = df["pvt_v2"]
+    df["Pvt_v3"] = df["pvt_v3"]
+    df["Pvt_v4"] = df["pvt_v4"]
+    df["Pvi"] = df["pvi"]
+    df["Nvi"] = df["nvi"]
+    df["Wad"] = df["wad"]
+    df["Tmf"] = df["tmf"]
+    df["Emv"] = df["emv"]
+    df["Clv"] = df["clv_ma"]
+    df["Adosc"] = df["adosc"]
+    df["Fi"] = df["fi"]
+    df["FiRsi"] = df["fi_rsi"]
+    df["Vra"] = df["vra"]
+    df["Ke"] = df["ke"]
+    df["Ko"] = df["ko"]
+    df["Mfi"] = df["mfi"]
+    df["Vr"] = df["vr"]
+    df["Vao"] = df["vao"]
+    df["Vao_v2"] = df["vao_v2"]
+    df["Volumechg"] = df["volumechg"]
+    df["Wvad"] = df["wvad"]
+    df["QuanlityPriceCorr"] = df["price_volume_corr"]
+    df["Volume"] = df["volume"]
+    df["Force"] = df["force_index"]
+    df["Cmf"] = df["cmf"]
+    df["Obv"] = df["obv"]
+    df["Pvo"] = df["pvo"]
+    df["VRA"] = df["vra"]
+    df["Chla_fancy"] = df["chla_fancy"]
+    df["NetVol_fancy"] = df["net_vol_fancy"]
 
     return df

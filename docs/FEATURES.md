@@ -144,6 +144,7 @@ The pipeline executes in the order listed below.
 | `po` | float | Percent oscillator from short and long EMAs |
 | `cci_magic` | float | Smoothed CCI variant using MA of OHLC prices |
 | `cs_mtm` | float | Composite momentum: close momentum x std momentum x volume momentum |
+| `cs_mtm_v2` | float | Composite momentum using close momentum, std momentum, and quote-volume momentum |
 | `rsi_bbw` | float | Bollinger bandwidth change times momentum and RSI |
 | `rccd` | float | Smoothed difference of moving averages applied to smoothed close ratio |
 | `rccd_v2` | float | SMA-smoothed variant of RCCD |
@@ -166,6 +167,60 @@ The pipeline executes in the order listed below.
 | `fisher_v3` | float | Fisher transform variant with alternate smoothing and log mapping |
 | `arbr_ar` | float | AR-style range sentiment using high-open and open-low sums |
 | `arbr_br` | float | BR-style range sentiment using high-prev-close and prev-close-low sums |
+| `bias_v3` | float | Log close-to-moving-average bias normalized by 0.03 |
+| `bias_v4` | float | Typical price divided by its moving average minus 1 |
+| `bias_v11` | float | EMA-smoothed close bias weighted by quote-volume proxy |
+| `bias_v14` | float | Rolling fast/slow MA bias weighted by quote-volume proxy |
+| `bias36ma` | float | Rolling mean of the 3-period minus 6-period close MA spread |
+| `bir` | float | Four-price average breakout pressure over rolling extrema |
+| `copp_v3` | float | Coppock-style average of N and 1.618N close rates of change |
+| `roc` | float | Close divided by its N-period lag minus 1 |
+| `cci_v2` | float | WMA-based CCI using all four prices |
+| `cci_v3` | float | EMA-smoothed CCI using all four prices |
+| `rsimean` | float | Rolling mean of RSI |
+| `short_moment` | float | Momentum based on the lowest-amplitude candles in a short window |
+| `long_moment` | float | Momentum based on the lowest-amplitude candles in a long window |
+| `rsis` | float | RSI normalized to its rolling min-max range |
+| `pmarp_yidai_v1` | float | Rolling percentile rank of absolute close-to-MA ratio |
+| `dbcd_v2` | float | EWM-smoothed change in close-to-MA bias |
+| `smi_v2` | float | Smoothed stochastic midpoint oscillator |
+| `dbcd_v3` | float | SMA-smoothed bias divergence |
+| `micd` | float | Momentum indicator based on shifted MTM averages |
+| `rsj` | float | Asymmetry of upside vs downside realized variance |
+| `mtm_max` | float | Current momentum minus rolling maximum prior momentum |
+| `bias_v2` | float | Volume-weighted bias on regression-smoothed close |
+| `rsiv` | float | Volume-based RSI analogue |
+| `rsih` | float | RSI minus its EMA signal line |
+| `fi` | float | Force Index z-score smoothed by EMA |
+| `fi_rsi` | float | RSI of Force Index smoothed by EMA |
+| `force` | float | Quote-volume force index relative to its moving average |
+| `ko` | float | Klinger oscillator variant normalized to rolling range |
+| `vramt` | float | Volume ratio computed from up/down/flat volume buckets |
+| `v1_v2` | float | V1 composite momentum-volatility factor |
+| `v1up_v2` | float | Upper adaptive band distance for V1 |
+| `v1dn_v2` | float | Lower adaptive band distance for V1 |
+| `mtmmean_v10` | float | Momentum mean multiplied by combined long-range and intrabar volatility |
+| `mtmmean_v12` | float | MTM weighted by taker-buy volume ratio and averaged over a rolling window |
+| `mtmhcm` | float | High-based momentum mean relative to close moving-average compression |
+| `si` | float | Weighted price-movement strength normalized by range components |
+| `wr` | float | Position of close within the rolling high-low range |
+| `rocvol` | float | Volume rate of change over the momentum lookback |
+| `mtmmean_v4` | float | Rolling regression of N-period momentum |
+| `uos` | float | Triple-timeframe momentum oscillator over close and true range |
+| `zlmacd` | float | DEMA-based MACD variant normalized by the spread between zero-lag averages |
+| `tma_bias` | float | Close divided by double-smoothed moving average minus 1 |
+| `mtmmean_v8` | float | Momentum mean multiplied by high-low range volatility |
+| `mtmvolmean` | float | EMA-smoothed price momentum times EMA-smoothed quote-volume momentum |
+| `autocorrelation` | float | Rolling lag-1 autocorrelation of close returns |
+| `copp` | float | Coppock-style moving average of combined close ROC |
+| `demaker` | float | DeMarker ratio of upward and downward pressure |
+| `er` | float | Bull power plus bear power around EMA baseline |
+| `kdjdk` | float | K line from the KDJD oscillator |
+| `kdjdd` | float | D line from the KDJD oscillator |
+| `skdj` | float | Slow KDJ oscillator |
+| `magiccci` | float | CCI variant using OHLC EWM-smoothed typical price |
+| `magiccci_v2` | float | CCI variant using HLC EWM-smoothed typical price |
+| `Fi` | float | Alias for fi |
 
 ---
 
@@ -185,6 +240,23 @@ The pipeline executes in the order listed below.
 | `vwap_to_low` | float | rolling_vwap / Low - 1 |
 | `close_ma_price` | float | Rolling mean Close over MOMENTUM_LOOKBACK |
 | `typical_to_vwap` | float | typical_price / rolling_vwap - 1 |
+| `avgprice` | float | Rolling VWAP normalized within its rolling range |
+| `avgpricetohigh` | float | VWAP relative to current high |
+| `avgpricetolow` | float | VWAP relative to current low |
+| `AvgPrice` | float | Alias for avgprice |
+| `AvgPriceToHigh` | float | Alias for avgpricetohigh |
+| `AvgPriceToLow` | float | Alias for avgpricetolow |
+| `LowPrice` | float | Alias for lowprice |
+| `Typ` | float | Alias for typ |
+| `VwapSignal` | float | Alias for vwap_signal |
+| `WVAD` | float | Normalized rolling candle-body volume accumulation |
+| `Vwapbias` | float | Rolling VWAP divided by its moving average minus 1 |
+| `Vwap` | float | Alias for rolling_vwap |
+| `Wc` | float | Alias for wc |
+| `lowprice` | float | Rolling mean close price |
+| `typ` | float | Typical price (H+L+C)/3 |
+| `vwap_signal` | float | Typical price relative to rolling VWAP minus 1 |
+| `wc` | float | Weighted close EMA ratio |
 
 ---
 
@@ -212,8 +284,8 @@ The pipeline executes in the order listed below.
 | `adxr_diff` | float | Lag-smoothed DI+ minus DI- directional trend spread |
 | `wma_ma_gap` | float | Weighted MA minus simple MA normalized by rolling absolute gap |
 | `adx_strength` | float | Rolling normalized positive and negative directional movement over true range |
-| `adx_di_plus` | float | Positive directional index component |
-| `adx_di_minus` | float | Negative directional index component |
+| `adx_di_plus` | float | Positive directional index component from the source ADX DI+ file |
+| `adx_di_minus` | float | Negative directional index component from the source ADX DI- file |
 | `vi_plus` | float | Vortex-style positive movement over true range |
 | `vi_minus` | float | Vortex-style negative movement over true range |
 | `turtle_breakout` | float | Close breakout distance relative to Turtle channel width |
@@ -230,8 +302,8 @@ The pipeline executes in the order listed below.
 | `reg_angle` | float | Angle of rolling close regression slope in degrees |
 | `expma_ratio` | float | Fast EMA divided by slower EMA minus 1 |
 | `diff_ema_ratio` | float | EMA spread normalized by its own EMA |
-| `regema_bias` | float | Close divided by linear regression of EMA minus 1 |
-| `regtema_bias` | float | TEMA divided by linear regression of TEMA minus 1 |
+| `regema_bias` | float | Close relative to its EMA baseline minus 1 |
+| `regtema_bias` | float | TEMA relative to its regression baseline minus 1 |
 | `trtrix` | float | One-bar percent change of the EMA trend line |
 | `trv` | float | Smoothed percentage change of the rolling close mean |
 | `mac_v4` | float | Moving average channel using rolling high/low extremes and open price |
@@ -247,6 +319,115 @@ The pipeline executes in the order listed below.
 | `mreg` | float | Rolling mean of close versus linear regression residual |
 | `adxr_pos` | float | Smoothed positive directional index component |
 | `adxr_neg` | float | Smoothed negative directional index component |
+| `reg` | float | Close divided by rolling linear regression minus 1 |
+| `reg_v2` | float | Percentage deviation of Close from a 2N rolling regression line |
+| `reg_v3` | float | Close divided by rolling OLS regression fit minus 1 |
+| `diff_ema` | float | Difference between short and long EMAs |
+| `hma_signal` | float | High price minus its rolling mean, normalized to a 0-1 range |
+| `hullma_signal` | float | Hull moving-average spread normalized to a 0-1 range |
+| `mac_v2` | float | Midpoint-price MAC normalized to a 0-1 range |
+| `mac_v3` | float | Rolling channel-midpoint MAC normalized to a 0-1 range |
+| `hullma_ratio` | float | Hull moving-average numerator divided by its smoothed denominator |
+| `vidya_v2` | float | Open-close midpoint VIDYA normalized by close |
+| `vidya_v5` | float | Typical-price VIDYA normalized by close |
+| `mac` | float | Close-price moving-average convergence normalized to 0-1 |
+| `pjc_distance` | float | Close distance above mean absolute deviation normalized by MAD |
+| `hma` | float | High price minus its rolling mean normalized by the mean |
+| `tma_v2` | float | Double-smoothed midpoint-price TMA normalized by close |
+| `tma_v3` | float | Double-smoothed rolling channel midpoint TMA normalized by close |
+| `vidya_v3` | float | Typical-price VIDYA normalized by close |
+| `vidya_v4` | float | Open-close midpoint VIDYA normalized by close |
+| `gap` | float | Weighted MA minus simple MA normalized by rolling absolute gap |
+| `arron` | float | Z-scored difference between rolling high and low recency |
+| `ma` | float | Close rolling mean normalized within its rolling range |
+| `vma` | float | Open-high-low-close average normalized by its rolling mean |
+| `mm` | float | Fast moving average divided by slow moving average minus 1 |
+| `expma` | float | Difference between fast and slow EMAs normalized to [0,1] |
+| `lma` | float | Low-price moving average bias |
+| `ic_v2` | float | Close relative to the Ichimoku cloud span boundaries |
+| `ic_v3` | float | Normalized Ichimoku cloud thickness |
+| `ic_v4` | float | Normalized close position inside the Ichimoku cloud |
+| `adxrpos` | float | Smoothed positive directional movement component |
+| `dema` | float | Double exponential moving average normalized by its EMA baseline |
+| `tema` | float | Triple exponential moving average normalized by its EMA baseline |
+| `hlma` | float | High-low moving average spread normalized by its own mean |
+| `dma` | float | ATR-weighted moving average difference |
+| `angle` | float | Angle of the rolling linear regression line of close prices |
+| `vi` | float | Vortex positive minus negative directional spread |
+| `trrq_v3` | float | Asymmetric regression-return signal using quote-volume proxy |
+| `adxdip` | float | Source ADX DI+ alias |
+| `adxdim` | float | Source ADX DI- alias |
+| `adxr` | float | Source ADXR spread between smoothed DI+ and DI- |
+| `bbi` | float | Bull and Bear Index normalized by close |
+| `hullma` | float | Hull moving-average ratio using the source formula |
+| `ic` | float | Span A divided by Span B from the source IC file |
+| `regema` | float | Close divided by linear regression of EMA(close) minus 1 |
+| `regtema` | float | TEMA divided by linear regression of TEMA minus 1 |
+| `tema_v2` | float | Close relative to a 2N-period TEMA |
+| `tma` | float | Close divided by double-smoothed moving average minus 1 |
+| `turtle` | float | Source turtle-channel breakout distance normalized by channel width |
+| `vidya` | float | Close relative to the source VIDYA baseline |
+| `t3` | float | Close divided by Tillson T3 minus 1 |
+| `Mac_v2` | float | Alias for mac_v2 |
+| `Mac_v3` | float | Alias for mac_v3 |
+| `Mac_v4` | float | Alias for mac_v4 |
+| `Mac_v5` | float | Alias for mac_v5 |
+| `Vidya_v2` | float | Alias for vidya_v2 |
+| `Vidya_v3` | float | Alias for vidya_v3 |
+| `Vidya_v4` | float | Alias for vidya_v4 |
+| `Vidya_v5` | float | Alias for vidya_v5 |
+| `Tma_v2` | float | Alias for tma_v2 |
+| `Tma_v3` | float | Alias for tma_v3 |
+| `Arron` | float | Alias for arron |
+| `Acs` | float | Alias for acs |
+| `Mac` | float | Alias for mac |
+| `Vidya` | float | Alias for vidya |
+| `Tma` | float | Alias for tma |
+| `Ma` | float | Alias for ma |
+| `Vma` | float | Alias for vma |
+| `Mm` | float | Alias for mm |
+| `Gap` | float | Alias for gap |
+| `Dema` | float | Alias for dema |
+| `Tema` | float | Alias for tema |
+| `Hma` | float | Alias for hma |
+| `Reg` | float | Alias for reg |
+| `Reg_v2` | float | Alias for reg_v2 |
+| `Reg_v3` | float | Alias for reg_v3 |
+| `T3` | float | Alias for t3 |
+| `DiffEma` | float | Alias for diff_ema |
+| `Adxrpos` | float | Alias for adxr_pos |
+| `Adxrneg` | float | Alias for adxr_neg |
+| `Expma` | float | Alias for expma |
+| `Vi` | float | Alias for vi |
+| `Bbi` | float | Alias for bbi |
+| `RegTema` | float | Alias for regtema |
+| `Turtle` | float | Alias for turtle |
+| `MaSignal` | float | Alias for ma_signal |
+| `HmaSignal` | float | Alias for hma_signal |
+| `HullmaSignal` | float | Alias for hullma_signal |
+| `Ic` | float | Alias for ic |
+| `Ic_v2` | float | Alias for ic_v2 |
+| `Ic_v3` | float | Alias for ic_v3 |
+| `Ic_v4` | float | Alias for ic_v4 |
+| `Adxr` | float | Alias for adxr |
+| `Regema` | float | Alias for regema |
+| `Adx` | float | Alias for adx_strength |
+| `Dma` | float | Alias for dma |
+| `Vi+` | float | Alias for vi_plus |
+| `Vi-` | float | Alias for vi_minus |
+| `Mak` | float | Alias for mak |
+| `Sgcz` | float | Alias for sgcz |
+| `Cse` | float | Alias for cse |
+| `Trrq` | float | Alias for trrq |
+| `Mreg` | float | Alias for mreg |
+| `Angle` | float | Alias for angle_reg |
+| `AdxDi+` | float | Alias for adx_di_plus |
+| `AdxDi-` | float | Alias for adx_di_minus |
+| `BbiBias` | float | Alias for bbi_bias |
+| `Trv` | float | Alias for trv |
+| `PjcDistance` | float | Alias for pjc_distance |
+| `Trrq_v3` | float | Alias for trrq_v3 |
+| `TrTrix` | float | Alias for trtrix |
 
 ---
 
@@ -286,6 +467,89 @@ The pipeline executes in the order listed below.
 | `atr_lower` | float | ATR-based lower channel ratio normalized by moving average |
 | `fb_upper_signal` | float | Close position relative to Fibonacci upper ATR band |
 | `pac_width_signal` | float | PAC width normalized by its rolling mean minus 1 |
+| `volume_std` | float | Rolling standard deviation of Volume |
+| `grid` | float | N-period percent change of rolling z-score position |
+| `lcsd` | float | Low price versus close moving average normalized by low |
+| `atr_count` | float | Count of closes outside an ATR band over the lookback |
+| `zfabsmean` | float | Ranked mean positive amplitude after filtering on average-price change |
+| `bbw` | float | Bollinger bandwidth change multiplied by momentum and RSI |
+| `apz` | float | Adaptive Price Zone channel width normalized by double EMA close |
+| `apz_upper` | float | Upper Adaptive Price Zone channel normalized to rolling range |
+| `apz_lower` | float | Lower Adaptive Price Zone channel normalized to rolling range |
+| `bolling` | float | Bollinger breakout distance normalized by standard deviation |
+| `bolling_width` | float | Adaptive Bollinger width based on rolling z-score mean |
+| `cv` | float | Rate of change of high-low EMA amplitude |
+| `dc` | float | Distance between close and Donchian middle channel normalized by channel width |
+| `dc_signal` | float | Close minus Donchian middle channel |
+| `dc_v2` | float | Close relative to Donchian middle channel |
+| `kcupper` | float | Keltner channel upper band normalized to rolling range |
+| `kclower` | float | Keltner channel lower band normalized to rolling range |
+| `pac` | float | PAC width normalized by its rolling mean |
+| `pacupper` | float | PAC upper band normalized to rolling range |
+| `paclower` | float | PAC lower band normalized to rolling range |
+| `pacupper_v2` | float | Close minus PAC upper band, rolling averaged |
+| `paclower_v2` | float | PAC lower band minus close, rolling averaged |
+| `rwih` | float | Random Walk Index high-side measure |
+| `rwil` | float | Random Walk Index low-side measure |
+| `Bolling` | float | Alias for bolling |
+| `Bolling_v2` | float | Alias for bolling_v2 |
+| `Bolling_v3` | float | Alias for bolling_v3 |
+| `Bolling_fancy` | float | Alias for bolling_fancy |
+| `EnvSignal` | float | Alias for env_signal |
+| `EnvUpper` | float | Alias for env_upper |
+| `EnvLower` | float | Alias for env_lower |
+| `KcSignal` | float | Alias for kc_signal |
+| `KcUpperSignal` | float | Alias for kc_upper_signal |
+| `KcLowerSignal` | float | Alias for kc_lower_signal |
+| `VwapBbw` | float | Alias for vwap_bbw |
+| `RetBoll_fancy` | float | Alias for ret_boll_fancy |
+| `Lchc_fancy` | float | Alias for lchc_fancy |
+| `AdaptBollingv3` | float | Alias for adapt_bollingv3 |
+| `Bollcount_dem` | float | Alias for bollcount_dem |
+| `DzcciLower` | float | Alias for dzcci_lower |
+| `DzcciUpper` | float | Alias for dzcci_upper |
+| `DzrsiLowerSignal` | float | Alias for dzrsi_lower_signal |
+| `DzrsiUpperSignal` | float | Alias for dzrsi_upper_signal |
+| `FbLower` | float | Alias for fb_lower |
+| `FbUpper` | float | Alias for fb_upper |
+| `DzcciLowerSignal` | float | Alias for dzcci_lower_signal |
+| `DzcciLowerSignal_v2` | float | Alias for dzcci_lower_signal_v2 |
+| `DzcciUpperSignal` | float | Alias for dzcci_upper_signal |
+| `DzcciUpperSignal_v2` | float | Alias for dzcci_upper_signal_v2 |
+| `FbLowerSignal` | float | Alias for fb_lower_signal |
+| `FbLowerSignal_v2` | float | Alias for fb_lower_signal_v2 |
+| `FbLowerSignal_v3` | float | Alias for fb_lower_signal_v3 |
+| `FbUpperSignal` | float | Alias for fb_upper_signal |
+| `FbUpperSignal_v2` | float | Alias for fb_upper_signal_v2 |
+| `FbUpperSignal_v3` | float | Alias for fb_upper_signal_v3 |
+| `VixBw` | float | Alias for vix_bw |
+| `VolumeStd` | float | Alias for volume_std |
+| `Grid` | float | Alias for grid |
+| `Lcsd` | float | Alias for lcsd |
+| `Apz` | float | Alias for apz |
+| `ApzUpper` | float | Alias for apz_upper |
+| `ApzLower` | float | Alias for apz_lower |
+| `Bbw` | float | Alias for bbw |
+| `Cv` | float | Alias for cv |
+| `Dc` | float | Alias for dc |
+| `DcSignal` | float | Alias for dc_signal |
+| `Dc_v2` | float | Alias for dc_v2 |
+| `EnvUpperSignal` | float | Alias for env_upper_signal |
+| `EnvLowerSignal` | float | Alias for env_lower_signal |
+| `Rwi` | float | Alias for rwi |
+| `RwiH` | float | Alias for rwi_high |
+| `RwiL` | float | Alias for rwi_low |
+| `Atr` | float | Alias for atr |
+| `AtrPct` | float | Alias for atr_pct |
+| `AtrUpper` | float | Alias for atr_upper |
+| `AtrLower` | float | Alias for atr_lower |
+| `Pac` | float | Alias for pac |
+| `PacUpper` | float | Alias for pacupper |
+| `PacLower` | float | Alias for paclower |
+| `PacUpper_v2` | float | Alias for pacupper_v2 |
+| `PacLower_v2` | float | Alias for paclower_v2 |
+| `Pfe` | float | Direction-signed price efficiency |
+| `ChangeStd` | float | N-period return multiplied by rolling return std |
 
 ---
 
@@ -320,6 +584,7 @@ The pipeline executes in the order listed below.
 | `adosc` | float | Normalized EMA spread of cumulative CLV-weighted volume |
 | `wvad` | float | Normalized rolling sum of body-weighted volume |
 | `klinger_oscillator` | float | Normalized EMA spread of signed volume by typical price direction |
+| `ko` | float | Klinger oscillator variant normalized to rolling range |
 | `vra` | float | Dual-horizon price ROC multiplied by rolling close volatility |
 | `ke` | float | Signed squared n-period price change amplified by normalized volume |
 | `roc_volume` | float | Volume / Volume.shift(n) - 1 |
@@ -331,13 +596,80 @@ The pipeline executes in the order listed below.
 | `force_ratio` | float | Force index divided by its rolling mean |
 | `quote_volume_mean` | float | Rolling mean of Close * Volume proxy |
 | `quote_volume_ratio` | float | Quote-volume proxy divided by its rolling mean |
-| `v1` | float | Momentum composite amplified by ATR-based volatility factors |
+| `v1` | float | V1 momentum-volatility composite |
 | `v1_up` | float | Distance from V1 to its adaptive upper Bollinger-like band |
 | `v1_down` | float | Distance from V1 to its adaptive lower Bollinger-like band |
 | `mfi_standard` | float | Typical-price money flow index using positive and negative flow sums |
 | `chla_fancy` | float | CLV-weighted quote-volume proxy rolling sum |
 | `net_vol_fancy` | float | Return-signed quote-volume proxy rolling sum |
 | `srocvol` | float | Rate of change of long EMA-smoothed volume |
+| `roc_vol` | float | Volume divided by its N-period lag minus 1 |
+| `macdvol` | float | Volume-based MACD normalized by its signal line |
+| `volume_reg` | float | Linear regression of quote-volume proxy |
+| `volume_tsf` | float | Time series forecast of quote-volume proxy |
+| `amv` | float | Volume-weighted moving average of open-close midpoint |
+| `mfi` | float | Money Flow Index based on typical price and volume |
+| `obv` | float | CLV-weighted On Balance Volume variant |
+| `pvt_v2` | float | Price Volume Trend normalized by rolling score |
+| `pvt_v3` | float | Price Volume Trend short versus long score spread |
+| `pvt_v4` | float | Price Volume Trend normalized by rolling score |
+| `vr` | float | Volume ratio of up-day and down-day volume |
+| `vao` | float | Volume analysis oscillator from midpoint-weighted volume |
+| `vao_v2` | float | Normalized volume analysis oscillator |
+| `volume_bias` | float | Short-window quote-volume proxy mean divided by long-window mean minus 1 |
+| `volume` | float | Rolling sum of quote-volume proxy |
+| `volumechg` | float | Direction-weighted quote-volume change |
+| `maamt` | float | Volume relative to its rolling mean |
+| `upnum_fancy` | float | Rolling count of positive close changes |
+| `trade_num` | float | Rolling sum of trade count proxy |
+| `buy_vol_ratio_fancy` | float | Taker-buy quote volume divided by quote volume |
+| `taker_by_ratio` | float | Rolling taker-buy quote volume divided by rolling quote volume |
+| `taker_by_ratio_per_trade` | float | Taker-buy ratio normalized by rolling trade count |
+| `vol_per_trade_fancy` | float | Rolling quote volume divided by rolling trade count |
+| `mtm_tb` | float | EMA-smoothed close momentum multiplied by taker-buy pressure |
+| `dbcd_taker` | float | DBCD bias oscillator multiplied by taker-buy ratio |
+| `mtm_bull` | float | Momentum, ATR, and taker-buy composite |
+| `mtm_bear` | float | Momentum, ATR, and taker-sell composite |
+| `buy_vwap_div_vwap_fancy` | float | Taker-buy VWAP divided by rolling VWAP |
+| `Pvo` | float | Alias for pvo |
+| `Vramt` | float | Volume ratio based on up, down, and unchanged bars |
+| `v1up` | float | Upper adaptive band distance for the V1 composite |
+| `v1_v2` | float | V1 momentum-volatility composite using mean-based z-score bands |
+| `v1up_v2` | float | Upper adaptive band distance for the V1_v2 composite |
+| `v1dn_v2` | float | Lower adaptive band distance for the V1_v2 composite |
+| `v1dn` | float | Lower adaptive band distance for the V1 composite |
+| `Volume_Bias` | float | Alias for volume_bias |
+| `QuoteVolumeMean` | float | Alias for quote_volume_mean |
+| `QuoteVolumeRatio` | float | Alias for quote_volume_ratio |
+| `VolumeReg` | float | Alias for volume_reg |
+| `VolumeTSF` | float | Alias for volume_tsf |
+| `TradeNum` | float | Alias for trade_num |
+| `BuyVolRatio_fancy` | float | Alias for buy_vol_ratio_fancy |
+| `VolPerTrade_fancy` | float | Alias for vol_per_trade_fancy |
+| `BuyVwapDivVwap_fancy` | float | Alias for buy_vwap_div_vwap_fancy |
+| `TakerByRatio` | float | Alias for taker_by_ratio |
+| `TakerByRatioPerTrade` | float | Alias for taker_by_ratio_per_trade |
+| `V1` | float | Alias for v1 |
+| `V1Up` | float | Alias for v1up |
+| `V1Dn` | float | Alias for v1dn |
+| `V1_v2` | float | Alias for v1_v2 |
+| `V1Up_v2` | float | Alias for v1up_v2 |
+| `V1Dn_v2` | float | Alias for v1dn_v2 |
+| `Mfi` | float | Alias for mfi |
+| `Vr` | float | Alias for vr |
+| `Vao` | float | Alias for vao |
+| `Vao_v2` | float | Alias for vao_v2 |
+| `Volumechg` | float | Alias for volumechg |
+| `Wvad` | float | Alias for wvad |
+| `QuanlityPriceCorr` | float | Alias for price_volume_corr |
+| `Volume` | float | Alias for volume |
+| `Force` | float | Alias for force_index |
+| `Cmf` | float | Alias for cmf |
+| `Obv` | float | Alias for obv |
+| `VRA` | float | Alias for vra |
+| `Chla_fancy` | float | Alias for chla_fancy |
+| `NetVol_fancy` | float | Alias for net_vol_fancy |
+| `Amv` | float | Alias for amv |
 
 ---
 
@@ -351,6 +683,17 @@ The pipeline executes in the order listed below.
 | `spread_volatility_ratio` | float | spread_proxy divided by rolling close-return volatility |
 | `price_volume_resistance` | float | Price move magnitude per volume move magnitude adapted from PriceVolumeResist |
 | `coppock_atr_volume` | float | Coppock momentum multiplied by normalized ATR and volume pressure |
+| `bidask_spread` | float | Rolling bid-ask spread estimate from OHLC prices |
+| `market_placement_v2` | float | VWAP-validity checked market placement proxy |
+| `liquidity_v3` | float | Volume divided by log spread and return volatility proxy |
+| `amihud` | float | Amihud illiquidity proxy using intraday shortest price path |
+| `marketpl` | float | Market placement / average holding cost |
+| `marketpl_v2` | float | Market placement with VWAP validity check |
+| `MarketPl` | float | Alias for marketpl |
+| `MarketPl_v2` | float | Alias for marketpl_v2 |
+| `Liquidity_v3` | float | Alias for liquidity_v3 |
+| `Amihud` | float | Alias for amihud |
+| `BidaskSpread` | float | Alias for bidask_spread |
 
 ---
 
@@ -398,6 +741,19 @@ The pipeline executes in the order listed below.
 | `gap_pct` | float | (Open - previous Close) / previous Close |
 | `range_position` | float | (Close - Low) / (High - Low) |
 | `body_to_true_range` | float | Absolute candlestick body divided by true range |
+| `fear_greed_yidai_v1` | float | Weighted momentum of bullish and bearish true-range amplitudes |
+| `damaov10` | float | Coppock, Bollinger width, and ATR composite |
+| `adx_mtm` | float | Positive directional movement multiplied by rolling momentum |
+| `Cvr_v0` | float | Cumulative return over rolling return volatility multiplied by relative quote volume |
+| `Cbr_v1` | float | Coppock-style momentum multiplied by Bollinger bandwidth and price-volume correlation |
+| `Fbnq_pct_v5` | float | Fibonacci EMA momentum percent change multiplied by average Bollinger bandwidth |
+| `PriceVolumeResist` | float | Close-to-volume breakout difficulty ratio normalized by window length |
+| `Mtam` | float | Momentum times taker buy ratio times ATR volatility composite |
+| `Msbt` | float | Momentum, std momentum, BBW, and taker buy composite |
+| `CoppAtrBull` | float | Coppock momentum times ATR times taker buy activity |
+| `adx_mtm_neg` | float | Negative directional movement multiplied by rolling momentum |
+| `Damaov10` | float | Alias for damaov10 |
+| `FearGreed_Yidai_v1` | float | Alias for fear_greed_yidai_v1 |
 
 ---
 
