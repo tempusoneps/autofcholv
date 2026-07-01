@@ -51,13 +51,13 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     if macd_result is not None and not macd_result.empty:
         df["macd"]        = macd_result.iloc[:, 0]
         df["macd_hist"]   = macd_result.iloc[:, 1]
-        df["macd_signal"] = macd_result.iloc[:, 2]
+        df["macd_line"] = macd_result.iloc[:, 2]
 
     ppo_result = ta.ppo(df["Close"], fast=12, slow=26, signal=9)
     if ppo_result is not None and not ppo_result.empty:
         df["ppo"]        = ppo_result.iloc[:, 0]
         df["ppo_hist"]   = ppo_result.iloc[:, 1]
-        df["ppo_signal"] = ppo_result.iloc[:, 2]
+        df["ppo_line"] = ppo_result.iloc[:, 2]
 
     df["ulcer_index"] = ta.ui(df["Close"], length=momentum_n)
     df["cmo"]         = ta.cmo(df["Close"], length=momentum_n)

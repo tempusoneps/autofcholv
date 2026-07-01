@@ -86,8 +86,8 @@ def test_extract_features_close_columns():
     expected = [
         "ema_fast", "ema_slow", "rsi", "rsi_slope",
         "tsi", "roc_close", "close_zscore", "efficiency_ratio",
-        "macd", "macd_signal", "macd_hist",
-        "ppo", "ppo_signal", "ppo_hist",
+        "macd", "macd_line", "macd_hist",
+        "ppo", "ppo_line", "ppo_hist",
         "ulcer_index", "cmo", "roc_skew", "roc_kurt",
         "mb", "std", "ub", "lb",
         "cci", "kdj_k", "kdj_d", "kdj_j", "fisher",
@@ -213,7 +213,7 @@ def test_extract_features_group_columns():
 
 def test_extract_features_signal_columns():
     result = extract_features(make_ohlcv(300))
-    expected = ["couple_cs_signal", "ema_cross_signal"]
+    expected = ["couple_cs_signal", "ema_cross_signal", "min_max_10_signal", "macd_histogram_reversal_signal", "bb_rejection_signal"]
     for col in expected:
         assert col in result.columns, f"Missing signal column: '{col}'"
 
@@ -235,7 +235,7 @@ def test_extract_features_direction_values():
 
 def test_extract_features_signal_values():
     result = extract_features(make_ohlcv(300))
-    valid = {"None", "Bullish", "Bearish"}
+    valid = {"None", "Buy", "Sell"}
     assert set(result["couple_cs_signal"].unique()).issubset(valid)
     assert set(result["ema_cross_signal"].unique()).issubset(valid)
 
