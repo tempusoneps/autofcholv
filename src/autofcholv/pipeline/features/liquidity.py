@@ -1,7 +1,6 @@
-import os
-
 import numpy as np
 import pandas as pd
+from autofcholv.config.config import Config
 
 
 EPS = 1e-8
@@ -126,7 +125,7 @@ def edge_rolling(df: pd.DataFrame, window: int, sign: bool = False, **kwargs) ->
     return pd.Series(s, index=df.index)
 
 
-def extract_features(df: pd.DataFrame) -> pd.DataFrame:
+def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     """
     Calculate liquidity and price-volume composite features adapted from quant-ohlcv-feature.
     Feature definitions follow liquidity.json.
@@ -137,7 +136,7 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         DataFrame with new features.
     """
-    n = int(os.getenv("VOLUME_LOOKBACK", os.getenv("MOMENTUM_LOOKBACK", 24)))
+    n = config.volume_lookback
 
     quote_volume_proxy = df["Close"] * df["Volume"]
     quote_volume_ema = quote_volume_proxy.ewm(span=n, adjust=False).mean()

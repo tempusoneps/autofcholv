@@ -1,19 +1,21 @@
-import os
-
 import numpy as np
 import pandas as pd
 import pandas_ta as ta
+from autofcholv.config.config import Config
 
 
 def _rolling_regression_last(values: np.ndarray) -> float:
-    if np.isnan(values).any():
+    if len(values) < 2 or not np.isfinite(values).all():
         return np.nan
     x = np.arange(len(values), dtype=float)
-    slope, intercept = np.polyfit(x, values, 1)
+    try:
+        slope, intercept = np.polyfit(x, values, 1)
+    except Exception:
+        return np.nan
     return slope * x[-1] + intercept
 
 
-def extract_features(df: pd.DataFrame) -> pd.DataFrame:
+def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     """
     Calculate features based on Close column.
     Feature definitions follow close.json.
@@ -24,9 +26,9 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         DataFrame with new features.
     """
-    fast_n     = int(os.getenv("FAST_TREND_LOOKBACK", 24))
-    slow_n     = int(os.getenv("SLOW_TREND_LOOKBACK", 245))
-    momentum_n = int(os.getenv("MOMENTUM_LOOKBACK", 24))
+    fast_n     = config.fast_trend_lookback
+    slow_n     = config.slow_trend_lookback
+    momentum_n = config.momentum_lookback
 
     df["ema_fast"] = ta.ema(df["Close"], length=fast_n)
     df["ema_slow"] = ta.ema(df["Close"], length=slow_n)
@@ -108,12 +110,6 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
             kama[i] = previous + smoothing_values[i] * (close_values[i] - previous)
     df["kama"] = kama
     df["kama_bias"] = df["Close"] / (df["kama"] + 1e-8) - 1.0
-
-
-
-
-
-
 
     bias_ma = df["Close"].rolling(momentum_n, min_periods=1).mean()
     df["bias"] = df["Close"] / (bias_ma + 1e-8) - 1.0
@@ -1049,26 +1045,5 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     volatility = df["High"].rolling(momentum_n, min_periods=1).max() / (df["Low"].rolling(momentum_n, min_periods=1).min() + 1e-8) - 1.0
     hourly_volatility = (df["High"] / (df["Low"] + 1e-8) - 1.0).rolling(momentum_n, min_periods=1).mean()
     df["mtmmean_v10"] = mtm.rolling(window=momentum_n, min_periods=1).mean() * (volatility + hourly_volatility)
-
-    df["Cs_mtm"] = df["cs_mtm"]
-    df["Cs_mtm_v2"] = df["cs_mtm_v2"]
-    df["MtmMean_v4"] = df["mtmmean_v4"]
-    df["MtmMean_v8"] = df["mtmmean_v8"]
-    df["MtmMean_v10"] = df["mtmmean_v10"]
-    df["MtmMean_v12"] = df["mtmmean_v12"]
-    df["MtmVolMean"] = df["mtmvolmean"]
-    df["MtmHcm"] = df["mtmhcm"]
-    df["ShortMoment"] = df["short_moment"]
-    df["LongMoment"] = df["long_moment"]
-    df["PmoTEMA"] = df["pmo_tema"]
-    df["Pmarp_Yidai_v1"] = df["pmarp_yidai_v1"]
-    df["Dbcd_v2"] = df["dbcd_v2"]
-    df["Dbcd_v3"] = df["dbcd_v3"]
-    df["Rsj"] = df["rsj"]
-    df["Rsiv"] = df["rsiv"]
-    df["Rsih"] = df["rsih"]
-    df["Fi"] = df["fi"]
-    df["FiRsi"] = df["fi_rsi"]
-    df["Sroc_v2"] = df["sroc_v2"]
 
     return df

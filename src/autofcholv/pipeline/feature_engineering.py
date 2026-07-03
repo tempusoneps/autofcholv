@@ -1,4 +1,6 @@
 import pandas as pd
+from typing import Callable
+from autofcholv.config.config import Config
 from autofcholv.pipeline.features.close import extract_features as extract_close_features
 from autofcholv.pipeline.features.mix import extract_features as extract_mix_features
 from autofcholv.pipeline.features.price import extract_features as extract_price_features
@@ -14,25 +16,32 @@ from autofcholv.pipeline.features.signal import extract_features as extract_sign
 from autofcholv.pipeline.features.volume import extract_features as extract_volume_features
 from autofcholv.utils.timing import timing, timeit
 
+FEATURE_STEPS = [
+    ("time_features", extract_time_features),
+    ("resample_features", extract_resample_features),
+    ("candlestick_features", extract_candlestick_features),
+    ("close_features", extract_close_features),
+    ("price_features", extract_price_features),
+    ("trend_features", extract_trend_features),
+    ("volatility_features", extract_volatility_features),
+    ("volume_features", extract_volume_features),
+    ("liquidity_features", extract_liquidity_features),
+    ("lag_features", extract_lag_features),
+    ("mix_features", extract_mix_features),
+    ("group_features", extract_group_features),
+    ("signal_features", extract_signal_features),
+]
+
 
 @timing
-def build_features(df: pd.DataFrame) -> pd.DataFrame:
-    steps = [
-        ("time_features", extract_time_features),
-        ("resample_features", extract_resample_features),
-        ("candlestick_features", extract_candlestick_features),
-        ("close_features", extract_close_features),
-        ("price_features", extract_price_features),
-        ("trend_features", extract_trend_features),
-        ("volatility_features", extract_volatility_features),
-        ("volume_features", extract_volume_features),
-        ("liquidity_features", extract_liquidity_features),
-        ("lag_features", extract_lag_features),
-        ("mix_features", extract_mix_features),
-        ("group_features", extract_group_features),
-        ("signal_features", extract_signal_features),
-    ]
-    for name, func in steps:
+def build_features(
+    df: pd.DataFrame,
+    config: Config,
+    progress_callback: Callable[[str], None] | None = None,
+) -> pd.DataFrame:
+    for name, func in FEATURE_STEPS:
         with timeit(name):
-            df = func(df).copy()
+            df = func(df, config).copy()
+        if progress_callback:
+            progress_callback(name)
     return df

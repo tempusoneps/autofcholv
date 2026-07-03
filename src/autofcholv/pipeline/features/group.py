@@ -1,10 +1,10 @@
-import os
 import pandas as pd
 import pandas_ta as ta
 import numpy as np
+from autofcholv.config.config import Config
 
 
-def extract_features(df: pd.DataFrame) -> pd.DataFrame:
+def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     cols = ['high_lag1', 'low_lag1', 'volume_lag1', 'ibs', 'ibs_lag1',
             'upwick', 'lowwick', 'rsi', 'rsi_lag1', 'volume_avg', 'ub', 'lb']
     missing_cols = [col for col in cols if col not in df.columns]
@@ -27,7 +27,7 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     df['high_ub_pattern']     = np.where(df["High"] > df["ub"], "HighAboveUB", "HighBelowUB")
     df['low_lb_pattern']      = np.where(df["Low"]  < df["lb"], "LowBelowLB",  "LowAboveLB")
 
-    _1day_bars     = int(os.getenv("ONE_DAY_BARS", 49))
+    _1day_bars     = config.one_day_bars
     _1month_bars   = _1day_bars * 22
     _6month_bars   = _1month_bars * 6
     if len(df) < _6month_bars:

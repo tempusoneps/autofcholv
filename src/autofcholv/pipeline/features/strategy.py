@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import pandas_ta as ta
+from autofcholv.config.config import Config
 
 
 WINDOW_BARS = 2
@@ -26,7 +27,7 @@ def _time_slice(series: pd.Series, hhmm: int, how: str) -> float:
     return values.max() if how == "max_before" else values.min()
 
 
-def extract_features(df: pd.DataFrame) -> pd.DataFrame:
+def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     df["trade_date"] = df.index.normalize()
     df["bar_in_day"] = df.groupby("trade_date").cumcount()
     df["open_range_high"] = df.groupby("trade_date")["High"].transform(lambda s: s.iloc[:WINDOW_BARS].max())

@@ -1,7 +1,8 @@
 import pandas as pd
+from autofcholv.config.config import Config
 
 
-def extract_features(df: pd.DataFrame) -> pd.DataFrame:
+def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     """
     Tính toán các features dựa trên cột Date hoặc index
 
@@ -18,6 +19,6 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     df['year'] = df.index.year
     df['day_of_week'] = df.index.dayofweek
     df['time_int'] = df['hour'] * 100 + df['minute']
-    df["session_progress"] = ((df.hour * 60 + df.minute) - 9 * 60) / (51 * 5) # update by config in .env later
+    df["session_progress"] = ((df.hour * 60 + df.minute) - 9 * 60) / (51 * 5)
 
     return df

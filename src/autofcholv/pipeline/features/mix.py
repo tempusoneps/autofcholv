@@ -1,9 +1,8 @@
-import os
-
 import numpy as np
 import pandas as pd
 EPS = 1e-8
 import pandas_ta as ta
+from autofcholv.config.config import Config
 
 
 def _wma(series: pd.Series, k: int) -> pd.Series:
@@ -15,7 +14,7 @@ def _sma(series: pd.Series, k: int) -> pd.Series:
     return series.rolling(k, min_periods=1).mean()
 
 
-def extract_features(df: pd.DataFrame) -> pd.DataFrame:
+def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     """
     Calculate mixed/combined features.
     Feature definitions follow mix.json.
@@ -31,9 +30,9 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     if missing_cols:
         raise ValueError(f"Missing columns: {missing_cols}")
     
-    ibs_n        = int(os.getenv("IBS_LOOKBACK", 5))
-    volatility_n = int(os.getenv("VOLATILITY_LOOKBACK", 24))
-    one_day_bars = int(os.getenv("ONE_DAY_BARS", 49))
+    ibs_n        = config.ibs_lookback
+    volatility_n = config.volatility_lookback
+    one_day_bars = config.one_day_bars
 
     rolling_low  = df["Low"].rolling(ibs_n).min()
     rolling_high = df["High"].rolling(ibs_n).max()

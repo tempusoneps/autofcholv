@@ -1,3 +1,4 @@
+import json
 import os
 import subprocess
 import tempfile
@@ -49,6 +50,12 @@ def test_cli_help():
     result = subprocess.run([*_cli_command(), "--help"], capture_output=True, text=True)
     assert result.returncode == 0
     assert "autofcholv" in result.stdout
+
+
+def test_cli_extract_help_mentions_progress_toggle():
+    result = subprocess.run([*_cli_command(), "extract", "--help"], capture_output=True, text=True)
+    assert result.returncode == 0
+    assert "--no-progress" in result.stdout
 
 
 def test_cli_version():
@@ -122,7 +129,7 @@ def test_cli_output_log_messages():
 
 def test_cli_generate_config():
     with tempfile.TemporaryDirectory() as tmpdir:
-        config_path = os.path.join(tmpdir, "config.env")
+        config_path = os.path.join(tmpdir, "config.json")
 
         result = subprocess.run(
             [*_cli_command(), "generate-config", "--path", config_path],
@@ -133,8 +140,58 @@ def test_cli_generate_config():
         assert os.path.exists(config_path), "Config file was not created"
 
         with open(config_path) as f:
-            content = f.read()
-        assert "SELECTED_TIME_FRAME" in content
+            config = json.load(f)
+        assert config["SELECTED_TIME_FRAME"] == "5m"
+
+
+def test_cli_generate_json_config():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        config_path = os.path.join(tmpdir, "config.json")
+
+        result = subprocess.run(
+            [*_cli_command(), "generate-config", "--path", config_path],
+            capture_output=True, text=True,
+        )
+
+        assert result.returncode == 0, f"CLI failed:\n{result.stderr}"
+        assert os.path.exists(config_path), "Config file was not created"
+
+        with open(config_path) as f:
+            config = json.load(f)
+        assert config["SELECTED_TIME_FRAME"] == "5m"
+
+
+def test_cli_generate_json_config_preserves_existing_values():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        config_path = os.path.join(tmpdir, "config.json")
+        with open(config_path, "w") as f:
+            json.dump({"SELECTED_TIME_FRAME": "15m"}, f)
+
+        result = subprocess.run(
+            [*_cli_command(), "generate-config", "--path", config_path],
+            capture_output=True, text=True,
+        )
+
+        assert result.returncode == 0, f"CLI failed:\n{result.stderr}"
+
+        with open(config_path) as f:
+            config = json.load(f)
+        assert config["SELECTED_TIME_FRAME"] == "15m"
+        assert "ONE_DAY_BARS" in config
+
+
+def test_cli_generate_env_config_is_not_supported():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        config_path = os.path.join(tmpdir, "config.env")
+
+        result = subprocess.run(
+            [*_cli_command(), "generate-config", "--path", config_path],
+            capture_output=True, text=True,
+        )
+
+        assert result.returncode == 1
+        assert not os.path.exists(config_path)
+        assert "Failed to generate configuration file" in result.stderr
 
 
 def test_cli_invalid_csv_no_ohlcv():

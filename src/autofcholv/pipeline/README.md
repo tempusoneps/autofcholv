@@ -54,7 +54,7 @@ Returns a validation report without mutating the DataFrame.
 
 ## 3. Feature Engineering — `feature_engineering.py`
 
-**Entry point:** `build_features(df) → df`
+**Entry point:** `build_features(df, config) → df`
 
 Runs 9 sub-modules in order. Each module adds columns according to its `.json` specification (see [`features/README.md`](features/README.md)).
 
@@ -74,6 +74,6 @@ Runs 9 sub-modules in order. Each module adds columns according to its `.json` s
 
 ## 4. Preprocessing — `preprocessing.py`
 
-**Entry point:** `preprocess_data(df) → df`
+**Entry point:** `preprocess_data(df, config) → df`
 
 Final cleanup before model input: drops all rows that still contain `NaN` after feature engineering.

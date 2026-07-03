@@ -1,13 +1,12 @@
-import os
-
 import numpy as np
 import pandas as pd
+from autofcholv.config.config import Config
 
 
 EPS = 1e-8
 
 
-def extract_features(df: pd.DataFrame) -> pd.DataFrame:
+def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     """
     Calculate price-derived features adapted from quant-ohlcv-feature.
     Feature definitions follow price.json.
@@ -18,7 +17,7 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         DataFrame with new features.
     """
-    momentum_n = int(os.getenv("MOMENTUM_LOOKBACK", 24))
+    momentum_n = config.momentum_lookback
 
     typical_price = (df["High"] + df["Low"] + df["Close"]) / 3.0
     weighted_close = (df["High"] + df["Low"] + 2.0 * df["Close"]) / 4.0
