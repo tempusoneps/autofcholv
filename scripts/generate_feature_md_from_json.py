@@ -82,6 +82,9 @@ def module_title(stem: str) -> str:
 
 
 def load_feature_file(path: Path) -> dict[str, dict[str, Any]]:
+    if path.stat().st_size == 0:
+        return {}
+
     with path.open(encoding="utf-8") as file:
         data = json.load(file)
 
@@ -108,6 +111,9 @@ def render_markdown(feature_files: list[Path]) -> str:
 
     for index, path in enumerate(feature_files, start=1):
         features = load_feature_file(path)
+        if not features:
+            continue
+
         lines.extend(
             [
                 f"## {index}. {module_title(path.stem)} — `{path.stem}.py`",
@@ -135,7 +141,10 @@ def main() -> None:
     features_dir = args.features_dir.resolve()
     output = args.output.resolve()
 
-    feature_files = sorted(features_dir.glob("*.json"), key=module_sort_key)
+    feature_files = sorted(
+        (path for path in features_dir.glob("*.json") if path.stat().st_size > 0),
+        key=module_sort_key,
+    )
     if not feature_files:
         raise FileNotFoundError(f"No JSON files found in {features_dir}")
 
