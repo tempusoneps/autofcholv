@@ -213,7 +213,13 @@ def test_extract_features_group_columns():
 
 def test_extract_features_signal_columns():
     result = extract_features(make_ohlcv(300))
-    expected = ["couple_cs_signal", "ema_cross_signal", "min_max_10_signal", "macd_histogram_reversal_signal", "bb_rejection_signal"]
+    expected = [
+        "momentum_signal",
+        "prev_day_bias",
+        "strategy_003_signal",
+        "strategy_003_entry_signal",
+        "signal",
+    ]
     for col in expected:
         assert col in result.columns, f"Missing signal column: '{col}'"
 
@@ -235,9 +241,8 @@ def test_extract_features_direction_values():
 
 def test_extract_features_signal_values():
     result = extract_features(make_ohlcv(300))
-    valid = {"None", "Buy", "Sell"}
-    assert set(result["couple_cs_signal"].unique()).issubset(valid)
-    assert set(result["ema_cross_signal"].unique()).issubset(valid)
+    assert set(result["strategy_003_entry_signal"].unique()).issubset({"None", "Buy", "Sell"})
+    assert set(result["strategy_003_signal"].unique()).issubset({"", "long", "short"})
 
 
 def test_extract_features_candlestick_non_negative():
