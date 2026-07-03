@@ -1,7 +1,8 @@
 import pandas as pd
+from autofcholv.config.config import Config
 
 
-def extract_features(df: pd.DataFrame) -> pd.DataFrame:
+def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     tmp_data = df.copy()
     tmp_data['day_high'] = tmp_data['High']
     tmp_data['day_low'] = tmp_data['Low']

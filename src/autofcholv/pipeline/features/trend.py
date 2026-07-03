@@ -1,14 +1,13 @@
-import os
-
 import numpy as np
 import pandas as pd
+from autofcholv.config.config import Config
 
 
 EPS = 1e-8
 
 
 def _rolling_regression_last(values: np.ndarray) -> float:
-    if np.isnan(values).any():
+    if len(values) < 2 or not np.isfinite(values).all():
         return np.nan
     x = np.arange(len(values), dtype=float)
     try:
@@ -19,7 +18,7 @@ def _rolling_regression_last(values: np.ndarray) -> float:
 
 
 def _rolling_regression_slope(values: np.ndarray) -> float:
-    if np.isnan(values).any():
+    if len(values) < 2 or not np.isfinite(values).all():
         return np.nan
     x = np.arange(len(values), dtype=float)
     try:
@@ -44,7 +43,7 @@ def _scale_01(values, window: int) -> pd.Series:
     return (values - low) / (high - low + EPS)
 
 
-def extract_features(df: pd.DataFrame) -> pd.DataFrame:
+def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     """
     Calculate trend-following features adapted from quant-ohlcv-feature.
     Feature definitions follow trend.json.
@@ -55,7 +54,7 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         DataFrame with new features.
     """
-    trend_n = int(os.getenv("FAST_TREND_LOOKBACK", 24))
+    trend_n = config.fast_trend_lookback
 
     ema_1 = df["Close"].ewm(span=trend_n, adjust=False).mean()
     ema_2 = ema_1.ewm(span=trend_n, adjust=False).mean()

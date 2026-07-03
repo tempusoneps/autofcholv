@@ -1,108 +1,123 @@
-import os
 import json
+from dataclasses import asdict, dataclass, field, fields
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, get_origin
 
 
+@dataclass(frozen=True)
+class Config:
+    selected_time_frame: str = "5m"
+    one_day_bars: int = 49
+    one_hour_bars: int = 12
+    one_week_bars: int = 245
+    morning_bars: int = 30
+    afternoon_bars: int = 19
+    momentum_lookback: int = 24
+    volatility_lookback: int = 24
+    volume_lookback: int = 24
+    fast_trend_lookback: int = 24
+    slow_trend_lookback: int = 245
+    ibs_lookback: int = 5
+    drop_first_rows: int = 245
+    multi_rsi: list[int] = field(default_factory=lambda: [14, 50, 42])
+
+
+CONFIG_FIELD_NAMES = {field_name for field_name in Config.__dataclass_fields__}
+CONFIG_KEY_ALIASES = {
+    "SELECTED_TIME_FRAME": "selected_time_frame",
+    "ONE_DAY_BARS": "one_day_bars",
+    "ONE_HOUR_BARS": "one_hour_bars",
+    "ONE_WEEK_BARS": "one_week_bars",
+    "MORNING_BARS": "morning_bars",
+    "AFTERNOON_BARS": "afternoon_bars",
+    "MOMENTUM_LOOKBACK": "momentum_lookback",
+    "VOLATILITY_LOOKBACK": "volatility_lookback",
+    "VOLUME_LOOKBACK": "volume_lookback",
+    "FAST_TREND_LOOKBACK": "fast_trend_lookback",
+    "SLOW_TREND_LOOKBACK": "slow_trend_lookback",
+    "IBS_LOOKBACK": "ibs_lookback",
+    "DROP_FIRST_ROWS": "drop_first_rows",
+    "MULTI_RSI": "multi_rsi",
+}
+FIELD_TO_CONFIG_KEY = {field: key for key, field in CONFIG_KEY_ALIASES.items()}
 DEFAULT_CONFIG = {
-    "SELECTED_TIME_FRAME": "5m",
-    "ONE_DAY_BARS": "49",
-    "ONE_HOUR_BARS": "12",
-    "ONE_WEEK_BARS": "245",
-    "MORNING_BARS": "30",
-    "AFTERNOON_BARS": "19",
-    "MOMENTUM_LOOKBACK": "24",
-    "VOLATILITY_LOOKBACK": "24",
-    "VOLUME_LOOKBACK": "24",
-    "FAST_TREND_LOOKBACK": "24",
-    "SLOW_TREND_LOOKBACK": "245",
-    "IBS_LOOKBACK": "5",
-    "DROP_FIRST_ROWS": "245",
+    FIELD_TO_CONFIG_KEY[field_name]: value
+    for field_name, value in asdict(Config()).items()
 }
 
-def load_config(
-    config_file: Optional[str] = None
-) -> None:
+def load_config(config_file: Optional[str] = None) -> Config:
     """
-    Load config with priority:
-    1. env
-    2. file
-    3. defaults
+    Load config from JSON/YAML file or built-in defaults.
     """
-
-    # 1. env
-    is_success = _load_from_env()
-    if is_success:
-        return 
-
-    # 2. file
-    is_success = _load_from_file(config_file)
-    if is_success:
-        return 
-    # 3. defaults
-    is_success = _load_from_defaults()
-    if is_success:
-        return
+    return _load_from_file(config_file) if config_file else Config()
 
 def generate_default_config_file(path: Optional[str] = None) -> bool:
     if not path:
-        path = ".env"
+        path = "config.json"
     
     file_path = Path(path)
-    existing_keys = set()
     
     try:
-        if file_path.exists():
-            with file_path.open("r", encoding="utf-8") as f:
-                for line in f:
-                    line = line.strip()
-                    if line and not line.startswith("#") and "=" in line:
-                        key = line.split("=", 1)[0].strip()
-                        existing_keys.add(key)
-        
-        with file_path.open("a" if file_path.exists() else "w", encoding="utf-8") as f:
-            for key, value in DEFAULT_CONFIG.items():
-                if key not in existing_keys:
-                    f.write(f"{key}={value}\n")
-        return True
+        if file_path.suffix.lower() == ".json":
+            config = dict(DEFAULT_CONFIG)
+            if file_path.exists():
+                existing_config = json.loads(file_path.read_text(encoding="utf-8"))
+                config.update(existing_config)
+            file_path.write_text(
+                json.dumps(config, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            return True
+
+        raise ValueError("Default config generation only supports .json files")
     except Exception as e:
         print(f"Error generating config file: {e}")
         return False
 
 
-def _load_from_file(path: Optional[str]) -> bool:
+def _load_from_file(path: Optional[str]) -> Config:
     if not path:
-        return False
+        return Config()
 
     file_path = Path(path)
     if not file_path.exists():
         raise FileNotFoundError(f"Config file not found: {path}")
 
-    if file_path.suffix in [".json"]:
-        config = json.loads(file_path.read_text())
-        return _update_config(config)
+    suffix = file_path.suffix.lower()
 
-    elif file_path.suffix in [".yaml", ".yml"]:
+    if suffix == ".json":
+        config = json.loads(file_path.read_text())
+        return _config_from_mapping(config)
+
+    if suffix in [".yaml", ".yml"]:
         import yaml
         config = yaml.safe_load(file_path.read_text())
-        return _update_config(config)
-    return False
+        return _config_from_mapping(config or {})
+
+    raise ValueError(f"Unsupported config file format: {file_path.suffix}")
 
 
-def _update_config(config: Dict[str, Any]) -> bool:
-    for key, value in DEFAULT_CONFIG.items():
-        os.environ[key] = config.get(key, value)
-    return True
-
-def _load_from_env() -> bool:
-    for key, value in DEFAULT_CONFIG.items():
-        if not os.getenv(key):
-            return False
-    return True
+def _config_from_mapping(config: Dict[str, Any]) -> Config:
+    values = asdict(Config())
+    config_fields = {field.name: field for field in fields(Config)}
+    for key, value in config.items():
+        field_name = CONFIG_KEY_ALIASES.get(key, key)
+        if field_name in CONFIG_FIELD_NAMES:
+            values[field_name] = _coerce_config_value(value, config_fields[field_name].type)
+    return Config(**values)
 
 
-def _load_from_defaults() -> bool:
-    for key, value in DEFAULT_CONFIG.items():
-        if not os.getenv(key):
-            os.environ[key] = value
-    return True
+def _coerce_config_value(value: Any, field_type: Any) -> Any:
+    if field_type is int:
+        return int(value)
+    if field_type is str:
+        return str(value)
+    if get_origin(field_type) is list:
+        if isinstance(value, str):
+            value = [item.strip() for item in value.split(",") if item.strip()]
+        return [int(item) for item in value]
+    return value
+
+
+def ensure_config(config: Optional[Config] = None) -> Config:
+    return config if config is not None else Config()

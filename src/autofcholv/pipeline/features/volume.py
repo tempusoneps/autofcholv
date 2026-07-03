@@ -1,30 +1,35 @@
-import os
-
 import numpy as np
 import pandas as pd
+from autofcholv.config.config import Config
 
 
 EPS = 1e-8
 
 
 def _rolling_regression_last(values: np.ndarray) -> float:
-    if np.isnan(values).any():
+    if len(values) < 2 or not np.isfinite(values).all():
         return np.nan
     x = np.arange(len(values), dtype=float)
-    slope, intercept = np.polyfit(x, values, 1)
+    try:
+        slope, intercept = np.polyfit(x, values, 1)
+    except Exception:
+        return np.nan
     return slope * x[-1] + intercept
 
 
 def _rolling_regression_forecast(values: np.ndarray) -> float:
-    if np.isnan(values).any():
+    if len(values) < 2 or not np.isfinite(values).all():
         return np.nan
     x = np.arange(len(values), dtype=float)
-    slope, intercept = np.polyfit(x, values, 1)
+    try:
+        slope, intercept = np.polyfit(x, values, 1)
+    except Exception:
+        return np.nan
     return slope * len(values) + intercept
 
 
-def extract_features(df: pd.DataFrame) -> pd.DataFrame:
-    momentum_n = int(os.getenv("MOMENTUM_LOOKBACK", 24))
+def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
+    momentum_n = config.momentum_lookback
 
     df["volume_avg"] = df["Volume"].rolling(momentum_n).mean()
     df["volume_zscore"] = (df["Volume"] - df["volume_avg"]) / df["Volume"].rolling(momentum_n).std()

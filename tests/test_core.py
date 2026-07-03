@@ -6,7 +6,13 @@ import pandas as pd
 import numpy as np
 import pytest
 from autofcholv.core import extract_features
-from autofcholv.config.config import load_config, DEFAULT_CONFIG
+from autofcholv.config.config import Config, load_config, DEFAULT_CONFIG
+from autofcholv.pipeline.features.close import _rolling_regression_last as close_regression_last
+from autofcholv.pipeline.features.signal import _linear_regression_midline, _linear_regression_slope
+from autofcholv.pipeline.features.volume import (
+    _rolling_regression_forecast as volume_regression_forecast,
+    _rolling_regression_last as volume_regression_last,
+)
 
 
 # ─────────────────────────────────────────────
@@ -44,6 +50,17 @@ def test_extract_features_returns_dataframe():
     result = extract_features(make_ohlcv(300))
     assert isinstance(result, pd.DataFrame)
     assert len(result) > 0
+
+
+def test_extract_features_progress_callback_reports_pipeline_steps():
+    steps = []
+    result = extract_features(make_ohlcv(300), progress_callback=steps.append)
+
+    assert len(result) > 0
+    assert steps[0] == "validation"
+    assert steps[1] == "cleaning"
+    assert "close_features" in steps
+    assert steps[-1] == "preprocessing"
 
 
 def test_extract_features_time_columns():
@@ -267,22 +284,34 @@ def test_extract_features_negative_price_raises():
         extract_features(df)
 
 
+def test_rolling_regressions_skip_invalid_values_without_lapack_noise(capfd):
+    bad_values = np.array([1.0, np.inf, 3.0])
+    short_values = np.array([1.0])
+
+    assert np.isnan(close_regression_last(bad_values))
+    assert np.isnan(close_regression_last(short_values))
+    assert np.isnan(volume_regression_last(bad_values))
+    assert np.isnan(volume_regression_forecast(bad_values))
+
+    series = pd.Series([1.0, np.inf, 3.0, 4.0])
+    assert _linear_regression_slope(series, 3).isna().iloc[2]
+    assert _linear_regression_midline(series, 3).isna().iloc[2]
+
+    captured = capfd.readouterr()
+    assert "DLASCL" not in captured.out
+    assert "DLASCL" not in captured.err
+
+
 # ─────────────────────────────────────────────
 # Config tests
 # ─────────────────────────────────────────────
 
 def test_load_config_sets_defaults():
-    for key in DEFAULT_CONFIG:
-        os.environ.pop(key, None)
-    load_config()
-    for key, value in DEFAULT_CONFIG.items():
-        assert os.environ.get(key) == value, f"Missing default for {key}"
+    config = load_config()
+    assert config == Config()
 
 
 def test_load_config_from_json_file():
-    for key in DEFAULT_CONFIG:
-        os.environ.pop(key, None)
-
     custom = dict(DEFAULT_CONFIG)
     custom["SELECTED_TIME_FRAME"] = "15m"
 
@@ -291,19 +320,71 @@ def test_load_config_from_json_file():
         json_path = f.name
 
     try:
-        load_config(json_path)
-        assert os.environ.get("SELECTED_TIME_FRAME") == "15m"
+        config = load_config(json_path)
+        assert config.selected_time_frame == "15m"
     finally:
         os.unlink(json_path)
-        for key in DEFAULT_CONFIG:
-            os.environ.pop(key, None)
 
 
-def test_load_config_env_takes_priority():
-    for key, value in DEFAULT_CONFIG.items():
-        os.environ[key] = value
+def test_load_config_from_json_file_supports_list_values():
+    custom = dict(DEFAULT_CONFIG)
+    custom["MULTI_RSI"] = [14, 50, 42]
+
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+        json.dump(custom, f)
+        json_path = f.name
+
+    try:
+        config = load_config(json_path)
+        assert config.multi_rsi == [14, 50, 42]
+    finally:
+        os.unlink(json_path)
+
+
+def test_load_config_from_json_file_coerces_numeric_strings():
+    custom = dict(DEFAULT_CONFIG)
+    custom["ONE_DAY_BARS"] = "49"
+
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+        json.dump(custom, f)
+        json_path = f.name
+
+    try:
+        config = load_config(json_path)
+        assert config.one_day_bars == 49
+        assert isinstance(config.one_day_bars, int)
+    finally:
+        os.unlink(json_path)
+
+
+def test_load_config_from_yaml_file_supports_list_values():
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
+        f.write("MULTI_RSI:\n  - 14\n  - 50\n  - 42\n")
+        yaml_path = f.name
+
+    try:
+        config = load_config(yaml_path)
+        assert config.multi_rsi == [14, 50, 42]
+    finally:
+        os.unlink(yaml_path)
+
+
+def test_load_config_env_file_is_not_supported():
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".env", delete=False) as f:
+        f.write("SELECTED_TIME_FRAME=15m\n")
+        env_path = f.name
+
+    try:
+        with pytest.raises(ValueError, match="Unsupported config file format"):
+            load_config(env_path)
+    finally:
+        os.unlink(env_path)
+
+
+def test_load_config_does_not_read_environment_variables():
     os.environ["SELECTED_TIME_FRAME"] = "1h"
-    load_config()
-    assert os.environ.get("SELECTED_TIME_FRAME") == "1h"
-    for key in DEFAULT_CONFIG:
-        os.environ.pop(key, None)
+    try:
+        config = load_config()
+        assert config.selected_time_frame == "5m"
+    finally:
+        os.environ.pop("SELECTED_TIME_FRAME", None)

@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import pandas_ta as ta
+from autofcholv.config.config import Config
 
 
 BUY_SIGNAL = "Buy"
@@ -69,9 +70,12 @@ def _linear_regression_slope(series: pd.Series, window: int) -> pd.Series:
     x = np.arange(window, dtype=float)
 
     def slope(values: np.ndarray) -> float:
-        if np.isnan(values).any():
+        if len(values) < 2 or not np.isfinite(values).all():
             return np.nan
-        coeffs = np.polyfit(x, values, 1)
+        try:
+            coeffs = np.polyfit(x, values, 1)
+        except Exception:
+            return np.nan
         return coeffs[0]
 
     return series.rolling(window).apply(slope, raw=True)
@@ -81,9 +85,12 @@ def _linear_regression_midline(series: pd.Series, window: int) -> pd.Series:
     x = np.arange(window, dtype=float)
 
     def endpoint(values: np.ndarray) -> float:
-        if np.isnan(values).any():
+        if len(values) < 2 or not np.isfinite(values).all():
             return np.nan
-        slope, intercept = np.polyfit(x, values, 1)
+        try:
+            slope, intercept = np.polyfit(x, values, 1)
+        except Exception:
+            return np.nan
         return intercept + slope * x[-1]
 
     return series.rolling(window).apply(endpoint, raw=True)
@@ -277,7 +284,7 @@ def _prepare_context(df: pd.DataFrame) -> pd.DataFrame:
     return ctx
 
 
-def extract_features(df: pd.DataFrame) -> pd.DataFrame:
+def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     missing_cols = [col for col in REQUIRED_COLUMNS if col not in df.columns]
     if missing_cols:
         raise ValueError(f"Missing columns: {missing_cols}")

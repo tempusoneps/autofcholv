@@ -30,6 +30,10 @@ When files used by the root README change, regenerate the root README:
 scripts/generate_root_readme.sh
 ```
 
+## Update README Through Source Docs
+
+Do not update the root `README.md` directly. To change README content, update one of the source files in `docs/` that feeds the README, then regenerate the root README with `scripts/generate_root_readme.sh`.
+
 ## Do Not Hand-Edit Generated Files
 
 Do not manually edit generated documentation when a source file or generator exists.

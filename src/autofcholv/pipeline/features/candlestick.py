@@ -1,8 +1,9 @@
 import numpy as np
 import pandas as pd
+from autofcholv.config.config import Config
 
 
-def extract_features(df: pd.DataFrame) -> pd.DataFrame:
+def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     """
     Calculate candlestick geometric features (vectorized).
 

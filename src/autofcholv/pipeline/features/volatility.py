@@ -1,7 +1,6 @@
-import os
-
 import numpy as np
 import pandas as pd
+from autofcholv.config.config import Config
 
 
 EPS = 1e-8
@@ -13,7 +12,7 @@ def _scale_01(series: pd.Series, window: int) -> pd.Series:
     return (series - low) / (high - low + EPS)
 
 
-def extract_features(df: pd.DataFrame) -> pd.DataFrame:
+def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     """
     Calculate volatility and channel features adapted from quant-ohlcv-feature.
     Feature definitions follow volatility.json.
@@ -24,7 +23,7 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         DataFrame with new features.
     """
-    volatility_n = int(os.getenv("VOLATILITY_LOOKBACK", 24))
+    volatility_n = config.volatility_lookback
 
     quote_volume_proxy = df["Close"] * df["Volume"]
     df["quote_volume_std"] = quote_volume_proxy.rolling(volatility_n, min_periods=2).std()
