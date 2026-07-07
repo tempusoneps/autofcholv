@@ -733,5 +733,35 @@
         "type": "float",
         "name": "Lchc_fancy",
         "comment": "Alias for lchc_fancy"
+    },
+    "sig_bb_width": {
+        "type": "float",
+        "name": "Bollinger Band Width for Signals",
+        "comment": "Standard Bollinger Band Width used for signals"
+    },
+    "sig_kc_mid": {
+        "type": "float",
+        "name": "Keltner Channel Mid for Signals",
+        "comment": "Keltner Channel mid line (EMA 20)"
+    },
+    "sig_kc_upper": {
+        "type": "float",
+        "name": "Keltner Channel Upper for Signals",
+        "comment": "Keltner Channel upper band (mid + 2 * ATR)"
+    },
+    "sig_kc_lower": {
+        "type": "float",
+        "name": "Keltner Channel Lower for Signals",
+        "comment": "Keltner Channel lower band (mid - 2 * ATR)"
+    },
+    "sig_chop14": {
+        "type": "float",
+        "name": "Choppiness 14 for Signals",
+        "comment": "Choppiness Index over 14 periods"
+    },
+    "sig_hurst_proxy": {
+        "type": "float",
+        "name": "Hurst Exponent Proxy for Signals",
+        "comment": "Hurst Exponent Proxy over 20 periods"
     }
 }

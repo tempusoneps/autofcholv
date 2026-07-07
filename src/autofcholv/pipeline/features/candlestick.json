@@ -68,5 +68,15 @@
         "type": "float",
         "name": "upper wick ratio",
         "comment": "upwick_ratio = upwick / (lowwick + epsilon)"
+    },
+    "sig_fractal_high_ffill": {
+        "type": "float",
+        "name": "Fractal High Forward-Filled",
+        "comment": "Fractal high (5-bar window) forward-filled for signal generation"
+    },
+    "sig_fractal_low_ffill": {
+        "type": "float",
+        "name": "Fractal Low Forward-Filled",
+        "comment": "Fractal low (5-bar window) forward-filled for signal generation"
     }
 }

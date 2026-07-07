@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import pandas_ta as ta
 from autofcholv.config.config import Config
 
 
@@ -591,5 +592,14 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["VRA"] = df["vra"]
     df["Chla_fancy"] = df["chla_fancy"]
     df["NetVol_fancy"] = df["net_vol_fancy"]
+
+    # --- Signal-support indicators ---
+    # These columns are consumed by signal.py to derive Buy/Sell/None signals.
+
+    mfi_val = ta.mfi(df["High"], df["Low"], df["Close"], df["Volume"], length=14)
+    df["sig_mfi14"] = mfi_val if mfi_val is not None else np.nan
+
+    vpt_increment = df["Volume"] * df["Close"].pct_change().fillna(0.0)
+    df["sig_vpt"] = vpt_increment.cumsum()
 
     return df

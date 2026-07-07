@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import pandas_ta as ta
 from autofcholv.config.config import Config
 
 
@@ -46,6 +45,37 @@ REQUIRED_COLUMNS = [
     "adx",
     "direction",
     "streak",
+    "aroon_up",
+    "aroon_down",
+    "sig_hma20",
+    "sig_kama10",
+    "sig_trix15",
+    "sig_trix15_signal",
+    "sig_supertrend_dir",
+    "sig_tenkan",
+    "sig_kijun",
+    "sig_span_a",
+    "sig_span_b",
+    "sig_linreg_slope20",
+    "sig_linreg_mid20",
+    "sig_tma10",
+    "sig_stoch_rsi",
+    "sig_ao",
+    "sig_roc10",
+    "sig_ultimate_osc",
+    "sig_stochrsi_k",
+    "sig_stochrsi_d",
+    "sig_bb_width",
+    "sig_kc_mid",
+    "sig_kc_upper",
+    "sig_kc_lower",
+    "sig_chop14",
+    "sig_hurst_proxy",
+    "sig_mfi14",
+    "sig_vpt",
+    "sig_fractal_high_ffill",
+    "sig_fractal_low_ffill",
+    "sig_connors_rsi",
 ]
 
 
@@ -64,51 +94,6 @@ def _true_series(df: pd.DataFrame) -> pd.Series:
 
 def _rolling_percentile(series: pd.Series, window: int, quantile: float) -> pd.Series:
     return series.rolling(window).quantile(quantile)
-
-
-def _linear_regression_slope(series: pd.Series, window: int) -> pd.Series:
-    x = np.arange(window, dtype=float)
-
-    def slope(values: np.ndarray) -> float:
-        if len(values) < 2 or not np.isfinite(values).all():
-            return np.nan
-        try:
-            coeffs = np.polyfit(x, values, 1)
-        except Exception:
-            return np.nan
-        return coeffs[0]
-
-    return series.rolling(window).apply(slope, raw=True)
-
-
-def _linear_regression_midline(series: pd.Series, window: int) -> pd.Series:
-    x = np.arange(window, dtype=float)
-
-    def endpoint(values: np.ndarray) -> float:
-        if len(values) < 2 or not np.isfinite(values).all():
-            return np.nan
-        try:
-            slope, intercept = np.polyfit(x, values, 1)
-        except Exception:
-            return np.nan
-        return intercept + slope * x[-1]
-
-    return series.rolling(window).apply(endpoint, raw=True)
-
-
-def _hurst_proxy(series: pd.Series, window: int = 20) -> pd.Series:
-    lagged_diff = series.diff().abs().rolling(window).sum()
-    displacement = series.diff(window).abs()
-    return displacement / lagged_diff.replace(0, np.nan)
-
-
-def _safe_choppiness(df: pd.DataFrame, length: int = 14, atr_length: int = 1, scalar: float = 100.0) -> pd.Series:
-    diff = (df["High"].rolling(length).max() - df["Low"].rolling(length).min()).replace(0, np.nan)
-    atr_series = ta.atr(df["High"], df["Low"], df["Close"], length=atr_length)
-    if atr_series is None:
-        return pd.Series(np.nan, index=df.index)
-    atr_sum = atr_series.rolling(length).sum().replace(0, np.nan)
-    return scalar * (np.log10(atr_sum) - np.log10(diff)) / np.log10(length)
 
 
 def _prepare_context(df: pd.DataFrame) -> pd.DataFrame:
@@ -132,7 +117,7 @@ def _prepare_context(df: pd.DataFrame) -> pd.DataFrame:
     ctx["std20"] = df["Close"].rolling(20).std()
     ctx["std50"] = df["Close"].rolling(50).std()
 
-    ctx["bb_width"] = (df["ub"] - df["lb"]) / df["mb"].replace(0, np.nan)
+    ctx["bb_width"] = df["sig_bb_width"]
     ctx["bb_width_q20"] = _rolling_percentile(ctx["bb_width"], 100, 0.2)
     ctx["bb_width_sma20"] = ctx["bb_width"].rolling(20).mean()
 
@@ -154,119 +139,46 @@ def _prepare_context(df: pd.DataFrame) -> pd.DataFrame:
     ctx["volume_sma20"] = df["Volume"].rolling(20).mean()
     ctx["atr_sma20"] = df["atr"].rolling(20).mean()
 
-    mfi = ta.mfi(df["High"], df["Low"], df["Close"], df["Volume"], length=14)
-    ctx["mfi14"] = mfi if mfi is not None else np.nan
+    ctx["mfi14"] = df["sig_mfi14"]
+    ctx["hma20"] = df["sig_hma20"]
+    ctx["kama10"] = df["sig_kama10"]
+    ctx["trix"] = df["sig_trix15"]
+    ctx["trix_signal"] = df["sig_trix15_signal"]
+    ctx["stochrsi_k"] = df["sig_stochrsi_k"]
+    ctx["stochrsi_d"] = df["sig_stochrsi_d"]
+    ctx["supertrend_dir"] = df["sig_supertrend_dir"]
 
-    hma = ta.hma(df["Close"], length=20)
-    ctx["hma20"] = hma if hma is not None else np.nan
+    ctx["aroon_up"] = df["aroon_up"]
+    ctx["aroon_down"] = df["aroon_down"]
 
-    kama = ta.kama(df["Close"], length=10)
-    ctx["kama10"] = kama if kama is not None else np.nan
+    ctx["tenkan"] = df["sig_tenkan"]
+    ctx["kijun"] = df["sig_kijun"]
+    ctx["span_a"] = df["sig_span_a"]
+    ctx["span_b"] = df["sig_span_b"]
 
-    trix = ta.trix(df["Close"], length=15, signal=9)
-    if trix is not None and not trix.empty:
-        ctx["trix"] = trix.iloc[:, 0]
-        ctx["trix_signal"] = trix.iloc[:, 1]
-    else:
-        ctx["trix"] = np.nan
-        ctx["trix_signal"] = np.nan
+    ctx["chop14"] = df["sig_chop14"]
+    ctx["ao"] = df["sig_ao"]
+    ctx["roc10"] = df["sig_roc10"]
+    ctx["stoch_rsi_manual"] = df["sig_stoch_rsi"]
 
-    stochrsi = ta.stochrsi(df["Close"], length=14, rsi_length=14, k=3, d=3)
-    if stochrsi is not None and not stochrsi.empty:
-        ctx["stochrsi_k"] = stochrsi.iloc[:, 0]
-        ctx["stochrsi_d"] = stochrsi.iloc[:, 1]
-    else:
-        ctx["stochrsi_k"] = np.nan
-        ctx["stochrsi_d"] = np.nan
-
-    supertrend = ta.supertrend(df["High"], df["Low"], df["Close"], length=10, multiplier=3.0)
-    if supertrend is not None and not supertrend.empty:
-        ctx["supertrend_dir"] = supertrend.iloc[:, 1]
-    else:
-        ctx["supertrend_dir"] = np.nan
-
-    aroon = ta.aroon(df["High"], df["Low"], length=14)
-    if aroon is not None and not aroon.empty:
-        ctx["aroon_up"] = aroon.iloc[:, 0]
-        ctx["aroon_down"] = aroon.iloc[:, 1]
-    else:
-        ctx["aroon_up"] = np.nan
-        ctx["aroon_down"] = np.nan
-
-    ichimoku = ta.ichimoku(df["High"], df["Low"], df["Close"])
-    if isinstance(ichimoku, tuple):
-        ichimoku = ichimoku[0]
-    if ichimoku is not None and not ichimoku.empty:
-        ctx["tenkan"] = ichimoku.iloc[:, 0]
-        ctx["kijun"] = ichimoku.iloc[:, 1]
-        ctx["span_a"] = ichimoku.iloc[:, 2]
-        ctx["span_b"] = ichimoku.iloc[:, 3]
-    else:
-        ctx["tenkan"] = np.nan
-        ctx["kijun"] = np.nan
-        ctx["span_a"] = np.nan
-        ctx["span_b"] = np.nan
-
-    ctx["chop14"] = _safe_choppiness(df, length=14)
-
-    typical_price = (df["High"] + df["Low"] + df["Close"]) / 3.0
-    ctx["ao"] = typical_price.rolling(5).mean() - typical_price.rolling(34).mean()
-    ctx["roc10"] = ta.roc(df["Close"], length=10)
-
-    rolling_max_rsi = df["rsi"].rolling(14).max()
-    rolling_min_rsi = df["rsi"].rolling(14).min()
-    ctx["stoch_rsi_manual"] = (df["rsi"] - rolling_min_rsi) / (rolling_max_rsi - rolling_min_rsi).replace(0, np.nan)
-
-    ctx["linreg_slope20"] = _linear_regression_slope(df["Close"], 20)
-    ctx["linreg_mid20"] = _linear_regression_midline(df["Close"], 20)
+    ctx["linreg_slope20"] = df["sig_linreg_slope20"]
+    ctx["linreg_mid20"] = df["sig_linreg_mid20"]
     ctx["linreg_upper20"] = ctx["linreg_mid20"] + 2 * ctx["std20"]
     ctx["linreg_lower20"] = ctx["linreg_mid20"] - 2 * ctx["std20"]
 
-    ctx["fractal_high"] = np.where(
-        (df["High"] > df["High"].shift(1))
-        & (df["High"] > df["High"].shift(2))
-        & (df["High"] > df["High"].shift(-1))
-        & (df["High"] > df["High"].shift(-2)),
-        df["High"],
-        np.nan,
-    )
-    ctx["fractal_low"] = np.where(
-        (df["Low"] < df["Low"].shift(1))
-        & (df["Low"] < df["Low"].shift(2))
-        & (df["Low"] < df["Low"].shift(-1))
-        & (df["Low"] < df["Low"].shift(-2)),
-        df["Low"],
-        np.nan,
-    )
-    ctx["fractal_high_ffill"] = pd.Series(ctx["fractal_high"], index=df.index).ffill()
-    ctx["fractal_low_ffill"] = pd.Series(ctx["fractal_low"], index=df.index).ffill()
+    ctx["fractal_high_ffill"] = df["sig_fractal_high_ffill"]
+    ctx["fractal_low_ffill"] = df["sig_fractal_low_ffill"]
 
-    prev_close = df["Close"].shift(1)
-    ctx["buying_pressure"] = df["Close"] - np.minimum(df["Low"], prev_close)
-    ctx["true_range"] = np.maximum(df["High"], prev_close) - np.minimum(df["Low"], prev_close)
-    bp7 = ctx["buying_pressure"].rolling(7).sum()
-    bp14 = ctx["buying_pressure"].rolling(14).sum()
-    bp28 = ctx["buying_pressure"].rolling(28).sum()
-    tr7 = ctx["true_range"].rolling(7).sum()
-    tr14 = ctx["true_range"].rolling(14).sum()
-    tr28 = ctx["true_range"].rolling(28).sum()
-    ctx["ultimate_manual"] = 100 * ((4 * (bp7 / tr7.replace(0, np.nan))) + (2 * (bp14 / tr14.replace(0, np.nan))) + (bp28 / tr28.replace(0, np.nan))) / 7
+    ctx["ultimate_manual"] = df["sig_ultimate_osc"]
+    ctx["connors_rsi"] = df["sig_connors_rsi"]
 
-    price_rank = df["roc_close"].rolling(100).rank(pct=True) * 100
-    rsi3 = ta.rsi(df["Close"], length=3)
-    streak_rsi2 = ta.rsi(df["streak"].astype(float), length=2)
-    ctx["connors_rsi"] = (rsi3 + streak_rsi2 + price_rank) / 3.0
+    ctx["kc_mid"] = df["sig_kc_mid"]
+    ctx["kc_upper"] = df["sig_kc_upper"]
+    ctx["kc_lower"] = df["sig_kc_lower"]
 
-    ema20 = ta.ema(df["Close"], length=20)
-    ctx["kc_mid"] = ema20 if ema20 is not None else np.nan
-    ctx["kc_upper"] = ctx["kc_mid"] + 2 * df["atr"]
-    ctx["kc_lower"] = ctx["kc_mid"] - 2 * df["atr"]
-
-    vpt_increment = df["Volume"] * df["Close"].pct_change().fillna(0.0)
-    ctx["vpt"] = vpt_increment.cumsum()
-
-    ctx["tma"] = df["Close"].rolling(10).mean().rolling(10).mean()
-    ctx["hurst_proxy"] = _hurst_proxy(df["Close"], 20)
+    ctx["vpt"] = df["sig_vpt"]
+    ctx["tma"] = df["sig_tma10"]
+    ctx["hurst_proxy"] = df["sig_hurst_proxy"]
     ctx["lower_range_pos"] = ctx["low_10"] + (ctx["high_10"] - ctx["low_10"]) * 0.3
     ctx["upper_range_pos"] = ctx["high_10"] - (ctx["high_10"] - ctx["low_10"]) * 0.3
     ctx["equal_low"] = (df["Low"] - df["low_lag1"]).abs() < (0.001 * df["Close"])

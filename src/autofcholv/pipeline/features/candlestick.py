@@ -58,4 +58,26 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     # Numeric color
     df['color'] = np.where(df['body'] > 0, 1, np.where(df['body'] < 0, -1, 0))
 
+    # --- Signal-support indicators ---
+    # These columns are consumed by signal.py to derive Buy/Sell/None signals.
+
+    fractal_high = np.where(
+        (df["High"] > df["High"].shift(1))
+        & (df["High"] > df["High"].shift(2))
+        & (df["High"] > df["High"].shift(-1))
+        & (df["High"] > df["High"].shift(-2)),
+        df["High"],
+        np.nan,
+    )
+    fractal_low = np.where(
+        (df["Low"] < df["Low"].shift(1))
+        & (df["Low"] < df["Low"].shift(2))
+        & (df["Low"] < df["Low"].shift(-1))
+        & (df["Low"] < df["Low"].shift(-2)),
+        df["Low"],
+        np.nan,
+    )
+    df["sig_fractal_high_ffill"] = pd.Series(fractal_high, index=df.index).ffill()
+    df["sig_fractal_low_ffill"] = pd.Series(fractal_low, index=df.index).ffill()
+
     return df

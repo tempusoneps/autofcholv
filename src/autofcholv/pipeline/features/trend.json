@@ -833,5 +833,65 @@
         "type": "float",
         "name": "TrTrix",
         "comment": "Alias for trtrix"
+    },
+    "sig_hma20": {
+        "type": "float",
+        "name": "Hull MA 20 for Signals",
+        "comment": "Hull Moving Average over 20 periods"
+    },
+    "sig_kama10": {
+        "type": "float",
+        "name": "KAMA 10 for Signals",
+        "comment": "Kaufman Adaptive Moving Average over 10 periods"
+    },
+    "sig_trix15": {
+        "type": "float",
+        "name": "TRIX 15 for Signals",
+        "comment": "TRIX indicator over 15 periods"
+    },
+    "sig_trix15_signal": {
+        "type": "float",
+        "name": "TRIX 15 Signal for Signals",
+        "comment": "TRIX 15 signal line"
+    },
+    "sig_supertrend_dir": {
+        "type": "float",
+        "name": "SuperTrend Dir for Signals",
+        "comment": "SuperTrend direction component"
+    },
+    "sig_tenkan": {
+        "type": "float",
+        "name": "Tenkan-sen for Signals",
+        "comment": "Ichimoku Tenkan-sen component"
+    },
+    "sig_kijun": {
+        "type": "float",
+        "name": "Kijun-sen for Signals",
+        "comment": "Ichimoku Kijun-sen component"
+    },
+    "sig_span_a": {
+        "type": "float",
+        "name": "Senkou Span A for Signals",
+        "comment": "Ichimoku Senkou Span A component"
+    },
+    "sig_span_b": {
+        "type": "float",
+        "name": "Senkou Span B for Signals",
+        "comment": "Ichimoku Senkou Span B component"
+    },
+    "sig_linreg_slope20": {
+        "type": "float",
+        "name": "LinReg Slope 20 for Signals",
+        "comment": "Linear regression slope over 20 periods"
+    },
+    "sig_linreg_mid20": {
+        "type": "float",
+        "name": "LinReg Midline 20 for Signals",
+        "comment": "Linear regression midline over 20 periods"
+    },
+    "sig_tma10": {
+        "type": "float",
+        "name": "TMA 10 for Signals",
+        "comment": "Triangular Moving Average over 10 periods"
     }
 }
