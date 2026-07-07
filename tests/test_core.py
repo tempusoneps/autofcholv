@@ -8,7 +8,7 @@ import pytest
 from autofcholv.core import extract_features
 from autofcholv.config.config import Config, load_config, DEFAULT_CONFIG
 from autofcholv.pipeline.features.close import _rolling_regression_last as close_regression_last
-from autofcholv.pipeline.features.signal import _linear_regression_midline, _linear_regression_slope
+from autofcholv.pipeline.features.trend import _linear_regression_midline, _linear_regression_slope
 from autofcholv.pipeline.features.volume import (
     _rolling_regression_forecast as volume_regression_forecast,
     _rolling_regression_last as volume_regression_last,

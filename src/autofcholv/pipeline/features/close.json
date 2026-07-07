@@ -824,32 +824,32 @@
         "name": "Fi",
         "comment": "Alias for fi"
     },
-    "sig_stoch_rsi": {
+    "stoch_rsi": {
         "type": "float",
         "name": "Stochastic RSI for Signals",
         "comment": "Stochastic RSI of Close"
     },
-    "sig_ao": {
+    "awesome_oscillator": {
         "type": "float",
         "name": "Awesome Oscillator for Signals",
         "comment": "Awesome Oscillator (5-34)"
     },
-    "sig_roc10": {
+    "roc10": {
         "type": "float",
         "name": "ROC 10 for Signals",
         "comment": "Rate of change over 10 periods"
     },
-    "sig_ultimate_osc": {
+    "ultimate_osc": {
         "type": "float",
         "name": "Ultimate Oscillator for Signals",
         "comment": "Ultimate Oscillator (7-14-28)"
     },
-    "sig_stochrsi_k": {
+    "stochrsi_k": {
         "type": "float",
         "name": "StochRSI K for Signals",
         "comment": "StochRSI K line"
     },
-    "sig_stochrsi_d": {
+    "stochrsi_d": {
         "type": "float",
         "name": "StochRSI D for Signals",
         "comment": "StochRSI D line"

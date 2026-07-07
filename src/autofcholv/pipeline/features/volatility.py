@@ -516,33 +516,32 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["RwiH"] = df["rwi_high"]
     df["RwiL"] = df["rwi_low"]
 
-    # --- Signal-support indicators ---
-    # These columns are consumed by signal.py to derive Buy/Sell/None signals.
+    # --- Indicator features used by signal.py ---
 
-    df["sig_bb_width"] = (df["ub"] - df["lb"]) / df["mb"].replace(0, np.nan)
+    df["bb_width"] = (df["ub"] - df["lb"]) / df["mb"].replace(0, np.nan)
 
     ema20 = ta.ema(df["Close"], length=20)
-    sig_kc_mid = ema20 if ema20 is not None else pd.Series(np.nan, index=df.index)
+    kc_mid = ema20 if ema20 is not None else pd.Series(np.nan, index=df.index)
     atr_local = ta.atr(df["High"], df["Low"], df["Close"], length=volatility_n)
     if atr_local is None or atr_local.empty:
         atr_local = pd.Series(np.nan, index=df.index)
 
-    df["sig_kc_mid"] = sig_kc_mid
-    df["sig_kc_upper"] = sig_kc_mid + 2 * atr_local
-    df["sig_kc_lower"] = sig_kc_mid - 2 * atr_local
+    df["kc_mid"] = kc_mid
+    df["kc_upper"] = kc_mid + 2 * atr_local
+    df["kc_lower"] = kc_mid - 2 * atr_local
 
     # Choppiness 14
     diff_chop = (df["High"].rolling(14).max() - df["Low"].rolling(14).min()).replace(0, np.nan)
     atr_chop_series = ta.atr(df["High"], df["Low"], df["Close"], length=1)
     if atr_chop_series is not None and not atr_chop_series.empty:
         atr_chop_sum = atr_chop_series.rolling(14).sum().replace(0, np.nan)
-        df["sig_chop14"] = 100.0 * (np.log10(atr_chop_sum) - np.log10(diff_chop)) / np.log10(14)
+        df["chop14"] = 100.0 * (np.log10(atr_chop_sum) - np.log10(diff_chop)) / np.log10(14)
     else:
-        df["sig_chop14"] = np.nan
+        df["chop14"] = np.nan
 
     # Hurst proxy
     lagged_diff = df["Close"].diff().abs().rolling(20).sum()
     displacement = df["Close"].diff(20).abs()
-    df["sig_hurst_proxy"] = displacement / lagged_diff.replace(0, np.nan)
+    df["hurst_proxy"] = displacement / lagged_diff.replace(0, np.nan)
 
     return df

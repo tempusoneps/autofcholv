@@ -1046,35 +1046,34 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     hourly_volatility = (df["High"] / (df["Low"] + 1e-8) - 1.0).rolling(momentum_n, min_periods=1).mean()
     df["mtmmean_v10"] = mtm.rolling(window=momentum_n, min_periods=1).mean() * (volatility + hourly_volatility)
 
-    # --- Signal-support indicators ---
-    # These columns are consumed by signal.py to derive Buy/Sell/None signals.
+    # --- Indicator features used by signal.py ---
 
     rolling_max_rsi = df["rsi"].rolling(14).max()
     rolling_min_rsi = df["rsi"].rolling(14).min()
-    df["sig_stoch_rsi"] = (df["rsi"] - rolling_min_rsi) / (rolling_max_rsi - rolling_min_rsi).replace(0, np.nan)
+    df["stoch_rsi"] = (df["rsi"] - rolling_min_rsi) / (rolling_max_rsi - rolling_min_rsi).replace(0, np.nan)
 
     typical_price_ao = (df["High"] + df["Low"] + df["Close"]) / 3.0
-    df["sig_ao"] = typical_price_ao.rolling(5).mean() - typical_price_ao.rolling(34).mean()
+    df["awesome_oscillator"] = typical_price_ao.rolling(5).mean() - typical_price_ao.rolling(34).mean()
 
-    df["sig_roc10"] = ta.roc(df["Close"], length=10)
+    df["roc10"] = ta.roc(df["Close"], length=10)
 
-    prev_close_uo_sig = df["Close"].shift(1)
-    sig_buying_pressure = df["Close"] - np.minimum(df["Low"], prev_close_uo_sig)
-    sig_true_range = np.maximum(df["High"], prev_close_uo_sig) - np.minimum(df["Low"], prev_close_uo_sig)
-    bp7 = sig_buying_pressure.rolling(7).sum()
-    bp14 = sig_buying_pressure.rolling(14).sum()
-    bp28 = sig_buying_pressure.rolling(28).sum()
-    tr7 = sig_true_range.rolling(7).sum()
-    tr14 = sig_true_range.rolling(14).sum()
-    tr28 = sig_true_range.rolling(28).sum()
-    df["sig_ultimate_osc"] = 100 * ((4 * (bp7 / tr7.replace(0, np.nan))) + (2 * (bp14 / tr14.replace(0, np.nan))) + (bp28 / tr28.replace(0, np.nan))) / 7
+    prev_close_uo_fixed = df["Close"].shift(1)
+    uo_buying_pressure = df["Close"] - np.minimum(df["Low"], prev_close_uo_fixed)
+    uo_true_range = np.maximum(df["High"], prev_close_uo_fixed) - np.minimum(df["Low"], prev_close_uo_fixed)
+    bp7 = uo_buying_pressure.rolling(7).sum()
+    bp14 = uo_buying_pressure.rolling(14).sum()
+    bp28 = uo_buying_pressure.rolling(28).sum()
+    tr7 = uo_true_range.rolling(7).sum()
+    tr14 = uo_true_range.rolling(14).sum()
+    tr28 = uo_true_range.rolling(28).sum()
+    df["ultimate_osc"] = 100 * ((4 * (bp7 / tr7.replace(0, np.nan))) + (2 * (bp14 / tr14.replace(0, np.nan))) + (bp28 / tr28.replace(0, np.nan))) / 7
 
     stochrsi_res = ta.stochrsi(df["Close"], length=14, rsi_length=14, k=3, d=3)
     if stochrsi_res is not None and not stochrsi_res.empty:
-        df["sig_stochrsi_k"] = stochrsi_res.iloc[:, 0]
-        df["sig_stochrsi_d"] = stochrsi_res.iloc[:, 1]
+        df["stochrsi_k"] = stochrsi_res.iloc[:, 0]
+        df["stochrsi_d"] = stochrsi_res.iloc[:, 1]
     else:
-        df["sig_stochrsi_k"] = np.nan
-        df["sig_stochrsi_d"] = np.nan
+        df["stochrsi_k"] = np.nan
+        df["stochrsi_d"] = np.nan
 
     return df

@@ -31,8 +31,13 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     height_safe = df['height'].replace(0, np.nan)
 
     # ratios
-    df['body_ratio'] = (df['body'].abs() / (height_safe + epsilon)).fillna(0)
+    df['upwick_rate'] = (df['upwick'] / (height_safe + epsilon)).fillna(0)
+    df['lowwick_rate'] = (df['lowwick'] / (height_safe + epsilon)).fillna(0)
+    df['body_rate'] = (df['body'].abs() / (height_safe + epsilon)).fillna(0)
+    df['body_ratio'] = df['body_rate']
+    df['cbr'] = df['body_rate']
     df['wick_ratio'] = df['upwick'] / (df['upwick'] + df['lowwick'] + epsilon)
+    df['upwick_ratio'] = df['upwick'] / (df['lowwick'] + epsilon)
 
     # CLV
     df['clv'] = np.where(
@@ -58,8 +63,7 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     # Numeric color
     df['color'] = np.where(df['body'] > 0, 1, np.where(df['body'] < 0, -1, 0))
 
-    # --- Signal-support indicators ---
-    # These columns are consumed by signal.py to derive Buy/Sell/None signals.
+    # --- Indicator features used by signal.py ---
 
     fractal_high = np.where(
         (df["High"] > df["High"].shift(1))
@@ -77,7 +81,9 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
         df["Low"],
         np.nan,
     )
-    df["sig_fractal_high_ffill"] = pd.Series(fractal_high, index=df.index).ffill()
-    df["sig_fractal_low_ffill"] = pd.Series(fractal_low, index=df.index).ffill()
+    df["fractal_high"] = pd.Series(fractal_high, index=df.index)
+    df["fractal_low"] = pd.Series(fractal_low, index=df.index)
+    df["fractal_high_ffill"] = df["fractal_high"].ffill()
+    df["fractal_low_ffill"] = df["fractal_low"].ffill()
 
     return df

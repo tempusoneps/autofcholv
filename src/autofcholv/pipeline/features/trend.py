@@ -29,6 +29,36 @@ def _rolling_regression_slope(values: np.ndarray) -> float:
     return slope
 
 
+def _linear_regression_slope(series: pd.Series, window: int) -> pd.Series:
+    x = np.arange(window, dtype=float)
+
+    def slope(values: np.ndarray) -> float:
+        if len(values) < 2 or not np.isfinite(values).all():
+            return np.nan
+        try:
+            coeffs = np.polyfit(x, values, 1)
+        except Exception:
+            return np.nan
+        return coeffs[0]
+
+    return series.rolling(window).apply(slope, raw=True)
+
+
+def _linear_regression_midline(series: pd.Series, window: int) -> pd.Series:
+    x = np.arange(window, dtype=float)
+
+    def endpoint(values: np.ndarray) -> float:
+        if len(values) < 2 or not np.isfinite(values).all():
+            return np.nan
+        try:
+            slope, intercept = np.polyfit(x, values, 1)
+        except Exception:
+            return np.nan
+        return intercept + slope * x[-1]
+
+    return series.rolling(window).apply(endpoint, raw=True)
+
+
 def _rolling_wma_last(values: np.ndarray) -> float:
     if np.isnan(values).all():
         return np.nan
@@ -738,71 +768,46 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["Trrq_v3"] = df["trrq_v3"]
     df["TrTrix"] = df["trtrix"]
 
-    # --- Signal-support indicators ---
-    # These columns are consumed by signal.py to derive Buy/Sell/None signals.
+    # --- Indicator features used by signal.py ---
     # They use fixed windows rather than config-based lookbacks.
 
     hma_20 = ta.hma(df["Close"], length=20)
-    df["sig_hma20"] = hma_20 if hma_20 is not None else np.nan
+    df["hma20"] = hma_20 if hma_20 is not None else np.nan
 
     kama_10 = ta.kama(df["Close"], length=10)
-    df["sig_kama10"] = kama_10 if kama_10 is not None else np.nan
+    df["kama10"] = kama_10 if kama_10 is not None else np.nan
 
     trix_result = ta.trix(df["Close"], length=15, signal=9)
     if trix_result is not None and not trix_result.empty:
-        df["sig_trix15"] = trix_result.iloc[:, 0]
-        df["sig_trix15_signal"] = trix_result.iloc[:, 1]
+        df["trix15"] = trix_result.iloc[:, 0]
+        df["trix15_signal"] = trix_result.iloc[:, 1]
     else:
-        df["sig_trix15"] = np.nan
-        df["sig_trix15_signal"] = np.nan
+        df["trix15"] = np.nan
+        df["trix15_signal"] = np.nan
 
     supertrend_result = ta.supertrend(df["High"], df["Low"], df["Close"], length=10, multiplier=3.0)
     if supertrend_result is not None and not supertrend_result.empty:
-        df["sig_supertrend_dir"] = supertrend_result.iloc[:, 1]
+        df["supertrend_dir"] = supertrend_result.iloc[:, 1]
     else:
-        df["sig_supertrend_dir"] = np.nan
+        df["supertrend_dir"] = np.nan
 
     ichimoku_result = ta.ichimoku(df["High"], df["Low"], df["Close"])
     if isinstance(ichimoku_result, tuple):
         ichimoku_result = ichimoku_result[0]
     if ichimoku_result is not None and not ichimoku_result.empty:
-        df["sig_tenkan"] = ichimoku_result.iloc[:, 0]
-        df["sig_kijun"] = ichimoku_result.iloc[:, 1]
-        df["sig_span_a"] = ichimoku_result.iloc[:, 2]
-        df["sig_span_b"] = ichimoku_result.iloc[:, 3]
+        df["tenkan"] = ichimoku_result.iloc[:, 0]
+        df["kijun"] = ichimoku_result.iloc[:, 1]
+        df["span_a"] = ichimoku_result.iloc[:, 2]
+        df["span_b"] = ichimoku_result.iloc[:, 3]
     else:
-        df["sig_tenkan"] = np.nan
-        df["sig_kijun"] = np.nan
-        df["sig_span_a"] = np.nan
-        df["sig_span_b"] = np.nan
+        df["tenkan"] = np.nan
+        df["kijun"] = np.nan
+        df["span_a"] = np.nan
+        df["span_b"] = np.nan
 
-    def _sig_linreg_slope(series: pd.Series, window: int) -> pd.Series:
-        x = np.arange(window, dtype=float)
-        def slope(values: np.ndarray) -> float:
-            if len(values) < 2 or not np.isfinite(values).all():
-                return np.nan
-            try:
-                coeffs = np.polyfit(x, values, 1)
-            except Exception:
-                return np.nan
-            return coeffs[0]
-        return series.rolling(window).apply(slope, raw=True)
+    df["linreg_slope20"] = _linear_regression_slope(df["Close"], 20)
+    df["linreg_mid20"] = _linear_regression_midline(df["Close"], 20)
 
-    def _sig_linreg_midline(series: pd.Series, window: int) -> pd.Series:
-        x = np.arange(window, dtype=float)
-        def endpoint(values: np.ndarray) -> float:
-            if len(values) < 2 or not np.isfinite(values).all():
-                return np.nan
-            try:
-                s, intercept = np.polyfit(x, values, 1)
-            except Exception:
-                return np.nan
-            return intercept + s * x[-1]
-        return series.rolling(window).apply(endpoint, raw=True)
-
-    df["sig_linreg_slope20"] = _sig_linreg_slope(df["Close"], 20)
-    df["sig_linreg_mid20"] = _sig_linreg_midline(df["Close"], 20)
-
-    df["sig_tma10"] = df["Close"].rolling(10).mean().rolling(10).mean()
+    df["tma10"] = df["Close"].rolling(10).mean().rolling(10).mean()
 
     return df

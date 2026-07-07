@@ -47,35 +47,37 @@ REQUIRED_COLUMNS = [
     "streak",
     "aroon_up",
     "aroon_down",
-    "sig_hma20",
-    "sig_kama10",
-    "sig_trix15",
-    "sig_trix15_signal",
-    "sig_supertrend_dir",
-    "sig_tenkan",
-    "sig_kijun",
-    "sig_span_a",
-    "sig_span_b",
-    "sig_linreg_slope20",
-    "sig_linreg_mid20",
-    "sig_tma10",
-    "sig_stoch_rsi",
-    "sig_ao",
-    "sig_roc10",
-    "sig_ultimate_osc",
-    "sig_stochrsi_k",
-    "sig_stochrsi_d",
-    "sig_bb_width",
-    "sig_kc_mid",
-    "sig_kc_upper",
-    "sig_kc_lower",
-    "sig_chop14",
-    "sig_hurst_proxy",
-    "sig_mfi14",
-    "sig_vpt",
-    "sig_fractal_high_ffill",
-    "sig_fractal_low_ffill",
-    "sig_connors_rsi",
+    "hma20",
+    "kama10",
+    "trix15",
+    "trix15_signal",
+    "supertrend_dir",
+    "tenkan",
+    "kijun",
+    "span_a",
+    "span_b",
+    "linreg_slope20",
+    "linreg_mid20",
+    "tma10",
+    "stoch_rsi",
+    "awesome_oscillator",
+    "roc10",
+    "ultimate_osc",
+    "stochrsi_k",
+    "stochrsi_d",
+    "bb_width",
+    "kc_mid",
+    "kc_upper",
+    "kc_lower",
+    "chop14",
+    "hurst_proxy",
+    "mfi14",
+    "vpt",
+    "fractal_high",
+    "fractal_low",
+    "fractal_high_ffill",
+    "fractal_low_ffill",
+    "connors_rsi",
 ]
 
 
@@ -117,7 +119,7 @@ def _prepare_context(df: pd.DataFrame) -> pd.DataFrame:
     ctx["std20"] = df["Close"].rolling(20).std()
     ctx["std50"] = df["Close"].rolling(50).std()
 
-    ctx["bb_width"] = df["sig_bb_width"]
+    ctx["bb_width"] = df["bb_width"]
     ctx["bb_width_q20"] = _rolling_percentile(ctx["bb_width"], 100, 0.2)
     ctx["bb_width_sma20"] = ctx["bb_width"].rolling(20).mean()
 
@@ -139,46 +141,48 @@ def _prepare_context(df: pd.DataFrame) -> pd.DataFrame:
     ctx["volume_sma20"] = df["Volume"].rolling(20).mean()
     ctx["atr_sma20"] = df["atr"].rolling(20).mean()
 
-    ctx["mfi14"] = df["sig_mfi14"]
-    ctx["hma20"] = df["sig_hma20"]
-    ctx["kama10"] = df["sig_kama10"]
-    ctx["trix"] = df["sig_trix15"]
-    ctx["trix_signal"] = df["sig_trix15_signal"]
-    ctx["stochrsi_k"] = df["sig_stochrsi_k"]
-    ctx["stochrsi_d"] = df["sig_stochrsi_d"]
-    ctx["supertrend_dir"] = df["sig_supertrend_dir"]
+    ctx["mfi14"] = df["mfi14"]
+    ctx["hma20"] = df["hma20"]
+    ctx["kama10"] = df["kama10"]
+    ctx["trix"] = df["trix15"]
+    ctx["trix_signal"] = df["trix15_signal"]
+    ctx["stochrsi_k"] = df["stochrsi_k"]
+    ctx["stochrsi_d"] = df["stochrsi_d"]
+    ctx["supertrend_dir"] = df["supertrend_dir"]
 
     ctx["aroon_up"] = df["aroon_up"]
     ctx["aroon_down"] = df["aroon_down"]
 
-    ctx["tenkan"] = df["sig_tenkan"]
-    ctx["kijun"] = df["sig_kijun"]
-    ctx["span_a"] = df["sig_span_a"]
-    ctx["span_b"] = df["sig_span_b"]
+    ctx["tenkan"] = df["tenkan"]
+    ctx["kijun"] = df["kijun"]
+    ctx["span_a"] = df["span_a"]
+    ctx["span_b"] = df["span_b"]
 
-    ctx["chop14"] = df["sig_chop14"]
-    ctx["ao"] = df["sig_ao"]
-    ctx["roc10"] = df["sig_roc10"]
-    ctx["stoch_rsi_manual"] = df["sig_stoch_rsi"]
+    ctx["chop14"] = df["chop14"]
+    ctx["ao"] = df["awesome_oscillator"]
+    ctx["roc10"] = df["roc10"]
+    ctx["stoch_rsi_manual"] = df["stoch_rsi"]
 
-    ctx["linreg_slope20"] = df["sig_linreg_slope20"]
-    ctx["linreg_mid20"] = df["sig_linreg_mid20"]
+    ctx["linreg_slope20"] = df["linreg_slope20"]
+    ctx["linreg_mid20"] = df["linreg_mid20"]
     ctx["linreg_upper20"] = ctx["linreg_mid20"] + 2 * ctx["std20"]
     ctx["linreg_lower20"] = ctx["linreg_mid20"] - 2 * ctx["std20"]
 
-    ctx["fractal_high_ffill"] = df["sig_fractal_high_ffill"]
-    ctx["fractal_low_ffill"] = df["sig_fractal_low_ffill"]
+    ctx["fractal_high"] = df["fractal_high"]
+    ctx["fractal_low"] = df["fractal_low"]
+    ctx["fractal_high_ffill"] = df["fractal_high_ffill"]
+    ctx["fractal_low_ffill"] = df["fractal_low_ffill"]
 
-    ctx["ultimate_manual"] = df["sig_ultimate_osc"]
-    ctx["connors_rsi"] = df["sig_connors_rsi"]
+    ctx["ultimate_manual"] = df["ultimate_osc"]
+    ctx["connors_rsi"] = df["connors_rsi"]
 
-    ctx["kc_mid"] = df["sig_kc_mid"]
-    ctx["kc_upper"] = df["sig_kc_upper"]
-    ctx["kc_lower"] = df["sig_kc_lower"]
+    ctx["kc_mid"] = df["kc_mid"]
+    ctx["kc_upper"] = df["kc_upper"]
+    ctx["kc_lower"] = df["kc_lower"]
 
-    ctx["vpt"] = df["sig_vpt"]
-    ctx["tma"] = df["sig_tma10"]
-    ctx["hurst_proxy"] = df["sig_hurst_proxy"]
+    ctx["vpt"] = df["vpt"]
+    ctx["tma"] = df["tma10"]
+    ctx["hurst_proxy"] = df["hurst_proxy"]
     ctx["lower_range_pos"] = ctx["low_10"] + (ctx["high_10"] - ctx["low_10"]) * 0.3
     ctx["upper_range_pos"] = ctx["high_10"] - (ctx["high_10"] - ctx["low_10"]) * 0.3
     ctx["equal_low"] = (df["Low"] - df["low_lag1"]).abs() < (0.001 * df["Close"])

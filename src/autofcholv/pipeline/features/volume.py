@@ -593,13 +593,12 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["Chla_fancy"] = df["chla_fancy"]
     df["NetVol_fancy"] = df["net_vol_fancy"]
 
-    # --- Signal-support indicators ---
-    # These columns are consumed by signal.py to derive Buy/Sell/None signals.
+    # --- Indicator features used by signal.py ---
 
     mfi_val = ta.mfi(df["High"], df["Low"], df["Close"], df["Volume"], length=14)
-    df["sig_mfi14"] = mfi_val if mfi_val is not None else np.nan
+    df["mfi14"] = mfi_val if mfi_val is not None else np.nan
 
     vpt_increment = df["Volume"] * df["Close"].pct_change().fillna(0.0)
-    df["sig_vpt"] = vpt_increment.cumsum()
+    df["vpt"] = vpt_increment.cumsum()
 
     return df

@@ -577,12 +577,12 @@
         "name": "Amv",
         "comment": "Alias for amv"
     },
-    "sig_mfi14": {
+    "mfi14": {
         "type": "float",
         "name": "Money Flow Index 14 for Signals",
         "comment": "Money Flow Index over 14 periods"
     },
-    "sig_vpt": {
+    "vpt": {
         "type": "float",
         "name": "Volume Price Trend for Signals",
         "comment": "Cumulative Volume Price Trend indicator"
