@@ -88,5 +88,40 @@
         "type": "float",
         "name": "Fractal Low Forward-Filled",
         "comment": "Fractal low (5-bar window) forward-filled for signal generation"
+    },
+
+    "range": {
+        "type": "float",
+        "name": "Candle Range",
+        "comment": "High minus Low"
     }
+,
+
+    "body_abs": {
+        "type": "float",
+        "name": "Absolute Candle Body",
+        "comment": "Absolute candlestick body length"
+    }
+,
+
+    "body_abs_sma20": {
+        "type": "float",
+        "name": "20-Bar Average Absolute Body",
+        "comment": "20-bar simple moving average of absolute body length"
+    }
+,
+
+    "range_sma20": {
+        "type": "float",
+        "name": "20-Bar Average Range",
+        "comment": "20-bar simple moving average of High minus Low"
+    }
+,
+
+    "candle_range_ratio": {
+        "type": "float",
+        "name": "Candle Range Ratio",
+        "comment": "Absolute body divided by High minus Low"
+    }
+
 }

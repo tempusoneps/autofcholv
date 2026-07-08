@@ -197,5 +197,19 @@
         "type": "float",
         "name": "Wc",
         "comment": "Alias for wc"
+    },
+
+    "midpoint": {
+        "type": "float",
+        "name": "Price Midpoint",
+        "comment": "Midpoint of High and Low"
     }
+,
+
+    "close_vs_mid": {
+        "type": "float",
+        "name": "Close Versus Midpoint",
+        "comment": "Close minus the High-Low midpoint"
+    }
+
 }

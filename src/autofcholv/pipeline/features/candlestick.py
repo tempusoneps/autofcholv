@@ -21,6 +21,10 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
 
     df['body'] = df['Close'] - df['Open']
     df['height'] = df['High'] - df['Low']
+    df["range"] = df["height"]
+    df["body_abs"] = df["body"].abs()
+    df["body_abs_sma20"] = df["body_abs"].rolling(20).mean()
+    df["range_sma20"] = df["range"].rolling(20).mean()
 
     body_top = df[['Open', 'Close']].max(axis=1)
     body_bottom = df[['Open', 'Close']].min(axis=1)
@@ -35,6 +39,7 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     df['lowwick_rate'] = (df['lowwick'] / (height_safe + epsilon)).fillna(0)
     df['body_rate'] = (df['body'].abs() / (height_safe + epsilon)).fillna(0)
     df['body_ratio'] = df['body_rate']
+    df["candle_range_ratio"] = df["body_abs"] / height_safe
     df['cbr'] = df['body_rate']
     df['wick_ratio'] = df['upwick'] / (df['upwick'] + df['lowwick'] + epsilon)
     df['upwick_ratio'] = df['upwick'] / (df['lowwick'] + epsilon)

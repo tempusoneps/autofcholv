@@ -78,6 +78,53 @@ REQUIRED_COLUMNS = [
     "fractal_high_ffill",
     "fractal_low_ffill",
     "connors_rsi",
+    "range",
+    "body_abs",
+    "body_abs_sma20",
+    "range_sma20",
+    "midpoint",
+    "price_change",
+    "price_change_lag1",
+    "return_5",
+    "return_10",
+    "sma20",
+    "sma50",
+    "std5",
+    "std10",
+    "std20",
+    "std50",
+    "bb_width_q20",
+    "bb_width_sma20",
+    "close_min_10",
+    "close_max_10",
+    "high_5",
+    "low_5",
+    "high_10",
+    "low_10",
+    "high_20",
+    "low_20",
+    "range_mid_10",
+    "recent_high",
+    "recent_low",
+    "recent_high_prev",
+    "recent_low_prev",
+    "volume_sma20",
+    "atr_sma20",
+    "linreg_upper20",
+    "linreg_lower20",
+    "lower_range_pos",
+    "upper_range_pos",
+    "equal_low",
+    "equal_high",
+    "inside_bar_prev",
+    "prev_5_low",
+    "prev_5_high",
+    "prev_10_low",
+    "prev_10_high",
+    "prev_20_low",
+    "prev_20_high",
+    "close_vs_mid",
+    "candle_range_ratio",
 ]
 
 
@@ -94,118 +141,10 @@ def _true_series(df: pd.DataFrame) -> pd.Series:
     return pd.Series(True, index=df.index)
 
 
-def _rolling_percentile(series: pd.Series, window: int, quantile: float) -> pd.Series:
-    return series.rolling(window).quantile(quantile)
-
-
-def _prepare_context(df: pd.DataFrame) -> pd.DataFrame:
-    ctx = pd.DataFrame(index=df.index)
-    candle_range = (df["High"] - df["Low"]).replace(0, np.nan)
-
-    ctx["range"] = df["High"] - df["Low"]
-    ctx["body_abs"] = df["body"].abs()
-    ctx["body_abs_sma20"] = ctx["body_abs"].rolling(20).mean()
-    ctx["range_sma20"] = ctx["range"].rolling(20).mean()
-    ctx["midpoint"] = (df["High"] + df["Low"]) / 2.0
-    ctx["price_change"] = df["Close"].diff()
-    ctx["price_change_lag1"] = ctx["price_change"].shift(1)
-    ctx["return_5"] = df["Close"].pct_change(5)
-    ctx["return_10"] = df["Close"].pct_change(10)
-
-    ctx["sma20"] = df["Close"].rolling(20).mean()
-    ctx["sma50"] = df["Close"].rolling(50).mean()
-    ctx["std5"] = df["Close"].rolling(5).std()
-    ctx["std10"] = df["Close"].rolling(10).std()
-    ctx["std20"] = df["Close"].rolling(20).std()
-    ctx["std50"] = df["Close"].rolling(50).std()
-
-    ctx["bb_width"] = df["bb_width"]
-    ctx["bb_width_q20"] = _rolling_percentile(ctx["bb_width"], 100, 0.2)
-    ctx["bb_width_sma20"] = ctx["bb_width"].rolling(20).mean()
-
-    ctx["close_min_10"] = df["Close"].rolling(10).min()
-    ctx["close_max_10"] = df["Close"].rolling(10).max()
-    ctx["high_5"] = df["High"].rolling(5).max()
-    ctx["low_5"] = df["Low"].rolling(5).min()
-    ctx["high_10"] = df["High"].rolling(10).max()
-    ctx["low_10"] = df["Low"].rolling(10).min()
-    ctx["high_20"] = df["High"].rolling(20).max()
-    ctx["low_20"] = df["Low"].rolling(20).min()
-    ctx["range_mid_10"] = (ctx["high_10"] + ctx["low_10"]) / 2.0
-
-    ctx["recent_high"] = df["High"].rolling(20).max().shift(1)
-    ctx["recent_low"] = df["Low"].rolling(20).min().shift(1)
-    ctx["recent_high_prev"] = ctx["recent_high"].shift(5)
-    ctx["recent_low_prev"] = ctx["recent_low"].shift(5)
-
-    ctx["volume_sma20"] = df["Volume"].rolling(20).mean()
-    ctx["atr_sma20"] = df["atr"].rolling(20).mean()
-
-    ctx["mfi14"] = df["mfi14"]
-    ctx["hma20"] = df["hma20"]
-    ctx["kama10"] = df["kama10"]
-    ctx["trix"] = df["trix15"]
-    ctx["trix_signal"] = df["trix15_signal"]
-    ctx["stochrsi_k"] = df["stochrsi_k"]
-    ctx["stochrsi_d"] = df["stochrsi_d"]
-    ctx["supertrend_dir"] = df["supertrend_dir"]
-
-    ctx["aroon_up"] = df["aroon_up"]
-    ctx["aroon_down"] = df["aroon_down"]
-
-    ctx["tenkan"] = df["tenkan"]
-    ctx["kijun"] = df["kijun"]
-    ctx["span_a"] = df["span_a"]
-    ctx["span_b"] = df["span_b"]
-
-    ctx["chop14"] = df["chop14"]
-    ctx["ao"] = df["awesome_oscillator"]
-    ctx["roc10"] = df["roc10"]
-    ctx["stoch_rsi_manual"] = df["stoch_rsi"]
-
-    ctx["linreg_slope20"] = df["linreg_slope20"]
-    ctx["linreg_mid20"] = df["linreg_mid20"]
-    ctx["linreg_upper20"] = ctx["linreg_mid20"] + 2 * ctx["std20"]
-    ctx["linreg_lower20"] = ctx["linreg_mid20"] - 2 * ctx["std20"]
-
-    ctx["fractal_high"] = df["fractal_high"]
-    ctx["fractal_low"] = df["fractal_low"]
-    ctx["fractal_high_ffill"] = df["fractal_high_ffill"]
-    ctx["fractal_low_ffill"] = df["fractal_low_ffill"]
-
-    ctx["ultimate_manual"] = df["ultimate_osc"]
-    ctx["connors_rsi"] = df["connors_rsi"]
-
-    ctx["kc_mid"] = df["kc_mid"]
-    ctx["kc_upper"] = df["kc_upper"]
-    ctx["kc_lower"] = df["kc_lower"]
-
-    ctx["vpt"] = df["vpt"]
-    ctx["tma"] = df["tma10"]
-    ctx["hurst_proxy"] = df["hurst_proxy"]
-    ctx["lower_range_pos"] = ctx["low_10"] + (ctx["high_10"] - ctx["low_10"]) * 0.3
-    ctx["upper_range_pos"] = ctx["high_10"] - (ctx["high_10"] - ctx["low_10"]) * 0.3
-    ctx["equal_low"] = (df["Low"] - df["low_lag1"]).abs() < (0.001 * df["Close"])
-    ctx["equal_high"] = (df["High"] - df["high_lag1"]).abs() < (0.001 * df["Close"])
-    ctx["inside_bar_prev"] = (df["high_lag1"] < df["High"].shift(2)) & (df["low_lag1"] > df["Low"].shift(2))
-    ctx["prev_5_low"] = ctx["low_5"].shift(1)
-    ctx["prev_5_high"] = ctx["high_5"].shift(1)
-    ctx["prev_10_low"] = ctx["low_10"].shift(1)
-    ctx["prev_10_high"] = ctx["high_10"].shift(1)
-    ctx["prev_20_low"] = ctx["low_20"].shift(1)
-    ctx["prev_20_high"] = ctx["high_20"].shift(1)
-    ctx["close_vs_mid"] = df["Close"] - ctx["midpoint"]
-    ctx["candle_range_ratio"] = ctx["body_abs"] / candle_range
-
-    return ctx
-
-
 def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     missing_cols = [col for col in REQUIRED_COLUMNS if col not in df.columns]
     if missing_cols:
         raise ValueError(f"Missing columns: {missing_cols}")
-
-    ctx = _prepare_context(df)
 
     cond1_sell = (df["open_lag1"] > df["close_lag1"]) & (df["close_lag1"] >= df["low_lag1"] + 0.1)
     cond2_sell = (df["Open"] > df["Close"]) & (df["Close"] == df["Low"]) & (df["Low"] < df["low_lag1"])
@@ -218,8 +157,8 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     df["ema_cross_signal"] = _signal_from_conditions(ema_bullish, ema_bearish)
 
     df["min_max_10_signal"] = _signal_from_conditions(
-        (df["Close"] == ctx["close_min_10"]) & (df["rsi"] < 30),
-        (df["Close"] == ctx["close_max_10"]) & (df["rsi"] > 70),
+        (df["Close"] == df["close_min_10"]) & (df["rsi"] < 30),
+        (df["Close"] == df["close_max_10"]) & (df["rsi"] > 70),
     )
 
     is_max_macd_hist = df["macd_hist"] == df["macd_hist"].rolling(10).max()
@@ -253,126 +192,126 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     )
 
     df["bb_squeeze_signal"] = _signal_from_conditions(
-        (ctx["bb_width"] < ctx["bb_width_q20"]) & (df["Close"] > df["ub"]),
-        (ctx["bb_width"] < ctx["bb_width_q20"]) & (df["Close"] < df["lb"]),
+        (df["bb_width"] < df["bb_width_q20"]) & (df["Close"] > df["ub"]),
+        (df["bb_width"] < df["bb_width_q20"]) & (df["Close"] < df["lb"]),
     )
     df["rsi_divergence_signal"] = _signal_from_conditions(
         (df["Low"] < df["Low"].shift(5)) & (df["rsi"] > df["rsi"].shift(5)),
         (df["High"] > df["High"].shift(5)) & (df["rsi"] < df["rsi"].shift(5)),
     )
     df["atr_breakout_signal"] = _signal_from_conditions(
-        (ctx["range"] > 1.5 * df["atr"]) & (df["Close"] > df["Open"]),
-        (ctx["range"] > 1.5 * df["atr"]) & (df["Close"] < df["Open"]),
+        (df["range"] > 1.5 * df["atr"]) & (df["Close"] > df["Open"]),
+        (df["range"] > 1.5 * df["atr"]) & (df["Close"] < df["Open"]),
     )
     df["vsa_confirmation_signal"] = _signal_from_conditions(
-        (df["Close"] > df["Open"]) & (df["Volume"] > 1.2 * ctx["volume_sma20"]),
-        (df["Close"] < df["Open"]) & (df["Volume"] > 1.2 * ctx["volume_sma20"]),
+        (df["Close"] > df["Open"]) & (df["Volume"] > 1.2 * df["volume_sma20"]),
+        (df["Close"] < df["Open"]) & (df["Volume"] > 1.2 * df["volume_sma20"]),
     )
 
-    cloud_top = pd.concat([ctx["span_a"], ctx["span_b"]], axis=1).max(axis=1)
-    cloud_bottom = pd.concat([ctx["span_a"], ctx["span_b"]], axis=1).min(axis=1)
+    cloud_top = pd.concat([df["span_a"], df["span_b"]], axis=1).max(axis=1)
+    cloud_bottom = pd.concat([df["span_a"], df["span_b"]], axis=1).min(axis=1)
     df["ichimoku_cloud_signal"] = _signal_from_conditions(
-        (df["Close"] > cloud_top) & (ctx["tenkan"] > ctx["kijun"]),
-        (df["Close"] < cloud_bottom) & (ctx["tenkan"] < ctx["kijun"]),
+        (df["Close"] > cloud_top) & (df["tenkan"] > df["kijun"]),
+        (df["Close"] < cloud_bottom) & (df["tenkan"] < df["kijun"]),
     )
     df["ma_stretch_signal"] = _signal_from_conditions(df["close_zscore"] < -2, df["close_zscore"] > 2)
     df["market_structure_break_signal"] = _signal_from_conditions(
-        (df["Close"] > ctx["recent_high"]) & (ctx["recent_low"] < ctx["recent_low_prev"]),
-        (df["Close"] < ctx["recent_low"]) & (ctx["recent_high"] > ctx["recent_high_prev"]),
+        (df["Close"] > df["recent_high"]) & (df["recent_low"] < df["recent_low_prev"]),
+        (df["Close"] < df["recent_low"]) & (df["recent_high"] > df["recent_high_prev"]),
     )
     df["bollinger_band_width_signal"] = _signal_from_conditions(
-        ctx["bb_width"] < (ctx["bb_width_sma20"] * 0.7),
-        ctx["bb_width"] > (ctx["bb_width_sma20"] * 1.3),
+        df["bb_width"] < (df["bb_width_sma20"] * 0.7),
+        df["bb_width"] > (df["bb_width_sma20"] * 1.3),
     )
-    df["volume_confirmation_signal"] = ((df["Volume"] > ctx["volume_sma20"]) & (df["Close"] != df["close_lag1"])).fillna(False)
+    df["volume_confirmation_signal"] = ((df["Volume"] > df["volume_sma20"]) & (df["Close"] != df["close_lag1"])).fillna(False)
     df["mfi_rejection_signal"] = _signal_from_conditions(
-        (ctx["mfi14"] < 20) & (ctx["mfi14"] > ctx["mfi14"].shift(1)),
-        (ctx["mfi14"] > 80) & (ctx["mfi14"] < ctx["mfi14"].shift(1)),
+        (df["mfi14"] < 20) & (df["mfi14"] > df["mfi14"].shift(1)),
+        (df["mfi14"] > 80) & (df["mfi14"] < df["mfi14"].shift(1)),
     )
-    df["donchian_breakout_signal"] = _signal_from_conditions(df["Close"] > ctx["prev_20_high"], df["Close"] < ctx["prev_20_low"])
+    df["donchian_breakout_signal"] = _signal_from_conditions(df["Close"] > df["prev_20_high"], df["Close"] < df["prev_20_low"])
     df["hma_reversal_signal"] = _signal_from_conditions(
-        (ctx["hma20"] > ctx["hma20"].shift(1)) & (ctx["hma20"].shift(1) < ctx["hma20"].shift(2)),
-        (ctx["hma20"] < ctx["hma20"].shift(1)) & (ctx["hma20"].shift(1) > ctx["hma20"].shift(2)),
+        (df["hma20"] > df["hma20"].shift(1)) & (df["hma20"].shift(1) < df["hma20"].shift(2)),
+        (df["hma20"] < df["hma20"].shift(1)) & (df["hma20"].shift(1) > df["hma20"].shift(2)),
     )
     df["adx_trend_filter"] = (df["adx"] > 25).fillna(False)
-    df["connors_rsi_signal"] = _signal_from_conditions(ctx["connors_rsi"] < 15, ctx["connors_rsi"] > 85)
-    df["choppiness_signal"] = (ctx["chop14"] < 38.2).fillna(False)
+    df["connors_rsi_signal"] = _signal_from_conditions(df["connors_rsi"] < 15, df["connors_rsi"] > 85)
+    df["choppiness_signal"] = (df["chop14"] < 38.2).fillna(False)
     df["keltner_channel_reversal"] = _signal_from_conditions(
-        (df["Close"] < ctx["kc_lower"]) & (df["close_lag1"] > ctx["kc_lower"].shift(1)),
-        (df["Close"] > ctx["kc_upper"]) & (df["close_lag1"] < ctx["kc_upper"].shift(1)),
+        (df["Close"] < df["kc_lower"]) & (df["close_lag1"] > df["kc_lower"].shift(1)),
+        (df["Close"] > df["kc_upper"]) & (df["close_lag1"] < df["kc_upper"].shift(1)),
     )
     df["fractal_breakout_signal"] = _signal_from_conditions(
-        df["Close"] > ctx["fractal_high_ffill"].shift(2),
-        df["Close"] < ctx["fractal_low_ffill"].shift(2),
+        df["Close"] > df["fractal_high_ffill"].shift(2),
+        df["Close"] < df["fractal_low_ffill"].shift(2),
     )
     df["supertrend_reversal"] = _signal_from_conditions(
-        (ctx["supertrend_dir"] > 0) & (ctx["supertrend_dir"].shift(1) < 0),
-        (ctx["supertrend_dir"] < 0) & (ctx["supertrend_dir"].shift(1) > 0),
+        (df["supertrend_dir"] > 0) & (df["supertrend_dir"].shift(1) < 0),
+        (df["supertrend_dir"] < 0) & (df["supertrend_dir"].shift(1) > 0),
     )
     df["aroon_oscillator_signal"] = _signal_from_conditions(
-        (ctx["aroon_up"] > 70) & (ctx["aroon_down"] < 30),
-        (ctx["aroon_down"] > 70) & (ctx["aroon_up"] < 30),
+        (df["aroon_up"] > 70) & (df["aroon_down"] < 30),
+        (df["aroon_down"] > 70) & (df["aroon_up"] < 30),
     )
     df["chande_momentum_oscillator_signal"] = _signal_from_conditions(
         (df["cmo"] > 50) & (df["cmo"].shift(1) < 50),
         (df["cmo"] < -50) & (df["cmo"].shift(1) > -50),
     )
     df["ultimate_oscillator_signal"] = _signal_from_conditions(
-        (ctx["ultimate_manual"] < 30) & (ctx["ultimate_manual"] > ctx["ultimate_manual"].shift(1)),
-        (ctx["ultimate_manual"] > 70) & (ctx["ultimate_manual"] < ctx["ultimate_manual"].shift(1)),
+        (df["ultimate_osc"] < 30) & (df["ultimate_osc"] > df["ultimate_osc"].shift(1)),
+        (df["ultimate_osc"] > 70) & (df["ultimate_osc"] < df["ultimate_osc"].shift(1)),
     )
     df["trix_crossover_signal"] = _signal_from_conditions(
-        (ctx["trix"] > ctx["trix_signal"]) & (ctx["trix"].shift(1) <= ctx["trix_signal"].shift(1)),
-        (ctx["trix"] < ctx["trix_signal"]) & (ctx["trix"].shift(1) >= ctx["trix_signal"].shift(1)),
+        (df["trix15"] > df["trix15_signal"]) & (df["trix15"].shift(1) <= df["trix15_signal"].shift(1)),
+        (df["trix15"] < df["trix15_signal"]) & (df["trix15"].shift(1) >= df["trix15_signal"].shift(1)),
     )
     df["stochastic_rsi_signal"] = _signal_from_conditions(
-        (ctx["stoch_rsi_manual"] < 0.2) & (ctx["stoch_rsi_manual"] > ctx["stoch_rsi_manual"].shift(1)),
-        (ctx["stoch_rsi_manual"] > 0.8) & (ctx["stoch_rsi_manual"] < ctx["stoch_rsi_manual"].shift(1)),
+        (df["stoch_rsi"] < 0.2) & (df["stoch_rsi"] > df["stoch_rsi"].shift(1)),
+        (df["stoch_rsi"] > 0.8) & (df["stoch_rsi"] < df["stoch_rsi"].shift(1)),
     )
     df["awesome_oscillator_signal"] = _signal_from_conditions(
-        (ctx["ao"] > 0) & (ctx["ao"].shift(1) < ctx["ao"]),
-        (ctx["ao"] < 0) & (ctx["ao"].shift(1) > ctx["ao"]),
+        (df["awesome_oscillator"] > 0) & (df["awesome_oscillator"].shift(1) < df["awesome_oscillator"]),
+        (df["awesome_oscillator"] < 0) & (df["awesome_oscillator"].shift(1) > df["awesome_oscillator"]),
     )
     df["rate_of_change_signal"] = _signal_from_conditions(
-        (ctx["roc10"] > 0) & (ctx["roc10"].shift(1) < ctx["roc10"]),
-        (ctx["roc10"] < 0) & (ctx["roc10"].shift(1) > ctx["roc10"]),
+        (df["roc10"] > 0) & (df["roc10"].shift(1) < df["roc10"]),
+        (df["roc10"] < 0) & (df["roc10"].shift(1) > df["roc10"]),
     )
-    df["price_channel_breakout_signal"] = _signal_from_conditions(df["Close"] > ctx["prev_20_high"], df["Close"] < ctx["prev_20_low"])
+    df["price_channel_breakout_signal"] = _signal_from_conditions(df["Close"] > df["prev_20_high"], df["Close"] < df["prev_20_low"])
     df["linear_regression_slope_signal"] = _signal_from_conditions(
-        (ctx["linreg_slope20"] > 0) & (ctx["linreg_slope20"].shift(1) < ctx["linreg_slope20"]),
-        (ctx["linreg_slope20"] < 0) & (ctx["linreg_slope20"].shift(1) > ctx["linreg_slope20"]),
+        (df["linreg_slope20"] > 0) & (df["linreg_slope20"].shift(1) < df["linreg_slope20"]),
+        (df["linreg_slope20"] < 0) & (df["linreg_slope20"].shift(1) > df["linreg_slope20"]),
     )
-    df["zig_zag_reversal_signal"] = _signal_from_conditions(ctx["fractal_low"].notna(), ctx["fractal_high"].notna())
+    df["zig_zag_reversal_signal"] = _signal_from_conditions(df["fractal_low"].notna(), df["fractal_high"].notna())
     df["kaufman_ama_signal"] = _signal_from_conditions(
-        (ctx["kama10"] > ctx["kama10"].shift(1)) & (ctx["kama10"].shift(1) < ctx["kama10"].shift(2)),
-        (ctx["kama10"] < ctx["kama10"].shift(1)) & (ctx["kama10"].shift(1) > ctx["kama10"].shift(2)),
+        (df["kama10"] > df["kama10"].shift(1)) & (df["kama10"].shift(1) < df["kama10"].shift(2)),
+        (df["kama10"] < df["kama10"].shift(1)) & (df["kama10"].shift(1) > df["kama10"].shift(2)),
     )
     df["tma_reversal_signal"] = _signal_from_conditions(
-        (df["Close"] > ctx["tma"]) & (df["close_lag1"] < ctx["tma"].shift(1)),
-        (df["Close"] < ctx["tma"]) & (df["close_lag1"] > ctx["tma"].shift(1)),
+        (df["Close"] > df["tma10"]) & (df["close_lag1"] < df["tma10"].shift(1)),
+        (df["Close"] < df["tma10"]) & (df["close_lag1"] > df["tma10"].shift(1)),
     )
     df["linear_regression_channel_signal"] = _signal_from_conditions(
-        (df["Close"] < ctx["linreg_lower20"]) & (df["close_lag1"] > ctx["linreg_lower20"].shift(1)),
-        (df["Close"] > ctx["linreg_upper20"]) & (df["close_lag1"] < ctx["linreg_upper20"].shift(1)),
+        (df["Close"] < df["linreg_lower20"]) & (df["close_lag1"] > df["linreg_lower20"].shift(1)),
+        (df["Close"] > df["linreg_upper20"]) & (df["close_lag1"] < df["linreg_upper20"].shift(1)),
     )
-    df["fractal_channel_signal"] = _signal_from_conditions(df["Close"] > ctx["fractal_high_ffill"], df["Close"] < ctx["fractal_low_ffill"])
-    df["hurst_exponent_signal"] = (ctx["hurst_proxy"] < 0.5).fillna(False)
+    df["fractal_channel_signal"] = _signal_from_conditions(df["Close"] > df["fractal_high_ffill"], df["Close"] < df["fractal_low_ffill"])
+    df["hurst_exponent_signal"] = (df["hurst_proxy"] < 0.5).fillna(False)
     df["vpt_divergence_signal"] = _signal_from_conditions(
-        (df["Low"] < df["Low"].shift(5)) & (ctx["vpt"] > ctx["vpt"].shift(5)),
-        (df["High"] > df["High"].shift(5)) & (ctx["vpt"] < ctx["vpt"].shift(5)),
+        (df["Low"] < df["Low"].shift(5)) & (df["vpt"] > df["vpt"].shift(5)),
+        (df["High"] > df["High"].shift(5)) & (df["vpt"] < df["vpt"].shift(5)),
     )
     df["liquidity_sweep_signal"] = _signal_from_conditions(
-        (df["Low"] < ctx["prev_5_low"]) & (df["Close"] > ctx["prev_5_low"]),
-        (df["High"] > ctx["prev_5_high"]) & (df["Close"] < ctx["prev_5_high"]),
+        (df["Low"] < df["prev_5_low"]) & (df["Close"] > df["prev_5_low"]),
+        (df["High"] > df["prev_5_high"]) & (df["Close"] < df["prev_5_high"]),
     )
-    df["equal_high_low_sweep_signal"] = _signal_from_conditions(ctx["equal_low"] & (df["Close"] > df["low_lag1"]), ctx["equal_high"] & (df["Close"] < df["high_lag1"]))
+    df["equal_high_low_sweep_signal"] = _signal_from_conditions(df["equal_low"] & (df["Close"] > df["low_lag1"]), df["equal_high"] & (df["Close"] < df["high_lag1"]))
     df["inside_bar_breakout_signal"] = _signal_from_conditions(
-        ctx["inside_bar_prev"] & (df["Close"] > df["High"].shift(2)),
-        ctx["inside_bar_prev"] & (df["Close"] < df["Low"].shift(2)),
+        df["inside_bar_prev"] & (df["Close"] > df["High"].shift(2)),
+        df["inside_bar_prev"] & (df["Close"] < df["Low"].shift(2)),
     )
     df["fakey_pattern_signal"] = _signal_from_conditions(
-        (df["Low"] < ctx["prev_5_low"]) & (df["Close"] > df["Open"]),
-        (df["High"] > ctx["prev_5_high"]) & (df["Close"] < df["Open"]),
+        (df["Low"] < df["prev_5_low"]) & (df["Close"] > df["Open"]),
+        (df["High"] > df["prev_5_high"]) & (df["Close"] < df["Open"]),
     )
     df["pin_bar_signal"] = _signal_from_conditions(
         (df["lowwick"] > 2 * df["upwick"]) & (df["Close"] > df["Open"]),
@@ -382,63 +321,63 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
         (df["Close"] > df["Open"]) & (df["Open"] < df["close_lag1"]) & (df["Close"] > df["open_lag1"]),
         (df["Close"] < df["Open"]) & (df["Open"] > df["close_lag1"]) & (df["Close"] < df["open_lag1"]),
     )
-    compression = ctx["std5"] < (ctx["std20"] * 0.5)
+    compression = df["std5"] < (df["std20"] * 0.5)
     df["compression_breakout_signal"] = _signal_from_conditions(compression & (df["Close"] > df["Close"].rolling(5).max().shift(1)), compression & (df["Close"] < df["Close"].rolling(5).min().shift(1)))
     df["atr_expansion_signal"] = _signal_from_conditions(
-        (df["atr"] > ctx["atr_sma20"] * 1.5) & (df["Close"] > df["close_lag1"]),
-        (df["atr"] > ctx["atr_sma20"] * 1.5) & (df["Close"] < df["close_lag1"]),
+        (df["atr"] > df["atr_sma20"] * 1.5) & (df["Close"] > df["close_lag1"]),
+        (df["atr"] > df["atr_sma20"] * 1.5) & (df["Close"] < df["close_lag1"]),
     )
     df["zscore_reversion_signal"] = _signal_from_conditions(df["close_zscore"] < -2, df["close_zscore"] > 2)
-    df["range_breakout_signal"] = _signal_from_conditions(df["Close"] > ctx["prev_10_high"], df["Close"] < ctx["prev_10_low"])
+    df["range_breakout_signal"] = _signal_from_conditions(df["Close"] > df["prev_10_high"], df["Close"] < df["prev_10_low"])
     df["volume_spike_signal"] = _signal_from_conditions(
-        (df["Volume"] > ctx["volume_sma20"] * 2) & (df["Close"] > df["Open"]),
-        (df["Volume"] > ctx["volume_sma20"] * 2) & (df["Close"] < df["Open"]),
+        (df["Volume"] > df["volume_sma20"] * 2) & (df["Close"] > df["Open"]),
+        (df["Volume"] > df["volume_sma20"] * 2) & (df["Close"] < df["Open"]),
     )
-    df["return_momentum_signal"] = _signal_from_conditions(ctx["return_5"] > 0.02, ctx["return_5"] < -0.02)
-    df["volatility_break_signal"] = _signal_from_conditions(ctx["std10"] > ctx["std50"], ctx["std10"] < ctx["std50"])
+    df["return_momentum_signal"] = _signal_from_conditions(df["return_5"] > 0.02, df["return_5"] < -0.02)
+    df["volatility_break_signal"] = _signal_from_conditions(df["std10"] > df["std50"], df["std10"] < df["std50"])
     df["mean_cross_signal"] = _signal_from_conditions(
-        (df["Close"] > ctx["sma20"]) & (df["close_lag1"] < ctx["sma20"].shift(1)),
-        (df["Close"] < ctx["sma20"]) & (df["close_lag1"] > ctx["sma20"].shift(1)),
+        (df["Close"] > df["sma20"]) & (df["close_lag1"] < df["sma20"].shift(1)),
+        (df["Close"] < df["sma20"]) & (df["close_lag1"] > df["sma20"].shift(1)),
     )
     df["high_low_break_signal"] = _signal_from_conditions(df["Close"] > df["high_lag1"], df["Close"] < df["low_lag1"])
     df["range_compression_signal"] = _signal_from_conditions(
-        (ctx["range"] < ctx["range_sma20"] * 0.5) & (df["Close"] >= ctx["sma20"]),
-        (ctx["range"] < ctx["range_sma20"] * 0.5) & (df["Close"] < ctx["sma20"]),
+        (df["range"] < df["range_sma20"] * 0.5) & (df["Close"] >= df["sma20"]),
+        (df["range"] < df["range_sma20"] * 0.5) & (df["Close"] < df["sma20"]),
     )
     df["gap_up_down_signal"] = _signal_from_conditions(df["Open"] > df["high_lag1"], df["Open"] < df["low_lag1"])
     df["body_size_signal"] = _signal_from_conditions(
-        (ctx["body_abs"] > ctx["body_abs_sma20"] * 2) & (df["Close"] > df["Open"]),
-        (ctx["body_abs"] > ctx["body_abs_sma20"] * 2) & (df["Close"] < df["Open"]),
+        (df["body_abs"] > df["body_abs_sma20"] * 2) & (df["Close"] > df["Open"]),
+        (df["body_abs"] > df["body_abs_sma20"] * 2) & (df["Close"] < df["Open"]),
     )
     df["wick_rejection_signal"] = _signal_from_conditions(
-        (df["lowwick"] > 2 * ctx["body_abs"]) & (df["Close"] > df["Open"]),
-        (df["upwick"] > 2 * ctx["body_abs"]) & (df["Close"] < df["Open"]),
+        (df["lowwick"] > 2 * df["body_abs"]) & (df["Close"] > df["Open"]),
+        (df["upwick"] > 2 * df["body_abs"]) & (df["Close"] < df["Open"]),
     )
     df["trend_strength_signal"] = _signal_from_conditions(
-        (df["Close"] > ctx["sma50"]) & (ctx["sma20"] > ctx["sma50"]),
-        (df["Close"] < ctx["sma50"]) & (ctx["sma20"] < ctx["sma50"]),
+        (df["Close"] > df["sma50"]) & (df["sma20"] > df["sma50"]),
+        (df["Close"] < df["sma50"]) & (df["sma20"] < df["sma50"]),
     )
     df["pullback_signal"] = _signal_from_conditions(
-        (df["Close"] < ctx["sma20"]) & (ctx["sma20"] > ctx["sma50"]),
-        (df["Close"] > ctx["sma20"]) & (ctx["sma20"] < ctx["sma50"]),
+        (df["Close"] < df["sma20"]) & (df["sma20"] > df["sma50"]),
+        (df["Close"] > df["sma20"]) & (df["sma20"] < df["sma50"]),
     )
     df["break_retest_signal"] = _signal_from_conditions(
-        (df["close_lag1"] > ctx["high_10"].shift(2)) & (df["Close"] < df["close_lag1"]),
-        (df["close_lag1"] < ctx["low_10"].shift(2)) & (df["Close"] > df["close_lag1"]),
+        (df["close_lag1"] > df["high_10"].shift(2)) & (df["Close"] < df["close_lag1"]),
+        (df["close_lag1"] < df["low_10"].shift(2)) & (df["Close"] > df["close_lag1"]),
     )
     df["momentum_shift_signal"] = _signal_from_conditions(
         (df["Close"] > df["close_lag1"]) & (df["close_lag1"] < df["Close"].shift(2)),
         (df["Close"] < df["close_lag1"]) & (df["close_lag1"] > df["Close"].shift(2)),
     )
-    df["range_mid_reversion_signal"] = _signal_from_conditions(df["Close"] < ctx["range_mid_10"], df["Close"] > ctx["range_mid_10"])
+    df["range_mid_reversion_signal"] = _signal_from_conditions(df["Close"] < df["range_mid_10"], df["Close"] > df["range_mid_10"])
     df["volatility_drop_signal"] = _signal_from_conditions(
-        (ctx["std5"] < ctx["std20"] * 0.5) & (df["Close"] >= ctx["sma20"]),
-        (ctx["std5"] < ctx["std20"] * 0.5) & (df["Close"] < ctx["sma20"]),
+        (df["std5"] < df["std20"] * 0.5) & (df["Close"] >= df["sma20"]),
+        (df["std5"] < df["std20"] * 0.5) & (df["Close"] < df["sma20"]),
     )
-    df["price_acceleration_signal"] = _signal_from_conditions(ctx["price_change"] > ctx["price_change_lag1"], ctx["price_change"] < ctx["price_change_lag1"])
-    df["extreme_move_signal"] = _signal_from_conditions(ctx["return_10"] > 0.05, ctx["return_10"] < -0.05)
-    df["mean_distance_signal"] = _signal_from_conditions(df["Close"] < (ctx["sma20"] * 0.95), df["Close"] > (ctx["sma20"] * 1.05))
-    df["range_shift_signal"] = _signal_from_conditions(ctx["low_5"] > ctx["low_10"], ctx["high_5"] < ctx["high_10"])
+    df["price_acceleration_signal"] = _signal_from_conditions(df["price_change"] > df["price_change_lag1"], df["price_change"] < df["price_change_lag1"])
+    df["extreme_move_signal"] = _signal_from_conditions(df["return_10"] > 0.05, df["return_10"] < -0.05)
+    df["mean_distance_signal"] = _signal_from_conditions(df["Close"] < (df["sma20"] * 0.95), df["Close"] > (df["sma20"] * 1.05))
+    df["range_shift_signal"] = _signal_from_conditions(df["low_5"] > df["low_10"], df["high_5"] < df["high_10"])
     df["volume_trend_signal"] = _signal_from_conditions(
         (df["Volume"] > df["volume_lag1"]) & (df["volume_lag1"] > df["Volume"].shift(2)),
         (df["Volume"] < df["volume_lag1"]) & (df["volume_lag1"] < df["Volume"].shift(2)),
@@ -456,23 +395,23 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
         (df["Close"] < df["close_lag1"]) & (df["close_lag1"] > df["Close"].shift(2)),
     )
     df["range_expansion_signal"] = _signal_from_conditions(
-        (ctx["range"] > ctx["range_sma20"] * 1.5) & (df["Close"] > df["Open"]),
-        (ctx["range"] > ctx["range_sma20"] * 1.5) & (df["Close"] < df["Open"]),
+        (df["range"] > df["range_sma20"] * 1.5) & (df["Close"] > df["Open"]),
+        (df["range"] > df["range_sma20"] * 1.5) & (df["Close"] < df["Open"]),
     )
     df["body_direction_signal"] = _signal_from_conditions(
         (df["Close"] > df["Open"]) & (df["close_lag1"] > df["open_lag1"]),
         (df["Close"] < df["Open"]) & (df["close_lag1"] < df["open_lag1"]),
     )
-    df["range_position_signal"] = _signal_from_conditions(df["Close"] < ctx["lower_range_pos"], df["Close"] > ctx["upper_range_pos"])
+    df["range_position_signal"] = _signal_from_conditions(df["Close"] < df["lower_range_pos"], df["Close"] > df["upper_range_pos"])
     df["close_strength_signal"] = _signal_from_conditions(
-        (df["Close"] > ctx["midpoint"]) & (df["Close"] > df["Open"]),
-        (df["Close"] < ctx["midpoint"]) & (df["Close"] < df["Open"]),
+        (df["Close"] > df["midpoint"]) & (df["Close"] > df["Open"]),
+        (df["Close"] < df["midpoint"]) & (df["Close"] < df["Open"]),
     )
     df["trend_exhaustion_signal"] = _signal_from_conditions(
         (df["Close"] < df["close_lag1"]) & (df["close_lag1"] > df["Close"].shift(2)) & (df["Close"].shift(2) > df["Close"].shift(3)),
         (df["Close"] > df["close_lag1"]) & (df["close_lag1"] < df["Close"].shift(2)) & (df["Close"].shift(2) < df["Close"].shift(3)),
     )
-    df["range_flip_signal"] = _signal_from_conditions(df["Close"] > ctx["prev_5_high"], df["Close"] < ctx["prev_5_low"])
+    df["range_flip_signal"] = _signal_from_conditions(df["Close"] > df["prev_5_high"], df["Close"] < df["prev_5_low"])
     df["vol_price_divergence_signal"] = _signal_from_conditions(
         (df["Close"] < df["close_lag1"]) & (df["Volume"] > df["volume_lag1"]),
         (df["Close"] > df["close_lag1"]) & (df["Volume"] > df["volume_lag1"]),

@@ -55,6 +55,11 @@ The pipeline executes in the order listed below.
 | `fractal_low` | float | Fractal low detected with a 5-bar window |
 | `fractal_high_ffill` | float | Fractal high (5-bar window) forward-filled for signal generation |
 | `fractal_low_ffill` | float | Fractal low (5-bar window) forward-filled for signal generation |
+| `range` | float | High minus Low |
+| `body_abs` | float | Absolute candlestick body length |
+| `body_abs_sma20` | float | 20-bar simple moving average of absolute body length |
+| `range_sma20` | float | 20-bar simple moving average of High minus Low |
+| `candle_range_ratio` | float | Absolute body divided by High minus Low |
 
 ---
 
@@ -231,6 +236,18 @@ The pipeline executes in the order listed below.
 | `ultimate_osc` | float | Ultimate Oscillator (7-14-28) |
 | `stochrsi_k` | float | StochRSI K line |
 | `stochrsi_d` | float | StochRSI D line |
+| `price_change` | float | One-bar difference of Close |
+| `price_change_lag1` | float | Previous value of price_change |
+| `return_5` | float | Close percent change over 5 bars |
+| `return_10` | float | Close percent change over 10 bars |
+| `sma20` | float | 20-bar simple moving average of Close |
+| `sma50` | float | 50-bar simple moving average of Close |
+| `std5` | float | 5-bar rolling standard deviation of Close |
+| `std10` | float | 10-bar rolling standard deviation of Close |
+| `std20` | float | 20-bar rolling standard deviation of Close |
+| `std50` | float | 50-bar rolling standard deviation of Close |
+| `close_min_10` | float | 10-bar rolling minimum of Close |
+| `close_max_10` | float | 10-bar rolling maximum of Close |
 
 ---
 
@@ -267,6 +284,8 @@ The pipeline executes in the order listed below.
 | `typ` | float | Typical price (H+L+C)/3 |
 | `vwap_signal` | float | Typical price relative to rolling VWAP minus 1 |
 | `wc` | float | Weighted close EMA ratio |
+| `midpoint` | float | Midpoint of High and Low |
+| `close_vs_mid` | float | Close minus the High-Low midpoint |
 
 ---
 
@@ -450,6 +469,27 @@ The pipeline executes in the order listed below.
 | `linreg_slope20` | float | Linear regression slope over 20 periods |
 | `linreg_mid20` | float | Linear regression midline over 20 periods |
 | `tma10` | float | Triangular Moving Average over 10 periods |
+| `linreg_upper20` | float | linreg_mid20 plus two times std20 |
+| `linreg_lower20` | float | linreg_mid20 minus two times std20 |
+| `high_5` | float | 5-bar rolling maximum of High |
+| `low_5` | float | 5-bar rolling minimum of Low |
+| `high_10` | float | 10-bar rolling maximum of High |
+| `low_10` | float | 10-bar rolling minimum of Low |
+| `high_20` | float | 20-bar rolling maximum of High |
+| `low_20` | float | 20-bar rolling minimum of Low |
+| `range_mid_10` | float | Midpoint between high_10 and low_10 |
+| `recent_high` | float | 20-bar rolling High shifted by one bar |
+| `recent_low` | float | 20-bar rolling Low shifted by one bar |
+| `recent_high_prev` | float | recent_high shifted by 5 bars |
+| `recent_low_prev` | float | recent_low shifted by 5 bars |
+| `prev_5_low` | float | low_5 shifted by one bar |
+| `prev_5_high` | float | high_5 shifted by one bar |
+| `prev_10_low` | float | low_10 shifted by one bar |
+| `prev_10_high` | float | high_10 shifted by one bar |
+| `prev_20_low` | float | low_20 shifted by one bar |
+| `prev_20_high` | float | high_20 shifted by one bar |
+| `lower_range_pos` | float | 30 percent level above low_10 within the 10-bar high-low range |
+| `upper_range_pos` | float | 30 percent level below high_10 within the 10-bar high-low range |
 
 ---
 
@@ -578,6 +618,9 @@ The pipeline executes in the order listed below.
 | `kc_lower` | float | Keltner Channel lower band (mid - 2 * ATR) |
 | `chop14` | float | Choppiness Index over 14 periods |
 | `hurst_proxy` | float | Hurst Exponent Proxy over 20 periods |
+| `bb_width_q20` | float | 100-bar rolling 20th percentile of bb_width |
+| `bb_width_sma20` | float | 20-bar simple moving average of bb_width |
+| `atr_sma20` | float | 20-bar simple moving average of atr |
 
 ---
 
@@ -700,6 +743,7 @@ The pipeline executes in the order listed below.
 | `Amv` | float | Alias for amv |
 | `mfi14` | float | Money Flow Index over 14 periods |
 | `vpt` | float | Cumulative Volume Price Trend indicator |
+| `volume_sma20` | float | 20-bar simple moving average of Volume |
 
 ---
 
@@ -854,6 +898,9 @@ The pipeline executes in the order listed below.
 | `range_compression_ratio` | string | range_ratio = (High-Low)/avg_range_10 = Compressed \| Normal \| Expanded |
 | `volume_trend_alignment` | string | vol_trend = compare(Volume_trend, Price_trend) = Confirmed \| Diverging |
 | `breakout_failure_strength` | string | failure = breakout_attempt + reversal_strength = StrongFailure \| WeakFailure \| None |
+| `equal_low` | bool | Low is approximately equal to low_lag1 within 0.1 percent of Close |
+| `equal_high` | bool | High is approximately equal to high_lag1 within 0.1 percent of Close |
+| `inside_bar_prev` | bool | Previous bar high-low range is inside the bar before it |
 
 ---
 

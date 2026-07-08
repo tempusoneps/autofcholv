@@ -763,5 +763,26 @@
         "type": "float",
         "name": "Hurst Exponent Proxy for Signals",
         "comment": "Hurst Exponent Proxy over 20 periods"
+    },
+
+    "bb_width_q20": {
+        "type": "float",
+        "name": "Bollinger Width 20th Percentile",
+        "comment": "100-bar rolling 20th percentile of bb_width"
     }
+,
+
+    "bb_width_sma20": {
+        "type": "float",
+        "name": "20-Bar Average Bollinger Width",
+        "comment": "20-bar simple moving average of bb_width"
+    }
+,
+
+    "atr_sma20": {
+        "type": "float",
+        "name": "20-Bar Average ATR",
+        "comment": "20-bar simple moving average of atr"
+    }
+
 }

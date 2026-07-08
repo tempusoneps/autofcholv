@@ -21,9 +21,12 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     typical_price = (df["High"] + df["Low"] + df["Close"]) / 3.0
     weighted_close = (df["High"] + df["Low"] + 2.0 * df["Close"]) / 4.0
+    midpoint = (df["High"] + df["Low"]) / 2.0
 
     df["typical_price"] = typical_price
     df["weighted_close"] = weighted_close
+    df["midpoint"] = midpoint
+    df["close_vs_mid"] = df["Close"] - midpoint
 
     typ_fast = typical_price.ewm(span=momentum_n, adjust=False).mean()
     typ_slow = typical_price.ewm(span=momentum_n * 3, adjust=False).mean()

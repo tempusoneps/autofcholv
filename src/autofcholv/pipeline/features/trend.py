@@ -807,7 +807,29 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     df["linreg_slope20"] = _linear_regression_slope(df["Close"], 20)
     df["linreg_mid20"] = _linear_regression_midline(df["Close"], 20)
+    df["linreg_upper20"] = df["linreg_mid20"] + 2 * df["std20"]
+    df["linreg_lower20"] = df["linreg_mid20"] - 2 * df["std20"]
 
     df["tma10"] = df["Close"].rolling(10).mean().rolling(10).mean()
+
+    df["high_5"] = df["High"].rolling(5).max()
+    df["low_5"] = df["Low"].rolling(5).min()
+    df["high_10"] = df["High"].rolling(10).max()
+    df["low_10"] = df["Low"].rolling(10).min()
+    df["high_20"] = df["High"].rolling(20).max()
+    df["low_20"] = df["Low"].rolling(20).min()
+    df["range_mid_10"] = (df["high_10"] + df["low_10"]) / 2.0
+    df["recent_high"] = df["High"].rolling(20).max().shift(1)
+    df["recent_low"] = df["Low"].rolling(20).min().shift(1)
+    df["recent_high_prev"] = df["recent_high"].shift(5)
+    df["recent_low_prev"] = df["recent_low"].shift(5)
+    df["prev_5_low"] = df["low_5"].shift(1)
+    df["prev_5_high"] = df["high_5"].shift(1)
+    df["prev_10_low"] = df["low_10"].shift(1)
+    df["prev_10_high"] = df["high_10"].shift(1)
+    df["prev_20_low"] = df["low_20"].shift(1)
+    df["prev_20_high"] = df["high_20"].shift(1)
+    df["lower_range_pos"] = df["low_10"] + (df["high_10"] - df["low_10"]) * 0.3
+    df["upper_range_pos"] = df["high_10"] - (df["high_10"] - df["low_10"]) * 0.3
 
     return df

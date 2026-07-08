@@ -519,6 +519,9 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     # --- Indicator features used by signal.py ---
 
     df["bb_width"] = (df["ub"] - df["lb"]) / df["mb"].replace(0, np.nan)
+    df["bb_width_q20"] = df["bb_width"].rolling(100).quantile(0.2)
+    df["bb_width_sma20"] = df["bb_width"].rolling(20).mean()
+    df["atr_sma20"] = df["atr"].rolling(20).mean()
 
     ema20 = ta.ema(df["Close"], length=20)
     kc_mid = ema20 if ema20 is not None else pd.Series(np.nan, index=df.index)
