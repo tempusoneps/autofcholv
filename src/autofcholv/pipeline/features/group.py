@@ -26,6 +26,9 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df['high_rsi_pattern']    = high_state + "_" + rsi_state
     df['high_ub_pattern']     = np.where(df["High"] > df["ub"], "HighAboveUB", "HighBelowUB")
     df['low_lb_pattern']      = np.where(df["Low"]  < df["lb"], "LowBelowLB",  "LowAboveLB")
+    df["equal_low"] = (df["Low"] - df["low_lag1"]).abs() < (0.001 * df["Close"])
+    df["equal_high"] = (df["High"] - df["high_lag1"]).abs() < (0.001 * df["Close"])
+    df["inside_bar_prev"] = (df["high_lag1"] < df["High"].shift(2)) & (df["low_lag1"] > df["Low"].shift(2))
 
     _1day_bars     = config.one_day_bars
     _1month_bars   = _1day_bars * 22

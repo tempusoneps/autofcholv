@@ -21,6 +21,10 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
 
     df['body'] = df['Close'] - df['Open']
     df['height'] = df['High'] - df['Low']
+    df["range"] = df["height"]
+    df["body_abs"] = df["body"].abs()
+    df["body_abs_sma20"] = df["body_abs"].rolling(20).mean()
+    df["range_sma20"] = df["range"].rolling(20).mean()
 
     body_top = df[['Open', 'Close']].max(axis=1)
     body_bottom = df[['Open', 'Close']].min(axis=1)
@@ -31,8 +35,14 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     height_safe = df['height'].replace(0, np.nan)
 
     # ratios
-    df['body_ratio'] = (df['body'].abs() / (height_safe + epsilon)).fillna(0)
+    df['upwick_rate'] = (df['upwick'] / (height_safe + epsilon)).fillna(0)
+    df['lowwick_rate'] = (df['lowwick'] / (height_safe + epsilon)).fillna(0)
+    df['body_rate'] = (df['body'].abs() / (height_safe + epsilon)).fillna(0)
+    df['body_ratio'] = df['body_rate']
+    df["candle_range_ratio"] = df["body_abs"] / height_safe
+    df['cbr'] = df['body_rate']
     df['wick_ratio'] = df['upwick'] / (df['upwick'] + df['lowwick'] + epsilon)
+    df['upwick_ratio'] = df['upwick'] / (df['lowwick'] + epsilon)
 
     # CLV
     df['clv'] = np.where(
@@ -57,5 +67,28 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
 
     # Numeric color
     df['color'] = np.where(df['body'] > 0, 1, np.where(df['body'] < 0, -1, 0))
+
+    # --- Indicator features used by signal.py ---
+
+    fractal_high = np.where(
+        (df["High"] > df["High"].shift(1))
+        & (df["High"] > df["High"].shift(2))
+        & (df["High"] > df["High"].shift(-1))
+        & (df["High"] > df["High"].shift(-2)),
+        df["High"],
+        np.nan,
+    )
+    fractal_low = np.where(
+        (df["Low"] < df["Low"].shift(1))
+        & (df["Low"] < df["Low"].shift(2))
+        & (df["Low"] < df["Low"].shift(-1))
+        & (df["Low"] < df["Low"].shift(-2)),
+        df["Low"],
+        np.nan,
+    )
+    df["fractal_high"] = pd.Series(fractal_high, index=df.index)
+    df["fractal_low"] = pd.Series(fractal_low, index=df.index)
+    df["fractal_high_ffill"] = df["fractal_high"].ffill()
+    df["fractal_low_ffill"] = df["fractal_low"].ffill()
 
     return df

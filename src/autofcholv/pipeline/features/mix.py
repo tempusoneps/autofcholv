@@ -253,4 +253,11 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["FearGreed_Yidai_v1"] = df["fear_greed_yidai_v1"]
     df["CoppAtrBull"] = rc_mean * wd_atr * taker_ratio
 
+    # --- Signal-support indicators ---
+    # Connors RSI is consumed by signal.py
+    price_rank = df["roc_close"].rolling(100).rank(pct=True) * 100
+    rsi3 = ta.rsi(df["Close"], length=3)
+    streak_rsi2 = ta.rsi(df["streak"].astype(float), length=2)
+    df["connors_rsi"] = (rsi3 + streak_rsi2 + price_rank) / 3.0
+
     return df

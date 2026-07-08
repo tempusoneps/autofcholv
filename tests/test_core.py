@@ -8,7 +8,7 @@ import pytest
 from autofcholv.core import extract_features
 from autofcholv.config.config import Config, load_config, DEFAULT_CONFIG
 from autofcholv.pipeline.features.close import _rolling_regression_last as close_regression_last
-from autofcholv.pipeline.features.signal import _linear_regression_midline, _linear_regression_slope
+from autofcholv.pipeline.features.trend import _linear_regression_midline, _linear_regression_slope
 from autofcholv.pipeline.features.volume import (
     _rolling_regression_forecast as volume_regression_forecast,
     _rolling_regression_last as volume_regression_last,
@@ -239,6 +239,25 @@ def test_extract_features_signal_columns():
     ]
     for col in expected:
         assert col in result.columns, f"Missing signal column: '{col}'"
+
+
+def test_extract_features_signal_context_helper_columns():
+    result = extract_features(make_ohlcv(300))
+    expected = [
+        "range", "body_abs", "body_abs_sma20", "range_sma20", "candle_range_ratio",
+        "midpoint", "close_vs_mid",
+        "price_change", "price_change_lag1", "return_5", "return_10",
+        "sma20", "sma50", "std5", "std10", "std20", "std50",
+        "close_min_10", "close_max_10",
+        "bb_width_q20", "bb_width_sma20", "atr_sma20",
+        "high_5", "low_5", "high_10", "low_10", "high_20", "low_20",
+        "range_mid_10", "recent_high", "recent_low", "recent_high_prev", "recent_low_prev",
+        "prev_5_low", "prev_5_high", "prev_10_low", "prev_10_high", "prev_20_low", "prev_20_high",
+        "lower_range_pos", "upper_range_pos", "linreg_upper20", "linreg_lower20",
+        "volume_sma20", "equal_low", "equal_high", "inside_bar_prev",
+    ]
+    for col in expected:
+        assert col in result.columns, f"Missing moved signal helper column: '{col}'"
 
 
 def test_extract_features_no_nan_in_ohlcv():

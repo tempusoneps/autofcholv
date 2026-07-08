@@ -173,5 +173,10 @@
         "type": "float",
         "name": "FearGreed_Yidai_v1",
         "comment": "Alias for fear_greed_yidai_v1"
+    },
+    "connors_rsi": {
+        "type": "float",
+        "name": "Connors RSI for Signals",
+        "comment": "ConnorsRSI indicator (RSI(3) + StreakRSI(2) + PriceRank)"
     }
 }

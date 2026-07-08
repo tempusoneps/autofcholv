@@ -29,6 +29,20 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     fast_n     = config.fast_trend_lookback
     slow_n     = config.slow_trend_lookback
     momentum_n = config.momentum_lookback
+    epsilon = 1e-8
+
+    df["price_change"] = df["Close"].diff()
+    df["price_change_lag1"] = df["price_change"].shift(1)
+    df["return_5"] = df["Close"].pct_change(5)
+    df["return_10"] = df["Close"].pct_change(10)
+    df["sma20"] = df["Close"].rolling(20).mean()
+    df["sma50"] = df["Close"].rolling(50).mean()
+    df["std5"] = df["Close"].rolling(5).std()
+    df["std10"] = df["Close"].rolling(10).std()
+    df["std20"] = df["Close"].rolling(20).std()
+    df["std50"] = df["Close"].rolling(50).std()
+    df["close_min_10"] = df["Close"].rolling(10).min()
+    df["close_max_10"] = df["Close"].rolling(10).max()
 
     df["ema_fast"] = ta.ema(df["Close"], length=fast_n)
     df["ema_slow"] = ta.ema(df["Close"], length=slow_n)
@@ -77,11 +91,11 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     typical_price = (df["High"] + df["Low"] + df["Close"]) / 3.0
     typical_ma = typical_price.rolling(momentum_n, min_periods=1).mean()
     typical_md = (typical_price - typical_ma).abs().rolling(momentum_n, min_periods=1).mean()
-    df["cci"] = (typical_price - typical_ma) / (0.015 * typical_md + 1e-8)
+    df["cci"] = (typical_price - typical_ma) / (0.015 * typical_md + epsilon)
 
     lowest_low = df["Low"].rolling(momentum_n, min_periods=1).min()
     highest_high = df["High"].rolling(momentum_n, min_periods=1).max()
-    rsv = (df["Close"] - lowest_low) / (highest_high - lowest_low + 1e-8) * 100.0
+    rsv = (df["Close"] - lowest_low) / (highest_high - lowest_low + epsilon) * 100.0
     df["kdj_k"] = rsv.ewm(com=2, adjust=False).mean()
     df["kdj_d"] = df["kdj_k"].ewm(com=2, adjust=False).mean()
     df["kdj_j"] = 3.0 * df["kdj_k"] - 2.0 * df["kdj_d"]
@@ -89,14 +103,14 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     median_price = (df["High"] + df["Low"]) / 2.0
     median_low = median_price.rolling(momentum_n, min_periods=1).min()
     median_high = median_price.rolling(momentum_n, min_periods=1).max()
-    fisher_value = 2.0 * ((median_price - median_low) / (median_high - median_low + 1e-8) - 0.5)
+    fisher_value = 2.0 * ((median_price - median_low) / (median_high - median_low + epsilon) - 0.5)
     fisher_value = pd.Series(fisher_value, index=df.index).ewm(alpha=1.0 / momentum_n, adjust=False).mean()
     fisher_value = fisher_value.clip(-0.999, 0.999)
     df["fisher"] = 0.5 * np.log((1.0 + fisher_value) / (1.0 - fisher_value))
 
     direction_n = (df["Close"] - df["Close"].shift(momentum_n)).abs()
     volatility_n = df["Close"].diff().abs().rolling(momentum_n, min_periods=1).sum()
-    er = direction_n / (volatility_n + 1e-8)
+    er = direction_n / (volatility_n + epsilon)
     fast_sc = 2.0 / (2 + 1)
     slow_sc = 2.0 / (30 + 1)
     smoothing = (er * (fast_sc - slow_sc) + slow_sc) ** 2
@@ -109,12 +123,12 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
             previous = kama[i - 1]
             kama[i] = previous + smoothing_values[i] * (close_values[i] - previous)
     df["kama"] = kama
-    df["kama_bias"] = df["Close"] / (df["kama"] + 1e-8) - 1.0
+    df["kama_bias"] = df["Close"] / (df["kama"] + epsilon) - 1.0
 
     bias_ma = df["Close"].rolling(momentum_n, min_periods=1).mean()
-    df["bias"] = df["Close"] / (bias_ma + 1e-8) - 1.0
-    df["rbias"] = (df["Close"] / (bias_ma + 1e-8)) / (
-        df["Close"].shift(1) / (bias_ma.shift(1) + 1e-8)
+    df["bias"] = df["Close"] / (bias_ma + epsilon) - 1.0
+    df["rbias"] = (df["Close"] / (bias_ma + epsilon)) / (
+        df["Close"].shift(1) / (bias_ma.shift(1) + epsilon)
     ) - 1.0
 
     mtm_base = df["Close"] / df["Close"].shift(momentum_n) - 1.0
@@ -123,22 +137,22 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     sroc_ema = df["Close"].ewm(span=momentum_n, adjust=False).mean()
     sroc_ref = sroc_ema.shift(2 * momentum_n)
-    df["sroc"] = (sroc_ema - sroc_ref) / (sroc_ref + 1e-8)
+    df["sroc"] = (sroc_ema - sroc_ref) / (sroc_ref + epsilon)
 
     ar_up = (df["High"] - df["Open"]).rolling(momentum_n, min_periods=1).sum()
     ar_down = (df["Open"] - df["Low"]).rolling(momentum_n, min_periods=1).sum()
-    df["ar"] = 100.0 * ar_up / (ar_down + 1e-8)
+    df["ar"] = 100.0 * ar_up / (ar_down + epsilon)
 
     prev_close_pressure = df["Close"].shift(1)
     br_up = (df["High"] - prev_close_pressure).rolling(momentum_n, min_periods=1).sum()
     br_down = (prev_close_pressure - df["Low"]).rolling(momentum_n, min_periods=1).sum()
-    df["br"] = 100.0 * br_up / (br_down + 1e-8)
+    df["br"] = 100.0 * br_up / (br_down + epsilon)
 
     cr_typical = (df["High"] + df["Low"] + df["Close"]) / 3.0
     cr_h = (df["High"] - cr_typical.shift(1)).clip(lower=0.0)
     cr_l = (cr_typical.shift(1) - df["Low"]).clip(lower=0.0)
     df["cr"] = 100.0 * cr_h.rolling(momentum_n, min_periods=1).sum() / (
-        cr_l.rolling(momentum_n, min_periods=1).sum() + 1e-8
+        cr_l.rolling(momentum_n, min_periods=1).sum() + epsilon
     )
 
     open_diff = df["Open"] - df["Open"].shift(1)
@@ -154,11 +168,11 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     )
     stm = pd.Series(dtm, index=df.index).rolling(momentum_n, min_periods=1).sum()
     sbm = pd.Series(dbm, index=df.index).rolling(momentum_n, min_periods=1).sum()
-    df["adtm"] = (stm - sbm) / (pd.concat([stm, sbm], axis=1).max(axis=1) + 1e-8)
+    df["adtm"] = (stm - sbm) / (pd.concat([stm, sbm], axis=1).max(axis=1) + epsilon)
 
     close_open = df["Close"] - df["Open"]
     qstick_ma = close_open.rolling(momentum_n, min_periods=1).mean()
-    df["qstick"] = close_open / (qstick_ma + 1e-8) - 1.0
+    df["qstick"] = close_open / (qstick_ma + epsilon) - 1.0
 
     df["mtm"] = (df["Close"] / df["Close"].shift(momentum_n) - 1.0) * 100.0
 
@@ -173,12 +187,12 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         + 4.0 * kst_roc4.rolling(momentum_n, min_periods=1).mean()
     )
     kst_smooth = kst_ind.rolling(momentum_n, min_periods=1).mean()
-    df["kst"] = kst_ind / (kst_smooth + 1e-8)
+    df["kst"] = kst_ind / (kst_smooth + epsilon)
 
     rmi_up = (df["Close"] - df["Close"].shift(4)).clip(lower=0.0)
     rmi_abs = df["Close"].diff().abs()
     df["rmi"] = 100.0 * rmi_up.rolling(momentum_n, min_periods=1).mean() / (
-        rmi_abs.rolling(momentum_n, min_periods=1).mean() + 1e-8
+        rmi_abs.rolling(momentum_n, min_periods=1).mean() + epsilon
     )
 
     tii_close_ma = df["Close"].rolling(momentum_n, min_periods=1).mean()
@@ -189,12 +203,12 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     tii_raw = 100.0 * tii_devpos.rolling(tii_window, min_periods=1).sum() / (
         tii_devpos.rolling(tii_window, min_periods=1).sum()
         + tii_devneg.rolling(tii_window, min_periods=1).sum()
-        + 1e-8
+        + epsilon
     )
     df["tii"] = (tii_raw - tii_raw.rolling(momentum_n, min_periods=1).min()) / (
         tii_raw.rolling(momentum_n, min_periods=1).max()
         - tii_raw.rolling(momentum_n, min_periods=1).min()
-        + 1e-8
+        + epsilon
     )
 
     close_return_for_corr = df["Close"].pct_change()
@@ -206,22 +220,22 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     demin = (df["Low"].shift(1) - df["Low"]).clip(lower=0.0)
     demax_ma = demax.rolling(momentum_n, min_periods=1).mean()
     demin_ma = demin.rolling(momentum_n, min_periods=1).mean()
-    df["demarker"] = demax_ma / (demax_ma + demin_ma + 1e-8)
+    df["demarker"] = demax_ma / (demax_ma + demin_ma + epsilon)
 
     imi_inc = np.where(df["Close"] > df["Open"], df["Close"] - df["Open"], 0.0)
     imi_dec = np.where(df["Open"] > df["Close"], df["Open"] - df["Close"], 0.0)
     imi_inc_sum = pd.Series(imi_inc, index=df.index).rolling(momentum_n, min_periods=1).sum()
     imi_dec_sum = pd.Series(imi_dec, index=df.index).rolling(momentum_n, min_periods=1).sum()
-    df["imi"] = imi_inc_sum / (imi_inc_sum + imi_dec_sum + 1e-8)
+    df["imi"] = imi_inc_sum / (imi_inc_sum + imi_dec_sum + epsilon)
 
     rvi_std = df["Close"].rolling(momentum_n, min_periods=1).std(ddof=0)
     rvi_up = pd.Series(np.where(df["Close"] > df["Close"].shift(1), rvi_std, 0.0), index=df.index)
     rvi_down = pd.Series(np.where(df["Close"] < df["Close"].shift(1), rvi_std, 0.0), index=df.index)
     rvi_up_sum = rvi_up.rolling(2 * momentum_n, min_periods=1).sum()
     rvi_down_sum = rvi_down.rolling(2 * momentum_n, min_periods=1).sum()
-    df["rvi"] = 100.0 * rvi_up_sum / (rvi_up_sum + rvi_down_sum + 1e-8)
+    df["rvi"] = 100.0 * rvi_up_sum / (rvi_up_sum + rvi_down_sum + epsilon)
 
-    df["bop"] = ((df["Close"] - df["Open"]) / (df["High"] - df["Low"] + 1e-8)).rolling(
+    df["bop"] = ((df["Close"] - df["Open"]) / (df["High"] - df["Low"] + epsilon)).rolling(
         momentum_n,
         min_periods=1,
     ).mean()
@@ -232,15 +246,15 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     true_range_uo = true_high_uo - true_low_uo
     buying_pressure_uo = df["Close"] - true_low_uo
     uo_fast = buying_pressure_uo.rolling(momentum_n, min_periods=momentum_n).sum() / (
-        true_range_uo.rolling(momentum_n, min_periods=momentum_n).sum() + 1e-8
+        true_range_uo.rolling(momentum_n, min_periods=momentum_n).sum() + epsilon
     )
     uo_medium_n = 2 * momentum_n
     uo_slow_n = 4 * momentum_n
     uo_medium = buying_pressure_uo.rolling(uo_medium_n, min_periods=uo_medium_n).sum() / (
-        true_range_uo.rolling(uo_medium_n, min_periods=uo_medium_n).sum() + 1e-8
+        true_range_uo.rolling(uo_medium_n, min_periods=uo_medium_n).sum() + epsilon
     )
     uo_slow = buying_pressure_uo.rolling(uo_slow_n, min_periods=uo_slow_n).sum() / (
-        true_range_uo.rolling(uo_slow_n, min_periods=uo_slow_n).sum() + 1e-8
+        true_range_uo.rolling(uo_slow_n, min_periods=uo_slow_n).sum() + epsilon
     )
     df["ultimate_oscillator_src"] = 100.0 * (
         uo_fast * uo_medium_n * uo_slow_n
@@ -250,9 +264,9 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     highest_high_m = df["High"].rolling(momentum_n, min_periods=1).max()
     lowest_low_m = df["Low"].rolling(momentum_n, min_periods=1).min()
-    df["williams_r"] = (highest_high_m - df["Close"]) / (highest_high_m - lowest_low_m + 1e-8) * 100.0
+    df["williams_r"] = (highest_high_m - df["Close"]) / (highest_high_m - lowest_low_m + epsilon) * 100.0
 
-    slow_stoch_rsv = (df["Close"] - lowest_low_m) / (highest_high_m - lowest_low_m + 1e-8) * 100.0
+    slow_stoch_rsv = (df["Close"] - lowest_low_m) / (highest_high_m - lowest_low_m + epsilon) * 100.0
     slow_stoch_k = slow_stoch_rsv.ewm(com=2, adjust=False).mean().ewm(com=2, adjust=False).mean()
     df["slow_stoch_d"] = slow_stoch_k.rolling(3, min_periods=1).mean()
 
@@ -274,7 +288,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         span=momentum_n,
         adjust=False,
     ).mean()
-    smi = 100.0 * smi_distance_smoothed / (smi_range_smoothed + 1e-8)
+    smi = 100.0 * smi_distance_smoothed / (smi_range_smoothed + epsilon)
     df["smi"] = smi.rolling(momentum_n, min_periods=1).mean()
 
     psy_up = pd.Series(
@@ -289,22 +303,22 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     ).std(ddof=0)
 
     dpo_ma = df["Close"].rolling(momentum_n, min_periods=1).mean()
-    df["dpo"] = (df["Close"] - dpo_ma.shift(int(momentum_n / 2) + 1)) / (dpo_ma + 1e-8)
+    df["dpo"] = (df["Close"] - dpo_ma.shift(int(momentum_n / 2) + 1)) / (dpo_ma + epsilon)
 
     direct_y = df["Close"] - df["Close"].shift(momentum_n - 1)
     direct_distance = (direct_y.pow(2) + (momentum_n - 1) ** 2) ** 0.5
     step_distance = (df["Close"].diff().pow(2) + 1.0) ** 0.5
     actual_distance = step_distance.rolling(momentum_n - 1, min_periods=momentum_n - 1).sum()
-    pfe_raw = 100.0 * direct_distance / (actual_distance + 1e-8)
+    pfe_raw = 100.0 * direct_distance / (actual_distance + epsilon)
     pfe_direction = df["Close"].pct_change(momentum_n - 1)
     df["pfe"] = pfe_raw * pfe_direction
 
     high_ma = df["High"].rolling(fast_n, min_periods=1).mean()
-    df["high_ma_bias"] = (df["High"] - high_ma) / (high_ma + 1e-8)
+    df["high_ma_bias"] = (df["High"] - high_ma) / (high_ma + epsilon)
 
     boll_width = df["ub"] - df["lb"]
-    df["bollinger_width"] = boll_width / (df["mb"] + 1e-8)
-    df["bollinger_percent_b"] = (df["Close"] - df["lb"]) / (boll_width + 1e-8)
+    df["bollinger_width"] = boll_width / (df["mb"] + epsilon)
+    df["bollinger_percent_b"] = (df["Close"] - df["lb"]) / (boll_width + epsilon)
 
 
     rsi_frac = df["rsi"] / 100.0
@@ -315,7 +329,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["tdi"] = (tdi_spread - tdi_spread.rolling(momentum_n, min_periods=1).min()) / (
         tdi_spread.rolling(momentum_n, min_periods=1).max()
         - tdi_spread.rolling(momentum_n, min_periods=1).min()
-        + 1e-8
+        + epsilon
     )
 
     osc_raw = df["Close"] - df["Close"].rolling(2 * momentum_n, min_periods=1).mean()
@@ -323,7 +337,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
 
     quiet_price_change = df["Close"].pct_change(momentum_n)
-    quiet_amplitude = df["High"] / (df["Low"] + 1e-8) - 1.0
+    quiet_amplitude = df["High"] / (df["Low"] + epsilon) - 1.0
 
     def quiet_momentum(window: pd.Series, keep_ratio: float) -> float:
         keep_count = max(1, int(len(window) * keep_ratio))
@@ -340,35 +354,35 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     ).apply(lambda window: quiet_momentum(window, 0.7), raw=False)
 
     quote_volume_proxy_close = df["Close"] * df["Volume"]
-    price_momentum_ema = (df["Close"] / (df["Close"].shift(momentum_n) + 1e-8) - 1.0).ewm(
+    price_momentum_ema = (df["Close"] / (df["Close"].shift(momentum_n) + epsilon) - 1.0).ewm(
         span=momentum_n,
         adjust=False,
     ).mean() * 100.0
     volume_momentum_ema = (
-        quote_volume_proxy_close / (quote_volume_proxy_close.shift(momentum_n) + 1e-8) - 1.0
+        quote_volume_proxy_close / (quote_volume_proxy_close.shift(momentum_n) + epsilon) - 1.0
     ).ewm(span=momentum_n, adjust=False).mean() * 100.0
     df["price_volume_momentum"] = price_momentum_ema * volume_momentum_ema
 
 
     dbcd_ma = df["Close"].rolling(momentum_n, min_periods=1).mean()
-    dbcd_bias = (df["Close"] - dbcd_ma) / (dbcd_ma + 1e-8) * 100.0
+    dbcd_bias = (df["Close"] - dbcd_ma) / (dbcd_ma + epsilon) * 100.0
     dbcd_bias_diff = dbcd_bias - dbcd_bias.shift(3 * momentum_n)
     df["dbcd"] = dbcd_bias_diff.rolling(3 * momentum_n + 2, min_periods=1).mean()
 
-    pmar = (df["Close"] / (bias_ma + 1e-8)).abs()
+    pmar = (df["Close"] / (bias_ma + epsilon)).abs()
     df["pmarp"] = pmar.rolling(momentum_n, min_periods=1).rank(pct=True) * 100.0
 
     pos_price = df["Close"].pct_change(momentum_n)
     pos_min = pos_price.rolling(momentum_n, min_periods=momentum_n).min()
     pos_max = pos_price.rolling(momentum_n, min_periods=momentum_n).max()
-    df["pos"] = (pos_price - pos_min) / (pos_max - pos_min + 1e-8)
+    df["pos"] = (pos_price - pos_min) / (pos_max - pos_min + epsilon)
 
     bias36 = df["Close"].rolling(3, min_periods=1).mean() - df["Close"].rolling(6, min_periods=1).mean()
     bias36_centered = bias36 - bias36.rolling(momentum_n, min_periods=1).mean()
     df["bias36"] = (bias36_centered - bias36_centered.rolling(momentum_n, min_periods=1).min()) / (
         bias36_centered.rolling(momentum_n, min_periods=1).max()
         - bias36_centered.rolling(momentum_n, min_periods=1).min()
-        + 1e-8
+        + epsilon
     )
 
     si_a = (df["High"] - df["Close"].shift(1)).abs()
@@ -385,7 +399,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     si_move = df["Close"].diff() + (df["Close"].shift(1) - df["Open"].shift(1)) + 0.5 * (
         df["Close"] - df["Open"]
     )
-    df["swing_index"] = 50.0 * si_move / (si_r + 1e-8) * si_k / (si_m + 1e-8)
+    df["swing_index"] = 50.0 * si_move / (si_r + epsilon) * si_k / (si_m + epsilon)
 
 
     close_diff = df["Close"].diff()
@@ -393,15 +407,15 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     close_down = pd.Series(np.where(close_diff < 0, -close_diff, 0.0), index=df.index)
     close_up_sum = close_up.rolling(momentum_n, min_periods=1).sum()
     close_down_sum = close_down.rolling(momentum_n, min_periods=1).sum()
-    df["rsi_v2"] = close_up_sum / (close_up_sum + close_down_sum + 1e-8)
+    df["rsi_v2"] = close_up_sum / (close_up_sum + close_down_sum + epsilon)
 
     cmo_up = close_up.rolling(momentum_n, min_periods=1).sum()
     cmo_down = close_down.rolling(momentum_n, min_periods=1).sum()
-    df["cmo_v2"] = (cmo_up - cmo_down) / (cmo_up + cmo_down + 1e-8)
+    df["cmo_v2"] = (cmo_up - cmo_down) / (cmo_up + cmo_down + epsilon)
 
     bias_fast = df["Close"].rolling(max(1, momentum_n // 2), min_periods=1).mean()
     bias_slow = df["Close"].rolling(momentum_n, min_periods=1).mean()
-    df["bias_v13"] = (bias_fast / (bias_slow + 1e-8) - 1.0).rolling(momentum_n, min_periods=1).mean()
+    df["bias_v13"] = (bias_fast / (bias_slow + epsilon) - 1.0).rolling(momentum_n, min_periods=1).mean()
 
     df["abs_chg"] = df["Close"].pct_change(momentum_n).abs()
 
@@ -410,11 +424,11 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     stc_macd = stc_fast - stc_slow
     stc_low_1 = stc_macd.rolling(2 * momentum_n, min_periods=1).min()
     stc_high_1 = stc_macd.rolling(2 * momentum_n, min_periods=1).max()
-    fk = (stc_macd - stc_low_1) / (stc_high_1 - stc_low_1 + 1e-8) * 100.0
+    fk = (stc_macd - stc_low_1) / (stc_high_1 - stc_low_1 + epsilon) * 100.0
     fd = fk.rolling(2 * momentum_n, min_periods=1).mean()
     stc_low_2 = fd.rolling(2 * momentum_n, min_periods=1).min()
     stc_high_2 = fd.rolling(2 * momentum_n, min_periods=1).max()
-    sk = (fd - stc_low_2) / (stc_high_2 - stc_low_2 + 1e-8) * 100.0
+    sk = (fd - stc_low_2) / (stc_high_2 - stc_low_2 + epsilon) * 100.0
     df["stc"] = sk.rolling(momentum_n, min_periods=1).mean()
 
 
@@ -422,15 +436,15 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["return_autocorr_2"] = return_ac
 
     er_ema = df["Close"].ewm(span=momentum_n, adjust=False).mean()
-    df["erbull"] = (df["High"] - er_ema) / (er_ema + 1e-8)
-    df["erbear"] = (df["Low"] - er_ema) / (er_ema + 1e-8)
+    df["erbull"] = (df["High"] - er_ema) / (er_ema + epsilon)
+    df["erbear"] = (df["Low"] - er_ema) / (er_ema + epsilon)
     df["er_balance"] = df["erbull"] + df["erbear"]
 
     df["burr"] = (
-        (1.0 - df["Close"] / (df["High"].rolling(momentum_n, min_periods=1).max() + 1e-8)).where(
+        (1.0 - df["Close"] / (df["High"].rolling(momentum_n, min_periods=1).max() + epsilon)).where(
             df["Close"] - df["Open"].shift(momentum_n) > 0
         ).fillna(0.0)
-        + (1.0 - df["Close"] / (df["Low"].rolling(momentum_n, min_periods=1).min() + 1e-8)).where(
+        + (1.0 - df["Close"] / (df["Low"].rolling(momentum_n, min_periods=1).min() + epsilon)).where(
             df["Close"] - df["Open"].shift(momentum_n) < 0
         ).fillna(0.0)
     )
@@ -444,14 +458,14 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     ppo_v1_ema1 = df["Close"].ewm(span=momentum_n, adjust=False).mean()
     ppo_v1_ema2 = df["Close"].ewm(span=2 * momentum_n, adjust=False).mean()
-    ppo_v1_base = (ppo_v1_ema1 / (ppo_v1_ema1.shift(momentum_n) + 1e-8) - 1.0) * (
-        (ppo_v1_ema2 / (ppo_v1_ema2.shift(2 * momentum_n) + 1e-8) - 1.0).abs()
+    ppo_v1_base = (ppo_v1_ema1 / (ppo_v1_ema1.shift(momentum_n) + epsilon) - 1.0) * (
+        (ppo_v1_ema2 / (ppo_v1_ema2.shift(2 * momentum_n) + epsilon) - 1.0).abs()
     )
     df["ppo_v1"] = ppo_v1_base.ewm(span=momentum_n, adjust=False).mean()
 
     sroc_v2_kama = df["Close"].ewm(span=momentum_n, adjust=False).mean()
     sroc_v2_ref = sroc_v2_kama.shift(2 * momentum_n)
-    df["sroc_v2"] = (sroc_v2_kama - sroc_v2_ref) / (sroc_v2_ref + 1e-8)
+    df["sroc_v2"] = (sroc_v2_kama - sroc_v2_ref) / (sroc_v2_ref + epsilon)
 
     tema_ema_1 = df["Close"].ewm(span=momentum_n, adjust=False).mean()
     tema_ema_2 = tema_ema_1.ewm(span=momentum_n, adjust=False).mean()
@@ -465,7 +479,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     fisher_price = (df["High"] + df["Low"]) / 2.0
     fisher_min_low = df["Low"].rolling(momentum_n, min_periods=1).min()
     fisher_max_high = df["High"].rolling(momentum_n, min_periods=1).max()
-    fisher_base = 2.0 * ((fisher_price - fisher_min_low) / (fisher_max_high - fisher_min_low + 1e-8) - 0.5)
+    fisher_base = 2.0 * ((fisher_price - fisher_min_low) / (fisher_max_high - fisher_min_low + epsilon) - 0.5)
     fisher_v2_price_change = fisher_base + 0.5 * fisher_base.shift(1)
     fisher_v2_price_change = fisher_v2_price_change.clip(-0.999, 0.999)
     df["fisher_v2"] = 0.3 * fisher_v2_price_change + 0.7 * fisher_v2_price_change.shift(1)
@@ -478,26 +492,26 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     arbr_ar_up = (df["High"] - df["Open"]).rolling(momentum_n, min_periods=1).sum()
     arbr_ar_dn = (df["Open"] - df["Low"]).rolling(momentum_n, min_periods=1).sum()
-    df["arbr_ar"] = 100.0 * arbr_ar_up / (arbr_ar_dn + 1e-8)
+    df["arbr_ar"] = 100.0 * arbr_ar_up / (arbr_ar_dn + epsilon)
 
     arbr_br_up = (df["High"] - df["Close"].shift(1)).rolling(momentum_n, min_periods=1).sum()
     arbr_br_dn = (df["Close"].shift(1) - df["Low"]).rolling(momentum_n, min_periods=1).sum()
-    df["arbr_br"] = 100.0 * arbr_br_up / (arbr_br_dn + 1e-8)
+    df["arbr_br"] = 100.0 * arbr_br_up / (arbr_br_dn + epsilon)
 
     bias_ma = df["Close"].rolling(momentum_n, min_periods=1).mean()
-    df["bias_v3"] = np.log(df["Close"] / (bias_ma + 1e-8)) / 0.03
+    df["bias_v3"] = np.log(df["Close"] / (bias_ma + epsilon)) / 0.03
 
     typical_bias_price = (df["High"] + df["Low"] + df["Close"]) / 3.0
     typical_bias_ma = typical_bias_price.rolling(momentum_n, min_periods=1).mean()
-    df["bias_v4"] = typical_bias_price / (typical_bias_ma + 1e-8) - 1.0
+    df["bias_v4"] = typical_bias_price / (typical_bias_ma + epsilon) - 1.0
 
     quote_volume_proxy = df["Close"] * df["Volume"]
     quote_volume_mean = quote_volume_proxy.rolling(momentum_n, min_periods=1).mean()
-    bias_v11_base = (df["Close"] / (bias_ma + 1e-8) - 1.0) * quote_volume_proxy / (quote_volume_mean + 1e-8)
+    bias_v11_base = (df["Close"] / (bias_ma + epsilon) - 1.0) * quote_volume_proxy / (quote_volume_mean + epsilon)
     df["bias_v11"] = bias_v11_base.ewm(span=momentum_n, adjust=False).mean()
 
     fast_bias_ma = df["Close"].rolling(max(1, momentum_n // 2), min_periods=1).mean()
-    bias_v14_base = (fast_bias_ma / (bias_ma + 1e-8) - 1.0) * quote_volume_proxy / (quote_volume_mean + 1e-8)
+    bias_v14_base = (fast_bias_ma / (bias_ma + epsilon) - 1.0) * quote_volume_proxy / (quote_volume_mean + epsilon)
     df["bias_v14"] = bias_v14_base.rolling(momentum_n, min_periods=1).mean()
 
     bias36_raw = df["Close"].rolling(3, min_periods=1).mean() - df["Close"].rolling(6, min_periods=1).mean()
@@ -511,14 +525,14 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     bir_down_ref = four_price_min.shift(bir_short)
     bir_up = pd.Series(np.where(four_price > bir_up_ref, four_price, bir_up_ref), index=df.index)
     bir_down = pd.Series(np.where(four_price < bir_down_ref, four_price, bir_down_ref), index=df.index)
-    bir_up = (bir_up - bir_up_ref) / (bir_up_ref + 1e-8)
-    bir_down = (bir_down - bir_down_ref) / (bir_down_ref + 1e-8)
+    bir_up = (bir_up - bir_up_ref) / (bir_up_ref + epsilon)
+    bir_down = (bir_down - bir_down_ref) / (bir_down_ref + epsilon)
     df["bir"] = (bir_up + bir_down).rolling(bir_short, min_periods=1).mean()
 
     copp_v3_rc = 100.0 * (
-        (df["Close"] - df["Close"].shift(momentum_n)) / (df["Close"].shift(momentum_n) + 1e-8)
+        (df["Close"] - df["Close"].shift(momentum_n)) / (df["Close"].shift(momentum_n) + epsilon)
         + (df["Close"] - df["Close"].shift(max(1, int(1.618 * momentum_n))))
-        / (df["Close"].shift(max(1, int(1.618 * momentum_n))) + 1e-8)
+        / (df["Close"].shift(max(1, int(1.618 * momentum_n))) + epsilon)
     )
     df["copp_v3"] = copp_v3_rc.rolling(momentum_n, min_periods=1).mean()
 
@@ -527,13 +541,13 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     close_diff = df["Close"].diff()
     up = pd.Series(np.where(close_diff > 0, close_diff, 0.0), index=df.index)
     dn = pd.Series(np.where(close_diff < 0, -close_diff, 0.0), index=df.index)
-    rsi_raw = up.rolling(momentum_n, min_periods=1).sum() / (up.rolling(momentum_n, min_periods=1).sum() + dn.rolling(momentum_n, min_periods=1).sum() + 1e-8)
+    rsi_raw = up.rolling(momentum_n, min_periods=1).sum() / (up.rolling(momentum_n, min_periods=1).sum() + dn.rolling(momentum_n, min_periods=1).sum() + epsilon)
     do_smooth = rsi_raw.ewm(span=momentum_n, adjust=False).mean().ewm(span=momentum_n, adjust=False).mean()
     df["do"] = do_smooth
 
     ema_short = df["Close"].ewm(span=momentum_n, adjust=False).mean()
     ema_long = df["Close"].ewm(span=3 * momentum_n, adjust=False).mean()
-    df["po"] = (ema_short - ema_long) / (ema_long + 1e-8) * 100.0
+    df["po"] = (ema_short - ema_long) / (ema_long + epsilon) * 100.0
 
     open_ma = df["Open"].rolling(momentum_n, min_periods=1).mean()
     high_ma = df["High"].rolling(momentum_n, min_periods=1).mean()
@@ -542,27 +556,27 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     tp = (high_ma + low_ma + close_ma) / 3.0
     tp_ma = tp.rolling(momentum_n, min_periods=1).mean()
     md = (tp - close_ma).abs().rolling(momentum_n, min_periods=1).mean()
-    df["cci_magic"] = (tp - tp_ma) / (0.015 * md + 1e-8)
+    df["cci_magic"] = (tp - tp_ma) / (0.015 * md + epsilon)
 
     quote_volume_proxy = df["Close"] * df["Volume"]
     c_mtm = df["Close"] / df["Close"].shift(momentum_n) - 1.0
     c_mtm = c_mtm.rolling(momentum_n, min_periods=1).mean()
     s_std = df["Close"].rolling(momentum_n, min_periods=1).std(ddof=0)
     s_mtm = (s_std / s_std.shift(momentum_n)).rolling(momentum_n, min_periods=1).mean()
-    v_mtm = (quote_volume_proxy / (quote_volume_proxy.shift(momentum_n) + 1e-8)).rolling(momentum_n, min_periods=1).mean()
+    v_mtm = (quote_volume_proxy / (quote_volume_proxy.shift(momentum_n) + epsilon)).rolling(momentum_n, min_periods=1).mean()
     df["cs_mtm"] = c_mtm * s_mtm * v_mtm
 
     c_mtm_v2 = df["Close"] / df["Close"].shift(momentum_n) - 1.0
     c_mtm_v2 = c_mtm_v2.rolling(momentum_n, min_periods=1).mean()
     s_std_v2 = df["Close"].rolling(momentum_n, min_periods=1).std(ddof=0)
-    s_mtm_v2 = (s_std_v2 / (s_std_v2.shift(momentum_n) + 1e-8)).rolling(momentum_n, min_periods=1).mean()
-    v_mtm_v2 = (quote_volume_proxy / (quote_volume_proxy.shift(momentum_n) + 1e-8)).rolling(momentum_n, min_periods=1).mean()
+    s_mtm_v2 = (s_std_v2 / (s_std_v2.shift(momentum_n) + epsilon)).rolling(momentum_n, min_periods=1).mean()
+    v_mtm_v2 = (quote_volume_proxy / (quote_volume_proxy.shift(momentum_n) + epsilon)).rolling(momentum_n, min_periods=1).mean()
     df["cs_mtm_v2"] = c_mtm_v2 * s_mtm_v2 * v_mtm_v2
 
-    mtm_v12 = df["Close"] / (df["Close"].shift(momentum_n) + 1e-8) - 1.0
+    mtm_v12 = df["Close"] / (df["Close"].shift(momentum_n) + epsilon) - 1.0
     taker_buy_quote_asset_volume = pd.Series(np.where(df["Close"] > df["Close"].shift(1), quote_volume_proxy, 0.0), index=df.index)
     taker_buy_quote_mean = taker_buy_quote_asset_volume.rolling(window=momentum_n, min_periods=1).mean()
-    mtm_v12 = mtm_v12 * taker_buy_quote_asset_volume / (taker_buy_quote_mean + 1e-8)
+    mtm_v12 = mtm_v12 * taker_buy_quote_asset_volume / (taker_buy_quote_mean + epsilon)
     df["mtmmean_v12"] = mtm_v12.rolling(window=momentum_n, min_periods=1).mean()
 
 
@@ -574,10 +588,10 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     down = pd.Series(np.where(close_dif < 0, -close_dif, 0.0), index=df.index)
     a = up.rolling(momentum_n, min_periods=1).sum()
     b = down.rolling(momentum_n, min_periods=1).sum()
-    rsi = 100.0 * a / (a + b + 1e-8)
+    rsi = 100.0 * a / (a + b + epsilon)
     median = df["Close"].rolling(momentum_n, min_periods=1).mean()
     std = df["Close"].rolling(momentum_n, min_periods=1).std(ddof=0)
-    bbw = (std / (median + 1e-8)).diff(momentum_n)
+    bbw = (std / (median + epsilon)).diff(momentum_n)
     df["rsi_bbw"] = bbw * (df["Close"].pct_change(momentum_n)) * rsi
 
 
@@ -606,24 +620,24 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["rccd_v2"] = sma_like(rccd_v2_dif, momentum_n, 1)
 
     ma_volume = df["Volume"].rolling(momentum_n, min_periods=1).mean()
-    df["bias_vol"] = (df["Volume"] - ma_volume) / (ma_volume + 1e-8)
+    df["bias_vol"] = (df["Volume"] - ma_volume) / (ma_volume + epsilon)
 
     ma_1 = df["Close"].rolling(max(1, momentum_n // 2), min_periods=1).mean()
     ma_2 = df["Close"].rolling(momentum_n, min_periods=1).mean()
     ma_3 = df["Close"].rolling(2 * momentum_n, min_periods=1).mean()
-    bias_1 = df["Close"] / (ma_1 + 1e-8) - 1.0
-    bias_2 = df["Close"] / (ma_2 + 1e-8) - 1.0
-    bias_3 = df["Close"] / (ma_3 + 1e-8) - 1.0
+    bias_1 = df["Close"] / (ma_1 + epsilon) - 1.0
+    bias_2 = df["Close"] / (ma_2 + epsilon) - 1.0
+    bias_3 = df["Close"] / (ma_3 + epsilon) - 1.0
     quote_volume_proxy = df["Close"] * df["Volume"]
-    df["bias_cubic_v2"] = (bias_1 * bias_2 * bias_3) * (quote_volume_proxy / (quote_volume_proxy.rolling(momentum_n, min_periods=1).mean() + 1e-8)).rolling(momentum_n, min_periods=1).mean()
+    df["bias_cubic_v2"] = (bias_1 * bias_2 * bias_3) * (quote_volume_proxy / (quote_volume_proxy.rolling(momentum_n, min_periods=1).mean() + epsilon)).rolling(momentum_n, min_periods=1).mean()
 
     route_1 = (df["High"] - df["Open"]) + (df["High"] - df["Low"]) + (df["Close"] - df["Low"])
     route_2 = (df["Open"] - df["Low"]) + (df["High"] - df["Low"]) + (df["High"] - df["Close"])
-    min_route = pd.concat([route_1, route_2], axis=1).min(axis=1) / (df["Open"] + 1e-8)
+    min_route = pd.concat([route_1, route_2], axis=1).min(axis=1) / (df["Open"] + epsilon)
     rc_copp = 100.0 * (df["Close"] / df["Close"].shift(momentum_n) - 1.0 + df["Close"] / df["Close"].shift(2 * momentum_n) - 1.0)
     rc_copp = rc_copp.ewm(span=momentum_n, adjust=False).mean()
     min_route = min_route.ewm(span=momentum_n, adjust=False).mean()
-    df["copp_min_route"] = rc_copp / (min_route + 1e-8)
+    df["copp_min_route"] = rc_copp / (min_route + epsilon)
 
 
 
@@ -636,20 +650,20 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     dbm = pd.Series(np.where(df["Open"] < open_prev, np.maximum(tmp3, tmp4), 0.0), index=df.index)
     stm = dtm.rolling(momentum_n, min_periods=1).sum()
     sbm = dbm.rolling(momentum_n, min_periods=1).sum()
-    adtm_base = (stm - sbm) / (pd.concat([stm, sbm], axis=1).max(axis=1) + 1e-8)
+    adtm_base = (stm - sbm) / (pd.concat([stm, sbm], axis=1).max(axis=1) + epsilon)
     df["adtm_v2"] = (adtm_base - adtm_base.rolling(momentum_n, min_periods=1).min()) / (
-        adtm_base.rolling(momentum_n, min_periods=1).max() - adtm_base.rolling(momentum_n, min_periods=1).min() + 1e-8
+        adtm_base.rolling(momentum_n, min_periods=1).max() - adtm_base.rolling(momentum_n, min_periods=1).min() + epsilon
     )
 
-    adtm_v3_base = adtm_base - df["Close"] / (adtm_base + 1e-8)
+    adtm_v3_base = adtm_base - df["Close"] / (adtm_base + epsilon)
     df["adtm_v3"] = (adtm_v3_base - adtm_v3_base.rolling(momentum_n, min_periods=1).min()) / (
-        adtm_v3_base.rolling(momentum_n, min_periods=1).max() - adtm_v3_base.rolling(momentum_n, min_periods=1).min() + 1e-8
+        adtm_v3_base.rolling(momentum_n, min_periods=1).max() - adtm_v3_base.rolling(momentum_n, min_periods=1).min() + epsilon
     )
 
     mtm_gap = df["Close"].pct_change(momentum_n)
-    body_gap = 1.0 - (df["Close"] - df["Open"]).abs() / (df["High"] - df["Low"] + 1e-8)
+    body_gap = 1.0 - (df["Close"] - df["Open"]).abs() / (df["High"] - df["Low"] + epsilon)
     df["mtm_mean_gap"] = mtm_gap.rolling(momentum_n, min_periods=1).mean() / (
-        body_gap.rolling(momentum_n, min_periods=1).mean() + 1e-8
+        body_gap.rolling(momentum_n, min_periods=1).mean() + epsilon
     )
 
 
@@ -660,7 +674,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     cmo_dn = pd.Series(np.where(close_diff < 0, -close_diff, 0.0), index=df.index)
     cmo_up_sum = cmo_up.rolling(momentum_n, min_periods=1).sum()
     cmo_dn_sum = cmo_dn.rolling(momentum_n, min_periods=1).sum()
-    cmo_v3_raw = 100.0 * (cmo_up_sum - cmo_dn_sum) / (cmo_up_sum + cmo_dn_sum + 1e-8)
+    cmo_v3_raw = 100.0 * (cmo_up_sum - cmo_dn_sum) / (cmo_up_sum + cmo_dn_sum + epsilon)
     df["cmo_v3"] = cmo_v3_raw.rolling(momentum_n, min_periods=1).mean()
 
     close_diff_pos = np.where(df["Close"] > df["Close"].shift(1), df["Close"] - df["Close"].shift(1), 0.0)
@@ -674,7 +688,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     quote_volume_proxy = df["Close"] * df["Volume"]
     mtm_resonance = (df["Close"] / df["Close"].shift(momentum_n) - 1.0).rolling(momentum_n, min_periods=1).mean()
     quote_volume_mean = quote_volume_proxy.rolling(momentum_n, min_periods=1).mean()
-    quote_volume_change_mean = (quote_volume_proxy / (quote_volume_mean + 1e-8)).rolling(momentum_n, min_periods=1).mean()
+    quote_volume_change_mean = (quote_volume_proxy / (quote_volume_mean + epsilon)).rolling(momentum_n, min_periods=1).mean()
     df["mtm_vol_resonance"] = mtm_resonance * quote_volume_change_mean
 
 
@@ -685,7 +699,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     tii_dev_neg = pd.Series(np.where(tii_dev < 0, -tii_dev, 0.0), index=df.index)
     tii_sum_pos = tii_dev_pos.rolling(int(1 + momentum_n / 2), min_periods=1).sum()
     tii_sum_neg = tii_dev_neg.rolling(int(1 + momentum_n / 2), min_periods=1).sum()
-    tii_raw = 100.0 * tii_sum_pos / (tii_sum_pos + tii_sum_neg + 1e-8)
+    tii_raw = 100.0 * tii_sum_pos / (tii_sum_pos + tii_sum_neg + epsilon)
     tii_signal = tii_raw.ewm(span=max(1, int(momentum_n / 2)), adjust=False, min_periods=1).mean()
     df["tii_signal"] = tii_signal
     tii_signal_diff = tii_raw - tii_signal
@@ -693,7 +707,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     tii_signal_diff_max = tii_signal_diff.rolling(momentum_n, min_periods=1).max()
     df["tii_signal_v2"] = (tii_signal_diff - tii_signal_diff_min) / (1e-9 + tii_signal_diff_max - tii_signal_diff_min)
 
-    df["roc"] = df["Close"] / (df["Close"].shift(momentum_n) + 1e-8) - 1.0
+    df["roc"] = df["Close"] / (df["Close"].shift(momentum_n) + epsilon) - 1.0
 
     open_wma = df["Open"].rolling(momentum_n, min_periods=1).mean()
     high_wma = df["High"].rolling(momentum_n, min_periods=1).mean()
@@ -702,7 +716,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     tp_v2 = (open_wma + high_wma + low_wma + close_wma) / 4.0
     ma_v2 = tp_v2.rolling(momentum_n, min_periods=1).mean()
     md_v2 = (ma_v2 - close_wma).abs().rolling(momentum_n, min_periods=1).mean()
-    df["cci_v2"] = (tp_v2 - ma_v2) / (md_v2 + 1e-8)
+    df["cci_v2"] = (tp_v2 - ma_v2) / (md_v2 + epsilon)
 
     open_ema = df["Open"].ewm(span=momentum_n, adjust=False).mean()
     high_ema = df["High"].ewm(span=momentum_n, adjust=False).mean()
@@ -711,13 +725,13 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     tp_v3 = (open_ema + high_ema + low_ema + close_ema) / 4.0
     ma_v3 = tp_v3.ewm(span=momentum_n, adjust=False).mean()
     md_v3 = (close_ema - ma_v3).abs().ewm(span=momentum_n, adjust=False).mean()
-    df["cci_v3"] = (tp_v3 - ma_v3) / (md_v3 + 1e-8)
+    df["cci_v3"] = (tp_v3 - ma_v3) / (md_v3 + epsilon)
 
     close_dif = df["Close"].diff()
     up = pd.Series(np.where(close_dif > 0, close_dif, 0.0), index=df.index)
     down = pd.Series(np.where(close_dif < 0, -close_dif, 0.0), index=df.index)
     rsi_num = up.rolling(momentum_n, min_periods=1).sum()
-    rsi_den = up.rolling(momentum_n, min_periods=1).sum() + down.rolling(momentum_n, min_periods=1).sum() + 1e-8
+    rsi_den = up.rolling(momentum_n, min_periods=1).sum() + down.rolling(momentum_n, min_periods=1).sum() + epsilon
     df["rsimean"] = (rsi_num / rsi_den).rolling(momentum_n, min_periods=1).mean()
 
     price_change = df["Close"].pct_change(momentum_n).to_numpy(dtype=float)
@@ -754,7 +768,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     rsi_max = rsi.rolling(int(4 * momentum_n), min_periods=1).max()
     df["rsis"] = 100.0 * (rsi - rsi_min) / (1e-9 + rsi_max - rsi_min)
 
-    pmar = (df["Close"] / (df["Close"].rolling(momentum_n, min_periods=1).mean() + 1e-8)).abs()
+    pmar = (df["Close"] / (df["Close"].rolling(momentum_n, min_periods=1).mean() + epsilon)).abs()
     pmar_arr = pmar.to_numpy(dtype=float)
     out = np.full(len(df), np.nan)
     for i in range(len(df)):
@@ -766,7 +780,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         out[i] = (window < pmar_arr[i]).sum() / momentum_n * 100.0
     df["pmarp_yidai_v1"] = out
 
-    bias_series = 100.0 * (df["Close"] - df["Close"].rolling(momentum_n, min_periods=1).mean()) / (df["Close"].rolling(momentum_n, min_periods=1).mean() + 1e-8)
+    bias_series = 100.0 * (df["Close"] - df["Close"].rolling(momentum_n, min_periods=1).mean()) / (df["Close"].rolling(momentum_n, min_periods=1).mean() + epsilon)
     bias_dif = bias_series - bias_series.shift(int(3 * momentum_n + 1))
     df["dbcd_v2"] = bias_dif.ewm(alpha=1 / (3 * momentum_n + 2), adjust=False).mean()
 
@@ -774,13 +788,13 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     d = df["Close"] - m
     ds = d.ewm(span=momentum_n, adjust=False, min_periods=1).mean().ewm(span=momentum_n, adjust=False, min_periods=1).mean()
     dhl = (df["High"].rolling(momentum_n, min_periods=1).max() - df["Low"].rolling(momentum_n, min_periods=1).min()).ewm(span=momentum_n, adjust=False, min_periods=1).mean().ewm(span=momentum_n, adjust=False, min_periods=1).mean()
-    smi = 100.0 * ds / (dhl + 1e-8)
+    smi = 100.0 * ds / (dhl + epsilon)
     smi_mean = smi.rolling(momentum_n, min_periods=1).mean()
     smi_low = smi_mean.rolling(momentum_n, min_periods=1).min()
     smi_high = smi_mean.rolling(momentum_n, min_periods=1).max()
     df["smi_v2"] = (smi_mean - smi_low) / (1e-9 + smi_high - smi_low)
 
-    bias = 100.0 * (df["Close"] - df["Close"].rolling(momentum_n, min_periods=1).mean()) / (df["Close"].rolling(momentum_n, min_periods=1).mean() + 1e-8)
+    bias = 100.0 * (df["Close"] - df["Close"].rolling(momentum_n, min_periods=1).mean()) / (df["Close"].rolling(momentum_n, min_periods=1).mean() + epsilon)
     bias_dif = bias - bias.shift(3 * momentum_n)
     t = 3 * momentum_n + 2
     out = np.zeros(len(df), dtype=float)
@@ -798,7 +812,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     mimma_ma1 = mimma.shift(1).rolling(momentum_n, min_periods=1).mean()
     mimma_ma2 = mimma.shift(1).rolling(2 * momentum_n, min_periods=1).mean()
     dif = mimma_ma1 - mimma_ma2
-    df["micd"] = dif / (dif.rolling(momentum_n, min_periods=1).mean() + 1e-8)
+    df["micd"] = dif / (dif.rolling(momentum_n, min_periods=1).mean() + epsilon)
 
     ret = df["Close"] / df["Close"].shift(1) - 1.0
     rv = ret.pow(2).rolling(momentum_n, min_periods=1).sum()
@@ -806,7 +820,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     rv_neg = np.where(ret < 0, ret, 0.0)
     rv_plus = pd.Series(rv_pos, index=df.index).pow(2).rolling(momentum_n, min_periods=1).sum()
     rv_minus = pd.Series(rv_neg, index=df.index).pow(2).rolling(momentum_n, min_periods=1).sum()
-    df["rsj"] = (rv_plus - rv_minus) / (rv + 1e-8)
+    df["rsj"] = (rv_plus - rv_minus) / (rv + epsilon)
 
     mtm = df["Close"] / df["Close"].shift(momentum_n) - 1.0
     df["mtm_max"] = mtm - mtm.rolling(window=momentum_n, min_periods=1).max().shift(1)
@@ -814,41 +828,41 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     reg_close = df["Close"].rolling(momentum_n, min_periods=1).mean()
     reg_close = reg_close.rolling(momentum_n, min_periods=1).mean()
     quote_proxy = ((df["High"] + df["Low"]) / 2.0) * df["Volume"]
-    df["bias_v2"] = quote_proxy / (reg_close + 1e-8) - 1.0
+    df["bias_v2"] = quote_proxy / (reg_close + epsilon) - 1.0
 
     vol_up = pd.Series(np.where(df["Close"] > df["Close"].shift(1), df["Volume"], 0.0), index=df.index)
     vol_down = pd.Series(np.where(df["Close"] < df["Close"].shift(1), df["Volume"], 0.0), index=df.index)
     sum_up = vol_up.rolling(momentum_n, min_periods=1).sum()
     sum_down = vol_down.rolling(momentum_n, min_periods=1).sum()
-    df["rsiv"] = 100.0 * sum_up / (sum_up + sum_down + 1e-8)
+    df["rsiv"] = 100.0 * sum_up / (sum_up + sum_down + epsilon)
 
     close_diff_pos = np.where(df["Close"] > df["Close"].shift(1), df["Close"] - df["Close"].shift(1), 0.0)
     rsi_fast = pd.Series(close_diff_pos, index=df.index).ewm(span=momentum_n, adjust=False).mean()
     rsi_slow = (df["Close"] - df["Close"].shift(1)).abs().ewm(span=momentum_n, adjust=False).mean()
-    rsi = 100.0 * rsi_fast / (rsi_slow + 1e-8)
+    rsi = 100.0 * rsi_fast / (rsi_slow + epsilon)
     rsi_signal = rsi.ewm(span=4 * momentum_n, adjust=False).mean()
     df["rsih"] = rsi - rsi_signal
 
     close_diff = df["Close"].diff()
     fi = df["Volume"] * close_diff
-    fi_z = (fi - fi.rolling(momentum_n, min_periods=1).mean()) / (fi.rolling(momentum_n, min_periods=1).std(ddof=0) + 1e-8)
+    fi_z = (fi - fi.rolling(momentum_n, min_periods=1).mean()) / (fi.rolling(momentum_n, min_periods=1).std(ddof=0) + epsilon)
     df["fi"] = fi_z.ewm(span=momentum_n, adjust=False, min_periods=1).mean()
 
     fi_rsi_pos = pd.Series(np.where(fi.diff() > 0, fi.diff(), 0.0), index=df.index)
     fi_rsi_neg = pd.Series(np.where(fi.diff() < 0, -fi.diff(), 0.0), index=df.index)
     fi_rsi_a = fi_rsi_pos.rolling(momentum_n, min_periods=1).sum()
     fi_rsi_b = fi_rsi_neg.rolling(momentum_n, min_periods=1).sum()
-    df["fi_rsi"] = (fi_rsi_a / (fi_rsi_a + fi_rsi_b + 1e-8)).ewm(span=momentum_n, adjust=False, min_periods=1).mean()
+    df["fi_rsi"] = (fi_rsi_a / (fi_rsi_a + fi_rsi_b + epsilon)).ewm(span=momentum_n, adjust=False, min_periods=1).mean()
 
     volume_force = df["Volume"] * close_diff
-    df["force"] = volume_force / (volume_force.rolling(momentum_n, min_periods=1).mean() + 1e-8)
+    df["force"] = volume_force / (volume_force.rolling(momentum_n, min_periods=1).mean() + epsilon)
 
     price = (df["High"] + df["Low"] + df["Close"]) / 3.0
     signed_volume = np.where(price > price.shift(1), df["Volume"], -df["Volume"])
     ko_ema1 = pd.Series(signed_volume, index=df.index).ewm(span=momentum_n, adjust=False).mean()
     ko_ema2 = pd.Series(signed_volume, index=df.index).ewm(span=int(momentum_n * 1.618), adjust=False).mean()
     ko = ko_ema1 - ko_ema2
-    df["ko"] = (ko - ko.rolling(momentum_n, min_periods=1).min()) / (ko.rolling(momentum_n, min_periods=1).max() - ko.rolling(momentum_n, min_periods=1).min() + 1e-8)
+    df["ko"] = (ko - ko.rolling(momentum_n, min_periods=1).min()) / (ko.rolling(momentum_n, min_periods=1).max() - ko.rolling(momentum_n, min_periods=1).min() + epsilon)
 
     av = pd.Series(np.where(df["Close"] > df["Close"].shift(1), df["Volume"], 0.0), index=df.index)
     bv = pd.Series(np.where(df["Close"] < df["Close"].shift(1), df["Volume"], 0.0), index=df.index)
@@ -856,7 +870,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     avs = av.rolling(momentum_n, min_periods=1).sum()
     bvs = bv.rolling(momentum_n, min_periods=1).sum()
     cvs = cv.rolling(momentum_n, min_periods=1).sum()
-    df["vramt"] = (avs + cvs / 2.0) / (bvs + cvs / 2.0 + 1e-8)
+    df["vramt"] = (avs + cvs / 2.0) / (bvs + cvs / 2.0 + epsilon)
 
     mtm = df["Close"] / df["Close"].shift(momentum_n) - 1.0
     mtm_mean = mtm.rolling(window=momentum_n, min_periods=1).mean()
@@ -867,11 +881,11 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     tr = pd.Series(np.max(np.array([c1, c2, c3]), axis=0), index=df.index)
     atr = tr.rolling(window=momentum_n, min_periods=1).mean()
     avg_price = df["Close"].rolling(window=momentum_n, min_periods=1).mean()
-    wd_atr = atr / (avg_price + 1e-8)
+    wd_atr = atr / (avg_price + epsilon)
 
-    mtm_l = df["Low"] / (df["Low"].shift(momentum_n) + 1e-8) - 1.0
-    mtm_h = df["High"] / (df["High"].shift(momentum_n) + 1e-8) - 1.0
-    mtm_c = df["Close"] / (df["Close"].shift(momentum_n) + 1e-8) - 1.0
+    mtm_l = df["Low"] / (df["Low"].shift(momentum_n) + epsilon) - 1.0
+    mtm_h = df["High"] / (df["High"].shift(momentum_n) + epsilon) - 1.0
+    mtm_c = df["Close"] / (df["Close"].shift(momentum_n) + epsilon) - 1.0
     mtm_c1 = mtm_h - mtm_l
     mtm_c2 = (mtm_h - mtm_c.shift(1)).abs()
     mtm_c3 = (mtm_l - mtm_c.shift(1)).abs()
@@ -892,7 +906,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     median = v1_v2.rolling(window=momentum_n, min_periods=1).mean()
     std = v1_v2.rolling(window=momentum_n, min_periods=1).std(ddof=0)
-    z_score = (v1_v2 - median).abs() / (std + 1e-8)
+    z_score = (v1_v2 - median).abs() / (std + epsilon)
     m1 = z_score.rolling(window=momentum_n, min_periods=1).max().shift(1)
     upper = median + std * m1
     lower = median - std * m1
@@ -908,8 +922,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     mtm_hcm = df["High"] / df["High"].shift(momentum_n) - 1.0
     mtm_hcm_mean = mtm_hcm.rolling(window=momentum_n, min_periods=1).mean()
     ma_close = df["Close"].rolling(momentum_n, min_periods=1).mean()
-    cm = df["Close"] / (ma_close + 1e-8)
-    df["mtmhcm"] = (mtm_hcm_mean - cm) / (cm + 1e-8)
+    cm = df["Close"] / (ma_close + epsilon)
+    df["mtmhcm"] = (mtm_hcm_mean - cm) / (cm + epsilon)
 
     a = (df["High"] - df["Close"].shift(1)).abs()
     b = (df["Low"] - df["Close"].shift(1)).abs()
@@ -926,15 +940,15 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         df["Close"] - df["Close"].shift(1)
         + (df["Close"].shift(1) - df["Open"].shift(1))
         + 0.5 * (df["Close"] - df["Open"])
-    ) / (r + 1e-8) * k / (m + 1e-8)
+    ) / (r + epsilon) * k / (m + epsilon)
 
     high_n = df["High"].rolling(momentum_n, min_periods=1).max()
     low_n = df["Low"].rolling(momentum_n, min_periods=1).min()
-    df["wr"] = (high_n - df["Close"]) / (high_n - low_n + 1e-8) * 100.0
+    df["wr"] = (high_n - df["Close"]) / (high_n - low_n + epsilon) * 100.0
 
-    df["rocvol"] = df["Volume"] / (df["Volume"].shift(momentum_n) + 1e-8) - 1.0
+    df["rocvol"] = df["Volume"] / (df["Volume"].shift(momentum_n) + epsilon) - 1.0
 
-    mtm_v4 = df["Close"] / (df["Close"].shift(momentum_n) + 1e-8) - 1.0
+    mtm_v4 = df["Close"] / (df["Close"].shift(momentum_n) + epsilon) - 1.0
     df["mtmmean_v4"] = mtm_v4.rolling(momentum_n, min_periods=1).apply(_rolling_regression_last, raw=True)
 
     prev_close = df["Close"].shift(1)
@@ -942,9 +956,9 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     tl = pd.concat([df["Low"], prev_close], axis=1).min(axis=1)
     tr = th - tl
     xr = df["Close"] - tl
-    uos_m = xr.rolling(momentum_n, min_periods=1).sum() / (tr.rolling(momentum_n, min_periods=1).sum() + 1e-8)
-    uos_n = xr.rolling(2 * momentum_n, min_periods=1).sum() / (tr.rolling(2 * momentum_n, min_periods=1).sum() + 1e-8)
-    uos_o = xr.rolling(4 * momentum_n, min_periods=1).sum() / (tr.rolling(4 * momentum_n, min_periods=1).sum() + 1e-8)
+    uos_m = xr.rolling(momentum_n, min_periods=1).sum() / (tr.rolling(momentum_n, min_periods=1).sum() + epsilon)
+    uos_n = xr.rolling(2 * momentum_n, min_periods=1).sum() / (tr.rolling(2 * momentum_n, min_periods=1).sum() + epsilon)
+    uos_o = xr.rolling(4 * momentum_n, min_periods=1).sum() / (tr.rolling(4 * momentum_n, min_periods=1).sum() + epsilon)
     df["uos"] = 100.0 * (
         uos_m * (2 * momentum_n) * (4 * momentum_n)
         + uos_n * momentum_n * (4 * momentum_n)
@@ -961,19 +975,19 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     zl_ema3 = zl_dema1.ewm(span=5 * momentum_n, adjust=False).mean()
     zl_ema4 = zl_ema3.ewm(span=5 * momentum_n, adjust=False).mean()
     zl_dema2 = 2.0 * zl_ema3 - zl_ema4
-    df["zlmacd"] = df["Close"] / (zl_dema1 - zl_dema2 + 1e-8) - 1.0
+    df["zlmacd"] = df["Close"] / (zl_dema1 - zl_dema2 + epsilon) - 1.0
 
     tma_bias_ma = df["Close"].rolling(momentum_n, min_periods=1).mean()
     tma_bias_tma = tma_bias_ma.rolling(momentum_n, min_periods=1).mean()
-    df["tma_bias"] = df["Close"] / (tma_bias_tma + 1e-8) - 1.0
+    df["tma_bias"] = df["Close"] / (tma_bias_tma + epsilon) - 1.0
 
-    mtm_v8 = df["Close"] / (df["Close"].shift(momentum_n) + 1e-8) - 1.0
-    mtm_v8_vol = df["High"].rolling(momentum_n, min_periods=1).max() / (df["Low"].rolling(momentum_n, min_periods=1).min() + 1e-8) - 1.0
+    mtm_v8 = df["Close"] / (df["Close"].shift(momentum_n) + epsilon) - 1.0
+    mtm_v8_vol = df["High"].rolling(momentum_n, min_periods=1).max() / (df["Low"].rolling(momentum_n, min_periods=1).min() + epsilon) - 1.0
     df["mtmmean_v8"] = mtm_v8.rolling(window=momentum_n, min_periods=1).mean() * mtm_v8_vol
 
-    close_change = (df["Close"] / (df["Close"].shift(momentum_n) + 1e-8) - 1.0).ewm(span=momentum_n, adjust=False).mean() * 100.0
+    close_change = (df["Close"] / (df["Close"].shift(momentum_n) + epsilon) - 1.0).ewm(span=momentum_n, adjust=False).mean() * 100.0
     quote_volume_proxy = df["Close"] * df["Volume"]
-    vol_change = (quote_volume_proxy / (quote_volume_proxy.shift(momentum_n) + 1e-8) - 1.0).ewm(span=momentum_n, adjust=False).mean() * 100.0
+    vol_change = (quote_volume_proxy / (quote_volume_proxy.shift(momentum_n) + epsilon) - 1.0).ewm(span=momentum_n, adjust=False).mean() * 100.0
     df["mtmvolmean"] = close_change * vol_change
 
     df = df.copy()
@@ -987,23 +1001,23 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     demax = (df["High"] - df["High"].shift(1)).clip(lower=0.0)
     demin = (df["Low"].shift(1) - df["Low"]).clip(lower=0.0)
     df["demaker"] = demax.rolling(momentum_n, min_periods=1).mean() / (
-        demax.rolling(momentum_n, min_periods=1).mean() + demin.rolling(momentum_n, min_periods=1).mean() + 1e-8
+        demax.rolling(momentum_n, min_periods=1).mean() + demin.rolling(momentum_n, min_periods=1).mean() + epsilon
     )
 
     er_ema = df["Close"].ewm(span=momentum_n, adjust=False).mean()
-    df["er"] = (df["High"] - er_ema) / (er_ema + 1e-8) + (df["Low"] - er_ema) / (er_ema + 1e-8)
+    df["er"] = (df["High"] - er_ema) / (er_ema + epsilon) + (df["Low"] - er_ema) / (er_ema + epsilon)
 
     min_low = df["Low"].rolling(momentum_n).min()
     max_high = df["High"].rolling(momentum_n).max()
-    stochastics = (df["Close"] - min_low) / (max_high - min_low + 1e-8) * 100.0
+    stochastics = (df["Close"] - min_low) / (max_high - min_low + epsilon) * 100.0
     stochastics_low = stochastics.rolling(momentum_n * 3).min()
     stochastics_high = stochastics.rolling(momentum_n * 3).max()
-    stochastics_double = (stochastics - stochastics_low) / (stochastics_high - stochastics_low + 1e-8)
+    stochastics_double = (stochastics - stochastics_low) / (stochastics_high - stochastics_low + epsilon)
     df["kdjdk"] = stochastics_double.ewm(com=2).mean()
     df["kdjdd"] = df["kdjdk"].ewm(com=2).mean()
 
     rsv = (df["Close"] - df["Low"].rolling(momentum_n, min_periods=1).min()) / (
-        df["High"].rolling(momentum_n, min_periods=1).max() - df["Low"].rolling(momentum_n, min_periods=1).min() + 1e-8
+        df["High"].rolling(momentum_n, min_periods=1).max() - df["Low"].rolling(momentum_n, min_periods=1).min() + epsilon
     ) * 100.0
     mar_sv = rsv.ewm(com=2).mean()
     k = mar_sv.ewm(com=2).mean()
@@ -1016,7 +1030,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     tp = (oma + hma + lma + cma) / 4.0
     ma = tp.ewm(span=momentum_n, adjust=False).mean()
     md = (tp - ma).abs().ewm(span=momentum_n, adjust=False).mean()
-    df["magiccci"] = (tp - ma) / (md + 1e-8)
+    df["magiccci"] = (tp - ma) / (md + epsilon)
 
     hma2 = df["High"].ewm(span=momentum_n, adjust=False).mean()
     lma2 = df["Low"].ewm(span=momentum_n, adjust=False).mean()
@@ -1024,7 +1038,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     tp2 = (hma2 + lma2 + cma2) / 3.0
     ma2 = tp2.ewm(span=momentum_n, adjust=False).mean()
     md2 = (tp2 - ma2).abs().ewm(span=momentum_n, adjust=False).mean()
-    df["magiccci_v2"] = (tp2 - ma2) / (md2 + 1e-8)
+    df["magiccci_v2"] = (tp2 - ma2) / (md2 + epsilon)
 
     def range_plus(x, np_tmp, rolling_window, lam):
         li = df.index.get_indexer(x.index)
@@ -1041,9 +1055,39 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["long_moment"] = df["price_change"].rolling(momentum_n * 10).apply(range_plus, args=(np_tmp, momentum_n * 10, 0.7), raw=False)
 
 
-    mtm = df["Close"] / (df["Close"].shift(momentum_n) + 1e-8) - 1.0
-    volatility = df["High"].rolling(momentum_n, min_periods=1).max() / (df["Low"].rolling(momentum_n, min_periods=1).min() + 1e-8) - 1.0
-    hourly_volatility = (df["High"] / (df["Low"] + 1e-8) - 1.0).rolling(momentum_n, min_periods=1).mean()
+    mtm = df["Close"] / (df["Close"].shift(momentum_n) + epsilon) - 1.0
+    volatility = df["High"].rolling(momentum_n, min_periods=1).max() / (df["Low"].rolling(momentum_n, min_periods=1).min() + epsilon) - 1.0
+    hourly_volatility = (df["High"] / (df["Low"] + epsilon) - 1.0).rolling(momentum_n, min_periods=1).mean()
     df["mtmmean_v10"] = mtm.rolling(window=momentum_n, min_periods=1).mean() * (volatility + hourly_volatility)
+
+    # --- Indicator features used by signal.py ---
+
+    rolling_max_rsi = df["rsi"].rolling(14).max()
+    rolling_min_rsi = df["rsi"].rolling(14).min()
+    df["stoch_rsi"] = (df["rsi"] - rolling_min_rsi) / (rolling_max_rsi - rolling_min_rsi).replace(0, np.nan)
+
+    typical_price_ao = (df["High"] + df["Low"] + df["Close"]) / 3.0
+    df["awesome_oscillator"] = typical_price_ao.rolling(5).mean() - typical_price_ao.rolling(34).mean()
+
+    df["roc10"] = ta.roc(df["Close"], length=10)
+
+    prev_close_uo_fixed = df["Close"].shift(1)
+    uo_buying_pressure = df["Close"] - np.minimum(df["Low"], prev_close_uo_fixed)
+    uo_true_range = np.maximum(df["High"], prev_close_uo_fixed) - np.minimum(df["Low"], prev_close_uo_fixed)
+    bp7 = uo_buying_pressure.rolling(7).sum()
+    bp14 = uo_buying_pressure.rolling(14).sum()
+    bp28 = uo_buying_pressure.rolling(28).sum()
+    tr7 = uo_true_range.rolling(7).sum()
+    tr14 = uo_true_range.rolling(14).sum()
+    tr28 = uo_true_range.rolling(28).sum()
+    df["ultimate_osc"] = 100 * ((4 * (bp7 / tr7.replace(0, np.nan))) + (2 * (bp14 / tr14.replace(0, np.nan))) + (bp28 / tr28.replace(0, np.nan))) / 7
+
+    stochrsi_res = ta.stochrsi(df["Close"], length=14, rsi_length=14, k=3, d=3)
+    if stochrsi_res is not None and not stochrsi_res.empty:
+        df["stochrsi_k"] = stochrsi_res.iloc[:, 0]
+        df["stochrsi_d"] = stochrsi_res.iloc[:, 1]
+    else:
+        df["stochrsi_k"] = np.nan
+        df["stochrsi_d"] = np.nan
 
     return df
