@@ -823,5 +823,119 @@
         "type": "float",
         "name": "Fi",
         "comment": "Alias for fi"
+    },
+    "stoch_rsi": {
+        "type": "float",
+        "name": "Stochastic RSI for Signals",
+        "comment": "Stochastic RSI of Close"
+    },
+    "awesome_oscillator": {
+        "type": "float",
+        "name": "Awesome Oscillator for Signals",
+        "comment": "Awesome Oscillator (5-34)"
+    },
+    "roc10": {
+        "type": "float",
+        "name": "ROC 10 for Signals",
+        "comment": "Rate of change over 10 periods"
+    },
+    "ultimate_osc": {
+        "type": "float",
+        "name": "Ultimate Oscillator for Signals",
+        "comment": "Ultimate Oscillator (7-14-28)"
+    },
+    "stochrsi_k": {
+        "type": "float",
+        "name": "StochRSI K for Signals",
+        "comment": "StochRSI K line"
+    },
+    "stochrsi_d": {
+        "type": "float",
+        "name": "StochRSI D for Signals",
+        "comment": "StochRSI D line"
+    },
+
+    "price_change": {
+        "type": "float",
+        "name": "Close Price Change",
+        "comment": "One-bar difference of Close"
     }
+,
+
+    "price_change_lag1": {
+        "type": "float",
+        "name": "Previous Close Price Change",
+        "comment": "Previous value of price_change"
+    }
+,
+
+    "return_5": {
+        "type": "float",
+        "name": "5-Bar Return",
+        "comment": "Close percent change over 5 bars"
+    }
+,
+
+    "return_10": {
+        "type": "float",
+        "name": "10-Bar Return",
+        "comment": "Close percent change over 10 bars"
+    }
+,
+
+    "sma20": {
+        "type": "float",
+        "name": "20-Bar SMA",
+        "comment": "20-bar simple moving average of Close"
+    }
+,
+
+    "sma50": {
+        "type": "float",
+        "name": "50-Bar SMA",
+        "comment": "50-bar simple moving average of Close"
+    }
+,
+
+    "std5": {
+        "type": "float",
+        "name": "5-Bar Close Std",
+        "comment": "5-bar rolling standard deviation of Close"
+    }
+,
+
+    "std10": {
+        "type": "float",
+        "name": "10-Bar Close Std",
+        "comment": "10-bar rolling standard deviation of Close"
+    }
+,
+
+    "std20": {
+        "type": "float",
+        "name": "20-Bar Close Std",
+        "comment": "20-bar rolling standard deviation of Close"
+    }
+,
+
+    "std50": {
+        "type": "float",
+        "name": "50-Bar Close Std",
+        "comment": "50-bar rolling standard deviation of Close"
+    }
+,
+
+    "close_min_10": {
+        "type": "float",
+        "name": "10-Bar Close Low",
+        "comment": "10-bar rolling minimum of Close"
+    }
+,
+
+    "close_max_10": {
+        "type": "float",
+        "name": "10-Bar Close High",
+        "comment": "10-bar rolling maximum of Close"
+    }
+
 }

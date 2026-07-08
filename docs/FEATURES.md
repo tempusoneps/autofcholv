@@ -51,6 +51,15 @@ The pipeline executes in the order listed below.
 | `color` | str | color |
 | `wick_imbalance` | float | wick imbalance = upper wick - lower wick |
 | `upwick_ratio` | float | upwick_ratio = upwick / (lowwick + epsilon) |
+| `fractal_high` | float | Fractal high detected with a 5-bar window |
+| `fractal_low` | float | Fractal low detected with a 5-bar window |
+| `fractal_high_ffill` | float | Fractal high (5-bar window) forward-filled for signal generation |
+| `fractal_low_ffill` | float | Fractal low (5-bar window) forward-filled for signal generation |
+| `range` | float | High minus Low |
+| `body_abs` | float | Absolute candlestick body length |
+| `body_abs_sma20` | float | 20-bar simple moving average of absolute body length |
+| `range_sma20` | float | 20-bar simple moving average of High minus Low |
+| `candle_range_ratio` | float | Absolute body divided by High minus Low |
 
 ---
 
@@ -221,6 +230,24 @@ The pipeline executes in the order listed below.
 | `magiccci` | float | CCI variant using OHLC EWM-smoothed typical price |
 | `magiccci_v2` | float | CCI variant using HLC EWM-smoothed typical price |
 | `Fi` | float | Alias for fi |
+| `stoch_rsi` | float | Stochastic RSI of Close |
+| `awesome_oscillator` | float | Awesome Oscillator (5-34) |
+| `roc10` | float | Rate of change over 10 periods |
+| `ultimate_osc` | float | Ultimate Oscillator (7-14-28) |
+| `stochrsi_k` | float | StochRSI K line |
+| `stochrsi_d` | float | StochRSI D line |
+| `price_change` | float | One-bar difference of Close |
+| `price_change_lag1` | float | Previous value of price_change |
+| `return_5` | float | Close percent change over 5 bars |
+| `return_10` | float | Close percent change over 10 bars |
+| `sma20` | float | 20-bar simple moving average of Close |
+| `sma50` | float | 50-bar simple moving average of Close |
+| `std5` | float | 5-bar rolling standard deviation of Close |
+| `std10` | float | 10-bar rolling standard deviation of Close |
+| `std20` | float | 20-bar rolling standard deviation of Close |
+| `std50` | float | 50-bar rolling standard deviation of Close |
+| `close_min_10` | float | 10-bar rolling minimum of Close |
+| `close_max_10` | float | 10-bar rolling maximum of Close |
 
 ---
 
@@ -257,6 +284,8 @@ The pipeline executes in the order listed below.
 | `typ` | float | Typical price (H+L+C)/3 |
 | `vwap_signal` | float | Typical price relative to rolling VWAP minus 1 |
 | `wc` | float | Weighted close EMA ratio |
+| `midpoint` | float | Midpoint of High and Low |
+| `close_vs_mid` | float | Close minus the High-Low midpoint |
 
 ---
 
@@ -428,6 +457,39 @@ The pipeline executes in the order listed below.
 | `PjcDistance` | float | Alias for pjc_distance |
 | `Trrq_v3` | float | Alias for trrq_v3 |
 | `TrTrix` | float | Alias for trtrix |
+| `hma20` | float | Hull Moving Average over 20 periods |
+| `kama10` | float | Kaufman Adaptive Moving Average over 10 periods |
+| `trix15` | float | TRIX indicator over 15 periods |
+| `trix15_signal` | float | TRIX 15 signal line |
+| `supertrend_dir` | float | SuperTrend direction component |
+| `tenkan` | float | Ichimoku Tenkan-sen component |
+| `kijun` | float | Ichimoku Kijun-sen component |
+| `span_a` | float | Ichimoku Senkou Span A component |
+| `span_b` | float | Ichimoku Senkou Span B component |
+| `linreg_slope20` | float | Linear regression slope over 20 periods |
+| `linreg_mid20` | float | Linear regression midline over 20 periods |
+| `tma10` | float | Triangular Moving Average over 10 periods |
+| `linreg_upper20` | float | linreg_mid20 plus two times std20 |
+| `linreg_lower20` | float | linreg_mid20 minus two times std20 |
+| `high_5` | float | 5-bar rolling maximum of High |
+| `low_5` | float | 5-bar rolling minimum of Low |
+| `high_10` | float | 10-bar rolling maximum of High |
+| `low_10` | float | 10-bar rolling minimum of Low |
+| `high_20` | float | 20-bar rolling maximum of High |
+| `low_20` | float | 20-bar rolling minimum of Low |
+| `range_mid_10` | float | Midpoint between high_10 and low_10 |
+| `recent_high` | float | 20-bar rolling High shifted by one bar |
+| `recent_low` | float | 20-bar rolling Low shifted by one bar |
+| `recent_high_prev` | float | recent_high shifted by 5 bars |
+| `recent_low_prev` | float | recent_low shifted by 5 bars |
+| `prev_5_low` | float | low_5 shifted by one bar |
+| `prev_5_high` | float | high_5 shifted by one bar |
+| `prev_10_low` | float | low_10 shifted by one bar |
+| `prev_10_high` | float | high_10 shifted by one bar |
+| `prev_20_low` | float | low_20 shifted by one bar |
+| `prev_20_high` | float | high_20 shifted by one bar |
+| `lower_range_pos` | float | 30 percent level above low_10 within the 10-bar high-low range |
+| `upper_range_pos` | float | 30 percent level below high_10 within the 10-bar high-low range |
 
 ---
 
@@ -550,6 +612,15 @@ The pipeline executes in the order listed below.
 | `PacLower_v2` | float | Alias for paclower_v2 |
 | `Pfe` | float | Direction-signed price efficiency |
 | `ChangeStd` | float | N-period return multiplied by rolling return std |
+| `bb_width` | float | Standard Bollinger Band Width used for signals |
+| `kc_mid` | float | Keltner Channel mid line (EMA 20) |
+| `kc_upper` | float | Keltner Channel upper band (mid + 2 * ATR) |
+| `kc_lower` | float | Keltner Channel lower band (mid - 2 * ATR) |
+| `chop14` | float | Choppiness Index over 14 periods |
+| `hurst_proxy` | float | Hurst Exponent Proxy over 20 periods |
+| `bb_width_q20` | float | 100-bar rolling 20th percentile of bb_width |
+| `bb_width_sma20` | float | 20-bar simple moving average of bb_width |
+| `atr_sma20` | float | 20-bar simple moving average of atr |
 
 ---
 
@@ -670,6 +741,9 @@ The pipeline executes in the order listed below.
 | `Chla_fancy` | float | Alias for chla_fancy |
 | `NetVol_fancy` | float | Alias for net_vol_fancy |
 | `Amv` | float | Alias for amv |
+| `mfi14` | float | Money Flow Index over 14 periods |
+| `vpt` | float | Cumulative Volume Price Trend indicator |
+| `volume_sma20` | float | 20-bar simple moving average of Volume |
 
 ---
 
@@ -754,6 +828,7 @@ The pipeline executes in the order listed below.
 | `adx_mtm_neg` | float | Negative directional movement multiplied by rolling momentum |
 | `Damaov10` | float | Alias for damaov10 |
 | `FearGreed_Yidai_v1` | float | Alias for fear_greed_yidai_v1 |
+| `connors_rsi` | float | ConnorsRSI indicator (RSI(3) + StreakRSI(2) + PriceRank) |
 
 ---
 
@@ -823,6 +898,9 @@ The pipeline executes in the order listed below.
 | `range_compression_ratio` | string | range_ratio = (High-Low)/avg_range_10 = Compressed \| Normal \| Expanded |
 | `volume_trend_alignment` | string | vol_trend = compare(Volume_trend, Price_trend) = Confirmed \| Diverging |
 | `breakout_failure_strength` | string | failure = breakout_attempt + reversal_strength = StrongFailure \| WeakFailure \| None |
+| `equal_low` | bool | Low is approximately equal to low_lag1 within 0.1 percent of Close |
+| `equal_high` | bool | High is approximately equal to high_lag1 within 0.1 percent of Close |
+| `inside_bar_prev` | bool | Previous bar high-low range is inside the bar before it |
 
 ---
 
@@ -830,85 +908,85 @@ The pipeline executes in the order listed below.
 
 | Column | Type | Description |
 |---|---|---|
-| `couple_cs_idea` | string | Signal of couple candlestick pattern (Both Green or Both Red) |
-| `ema_cross_idea` | string | Signal of EMA cross pattern (cross up or cross down) |
-| `min_max_10_idea` | string | Signal of min max 10 Close (min or max) |
-| `macd_histogram_reversal_idea` | string | Tín hiệu sớm về sự suy yếu của lực đẩy |
-| `bb_rejection_idea` | string | Signal of BB rejection pattern |
-| `bb_squeeze_idea` | string | Tín hiệu dự báo bùng nổ biến động khi giá đi ngang quá lâu |
-| `rsi_divergence_idea` | string | Tín hiệu phân kỳ giữa giá và RSI để bắt đỉnh/đáy |
-| `atr_breakout_idea` | string | Xác nhận tín hiệu dựa trên độ biến động thực tế |
-| `vsa_confirmation_idea` | string | Xác nhận nỗ lực tăng/giảm qua khối lượng giao dịch |
-| `ichimoku_cloud_idea` | string | Tín hiệu dựa trên mây Ichimoku |
-| `ma_stretch_idea` | string | Đo lường độ căng của giá so với đường trung bình (Z-Score concept) |
-| `market_structure_break_idea` | string | Xác định sự thay đổi xu hướng từ Bearish sang Bullish và ngược lại |
-| `bollinger_band_width_idea` | string | Đo lường độ biến động (Volatility) của thị trường |
-| `volume_confirmation_idea` | boolean | Xác nhận nỗ lực của giá thông qua khối lượng |
-| `mfi_rejection_idea` | string | Dòng tiền thông minh vào vùng cực đại |
-| `donchian_breakout_idea` | string | Tín hiệu thuận xu hướng dựa trên đỉnh/đáy cao nhất |
-| `hma_reversal_idea` | string | Xác định điểm xoay của xu hướng nhanh hơn EMA |
+| `couple_cs_signal` | string | Signal of couple candlestick pattern (Both Green or Both Red) |
+| `ema_cross_signal` | string | Signal of EMA cross pattern (cross up or cross down) |
+| `min_max_10_signal` | string | Signal of min max 10 Close (min or max) |
+| `macd_histogram_reversal_signal` | string | Tín hiệu sớm về sự suy yếu của lực đẩy |
+| `bb_rejection_signal` | string | Signal of BB rejection pattern |
+| `bb_squeeze_signal` | string | Tín hiệu dự báo bùng nổ biến động khi giá đi ngang quá lâu |
+| `rsi_divergence_signal` | string | Tín hiệu phân kỳ giữa giá và RSI để bắt đỉnh/đáy |
+| `atr_breakout_signal` | string | Xác nhận tín hiệu dựa trên độ biến động thực tế |
+| `vsa_confirmation_signal` | string | Xác nhận nỗ lực tăng/giảm qua khối lượng giao dịch |
+| `ichimoku_cloud_signal` | string | Tín hiệu dựa trên mây Ichimoku |
+| `ma_stretch_signal` | string | Đo lường độ căng của giá so với đường trung bình (Z-Score concept) |
+| `market_structure_break_signal` | string | Xác định sự thay đổi xu hướng từ Bearish sang Bullish và ngược lại |
+| `bollinger_band_width_signal` | string | Đo lường độ biến động (Volatility) của thị trường |
+| `volume_confirmation_signal` | boolean | Xác nhận nỗ lực của giá thông qua khối lượng |
+| `mfi_rejection_signal` | string | Dòng tiền thông minh vào vùng cực đại |
+| `donchian_breakout_signal` | string | Tín hiệu thuận xu hướng dựa trên đỉnh/đáy cao nhất |
+| `hma_reversal_signal` | string | Xác định điểm xoay của xu hướng nhanh hơn EMA |
 | `adx_trend_filter` | boolean | Chỉ kích hoạt giao dịch khi xu hướng đủ mạnh (> 25) |
-| `connors_rsi_idea` | string | Tín hiệu Mean Reversion cực nhanh cho scalping |
-| `choppiness_idea` | boolean | Dùng để bật/tắt các signal khác. < 38.2 là có xu hướng, > 61.8 là đi ngang |
+| `connors_rsi_signal` | string | Tín hiệu Mean Reversion cực nhanh cho scalping |
+| `choppiness_signal` | boolean | Dùng để bật/tắt các signal khác. < 38.2 là có xu hướng, > 61.8 là đi ngang |
 | `keltner_channel_reversal` | string | Tín hiệu đảo chiều khi giá chạm biên Keltner |
-| `fractal_breakout_idea` | string | Xác định đỉnh/đáy cục bộ để giao dịch breakout |
+| `fractal_breakout_signal` | string | Xác định đỉnh/đáy cục bộ để giao dịch breakout |
 | `supertrend_reversal` | string | Tín hiệu đảo chiều xu hướng mạnh mẽ |
-| `aroon_oscillator_idea` | string | Xác định sức mạnh và hướng của xu hướng |
-| `chande_momentum_oscillator_idea` | string | Đo lường động lượng thị trường |
-| `ultimate_oscillator_idea` | string | Tín hiệu kết hợp 3 chu kỳ (7, 14, 28) |
-| `trix_crossover_idea` | string | Tín hiệu đảo chiều dựa trên TRIX |
-| `stochastic_rsi_idea` | string | Đo lường RSI trong vùng quá mua/quá bán |
-| `awesome_oscillator_idea` | string | Tín hiệu động lượng dựa trên nến |
-| `rate_of_change_idea` | string | Đo lường tốc độ thay đổi giá |
-| `price_channel_breakout_idea` | string | Tín hiệu breakout dựa trên kênh giá |
-| `linear_regression_slope_idea` | string | Đo lường độ dốc của đường xu hướng |
-| `zig_zag_reversal_idea` | string | Xác định đỉnh/đáy cục bộ |
-| `kaufman_ama_idea` | string | Đường trung bình thích ứng với biến động |
-| `tma_reversal_idea` | string | Tín hiệu đảo chiều dựa trên TMA |
-| `linear_regression_channel_idea` | string | Kênh giá dựa trên hồi quy tuyến tính |
-| `fractal_channel_idea` | string | Kênh giá dựa trên fractal |
-| `hurst_exponent_idea` | boolean | Xác định tính ngẫu nhiên của thị trường |
-| `vpt_divergence_idea` | string | Xác định sự phân kỳ của dòng tiền thực |
-| `liquidity_sweep_idea` | string | Quét high/low gần nhất và đảo chiều |
-| `equal_high_low_sweep_idea` | string | Quét vùng equal highs/lows |
-| `inside_bar_breakout_idea` | string | Breakout khỏi inside bar |
-| `fakey_pattern_idea` | string | False breakout |
-| `pin_bar_idea` | string | Nến rút chân mạnh |
-| `engulfing_idea` | string | Bao trùm nến trước |
-| `compression_breakout_idea` | string | Nhiều nến nhỏ → breakout |
-| `atr_expansion_idea` | string | Volatility breakout |
-| `zscore_reversion_idea` | string | Giá lệch khỏi mean |
-| `range_breakout_idea` | string | Break range |
-| `volume_spike_idea` | string | Volume đột biến |
-| `return_momentum_idea` | string | Momentum dựa trên return |
-| `volatility_break_idea` | string | Biến động vượt ngưỡng |
-| `mean_cross_idea` | string | Giá cắt MA |
-| `high_low_break_idea` | string | Phá đỉnh/đáy gần |
-| `range_compression_idea` | string | Range co hẹp |
-| `gap_up_down_idea` | string | Gap giá |
-| `body_size_idea` | string | Thân nến lớn |
-| `wick_rejection_idea` | string | Từ chối giá bằng bóng nến |
-| `trend_strength_idea` | string | Xu hướng mạnh |
-| `pullback_idea` | string | Pullback trong trend |
-| `break_retest_idea` | string | Break và retest |
-| `momentum_shift_idea` | string | Đổi chiều momentum |
-| `range_mid_reversion_idea` | string | Hồi về mid range |
-| `volatility_drop_idea` | string | Giảm biến động |
-| `price_acceleration_idea` | string | Gia tốc giá |
-| `extreme_move_idea` | string | Move lớn bất thường |
-| `mean_distance_idea` | string | Khoảng cách tới MA |
-| `range_shift_idea` | string | Dịch chuyển range |
-| `volume_trend_idea` | string | Xu hướng volume |
-| `price_rejection_idea` | string | Từ chối vùng giá |
-| `micro_trend_idea` | string | Trend ngắn hạn |
-| `micro_reversal_idea` | string | Đảo chiều ngắn hạn |
-| `range_expansion_idea` | string | Range tăng |
-| `body_direction_idea` | string | Chuỗi nến cùng màu |
-| `range_position_idea` | string | Vị trí trong range |
-| `close_strength_idea` | string | Đóng cửa gần high/low |
-| `trend_exhaustion_idea` | string | Kiệt sức xu hướng |
-| `range_flip_idea` | string | Đảo range |
-| `vol_price_divergence_idea` | string | Volume không confirm giá |
-| `final_push_idea` | string | Đẩy cuối trend |
+| `aroon_oscillator_signal` | string | Xác định sức mạnh và hướng của xu hướng |
+| `chande_momentum_oscillator_signal` | string | Đo lường động lượng thị trường |
+| `ultimate_oscillator_signal` | string | Tín hiệu kết hợp 3 chu kỳ (7, 14, 28) |
+| `trix_crossover_signal` | string | Tín hiệu đảo chiều dựa trên TRIX |
+| `stochastic_rsi_signal` | string | Đo lường RSI trong vùng quá mua/quá bán |
+| `awesome_oscillator_signal` | string | Tín hiệu động lượng dựa trên nến |
+| `rate_of_change_signal` | string | Đo lường tốc độ thay đổi giá |
+| `price_channel_breakout_signal` | string | Tín hiệu breakout dựa trên kênh giá |
+| `linear_regression_slope_signal` | string | Đo lường độ dốc của đường xu hướng |
+| `zig_zag_reversal_signal` | string | Xác định đỉnh/đáy cục bộ |
+| `kaufman_ama_signal` | string | Đường trung bình thích ứng với biến động |
+| `tma_reversal_signal` | string | Tín hiệu đảo chiều dựa trên TMA |
+| `linear_regression_channel_signal` | string | Kênh giá dựa trên hồi quy tuyến tính |
+| `fractal_channel_signal` | string | Kênh giá dựa trên fractal |
+| `hurst_exponent_signal` | boolean | Xác định tính ngẫu nhiên của thị trường |
+| `vpt_divergence_signal` | string | Xác định sự phân kỳ của dòng tiền thực |
+| `liquidity_sweep_signal` | string | Quét high/low gần nhất và đảo chiều |
+| `equal_high_low_sweep_signal` | string | Quét vùng equal highs/lows |
+| `inside_bar_breakout_signal` | string | Breakout khỏi inside bar |
+| `fakey_pattern_signal` | string | False breakout |
+| `pin_bar_signal` | string | Nến rút chân mạnh |
+| `engulfing_signal` | string | Bao trùm nến trước |
+| `compression_breakout_signal` | string | Nhiều nến nhỏ → breakout |
+| `atr_expansion_signal` | string | Volatility breakout |
+| `zscore_reversion_signal` | string | Giá lệch khỏi mean |
+| `range_breakout_signal` | string | Break range |
+| `volume_spike_signal` | string | Volume đột biến |
+| `return_momentum_signal` | string | Momentum dựa trên return |
+| `volatility_break_signal` | string | Biến động vượt ngưỡng |
+| `mean_cross_signal` | string | Giá cắt MA |
+| `high_low_break_signal` | string | Phá đỉnh/đáy gần |
+| `range_compression_signal` | string | Range co hẹp |
+| `gap_up_down_signal` | string | Gap giá |
+| `body_size_signal` | string | Thân nến lớn |
+| `wick_rejection_signal` | string | Từ chối giá bằng bóng nến |
+| `trend_strength_signal` | string | Xu hướng mạnh |
+| `pullback_signal` | string | Pullback trong trend |
+| `break_retest_signal` | string | Break và retest |
+| `momentum_shift_signal` | string | Đổi chiều momentum |
+| `range_mid_reversion_signal` | string | Hồi về mid range |
+| `volatility_drop_signal` | string | Giảm biến động |
+| `price_acceleration_signal` | string | Gia tốc giá |
+| `extreme_move_signal` | string | Move lớn bất thường |
+| `mean_distance_signal` | string | Khoảng cách tới MA |
+| `range_shift_signal` | string | Dịch chuyển range |
+| `volume_trend_signal` | string | Xu hướng volume |
+| `price_rejection_signal` | string | Từ chối vùng giá |
+| `micro_trend_signal` | string | Trend ngắn hạn |
+| `micro_reversal_signal` | string | Đảo chiều ngắn hạn |
+| `range_expansion_signal` | string | Range tăng |
+| `body_direction_signal` | string | Chuỗi nến cùng màu |
+| `range_position_signal` | string | Vị trí trong range |
+| `close_strength_signal` | string | Đóng cửa gần high/low |
+| `trend_exhaustion_signal` | string | Kiệt sức xu hướng |
+| `range_flip_signal` | string | Đảo range |
+| `vol_price_divergence_signal` | string | Volume không confirm giá |
+| `final_push_signal` | string | Đẩy cuối trend |
 
 ---

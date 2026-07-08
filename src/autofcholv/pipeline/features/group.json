@@ -308,5 +308,26 @@
         "type": "string",
         "name": "Breakout Failure Strength",
         "comment": "failure = breakout_attempt + reversal_strength = StrongFailure | WeakFailure | None"
+    },
+
+    "equal_low": {
+        "type": "bool",
+        "name": "Equal Low",
+        "comment": "Low is approximately equal to low_lag1 within 0.1 percent of Close"
     }
+,
+
+    "equal_high": {
+        "type": "bool",
+        "name": "Equal High",
+        "comment": "High is approximately equal to high_lag1 within 0.1 percent of Close"
+    }
+,
+
+    "inside_bar_prev": {
+        "type": "bool",
+        "name": "Previous Inside Bar",
+        "comment": "Previous bar high-low range is inside the bar before it"
+    }
+
 }

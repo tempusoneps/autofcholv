@@ -576,5 +576,22 @@
         "type": "float",
         "name": "Amv",
         "comment": "Alias for amv"
+    },
+    "mfi14": {
+        "type": "float",
+        "name": "Money Flow Index 14 for Signals",
+        "comment": "Money Flow Index over 14 periods"
+    },
+    "vpt": {
+        "type": "float",
+        "name": "Volume Price Trend for Signals",
+        "comment": "Cumulative Volume Price Trend indicator"
+    },
+
+    "volume_sma20": {
+        "type": "float",
+        "name": "20-Bar Volume SMA",
+        "comment": "20-bar simple moving average of Volume"
     }
+
 }

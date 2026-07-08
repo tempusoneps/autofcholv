@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import pandas_ta as ta
 from autofcholv.config.config import Config
 
 
@@ -32,6 +33,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     momentum_n = config.momentum_lookback
 
     df["volume_avg"] = df["Volume"].rolling(momentum_n).mean()
+    df["volume_sma20"] = df["Volume"].rolling(20).mean()
     df["volume_zscore"] = (df["Volume"] - df["volume_avg"]) / df["Volume"].rolling(momentum_n).std()
 
 
@@ -591,5 +593,13 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["VRA"] = df["vra"]
     df["Chla_fancy"] = df["chla_fancy"]
     df["NetVol_fancy"] = df["net_vol_fancy"]
+
+    # --- Indicator features used by signal.py ---
+
+    mfi_val = ta.mfi(df["High"], df["Low"], df["Close"], df["Volume"], length=14)
+    df["mfi14"] = mfi_val if mfi_val is not None else np.nan
+
+    vpt_increment = df["Volume"] * df["Close"].pct_change().fillna(0.0)
+    df["vpt"] = vpt_increment.cumsum()
 
     return df
