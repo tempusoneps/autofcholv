@@ -592,6 +592,21 @@
         "type": "float",
         "name": "20-Bar Volume SMA",
         "comment": "20-bar simple moving average of Volume"
+    },
+    "volume_ma_20": {
+        "type": "float",
+        "name": "Volume MA 20",
+        "comment": "20-bar simple moving average of Volume"
+    },
+    "signed_volume": {
+        "type": "float",
+        "name": "Signed Volume",
+        "comment": "Volume signed by candle direction with Close diff fallback"
+    },
+    "session_flow_imbalance": {
+        "type": "float",
+        "name": "Session Flow Imbalance",
+        "comment": "Running signed_volume divided by running session Volume"
     }
 
 }

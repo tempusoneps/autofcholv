@@ -1,118 +1,181 @@
 import numpy as np
 import pandas as pd
-import pandas_ta as ta
+
 from autofcholv.config.config import Config
 
 
-WINDOW_BARS = 2
-TREND_LEN = 55
-RSI_LEN = 21
-RSI_HIGH = 53
-RSI_LOW = 47
-VOL_MA_LEN = 20
-FORCE_CLOSE_TIME = 1425
+SIGNAL_NONE = "None"
+SIGNAL_BUY = "Buy"
+SIGNAL_SELL = "Sell"
+
+BASE_COLUMNS = {"Open", "High", "Low", "Close", "Volume"}
+REQUIRED_HELPER_COLUMNS = {
+    "accept_long_4_shift1",
+    "adx_14",
+    "adx_42",
+    "bar_close_position",
+    "bearish_low_break_candle",
+    "body_atr_ratio",
+    "body_rate_first_close",
+    "bullish_high_break_candle",
+    "close_donchian_high_20_shift1",
+    "close_donchian_low_20_shift1",
+    "close_vs_session_range",
+    "dmn_14",
+    "dmp_14",
+    "donchian_high_10_shift1",
+    "donchian_high_30_shift1",
+    "donchian_low_10_shift1",
+    "donchian_low_30_shift1",
+    "ema_8",
+    "ema_20_cross_above_ema_250",
+    "ema_20_cross_below_ema_250",
+    "ema_21",
+    "ema_55",
+    "entry_window_1300_1425",
+    "first_close_0915",
+    "heikin_ashi_bull",
+    "keltner_lower_20_2",
+    "keltner_upper_20_2",
+    "late_session_1310",
+    "late_session_1325",
+    "linear_regression_slope_5",
+    "linear_regression_slope_8",
+    "macd_hist_12_26_9",
+    "mom_y",
+    "morning_breakout_long",
+    "open_range_high_2",
+    "open_range_low_2",
+    "opening_gap_pct",
+    "persist_short_12_shift1",
+    "pre_1345_high",
+    "pre_1355_low",
+    "prev_day_ema_bias_20",
+    "prev_day_momentum_signal_bias",
+    "prev_day_r1",
+    "prev_day_s1",
+    "psar_bear",
+    "psar_bull",
+    "rsi_5",
+    "rsi_8",
+    "rsi_14",
+    "rsi_21",
+    "session_0930_1335",
+    "session_0935_1335",
+    "session_0935_1425",
+    "session_body_pct",
+    "session_body_rate",
+    "session_flow_imbalance",
+    "session_mom_y",
+    "session_range_pct",
+    "session_vwap_dev_pct",
+    "session_vwap_lower_1_5",
+    "session_vwap_upper_1_5",
+    "session_vwap_z",
+    "stochrsi_k_14_14_3_3",
+    "time_code",
+    "bar_in_day",
+    "volume_ma_20",
+    "williams_r_14",
+    "bb_percent_b_20_2",
+}
 
 
-def _time_slice(series: pd.Series, hhmm: int, how: str) -> float:
-    time_code = 100 * series.index.hour + series.index.minute
-    if how == "first":
-        values = series[time_code == hhmm]
-        return values.iloc[0] if not values.empty else np.nan
-    if how == "last":
-        values = series[time_code == hhmm]
-        return values.iloc[-1] if not values.empty else np.nan
-    values = series[time_code < hhmm]
-    if values.empty:
-        return np.nan
-    return values.max() if how == "max_before" else values.min()
+def _signal_from_conditions(long_cond: pd.Series, short_cond: pd.Series) -> pd.Series:
+    return pd.Series(
+        np.select(
+            [long_cond.fillna(False), short_cond.fillna(False)],
+            [SIGNAL_BUY, SIGNAL_SELL],
+            default=SIGNAL_NONE,
+        ),
+        index=long_cond.index,
+    )
+
+
+def _validate_required_columns(df: pd.DataFrame) -> None:
+    missing_helpers = sorted(REQUIRED_HELPER_COLUMNS - set(df.columns))
+    if missing_helpers:
+        raise ValueError(f"Missing strategy helper columns: {missing_helpers}")
+
+    missing_base = sorted(BASE_COLUMNS - set(df.columns))
+    if missing_base:
+        raise ValueError(f"Missing base OHLCV columns for strategy signals: {missing_base}")
 
 
 def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
-    df["trade_date"] = df.index.normalize()
-    df["bar_in_day"] = df.groupby("trade_date").cumcount()
-    df["open_range_high"] = df.groupby("trade_date")["High"].transform(lambda s: s.iloc[:WINDOW_BARS].max())
-    df["open_range_low"] = df.groupby("trade_date")["Low"].transform(lambda s: s.iloc[:WINDOW_BARS].min())
-    df["trend"] = ta.ema(df["Close"], length=TREND_LEN)
-    df["strategy_003_rsi"] = ta.rsi(df["Close"], length=RSI_LEN)
-    df["strategy_003_vol_ma"] = df["Volume"].rolling(VOL_MA_LEN).mean()
-    df["max_in_range"] = df["High"].rolling(10).max()
-    df["min_in_range"] = df["Low"].rolling(10).min()
+    _validate_required_columns(df)
 
-    daily = df.resample("D").agg(
-        strategy_003_first_close=("Close", lambda s: _time_slice(s, 915, "first")),
-        strategy_003_day_close=("Close", lambda s: _time_slice(s, 1445, "last")),
-        strategy_003_prev_high=("High", lambda s: _time_slice(s, 1345, "max_before")),
-        strategy_003_prev_low=("Low", lambda s: _time_slice(s, 1355, "min_before")),
+    in_orb = df["bar_in_day"] >= 2
+    vol_ok = df["Volume"] > df["volume_ma_20"]
+    close_gt_ema55 = df["Close"] > df["ema_55"]
+    close_lt_ema55 = df["Close"] < df["ema_55"]
+    close_gt_orh = df["Close"] > df["open_range_high_2"]
+    close_lt_orl = df["Close"] < df["open_range_low_2"]
+    at_1355 = df["time_code"] == 1355
+
+    not_extreme = (
+        (df["Close"] - df["pre_1355_low"] <= 21)
+        & (df["pre_1345_high"] - df["Close"] <= 21)
     )
-    daily = daily.dropna(subset=["strategy_003_day_close"])
-    daily["strategy_003_prev_day_close"] = daily["strategy_003_day_close"].shift(1)
-    df = df.join(
-        daily[
-            [
-                "strategy_003_prev_day_close",
-                "strategy_003_first_close",
-                "strategy_003_prev_high",
-                "strategy_003_prev_low",
-            ]
-        ],
-        on="trade_date",
+    momentum_long = not_extreme & (df["mom_y"] > 0.26) & (df["body_rate_first_close"] > 0.65)
+    momentum_short = not_extreme & (df["mom_y"] < -0.18) & (df["body_rate_first_close"] < -0.39)
+    momentum_long_adx = momentum_long & (df["adx_42"] < 26.5)
+    momentum_short_adx = momentum_short & (df["adx_42"] < 26.5)
+
+    df["signal_pro1"] = _signal_from_conditions(at_1355 & momentum_long_adx, at_1355 & momentum_short_adx)
+    df["signal_pro2"] = _signal_from_conditions(
+        df["session_0935_1425"] & in_orb & close_gt_orh & close_gt_ema55 & vol_ok & (df["opening_gap_pct"] > 0.10),
+        df["session_0935_1425"] & in_orb & close_lt_orl & close_lt_ema55 & vol_ok & (df["opening_gap_pct"] < -0.10),
+    )
+    df["signal_pro3"] = _signal_from_conditions(
+        df["session_0935_1425"] & in_orb & close_gt_orh & close_gt_ema55 & (df["rsi_21"] > 53) & vol_ok & (df["prev_day_momentum_signal_bias"] == SIGNAL_BUY),
+        df["session_0935_1425"] & in_orb & close_lt_orl & close_lt_ema55 & (df["rsi_21"] < 47) & vol_ok & (df["prev_day_momentum_signal_bias"] == SIGNAL_SELL),
+    )
+    df["signal_pro4"] = _signal_from_conditions(
+        df["ema_20_cross_above_ema_250"] | momentum_long | df["bullish_high_break_candle"],
+        df["ema_20_cross_below_ema_250"] | momentum_short | df["bearish_low_break_candle"],
+    )
+    orb5_long = in_orb & close_gt_orh & close_gt_ema55 & (df["rsi_14"] > 58) & (df["prev_day_ema_bias_20"] >= 0)
+    orb5_short = in_orb & close_lt_orl & close_lt_ema55 & (df["rsi_14"] < 42) & (df["prev_day_ema_bias_20"] <= 0)
+    df["signal_pro5"] = _signal_from_conditions(orb5_long | (at_1355 & momentum_long), orb5_short | (at_1355 & momentum_short))
+    df["signal_pro6"] = _signal_from_conditions(
+        df["session_0930_1335"] & in_orb & close_gt_orh & close_gt_ema55 & (df["rsi_14"] >= 54),
+        df["session_0930_1335"] & in_orb & close_lt_orl & close_lt_ema55 & (df["rsi_14"] <= 46),
+    )
+    df["signal_pro7"] = _signal_from_conditions(
+        df["session_0930_1335"] & in_orb & close_gt_orh & close_gt_ema55 & (df["rsi_14"] >= 52),
+        df["session_0930_1335"] & in_orb & close_lt_orl & close_lt_ema55 & (df["rsi_14"] <= 48),
+    )
+    df["signal_pro8"] = _signal_from_conditions(
+        df["session_0930_1335"] & in_orb & close_gt_orh & close_gt_ema55 & (df["rsi_14"] >= 54) & (df["prev_day_ema_bias_20"] >= 0),
+        df["session_0930_1335"] & in_orb & close_lt_orl & close_lt_ema55 & (df["rsi_14"] <= 46) & (df["prev_day_ema_bias_20"] <= 0),
     )
 
-    prev_close = df["strategy_003_prev_day_close"].replace(0, np.nan)
-    prev_range = (df["strategy_003_prev_high"] - df["strategy_003_prev_low"]).replace(0, np.nan)
-    df["strategy_003_mom_y"] = 100 * (df["Close"] - prev_close) / prev_close
-    df["strategy_003_body_rate"] = (df["Close"] - df["strategy_003_first_close"]) / prev_range
+    channel_session = df["session_0930_1335"]
+    df["signal_pro9"] = _signal_from_conditions(channel_session & (df["Close"] > df["keltner_upper_20_2"]) & close_gt_ema55 & vol_ok, channel_session & (df["Close"] < df["keltner_lower_20_2"]) & close_lt_ema55 & vol_ok)
+    df["signal_pro10"] = _signal_from_conditions(channel_session & (df["Close"] > df["donchian_high_30_shift1"]) & close_gt_ema55 & vol_ok & (df["rsi_14"] > 54), channel_session & (df["Close"] < df["donchian_low_30_shift1"]) & close_lt_ema55 & vol_ok & (df["rsi_14"] < 46))
+    df["signal_pro11"] = _signal_from_conditions(channel_session & (df["Close"] > df["session_vwap_upper_1_5"]) & close_gt_ema55 & vol_ok, channel_session & (df["Close"] < df["session_vwap_lower_1_5"]) & close_lt_ema55 & vol_ok)
+    df["signal_pro12"] = _signal_from_conditions(channel_session & (df["Close"] > df["keltner_upper_20_2"]) & df["heikin_ashi_bull"] & close_gt_ema55 & vol_ok, channel_session & (df["Close"] < df["keltner_lower_20_2"]) & (~df["heikin_ashi_bull"]) & close_lt_ema55 & vol_ok)
+    df["signal_pro13"] = _signal_from_conditions(channel_session & (df["Close"] > df["prev_day_r1"]) & close_gt_ema55 & vol_ok, channel_session & (df["Close"] < df["prev_day_s1"]) & close_lt_ema55 & vol_ok)
+    df["signal_pro14"] = _signal_from_conditions(channel_session & (df["Close"] > df["close_donchian_high_20_shift1"]) & close_gt_ema55 & vol_ok, channel_session & (df["Close"] < df["close_donchian_low_20_shift1"]) & close_lt_ema55 & vol_ok)
+    df["signal_pro15"] = _signal_from_conditions(channel_session & (df["Close"] > df["keltner_upper_20_2"]) & (df["stochrsi_k_14_14_3_3"] > 65) & close_gt_ema55 & vol_ok, channel_session & (df["Close"] < df["keltner_lower_20_2"]) & (df["stochrsi_k_14_14_3_3"] < 35) & close_lt_ema55 & vol_ok)
+    df["signal_pro16"] = _signal_from_conditions(channel_session & (df["Close"] > df["keltner_upper_20_2"]) & (df["macd_hist_12_26_9"] > 0) & close_gt_ema55 & vol_ok, channel_session & (df["Close"] < df["keltner_lower_20_2"]) & (df["macd_hist_12_26_9"] < 0) & close_lt_ema55 & vol_ok)
+    df["signal_pro17"] = _signal_from_conditions(channel_session & (df["Close"] > df["keltner_upper_20_2"]) & (df["ema_8"] > df["ema_21"]) & close_gt_ema55 & vol_ok, channel_session & (df["Close"] < df["keltner_lower_20_2"]) & (df["ema_8"] < df["ema_21"]) & close_lt_ema55 & vol_ok)
+    df["signal_pro18"] = _signal_from_conditions(channel_session & (df["Close"] > df["keltner_upper_20_2"]) & df["psar_bull"] & close_gt_ema55 & vol_ok, channel_session & (df["Close"] < df["keltner_lower_20_2"]) & df["psar_bear"] & close_lt_ema55 & vol_ok)
+    df["signal_pro19"] = _signal_from_conditions(channel_session & (df["Close"] > df["donchian_high_10_shift1"]) & (df["macd_hist_12_26_9"] > 0) & close_gt_ema55 & vol_ok, channel_session & (df["Close"] < df["donchian_low_10_shift1"]) & (df["macd_hist_12_26_9"] < 0) & close_lt_ema55 & vol_ok)
+    df["signal_pro20"] = _signal_from_conditions(channel_session & (df["williams_r_14"] > -25) & (df["macd_hist_12_26_9"] > 0) & close_gt_ema55 & vol_ok, channel_session & (df["williams_r_14"] < -75) & (df["macd_hist_12_26_9"] < 0) & close_lt_ema55 & vol_ok)
+    df["signal_pro21"] = _signal_from_conditions(channel_session & (df["bb_percent_b_20_2"] > 0.8) & (df["macd_hist_12_26_9"] > 0) & close_gt_ema55 & vol_ok, channel_session & (df["bb_percent_b_20_2"] < 0.2) & (df["macd_hist_12_26_9"] < 0) & close_lt_ema55 & vol_ok)
+    df["signal_pro22"] = _signal_from_conditions(channel_session & (df["bar_close_position"] > 0.62) & (df["macd_hist_12_26_9"] > 0) & close_gt_ema55 & vol_ok, channel_session & (df["bar_close_position"] < 0.38) & (df["macd_hist_12_26_9"] < 0) & close_lt_ema55 & vol_ok)
 
-    adx = ta.adx(df["High"], df["Low"], df["Close"], length=42)
-    df["strategy_003_adx"] = adx["ADX_42"] if adx is not None and "ADX_42" in adx else np.nan
+    df["signal_pro23"] = _signal_from_conditions(df["late_session_1325"] & (df["rsi_8"] >= 61.11) & (df["session_vwap_dev_pct"] >= 0.16) & (df["session_body_pct"] >= 0.14), df["late_session_1325"] & (df["rsi_8"] <= 42.0) & (df["session_vwap_dev_pct"] <= -0.06) & (df["session_body_pct"] <= -0.11))
+    df["signal_pro24"] = _signal_from_conditions(df["late_session_1325"] & (df["session_flow_imbalance"] >= 0.0) & (df["rsi_8"] >= 61.11) & (df["session_vwap_dev_pct"] >= 0.14) & (df["session_body_pct"] >= 0.12), df["late_session_1325"] & (df["session_flow_imbalance"] <= 0.0) & (df["rsi_8"] <= 42.0) & (df["session_vwap_dev_pct"] <= -0.05) & (df["session_body_pct"] <= -0.10))
+    df["signal_pro25"] = _signal_from_conditions(df["session_0935_1335"] & in_orb & close_gt_orh & (df["body_atr_ratio"] > 0.20) & close_gt_ema55 & (df["rsi_14"] > 54), df["session_0935_1335"] & in_orb & close_lt_orl & (df["body_atr_ratio"] < -0.20) & close_lt_ema55 & (df["rsi_14"] < 46))
+    df["signal_pro26"] = _signal_from_conditions((df["adx_42"] < 26.5) & (df["session_body_rate"] > 0.50) & (df["session_mom_y"] > 0.20) & (df["bar_close_position"] > 0.65), (df["adx_42"] < 26.5) & (df["session_body_rate"] < -0.50) & (df["session_mom_y"] < -0.20) & (df["bar_close_position"] < 0.35))
+    df["signal_pro27"] = _signal_from_conditions(df["late_session_1310"] & (df["close_vs_session_range"] > 0.79) & (df["rsi_5"] > 62) & (df["session_body_pct"] > 0.12) & (df["adx_14"] > 17) & (df["dmp_14"] > df["dmn_14"]) & (df["linear_regression_slope_8"] > 0), df["late_session_1310"] & (df["persist_short_12_shift1"] > 0.42) & (df["rsi_5"] < 38) & (df["session_body_pct"] < -0.12) & (df["adx_14"] > 17) & (df["dmn_14"] > df["dmp_14"]) & (df["linear_regression_slope_8"] < 0))
+    df["signal_pro28"] = _signal_from_conditions(df["late_session_1325"] & (df["session_vwap_z"] >= 0.75) & (df["rsi_8"] >= 54.0) & (df["session_body_pct"] >= 0.05) & (df["session_range_pct"] >= 0.12), df["late_session_1325"] & (df["session_vwap_z"] <= -1.00) & (df["rsi_8"] <= 41.0) & (df["session_body_pct"] <= -0.10) & (df["session_range_pct"] >= 0.18))
+    df["signal_pro29"] = _signal_from_conditions(df["entry_window_1300_1425"] & (df["accept_long_4_shift1"] >= 0.42) & (df["morning_breakout_long"] >= 0.0) & (df["bar_close_position"] >= 0.55) & (df["rsi_8"] >= 54) & (df["linear_regression_slope_5"] > 0), pd.Series(False, index=df.index))
 
-    distance_ok = (
-        (df["Close"] - df["strategy_003_prev_low"] <= 21)
-        & (df["strategy_003_prev_high"] - df["Close"] <= 21)
-    )
-    at_1355 = (100 * df.index.hour + df.index.minute) == 1355
-    momentum_long = (
-        at_1355
-        & distance_ok
-        & (df["strategy_003_mom_y"] > 0.26)
-        & (df["strategy_003_body_rate"] > 0.65)
-        & (df["strategy_003_adx"] < 26.5)
-    )
-    momentum_short = (
-        at_1355
-        & distance_ok
-        & (df["strategy_003_mom_y"] < -0.18)
-        & (df["strategy_003_body_rate"] < -0.39)
-        & (df["strategy_003_adx"] < 26.5)
-    )
-    df["momentum_signal"] = np.select([momentum_long, momentum_short], ["long", "short"], default="")
-    df["prev_day_bias"] = df.groupby("trade_date")["momentum_signal"].transform("max").shift(1)
-
-    time_code = 100 * df.index.hour + df.index.minute
-    session = (time_code >= 935) & (time_code < FORCE_CLOSE_TIME)
-    long_signal = (
-        session
-        & (df["bar_in_day"] >= WINDOW_BARS)
-        & (df["Close"] > df["open_range_high"])
-        & (df["Close"] > df["trend"])
-        & (df["strategy_003_rsi"] > RSI_HIGH)
-        & (df["Volume"] > df["strategy_003_vol_ma"])
-        & (df["prev_day_bias"] == "long")
-    )
-    short_signal = (
-        session
-        & (df["bar_in_day"] >= WINDOW_BARS)
-        & (df["Close"] < df["open_range_low"])
-        & (df["Close"] < df["trend"])
-        & (df["strategy_003_rsi"] < RSI_LOW)
-        & (df["Volume"] > df["strategy_003_vol_ma"])
-        & (df["prev_day_bias"] == "short")
-    )
-    df["strategy_003_signal"] = np.select([long_signal, short_signal], ["long", "short"], default="")
-    df["strategy_003_entry_signal"] = np.select(
-        [df["strategy_003_signal"] == "long", df["strategy_003_signal"] == "short"],
-        ["Buy", "Sell"],
-        default="None",
-    )
-    df["signal"] = df["strategy_003_signal"]
+    for signal_index in range(1, 30):
+        column = f"signal_pro{signal_index}"
+        df[column] = df[column].fillna(SIGNAL_NONE)
     return df

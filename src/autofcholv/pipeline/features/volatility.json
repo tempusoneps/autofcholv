@@ -783,6 +783,56 @@
         "type": "float",
         "name": "20-Bar Average ATR",
         "comment": "20-bar simple moving average of atr"
+    },
+    "atr_14": {
+        "type": "float",
+        "name": "ATR 14",
+        "comment": "Average True Range over 14 periods"
+    },
+    "body_atr_ratio": {
+        "type": "float",
+        "name": "Body ATR Ratio",
+        "comment": "Close minus Open divided by ATR 14"
+    },
+    "keltner_upper_20_2": {
+        "type": "float",
+        "name": "Keltner Upper 20 2",
+        "comment": "Keltner upper band with length 20 and scalar 2"
+    },
+    "keltner_lower_20_2": {
+        "type": "float",
+        "name": "Keltner Lower 20 2",
+        "comment": "Keltner lower band with length 20 and scalar 2"
+    },
+    "donchian_high_10_shift1": {
+        "type": "float",
+        "name": "Donchian High 10 Shift 1",
+        "comment": "10-bar rolling High maximum shifted one bar"
+    },
+    "donchian_low_10_shift1": {
+        "type": "float",
+        "name": "Donchian Low 10 Shift 1",
+        "comment": "10-bar rolling Low minimum shifted one bar"
+    },
+    "donchian_high_30_shift1": {
+        "type": "float",
+        "name": "Donchian High 30 Shift 1",
+        "comment": "30-bar rolling High maximum shifted one bar"
+    },
+    "donchian_low_30_shift1": {
+        "type": "float",
+        "name": "Donchian Low 30 Shift 1",
+        "comment": "30-bar rolling Low minimum shifted one bar"
+    },
+    "close_donchian_high_20_shift1": {
+        "type": "float",
+        "name": "Close Donchian High 20 Shift 1",
+        "comment": "20-bar rolling Close maximum shifted one bar"
+    },
+    "close_donchian_low_20_shift1": {
+        "type": "float",
+        "name": "Close Donchian Low 20 Shift 1",
+        "comment": "20-bar rolling Close minimum shifted one bar"
     }
 
 }

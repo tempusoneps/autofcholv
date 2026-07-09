@@ -547,4 +547,25 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     displacement = df["Close"].diff(20).abs()
     df["hurst_proxy"] = displacement / lagged_diff.replace(0, np.nan)
 
+    atr_14 = ta.atr(df["High"], df["Low"], df["Close"], length=14)
+    df["atr_14"] = atr_14 if atr_14 is not None else np.nan
+    df["body_atr_ratio"] = (df["Close"] - df["Open"]) / df["atr_14"].replace(0, np.nan)
+
+    keltner_20_2 = ta.kc(df["High"], df["Low"], df["Close"], length=20, scalar=2.0)
+    if keltner_20_2 is not None and not keltner_20_2.empty:
+        upper_cols = [col for col in keltner_20_2.columns if col.startswith("KCU")]
+        lower_cols = [col for col in keltner_20_2.columns if col.startswith("KCL")]
+        df["keltner_upper_20_2"] = keltner_20_2[upper_cols[0]] if upper_cols else np.nan
+        df["keltner_lower_20_2"] = keltner_20_2[lower_cols[0]] if lower_cols else np.nan
+    else:
+        df["keltner_upper_20_2"] = np.nan
+        df["keltner_lower_20_2"] = np.nan
+
+    df["donchian_high_10_shift1"] = df["High"].rolling(10).max().shift(1)
+    df["donchian_low_10_shift1"] = df["Low"].rolling(10).min().shift(1)
+    df["donchian_high_30_shift1"] = df["High"].rolling(30).max().shift(1)
+    df["donchian_low_30_shift1"] = df["Low"].rolling(30).min().shift(1)
+    df["close_donchian_high_20_shift1"] = df["Close"].rolling(20).max().shift(1)
+    df["close_donchian_low_20_shift1"] = df["Close"].rolling(20).min().shift(1)
+
     return df

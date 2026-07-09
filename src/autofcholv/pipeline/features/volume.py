@@ -602,4 +602,14 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     vpt_increment = df["Volume"] * df["Close"].pct_change().fillna(0.0)
     df["vpt"] = vpt_increment.cumsum()
 
+    df["volume_ma_20"] = df["Volume"].rolling(20).mean()
+    bar_delta = df["Close"] - df["Open"]
+    fallback_delta = df["Close"].diff()
+    direction = bar_delta.where(bar_delta != 0, fallback_delta)
+    signed_direction = pd.Series(np.sign(direction).fillna(0.0), index=df.index)
+    df["signed_volume"] = signed_direction * df["Volume"]
+    trade_date = pd.Series(df.index.normalize(), index=df.index)
+    cum_vol = df.groupby(trade_date)["Volume"].cumsum().replace(0, np.nan)
+    df["session_flow_imbalance"] = df["signed_volume"].groupby(trade_date).cumsum() / cum_vol
+
     return df

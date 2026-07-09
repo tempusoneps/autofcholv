@@ -1090,4 +1090,24 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         df["stochrsi_k"] = np.nan
         df["stochrsi_d"] = np.nan
 
+    df["rsi_5"] = ta.rsi(df["Close"], length=5)
+    df["rsi_8"] = ta.rsi(df["Close"], length=8)
+    df["rsi_14"] = ta.rsi(df["Close"], length=14)
+    df["rsi_21"] = ta.rsi(df["Close"], length=21)
+    df["stochrsi_k_14_14_3_3"] = df["stochrsi_k"]
+    williams_r = ta.willr(df["High"], df["Low"], df["Close"], length=14)
+    df["williams_r_14"] = williams_r if williams_r is not None else np.nan
+    bbands = ta.bbands(df["Close"], length=20, std=2.0)
+    if bbands is not None and not bbands.empty:
+        bbp_cols = [col for col in bbands.columns if col.startswith("BBP_")]
+        df["bb_percent_b_20_2"] = bbands[bbp_cols[0]] if bbp_cols else np.nan
+    else:
+        df["bb_percent_b_20_2"] = np.nan
+    macd_12_26_9 = ta.macd(df["Close"], fast=12, slow=26, signal=9)
+    if macd_12_26_9 is not None and not macd_12_26_9.empty:
+        macdh_cols = [col for col in macd_12_26_9.columns if "MACDh" in col]
+        df["macd_hist_12_26_9"] = macd_12_26_9[macdh_cols[0]] if macdh_cols else np.nan
+    else:
+        df["macd_hist_12_26_9"] = np.nan
+
     return df
