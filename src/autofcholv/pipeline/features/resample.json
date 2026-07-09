@@ -28,5 +28,70 @@
         "type": "float",
         "name": "Previous Day Pivot",
         "comment": "day_pivot.shift(1)"
+    },
+    "prev_trading_day_close": {
+        "type": "float",
+        "name": "Previous Trading Day Close",
+        "comment": "Completed previous trading day's close"
+    },
+    "prev_trading_day_high": {
+        "type": "float",
+        "name": "Previous Trading Day High",
+        "comment": "Completed previous trading day's high"
+    },
+    "prev_trading_day_low": {
+        "type": "float",
+        "name": "Previous Trading Day Low",
+        "comment": "Completed previous trading day's low"
+    },
+    "prev_day_r1": {
+        "type": "float",
+        "name": "Previous Day R1",
+        "comment": "Pivot resistance R1 from completed previous trading day"
+    },
+    "prev_day_s1": {
+        "type": "float",
+        "name": "Previous Day S1",
+        "comment": "Pivot support S1 from completed previous trading day"
+    },
+    "first_close_0915": {
+        "type": "float",
+        "name": "First Close 09:15",
+        "comment": "First Close value at 09:15 for the current trading day"
+    },
+    "pre_1345_high": {
+        "type": "float",
+        "name": "Pre 13:45 High",
+        "comment": "Maximum High before 13:45 for the current trading day"
+    },
+    "pre_1355_low": {
+        "type": "float",
+        "name": "Pre 13:55 Low",
+        "comment": "Minimum Low before 13:55 for the current trading day"
+    },
+    "prev_day_1445_close": {
+        "type": "float",
+        "name": "Previous Day 14:45 Close",
+        "comment": "Previous trading day's 14:45 close, falling back to previous completed close"
+    },
+    "prev_day_ema_bias_20": {
+        "type": "int",
+        "name": "Previous Day EMA Bias 20",
+        "comment": "Previous trading day close versus its 20-day EMA, encoded as 1, -1, or 0"
+    },
+    "morning_high": {
+        "type": "float",
+        "name": "Morning High",
+        "comment": "Current trading day's High through time_code <= 1100"
+    },
+    "morning_low": {
+        "type": "float",
+        "name": "Morning Low",
+        "comment": "Current trading day's Low through time_code <= 1100"
+    },
+    "morning_mid": {
+        "type": "float",
+        "name": "Morning Mid",
+        "comment": "Midpoint between morning_high and morning_low"
     }
 }

@@ -122,6 +122,36 @@
         "type": "float",
         "name": "Candle Range Ratio",
         "comment": "Absolute body divided by High minus Low"
+    },
+    "bar_close_position": {
+        "type": "float",
+        "name": "Bar Close Position",
+        "comment": "Close position within current High-Low bar range"
+    },
+    "heikin_ashi_close": {
+        "type": "float",
+        "name": "Heikin Ashi Close",
+        "comment": "(Open + High + Low + Close) / 4"
+    },
+    "heikin_ashi_open": {
+        "type": "float",
+        "name": "Heikin Ashi Open",
+        "comment": "Previous bar Open and Close midpoint"
+    },
+    "heikin_ashi_bull": {
+        "type": "bool",
+        "name": "Heikin Ashi Bull",
+        "comment": "True when heikin_ashi_close is greater than heikin_ashi_open"
+    },
+    "bullish_high_break_candle": {
+        "type": "bool",
+        "name": "Bullish High Break Candle",
+        "comment": "Bullish candle with High above previous High and Close below the bar High by at least 0.1"
+    },
+    "bearish_low_break_candle": {
+        "type": "bool",
+        "name": "Bearish Low Break Candle",
+        "comment": "Bearish candle with Low below previous Low and Close above the bar Low by at least 0.1"
     }
 
 }

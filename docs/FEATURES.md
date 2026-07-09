@@ -17,6 +17,15 @@ The pipeline executes in the order listed below.
 | `day_of_month` | int | Ngày trong tháng |
 | `month` | int | Tháng |
 | `year` | int | Năm |
+| `trade_date` | datetime | Normalized trading date from the timestamp index |
+| `time_code` | int | HHMM integer alias for intraday signal logic |
+| `bar_in_day` | int | Zero-based bar number within each trading day |
+| `session_0930_1335` | bool | True when time_code is between 09:30 and 13:35 inclusive |
+| `session_0935_1425` | bool | True when time_code is between 09:35 inclusive and 14:25 exclusive |
+| `session_0935_1335` | bool | True when time_code is between 09:35 and 13:35 inclusive |
+| `late_session_1325` | bool | True for 13:25, 13:40, and 13:55 bars |
+| `late_session_1310` | bool | True for 13:10, 13:25, 13:40, and 13:55 bars |
+| `entry_window_1300_1425` | bool | True when time_code is between 13:00 and 14:25 inclusive |
 
 ---
 
@@ -30,6 +39,19 @@ The pipeline executes in the order listed below.
 | `prev_day_low` | float | day_low.shift(1) |
 | `prev_day_volume` | float | day_volume.shift(1) |
 | `prev_day_pivot` | float | day_pivot.shift(1) |
+| `prev_trading_day_close` | float | Completed previous trading day's close |
+| `prev_trading_day_high` | float | Completed previous trading day's high |
+| `prev_trading_day_low` | float | Completed previous trading day's low |
+| `prev_day_r1` | float | Pivot resistance R1 from completed previous trading day |
+| `prev_day_s1` | float | Pivot support S1 from completed previous trading day |
+| `first_close_0915` | float | First Close value at 09:15 for the current trading day |
+| `pre_1345_high` | float | Maximum High before 13:45 for the current trading day |
+| `pre_1355_low` | float | Minimum Low before 13:55 for the current trading day |
+| `prev_day_1445_close` | float | Previous trading day's 14:45 close, falling back to previous completed close |
+| `prev_day_ema_bias_20` | int | Previous trading day close versus its 20-day EMA, encoded as 1, -1, or 0 |
+| `morning_high` | float | Current trading day's High through time_code <= 1100 |
+| `morning_low` | float | Current trading day's Low through time_code <= 1100 |
+| `morning_mid` | float | Midpoint between morning_high and morning_low |
 
 ---
 
@@ -60,6 +82,12 @@ The pipeline executes in the order listed below.
 | `body_abs_sma20` | float | 20-bar simple moving average of absolute body length |
 | `range_sma20` | float | 20-bar simple moving average of High minus Low |
 | `candle_range_ratio` | float | Absolute body divided by High minus Low |
+| `bar_close_position` | float | Close position within current High-Low bar range |
+| `heikin_ashi_close` | float | (Open + High + Low + Close) / 4 |
+| `heikin_ashi_open` | float | Previous bar Open and Close midpoint |
+| `heikin_ashi_bull` | bool | True when heikin_ashi_close is greater than heikin_ashi_open |
+| `bullish_high_break_candle` | bool | Bullish candle with High above previous High and Close below the bar High by at least 0.1 |
+| `bearish_low_break_candle` | bool | Bearish candle with Low below previous Low and Close above the bar Low by at least 0.1 |
 
 ---
 
@@ -248,6 +276,14 @@ The pipeline executes in the order listed below.
 | `std50` | float | 50-bar rolling standard deviation of Close |
 | `close_min_10` | float | 10-bar rolling minimum of Close |
 | `close_max_10` | float | 10-bar rolling maximum of Close |
+| `rsi_5` | float | Relative Strength Index over 5 periods |
+| `rsi_8` | float | Relative Strength Index over 8 periods |
+| `rsi_14` | float | Relative Strength Index over 14 periods |
+| `rsi_21` | float | Relative Strength Index over 21 periods |
+| `stochrsi_k_14_14_3_3` | float | StochRSI K with length 14, RSI length 14, K 3, D 3 |
+| `williams_r_14` | float | Williams %R over 14 periods |
+| `bb_percent_b_20_2` | float | Bollinger Band percent B with length 20 and 2 standard deviations |
+| `macd_hist_12_26_9` | float | MACD histogram with fast 12, slow 26, signal 9 |
 
 ---
 
@@ -286,6 +322,26 @@ The pipeline executes in the order listed below.
 | `wc` | float | Weighted close EMA ratio |
 | `midpoint` | float | Midpoint of High and Low |
 | `close_vs_mid` | float | Close minus the High-Low midpoint |
+| `open_range_high_2` | float | High of the first two bars in each trading day |
+| `open_range_low_2` | float | Low of the first two bars in each trading day |
+| `session_open` | float | First Open value of each trading day |
+| `session_high_shift1` | float | Running session High shifted one bar within the trading day |
+| `session_low_shift1` | float | Running session Low shifted one bar within the trading day |
+| `close_vs_session_range` | float | Close normalized within prior shifted session high-low range |
+| `session_range_pct` | float | Running session high-low range divided by session_open, percent |
+| `session_body_pct` | float | Close minus session_open divided by session_open, percent |
+| `session_body_rate` | float | Close minus session_open divided by previous trading day range |
+| `session_mom_y` | float | Close percent change versus previous trading day close |
+| `mom_y` | float | Close percent change versus previous day 14:45 close fallback |
+| `body_rate_first_close` | float | Close minus first_close_0915 divided by pre-13:45 high minus pre-13:55 low |
+| `opening_gap_pct` | float | First 09:15 close versus previous day 14:45 close fallback, percent |
+| `session_vwap` | float | Running session VWAP from Close and Volume |
+| `session_vwap_std` | float | Running volume-weighted standard deviation around session_vwap |
+| `session_vwap_upper_1_5` | float | session_vwap plus 1.5 session_vwap_std |
+| `session_vwap_lower_1_5` | float | session_vwap minus 1.5 session_vwap_std |
+| `session_vwap_z` | float | Close minus session_vwap divided by session_vwap_std |
+| `session_vwap_dev_pct` | float | Close deviation from session_vwap divided by Close, percent |
+| `morning_breakout_long` | float | Close minus morning_high divided by morning range |
 
 ---
 
@@ -490,6 +546,21 @@ The pipeline executes in the order listed below.
 | `prev_20_high` | float | high_20 shifted by one bar |
 | `lower_range_pos` | float | 30 percent level above low_10 within the 10-bar high-low range |
 | `upper_range_pos` | float | 30 percent level below high_10 within the 10-bar high-low range |
+| `ema_8` | float | Exponential moving average of Close over 8 periods |
+| `ema_20` | float | Exponential moving average of Close over 20 periods |
+| `ema_21` | float | Exponential moving average of Close over 21 periods |
+| `ema_55` | float | Exponential moving average of Close over 55 periods |
+| `ema_250` | float | Exponential moving average of Close over 250 periods |
+| `ema_20_cross_above_ema_250` | bool | True when EMA 20 crosses above EMA 250 on the current bar |
+| `ema_20_cross_below_ema_250` | bool | True when EMA 20 crosses below EMA 250 on the current bar |
+| `adx_14` | float | Average Directional Index over 14 periods |
+| `adx_42` | float | Average Directional Index over 42 periods |
+| `dmp_14` | float | Positive directional movement over 14 periods |
+| `dmn_14` | float | Negative directional movement over 14 periods |
+| `psar_bull` | bool | True when Parabolic SAR indicates a bullish leg |
+| `psar_bear` | bool | True when Parabolic SAR indicates a bearish leg |
+| `linear_regression_slope_5` | float | Linear regression slope of Close over 5 periods |
+| `linear_regression_slope_8` | float | Linear regression slope of Close over 8 periods |
 
 ---
 
@@ -621,6 +692,16 @@ The pipeline executes in the order listed below.
 | `bb_width_q20` | float | 100-bar rolling 20th percentile of bb_width |
 | `bb_width_sma20` | float | 20-bar simple moving average of bb_width |
 | `atr_sma20` | float | 20-bar simple moving average of atr |
+| `atr_14` | float | Average True Range over 14 periods |
+| `body_atr_ratio` | float | Close minus Open divided by ATR 14 |
+| `keltner_upper_20_2` | float | Keltner upper band with length 20 and scalar 2 |
+| `keltner_lower_20_2` | float | Keltner lower band with length 20 and scalar 2 |
+| `donchian_high_10_shift1` | float | 10-bar rolling High maximum shifted one bar |
+| `donchian_low_10_shift1` | float | 10-bar rolling Low minimum shifted one bar |
+| `donchian_high_30_shift1` | float | 30-bar rolling High maximum shifted one bar |
+| `donchian_low_30_shift1` | float | 30-bar rolling Low minimum shifted one bar |
+| `close_donchian_high_20_shift1` | float | 20-bar rolling Close maximum shifted one bar |
+| `close_donchian_low_20_shift1` | float | 20-bar rolling Close minimum shifted one bar |
 
 ---
 
@@ -744,6 +825,9 @@ The pipeline executes in the order listed below.
 | `mfi14` | float | Money Flow Index over 14 periods |
 | `vpt` | float | Cumulative Volume Price Trend indicator |
 | `volume_sma20` | float | 20-bar simple moving average of Volume |
+| `volume_ma_20` | float | 20-bar simple moving average of Volume |
+| `signed_volume` | float | Volume signed by candle direction with Close diff fallback |
+| `session_flow_imbalance` | float | Running signed_volume divided by running session Volume |
 
 ---
 
@@ -829,6 +913,9 @@ The pipeline executes in the order listed below.
 | `Damaov10` | float | Alias for damaov10 |
 | `FearGreed_Yidai_v1` | float | Alias for fear_greed_yidai_v1 |
 | `connors_rsi` | float | ConnorsRSI indicator (RSI(3) + StreakRSI(2) + PriceRank) |
+| `prev_day_momentum_signal_bias` | string | Previous trading day's 13:55 daily momentum signal, Buy or Sell when present |
+| `persist_short_12_shift1` | float | 12-bar rolling share of closes below session_open shifted one bar |
+| `accept_long_4_shift1` | float | 4-bar rolling share of closes above morning_mid shifted one bar |
 
 ---
 
@@ -988,5 +1075,41 @@ The pipeline executes in the order listed below.
 | `range_flip_signal` | string | Đảo range |
 | `vol_price_divergence_signal` | string | Volume không confirm giá |
 | `final_push_signal` | string | Đẩy cuối trend |
+
+---
+
+## 14. Strategy — `strategy.py`
+
+| Column | Type | Description |
+|---|---|---|
+| `signal_pro1` | string | Entry direction migrated from strategy-001.py / MomentumStrategy: Buy \| Sell \| None |
+| `signal_pro2` | string | Entry direction migrated from strategy-002.py / OpeningGapORBStrategy: Buy \| Sell \| None |
+| `signal_pro3` | string | Entry direction migrated from strategy-003.py / NextDayMomentumBreakoutStrategy: Buy \| Sell \| None |
+| `signal_pro4` | string | Entry direction migrated from strategy-004.py / MainStrategy: Buy \| Sell \| None |
+| `signal_pro5` | string | Entry direction migrated from strategy-005.py / Mix3Strategy: Buy \| Sell \| None |
+| `signal_pro6` | string | Entry direction migrated from strategy-006.py / OpenRangeTrendStrategy: Buy \| Sell \| None |
+| `signal_pro7` | string | Entry direction migrated from strategy-007.py / OpenRangeTrend52Strategy: Buy \| Sell \| None |
+| `signal_pro8` | string | Entry direction migrated from strategy-008.py / OpenRangeTrendDayBiasStrategy: Buy \| Sell \| None |
+| `signal_pro9` | string | Entry direction migrated from strategy-009.py / KeltnerBreakoutStrategy: Buy \| Sell \| None |
+| `signal_pro10` | string | Entry direction migrated from strategy-010.py / DonchianBreakoutStrategy: Buy \| Sell \| None |
+| `signal_pro11` | string | Entry direction migrated from strategy-011.py / VWAPBandBreakoutStrategy: Buy \| Sell \| None |
+| `signal_pro12` | string | Entry direction migrated from strategy-012.py / KeltnerHeikinAshiStrategy: Buy \| Sell \| None |
+| `signal_pro13` | string | Entry direction migrated from strategy-013.py / PivotPointBreakoutStrategy: Buy \| Sell \| None |
+| `signal_pro14` | string | Entry direction migrated from strategy-014.py / CloseDonchianBreakoutStrategy: Buy \| Sell \| None |
+| `signal_pro15` | string | Entry direction migrated from strategy-015.py / KeltnerStochRSIStrategy: Buy \| Sell \| None |
+| `signal_pro16` | string | Entry direction migrated from strategy-016.py / KeltnerMACDStrategy: Buy \| Sell \| None |
+| `signal_pro17` | string | Entry direction migrated from strategy-017.py / KeltnerTripleEMAStrategy: Buy \| Sell \| None |
+| `signal_pro18` | string | Entry direction migrated from strategy-018.py / KeltnerPSARStrategy: Buy \| Sell \| None |
+| `signal_pro19` | string | Entry direction migrated from strategy-019.py / DonchianMACDStrategy: Buy \| Sell \| None |
+| `signal_pro20` | string | Entry direction migrated from strategy-020.py / WilliamsRMACDStrategy: Buy \| Sell \| None |
+| `signal_pro21` | string | Entry direction migrated from strategy-021.py / BBPctMACDStrategy: Buy \| Sell \| None |
+| `signal_pro22` | string | Entry direction migrated from strategy-022.py / BarClosePctMACDStrategy: Buy \| Sell \| None |
+| `signal_pro23` | string | Entry direction migrated from strategy-023.py / LateSessionStrengthContinuationStrategy: Buy \| Sell \| None |
+| `signal_pro24` | string | Entry direction migrated from strategy-024.py / LateSessionFlowImbalanceStrategy: Buy \| Sell \| None |
+| `signal_pro25` | string | Entry direction migrated from strategy-025.py / OrbBodyStrengthStrategy: Buy \| Sell \| None |
+| `signal_pro26` | string | Entry direction migrated from strategy-026.py / IntradayBodyRateMomStrategy: Buy \| Sell \| None |
+| `signal_pro27` | string | Entry direction migrated from strategy-027.py / LateSessionRangePositionStrategy: Buy \| Sell \| None |
+| `signal_pro28` | string | Entry direction migrated from strategy-028.py / LateSessionVWAPZScoreExpansionStrategy: Buy \| Sell \| None |
+| `signal_pro29` | string | Entry direction migrated from strategy-029.py / MorningRangeAcceptanceStrategy: Buy \| None |
 
 ---

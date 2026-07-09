@@ -96,4 +96,52 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     df["Vwap"] = df["rolling_vwap"]
 
+    trade_date = pd.Series(df.index.normalize(), index=df.index)
+    grouped = df.groupby(trade_date)
+    open_range_high = grouped["High"].transform(lambda s: s.iloc[:2].max())
+    open_range_low = grouped["Low"].transform(lambda s: s.iloc[:2].min())
+    df["open_range_high_2"] = open_range_high
+    df["open_range_low_2"] = open_range_low
+    df["session_open"] = grouped["Open"].transform("first")
+
+    session_high = grouped["High"].cummax()
+    session_low = grouped["Low"].cummin()
+    df["session_high_shift1"] = session_high.groupby(trade_date).shift(1)
+    df["session_low_shift1"] = session_low.groupby(trade_date).shift(1)
+    session_range = session_high - session_low
+    shifted_range = (df["session_high_shift1"] - df["session_low_shift1"]).replace(0, np.nan)
+    df["close_vs_session_range"] = (df["Close"] - df["session_low_shift1"]) / shifted_range
+    df["session_range_pct"] = 100.0 * session_range / df["session_open"].replace(0, np.nan)
+    df["session_body_pct"] = 100.0 * (df["Close"] - df["session_open"]) / df["session_open"].replace(0, np.nan)
+
+    prev_range = (df["prev_trading_day_high"] - df["prev_trading_day_low"]).replace(0, np.nan)
+    df["session_body_rate"] = (df["Close"] - df["session_open"]) / prev_range
+    df["session_mom_y"] = (
+        100.0 * (df["Close"] - df["prev_trading_day_close"]) / df["prev_trading_day_close"].replace(0, np.nan)
+    )
+    df["mom_y"] = (
+        100.0 * (df["Close"] - df["prev_day_1445_close"]) / df["prev_day_1445_close"].replace(0, np.nan)
+    )
+    df["body_rate_first_close"] = (df["Close"] - df["first_close_0915"]) / (
+        (df["pre_1345_high"] - df["pre_1355_low"]).replace(0, np.nan)
+    )
+    df["opening_gap_pct"] = (
+        100.0 * (df["first_close_0915"] - df["prev_day_1445_close"]) / df["prev_day_1445_close"].replace(0, np.nan)
+    )
+
+    pv = df["Close"] * df["Volume"]
+    pv2 = df["Close"].pow(2) * df["Volume"]
+    cum_vol = grouped["Volume"].cumsum().replace(0, np.nan)
+    session_vwap = pv.groupby(trade_date).cumsum() / cum_vol
+    vwap_var = pv2.groupby(trade_date).cumsum() / cum_vol - session_vwap.pow(2)
+    df["session_vwap"] = session_vwap
+    df["session_vwap_std"] = vwap_var.clip(lower=0).pow(0.5)
+    df["session_vwap_upper_1_5"] = df["session_vwap"] + 1.5 * df["session_vwap_std"]
+    df["session_vwap_lower_1_5"] = df["session_vwap"] - 1.5 * df["session_vwap_std"]
+    df["session_vwap_z"] = (df["Close"] - df["session_vwap"]) / df["session_vwap_std"].replace(0, np.nan)
+    df["session_vwap_dev_pct"] = 100.0 * (df["Close"] - df["session_vwap"]) / df["Close"].replace(0, np.nan)
+
+    morning_range = (df["morning_high"] - df["morning_low"]).replace(0, np.nan)
+    df["morning_breakout_long"] = (df["Close"] - df["morning_high"]) / morning_range
+
     return df
