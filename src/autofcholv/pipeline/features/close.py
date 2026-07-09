@@ -1094,7 +1094,6 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["rsi_8"] = ta.rsi(df["Close"], length=8)
     df["rsi_14"] = ta.rsi(df["Close"], length=14)
     df["rsi_21"] = ta.rsi(df["Close"], length=21)
-    df["stochrsi_k_14_14_3_3"] = df["stochrsi_k"]
     williams_r = ta.willr(df["High"], df["Low"], df["Close"], length=14)
     df["williams_r_14"] = williams_r if williams_r is not None else np.nan
     bbands = ta.bbands(df["Close"], length=20, std=2.0)

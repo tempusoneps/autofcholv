@@ -78,7 +78,7 @@ REQUIRED_COLUMNS = [
     "fractal_high_ffill",
     "fractal_low_ffill",
     "connors_rsi",
-    "range",
+    "height",
     "body_abs",
     "body_abs_sma20",
     "range_sma20",
@@ -200,8 +200,8 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
         (df["High"] > df["High"].shift(5)) & (df["rsi"] < df["rsi"].shift(5)),
     )
     df["atr_breakout_signal"] = _signal_from_conditions(
-        (df["range"] > 1.5 * df["atr"]) & (df["Close"] > df["Open"]),
-        (df["range"] > 1.5 * df["atr"]) & (df["Close"] < df["Open"]),
+        (df["height"] > 1.5 * df["atr"]) & (df["Close"] > df["Open"]),
+        (df["height"] > 1.5 * df["atr"]) & (df["Close"] < df["Open"]),
     )
     df["vsa_confirmation_signal"] = _signal_from_conditions(
         (df["Close"] > df["Open"]) & (df["Volume"] > 1.2 * df["volume_sma20"]),
@@ -341,8 +341,8 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     )
     df["high_low_break_signal"] = _signal_from_conditions(df["Close"] > df["high_lag1"], df["Close"] < df["low_lag1"])
     df["range_compression_signal"] = _signal_from_conditions(
-        (df["range"] < df["range_sma20"] * 0.5) & (df["Close"] >= df["sma20"]),
-        (df["range"] < df["range_sma20"] * 0.5) & (df["Close"] < df["sma20"]),
+        (df["height"] < df["range_sma20"] * 0.5) & (df["Close"] >= df["sma20"]),
+        (df["height"] < df["range_sma20"] * 0.5) & (df["Close"] < df["sma20"]),
     )
     df["gap_up_down_signal"] = _signal_from_conditions(df["Open"] > df["high_lag1"], df["Open"] < df["low_lag1"])
     df["body_size_signal"] = _signal_from_conditions(
@@ -395,8 +395,8 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
         (df["Close"] < df["close_lag1"]) & (df["close_lag1"] > df["Close"].shift(2)),
     )
     df["range_expansion_signal"] = _signal_from_conditions(
-        (df["range"] > df["range_sma20"] * 1.5) & (df["Close"] > df["Open"]),
-        (df["range"] > df["range_sma20"] * 1.5) & (df["Close"] < df["Open"]),
+        (df["height"] > df["range_sma20"] * 1.5) & (df["Close"] > df["Open"]),
+        (df["height"] > df["range_sma20"] * 1.5) & (df["Close"] < df["Open"]),
     )
     df["body_direction_signal"] = _signal_from_conditions(
         (df["Close"] > df["Open"]) & (df["close_lag1"] > df["open_lag1"]),
