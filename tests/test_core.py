@@ -72,6 +72,53 @@ def test_extract_features_time_columns():
         assert col in result.columns, f"Missing time column: '{col}'"
 
 
+def test_extract_features_removes_duplicate_alias_columns():
+    result = extract_features(make_ohlcv(300))
+    aliases = {
+        "time_code",
+        "range",
+        "body_ratio",
+        "cbr",
+        "bar_close_position",
+        "stochrsi_k_14_14_3_3",
+        "volume_ma_20",
+        "AvgPrice",
+        "AvgPriceToHigh",
+        "AvgPriceToLow",
+        "LowPrice",
+        "Typ",
+        "VwapSignal",
+        "Vwap",
+        "Wc",
+        "MarketPl",
+        "MarketPl_v2",
+        "Liquidity_v3",
+        "Amihud",
+        "BidaskSpread",
+        "Damaov10",
+        "FearGreed_Yidai_v1",
+        "Mac_v2",
+        "Mac_v3",
+        "Mac_v4",
+        "Mac_v5",
+        "Vidya_v2",
+        "Vidya_v3",
+        "Vidya_v4",
+        "Vidya_v5",
+        "Tma_v2",
+        "Tma_v3",
+        "VolumeStd",
+        "Atr",
+        "VolumeReg",
+        "VolumeTSF",
+        "FiRsi",
+        "Pvo",
+        "VRA",
+    }
+
+    assert aliases.isdisjoint(result.columns)
+
+
 def test_extract_features_resample_columns():
     result = extract_features(make_ohlcv(300))
     expected = [
@@ -93,7 +140,7 @@ def test_extract_features_candlestick_columns():
     expected = [
         "body", "height", "upwick", "lowwick",
         "upwick_rate", "lowwick_rate", "body_rate",
-        "clv", "cbr", "ibs", "color",
+        "clv", "ibs", "color",
         "wick_imbalance", "upwick_ratio",
     ]
     for col in expected:
@@ -117,7 +164,7 @@ def test_extract_features_close_columns():
         "return_autocorr", "demarker", "imi", "rvi", "bop", "ultimate_oscillator_src",
         "kst", "rmi", "tii",
         "ar", "br", "cr", "adtm", "qstick", "mtm",
-        "bias", "rbias", "mtm_mean", "mtm_max_diff", "sroc", "rsi_mean", "tdi", "osc", "short_quiet_momentum", "long_quiet_momentum", "price_volume_momentum", "dbcd", "pmarp", "pos", "bias36", "swing_index", "rsi_v2", "cmo_v2", "bias_v13", "abs_chg", "stc", "return_autocorr_2", "erbull", "erbear", "er_balance", "burr", "do", "po", "cci_magic", "cs_mtm", "cs_mtm_v2", "Cs_mtm", "Cs_mtm_v2", "MtmMean_v4", "MtmMean_v8", "MtmMean_v10", "MtmMean_v12", "MtmVolMean", "MtmHcm", "ShortMoment", "LongMoment", "PmoTEMA", "Pmarp_Yidai_v1", "Dbcd_v2", "Dbcd_v3", "Rsj", "Rsiv", "Rsih", "FiRsi", "Sroc_v2", "rsi_bbw", "rccd", "rccd_v2", "bias_vol", "bias_cubic_v2", "srocvol", "roc_vol", "copp_min_route", "adtm_v2", "adtm_v3", "mtm_mean_gap", "cmo_v3", "rsis_v2", "mtm_vol_resonance", "tii_signal", "tii_signal_v2", "macd_v2", "ppo_v1", "sroc_v2", "pmo_tema", "fisher_v2", "fisher_v3", "arbr_ar", "arbr_br", "bias_v3", "bias_v4", "bias_v11", "bias_v14", "bias36ma", "bir", "copp_v3", "roc", "cci_v2", "cci_v3", "rsimean", "dbcd_v3", "micd", "rsj", "mtm_max", "bias_v2", "rsiv", "rsih", "fi", "fi_rsi", "force", "ko", "vramt", "rsis", "pmarp_yidai_v1", "dbcd_v2", "smi_v2", "volume_reg", "volume_tsf", "v1_v2", "v1up_v2", "v1dn_v2", "mtmmean_v10", "mtmmean_v12", "mtmhcm", "short_moment", "long_moment", "si", "wr", "rocvol", "mtmmean_v4", "atr_count", "zfabsmean", "bbw", "amv", "Amv", "mfi", "obv", "pvt_v2", "pvt_v3", "pvt_v4", "Pvt", "Pvt_v2", "Pvt_v3", "Pvt_v4", "Pvi", "Nvi", "Wad", "Tmf", "Emv", "Clv", "Adosc", "Fi", "FiRsi", "Vra", "Ke", "Ko", "vr", "vao", "vao_v2", "volume_bias", "Volume_Bias", "QuoteVolumeMean", "QuoteVolumeRatio", "VolumeReg", "VolumeTSF", "TradeNum", "BuyVolRatio_fancy", "VolPerTrade_fancy", "TakerByRatio", "TakerByRatioPerTrade", "volume", "volumechg", "maamt", "upnum_fancy", "trade_num", "taker_by_ratio", "buy_vol_ratio_fancy", "taker_by_ratio_per_trade", "vol_per_trade_fancy", "mtm_tb", "dbcd_taker", "mtm_bull", "mtm_bear", "buy_vwap_div_vwap_fancy", "BuyVwapDivVwap_fancy", "Pvo", "Vramt", "v1", "v1up", "v1_v2", "v1up_v2", "v1dn_v2", "v1dn", "V1", "V1Up", "V1Dn", "V1_v2", "V1Up_v2", "V1Dn_v2", "Mfi", "Vr", "Vao", "Vao_v2", "Volumechg", "Wvad", "QuanlityPriceCorr", "Volume", "Force", "Cmf", "Obv", "Pvo", "VRA", "Chla_fancy", "NetVol_fancy", "autocorrelation", "copp", "demaker", "er", "kdjdk", "kdjdd", "skdj", "magiccci", "magiccci_v2",
+        "bias", "rbias", "mtm_mean", "mtm_max_diff", "sroc", "rsi_mean", "tdi", "osc", "short_quiet_momentum", "long_quiet_momentum", "price_volume_momentum", "dbcd", "pmarp", "pos", "bias36", "swing_index", "rsi_v2", "cmo_v2", "bias_v13", "abs_chg", "stc", "return_autocorr_2", "erbull", "erbear", "er_balance", "burr", "do", "po", "cci_magic", "cs_mtm", "cs_mtm_v2", "Cs_mtm", "Cs_mtm_v2", "MtmMean_v4", "MtmMean_v8", "MtmMean_v10", "MtmMean_v12", "MtmVolMean", "MtmHcm", "ShortMoment", "LongMoment", "PmoTEMA", "Pmarp_Yidai_v1", "Dbcd_v2", "Dbcd_v3", "Rsj", "Rsiv", "Rsih", "Sroc_v2", "rsi_bbw", "rccd", "rccd_v2", "bias_vol", "bias_cubic_v2", "srocvol", "roc_vol", "copp_min_route", "adtm_v2", "adtm_v3", "mtm_mean_gap", "cmo_v3", "rsis_v2", "mtm_vol_resonance", "tii_signal", "tii_signal_v2", "macd_v2", "ppo_v1", "sroc_v2", "pmo_tema", "fisher_v2", "fisher_v3", "arbr_ar", "arbr_br", "bias_v3", "bias_v4", "bias_v11", "bias_v14", "bias36ma", "bir", "copp_v3", "roc", "cci_v2", "cci_v3", "rsimean", "dbcd_v3", "micd", "rsj", "mtm_max", "bias_v2", "rsiv", "rsih", "fi", "fi_rsi", "force", "ko", "vramt", "rsis", "pmarp_yidai_v1", "dbcd_v2", "smi_v2", "volume_reg", "volume_tsf", "v1_v2", "v1up_v2", "v1dn_v2", "mtmmean_v10", "mtmmean_v12", "mtmhcm", "short_moment", "long_moment", "si", "wr", "rocvol", "mtmmean_v4", "atr_count", "zfabsmean", "bbw", "amv", "mfi", "obv", "pvt_v2", "pvt_v3", "pvt_v4", "vr", "vao", "vao_v2", "volume_bias", "volume", "volumechg", "maamt", "upnum_fancy", "trade_num", "taker_by_ratio", "buy_vol_ratio_fancy", "taker_by_ratio_per_trade", "vol_per_trade_fancy", "mtm_tb", "dbcd_taker", "mtm_bull", "mtm_bear", "buy_vwap_div_vwap_fancy", "Vramt", "v1", "v1up", "v1_v2", "v1up_v2", "v1dn_v2", "v1dn", "Volume", "autocorrelation", "copp", "demaker", "er", "kdjdk", "kdjdd", "skdj", "magiccci", "magiccci_v2",
     ]
     for col in expected:
         assert col in result.columns, f"Missing close column: '{col}'"
@@ -129,8 +176,8 @@ def test_extract_features_trend_columns():
         "dema_bias", "tema_bias", "trix",
         "aroon_up", "aroon_down", "aroon_osc",
         "vortex_plus", "vortex_minus", "vortex_diff",
-        "regression_bias", "regression_slope", "ma_signal", "bbi_ratio", "bbi_bias", "adxr_diff", "wma_ma_gap", "adx_strength", "adx_di_plus", "adx_di_minus", "vi_plus", "vi_minus", "turtle_breakout", "turtle_distance", "ma_ratio", "dema_bias2", "tema_bias2", "hma_ratio", "vidya_bias", "tma_bias2", "vma_ratio", "lma_ratio", "mm_ratio", "reg_angle", "expma_ratio", "reg", "reg_v2", "reg_v3", "diff_ema", "diff_ema_ratio", "regema_bias", "regtema_bias", "trtrix", "trv", "mac_v4", "mac_v5", "Mac_v2", "Mac_v3", "Mac_v4", "Mac_v5", "gap_ratio", "angle_reg", "cse", "madis_placed", "trrq", "mreg", "Acs", "Mak", "Sgcz", "Cse", "Trrq", "Mreg", "Angle", "AdxDi+", "AdxDi-", "BbiBias", "Trv", "PjcDistance", "Trrq_v3", "TrTrix", "adxr_pos", "adxr_neg", "acs", "mak", "sgcz", "gap", "arron", "ma", "vma", "mm", "expma", "lma", "dema", "tema", "hlma", "ic_v2", "ic_v3", "ic_v4", "adxrpos", "regema_bias", "regtema_bias", "diff_ema", "dma", "angle", "vi", "trrq_v3", "uos", "zlmacd", "tma_bias", "mtmmean_v8", "mtmvolmean", "adx_di_plus", "adx_di_minus", "adxdip", "adxdim", "adxr", "bbi", "hullma", "ic", "regema", "regtema", "tema_v2", "tma", "turtle", "vidya", "t3",
-        "hullma_bias", "ichimoku_cloud_ratio", "t3_bias", "hma_signal", "hullma_signal", "mac_v2", "mac_v3", "hullma_ratio", "vidya_v2", "vidya_v5", "mac", "pjc_distance", "hma", "tma_v2", "tma_v3", "Tma_v2", "Tma_v3", "vidya_v3", "vidya_v4", "Vidya_v2", "Vidya_v3", "Vidya_v4", "Vidya_v5",
+        "regression_bias", "regression_slope", "ma_signal", "bbi_ratio", "bbi_bias", "adxr_diff", "wma_ma_gap", "adx_strength", "adx_di_plus", "adx_di_minus", "vi_plus", "vi_minus", "turtle_breakout", "turtle_distance", "ma_ratio", "dema_bias2", "tema_bias2", "hma_ratio", "vidya_bias", "tma_bias2", "vma_ratio", "lma_ratio", "mm_ratio", "reg_angle", "expma_ratio", "reg", "reg_v2", "reg_v3", "diff_ema", "diff_ema_ratio", "regema_bias", "regtema_bias", "trtrix", "trv", "mac_v4", "mac_v5", "gap_ratio", "angle_reg", "cse", "madis_placed", "trrq", "mreg", "adxr_pos", "adxr_neg", "acs", "mak", "sgcz", "gap", "arron", "ma", "vma", "mm", "expma", "lma", "dema", "tema", "hlma", "ic_v2", "ic_v3", "ic_v4", "adxrpos", "regema_bias", "regtema_bias", "diff_ema", "dma", "angle", "vi", "trrq_v3", "uos", "zlmacd", "tma_bias", "mtmmean_v8", "mtmvolmean", "adx_di_plus", "adx_di_minus", "adxr", "bbi", "hullma", "ic", "regema", "regtema", "tema_v2", "tma", "turtle", "vidya", "t3",
+        "hullma_bias", "ichimoku_cloud_ratio", "t3_bias", "hma_signal", "hullma_signal", "mac_v2", "mac_v3", "hullma_ratio", "vidya_v2", "vidya_v5", "mac", "pjc_distance", "hma", "tma_v2", "tma_v3", "vidya_v3", "vidya_v4",
     ]
     for col in expected:
         assert col in result.columns, f"Missing trend column: '{col}'"
@@ -143,7 +190,7 @@ def test_extract_features_volatility_columns():
         "apz_width", "pac_width_bias", "pac_position", "env_position",
         "realized_volatility", "realized_volatility_zscore",
         "rwi", "mssi", "vix_bw",
-        "adaptive_bollinger_width", "vwap_bbw_efficiency", "chaikin_volatility", "keltner_width", "keltner_upper_signal", "keltner_lower_signal", "env_upper_signal", "env_lower_signal", "fibonacci_band_width", "fibonacci_band_position", "donchian_mid_signal", "bbw_signal", "kc_signal", "atr_upper", "atr_lower", "fb_upper_signal", "pac_width_signal", "volume_std", "grid", "lcsd", "VolumeStd", "Grid", "Lcsd", "Apz", "ApzUpper", "ApzLower", "Bbw", "Cv", "Dc", "DcSignal", "Dc_v2", "EnvUpperSignal", "EnvLowerSignal", "Rwi", "RwiH", "RwiL", "Atr", "AtrPct", "AtrUpper", "AtrLower", "Pac", "PacUpper", "PacLower", "PacUpper_v2", "PacLower_v2", "Pfe", "ChangeStd", "FbLowerSignal", "FbLowerSignal_v2", "FbLowerSignal_v3", "FbUpperSignal", "FbUpperSignal_v2", "FbUpperSignal_v3", "VixBw", "DzcciLowerSignal", "DzcciLowerSignal_v2", "DzcciUpperSignal", "DzcciUpperSignal_v2", "DzcciLower", "DzcciUpper", "DzrsiLowerSignal", "DzrsiUpperSignal", "FbLower", "FbUpper", "AdaptBollingv3", "Bollcount_dem", "Bolling", "Bolling_v2", "Bolling_v3", "Bolling_fancy", "EnvSignal", "EnvUpper", "EnvLower", "KcSignal", "KcUpperSignal", "KcLowerSignal", "VwapBbw", "RetBoll_fancy", "Lchc_fancy",
+        "adaptive_bollinger_width", "vwap_bbw_efficiency", "chaikin_volatility", "keltner_width", "keltner_upper_signal", "keltner_lower_signal", "env_upper_signal", "env_lower_signal", "fibonacci_band_width", "fibonacci_band_position", "donchian_mid_signal", "bbw_signal", "kc_signal", "atr_upper", "atr_lower", "fb_upper_signal", "pac_width_signal", "volume_std", "grid", "lcsd",
     ]
     for col in expected:
         assert col in result.columns, f"Missing volatility column: '{col}'"
@@ -174,7 +221,7 @@ def test_extract_features_price_columns():
         "typical_price_momentum", "weighted_close_bias",
         "rolling_vwap", "vwap_bias", "close_to_vwap",
         "vwap_range_position", "vwap_to_high", "vwap_to_low",
-        "close_ma_price", "typical_to_vwap", "avgprice", "AvgPrice", "avgpricetohigh", "AvgPriceToHigh", "avgpricetolow", "AvgPriceToLow", "lowprice", "LowPrice", "typ", "Typ", "vwap_signal", "VwapSignal", "WVAD", "Vwapbias", "Vwap", "wc", "Wc",
+        "close_ma_price", "typical_to_vwap", "avgprice", "avgpricetohigh", "avgpricetolow", "lowprice", "typ", "vwap_signal", "WVAD", "Vwapbias", "wc",
     ]
     for col in expected:
         assert col in result.columns, f"Missing price column: '{col}'"
@@ -184,7 +231,7 @@ def test_extract_features_liquidity_columns():
     result = extract_features(make_ohlcv(300))
     expected = [
         "market_placement", "path_liquidity", "spread_proxy",
-        "spread_volatility_ratio", "price_volume_resistance", "coppock_atr_volume", "bidask_spread", "market_placement_v2", "liquidity_v3", "amihud", "marketpl", "marketpl_v2", "MarketPl", "MarketPl_v2", "Liquidity_v3", "Amihud", "BidaskSpread", "apz", "apz_upper", "apz_lower", "bolling", "bolling_width", "cv", "dc", "dc_signal", "dc_v2", "kcupper", "kclower", "pac", "pacupper", "paclower", "pacupper_v2", "paclower_v2", "rwih", "rwil",
+        "spread_volatility_ratio", "price_volume_resistance", "coppock_atr_volume", "bidask_spread", "market_placement_v2", "liquidity_v3", "amihud", "apz", "apz_upper", "apz_lower", "bolling", "bolling_width", "cv", "dc", "dc_signal", "dc_v2", "kcupper", "kclower", "pac", "pacupper", "paclower", "pacupper_v2", "paclower_v2",
     ]
     for col in expected:
         assert col in result.columns, f"Missing liquidity column: '{col}'"
@@ -211,7 +258,7 @@ def test_extract_features_mix_columns():
         "custom_001", "custom_002",
         "donchian_width", "donchian_position", "amihud_liquidity",
         "keltner_position",
-        "true_range_pct", "gap_pct", "range_position", "body_to_true_range", "fear_greed_yidai_v1", "damaov10", "Damaov10", "FearGreed_Yidai_v1", "adx_mtm", "Mtam", "Msbt", "CoppAtrBull", "adx_mtm_neg",
+        "true_range_pct", "gap_pct", "range_position", "body_to_true_range", "fear_greed_yidai_v1", "damaov10", "adx_mtm", "Mtam", "Msbt", "CoppAtrBull", "adx_mtm_neg",
         "Cvr_v0", "Cbr_v1", "Fbnq_pct_v5", "PriceVolumeResist",
     ]
     for col in expected:
@@ -245,8 +292,7 @@ def test_extract_features_signal_columns():
 
 def test_extract_features_signal_context_helper_columns():
     result = extract_features(make_ohlcv(300))
-    expected = [
-        "range", "body_abs", "body_abs_sma20", "range_sma20", "candle_range_ratio",
+    expected = [ "body_abs", "body_abs_sma20", "range_sma20", "candle_range_ratio",
         "midpoint", "close_vs_mid",
         "price_change", "price_change_lag1", "return_5", "return_10",
         "sma20", "sma50", "std5", "std10", "std20", "std50",

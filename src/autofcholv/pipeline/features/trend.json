@@ -102,12 +102,12 @@
     "adx_di_plus": {
         "type": "float",
         "name": "ADX DI Plus",
-        "comment": "Positive directional index component"
+        "comment": "Positive directional index component from the source ADX DI+ file"
     },
     "adx_di_minus": {
         "type": "float",
         "name": "ADX DI Minus",
-        "comment": "Negative directional index component"
+        "comment": "Negative directional index component from the source ADX DI- file"
     },
     "vi_plus": {
         "type": "float",
@@ -454,26 +454,6 @@
         "name": "TRRQ v3",
         "comment": "Asymmetric regression-return signal using quote-volume proxy"
     },
-    "adx_di_plus": {
-        "type": "float",
-        "name": "ADX DI Plus",
-        "comment": "Positive directional index component from the source ADX DI+ file"
-    },
-    "adx_di_minus": {
-        "type": "float",
-        "name": "ADX DI Minus",
-        "comment": "Negative directional index component from the source ADX DI- file"
-    },
-    "adxdip": {
-        "type": "float",
-        "name": "AdxDi+",
-        "comment": "Source ADX DI+ alias"
-    },
-    "adxdim": {
-        "type": "float",
-        "name": "AdxDi-",
-        "comment": "Source ADX DI- alias"
-    },
     "adxr": {
         "type": "float",
         "name": "ADXR",
@@ -528,311 +508,6 @@
         "type": "float",
         "name": "T3",
         "comment": "Close divided by Tillson T3 minus 1"
-    },
-    "Mac_v2": {
-        "type": "float",
-        "name": "Mac_v2",
-        "comment": "Alias for mac_v2"
-    },
-    "Mac_v3": {
-        "type": "float",
-        "name": "Mac_v3",
-        "comment": "Alias for mac_v3"
-    },
-    "Mac_v4": {
-        "type": "float",
-        "name": "Mac_v4",
-        "comment": "Alias for mac_v4"
-    },
-    "Mac_v5": {
-        "type": "float",
-        "name": "Mac_v5",
-        "comment": "Alias for mac_v5"
-    },
-    "Vidya_v2": {
-        "type": "float",
-        "name": "Vidya_v2",
-        "comment": "Alias for vidya_v2"
-    },
-    "Vidya_v3": {
-        "type": "float",
-        "name": "Vidya_v3",
-        "comment": "Alias for vidya_v3"
-    },
-    "Vidya_v4": {
-        "type": "float",
-        "name": "Vidya_v4",
-        "comment": "Alias for vidya_v4"
-    },
-    "Vidya_v5": {
-        "type": "float",
-        "name": "Vidya_v5",
-        "comment": "Alias for vidya_v5"
-    },
-    "Tma_v2": {
-        "type": "float",
-        "name": "Tma_v2",
-        "comment": "Alias for tma_v2"
-    },
-    "Tma_v3": {
-        "type": "float",
-        "name": "Tma_v3",
-        "comment": "Alias for tma_v3"
-    },
-    "Arron": {
-        "type": "float",
-        "name": "Arron",
-        "comment": "Alias for arron"
-    },
-    "Acs": {
-        "type": "float",
-        "name": "Acs",
-        "comment": "Alias for acs"
-    },
-    "Mac": {
-        "type": "float",
-        "name": "Mac",
-        "comment": "Alias for mac"
-    },
-    "Vidya": {
-        "type": "float",
-        "name": "Vidya",
-        "comment": "Alias for vidya"
-    },
-    "Tma": {
-        "type": "float",
-        "name": "Tma",
-        "comment": "Alias for tma"
-    },
-    "Ma": {
-        "type": "float",
-        "name": "Ma",
-        "comment": "Alias for ma"
-    },
-    "Vma": {
-        "type": "float",
-        "name": "Vma",
-        "comment": "Alias for vma"
-    },
-    "Mm": {
-        "type": "float",
-        "name": "Mm",
-        "comment": "Alias for mm"
-    },
-    "Gap": {
-        "type": "float",
-        "name": "Gap",
-        "comment": "Alias for gap"
-    },
-    "Dema": {
-        "type": "float",
-        "name": "Dema",
-        "comment": "Alias for dema"
-    },
-    "Tema": {
-        "type": "float",
-        "name": "Tema",
-        "comment": "Alias for tema"
-    },
-    "Hma": {
-        "type": "float",
-        "name": "Hma",
-        "comment": "Alias for hma"
-    },
-    "Reg": {
-        "type": "float",
-        "name": "Reg",
-        "comment": "Alias for reg"
-    },
-    "Reg_v2": {
-        "type": "float",
-        "name": "Reg_v2",
-        "comment": "Alias for reg_v2"
-    },
-    "Reg_v3": {
-        "type": "float",
-        "name": "Reg_v3",
-        "comment": "Alias for reg_v3"
-    },
-    "T3": {
-        "type": "float",
-        "name": "T3",
-        "comment": "Alias for t3"
-    },
-    "DiffEma": {
-        "type": "float",
-        "name": "DiffEma",
-        "comment": "Alias for diff_ema"
-    },
-    "Adxrpos": {
-        "type": "float",
-        "name": "Adxrpos",
-        "comment": "Alias for adxr_pos"
-    },
-    "Adxrneg": {
-        "type": "float",
-        "name": "Adxrneg",
-        "comment": "Alias for adxr_neg"
-    },
-    "Expma": {
-        "type": "float",
-        "name": "Expma",
-        "comment": "Alias for expma"
-    },
-    "Vi": {
-        "type": "float",
-        "name": "Vi",
-        "comment": "Alias for vi"
-    },
-    "Bbi": {
-        "type": "float",
-        "name": "Bbi",
-        "comment": "Alias for bbi"
-    },
-    "RegTema": {
-        "type": "float",
-        "name": "RegTema",
-        "comment": "Alias for regtema"
-    },
-    "Turtle": {
-        "type": "float",
-        "name": "Turtle",
-        "comment": "Alias for turtle"
-    },
-    "MaSignal": {
-        "type": "float",
-        "name": "MaSignal",
-        "comment": "Alias for ma_signal"
-    },
-    "HmaSignal": {
-        "type": "float",
-        "name": "HmaSignal",
-        "comment": "Alias for hma_signal"
-    },
-    "HullmaSignal": {
-        "type": "float",
-        "name": "HullmaSignal",
-        "comment": "Alias for hullma_signal"
-    },
-    "Ic": {
-        "type": "float",
-        "name": "Ic",
-        "comment": "Alias for ic"
-    },
-    "Ic_v2": {
-        "type": "float",
-        "name": "Ic_v2",
-        "comment": "Alias for ic_v2"
-    },
-    "Ic_v3": {
-        "type": "float",
-        "name": "Ic_v3",
-        "comment": "Alias for ic_v3"
-    },
-    "Ic_v4": {
-        "type": "float",
-        "name": "Ic_v4",
-        "comment": "Alias for ic_v4"
-    },
-    "Adxr": {
-        "type": "float",
-        "name": "Adxr",
-        "comment": "Alias for adxr"
-    },
-    "Regema": {
-        "type": "float",
-        "name": "Regema",
-        "comment": "Alias for regema"
-    },
-    "Adx": {
-        "type": "float",
-        "name": "Adx",
-        "comment": "Alias for adx_strength"
-    },
-    "Dma": {
-        "type": "float",
-        "name": "Dma",
-        "comment": "Alias for dma"
-    },
-    "Vi+": {
-        "type": "float",
-        "name": "Vi+",
-        "comment": "Alias for vi_plus"
-    },
-    "Vi-": {
-        "type": "float",
-        "name": "Vi-",
-        "comment": "Alias for vi_minus"
-    },
-    "Reg": {
-        "type": "float",
-        "name": "Reg",
-        "comment": "Alias for reg"
-    },
-    "Mak": {
-        "type": "float",
-        "name": "Mak",
-        "comment": "Alias for mak"
-    },
-    "Sgcz": {
-        "type": "float",
-        "name": "Sgcz",
-        "comment": "Alias for sgcz"
-    },
-    "Cse": {
-        "type": "float",
-        "name": "Cse",
-        "comment": "Alias for cse"
-    },
-    "Trrq": {
-        "type": "float",
-        "name": "Trrq",
-        "comment": "Alias for trrq"
-    },
-    "Mreg": {
-        "type": "float",
-        "name": "Mreg",
-        "comment": "Alias for mreg"
-    },
-    "Angle": {
-        "type": "float",
-        "name": "Angle",
-        "comment": "Alias for angle_reg"
-    },
-    "AdxDi+": {
-        "type": "float",
-        "name": "AdxDi+",
-        "comment": "Alias for adx_di_plus"
-    },
-    "AdxDi-": {
-        "type": "float",
-        "name": "AdxDi-",
-        "comment": "Alias for adx_di_minus"
-    },
-    "BbiBias": {
-        "type": "float",
-        "name": "BbiBias",
-        "comment": "Alias for bbi_bias"
-    },
-    "Trv": {
-        "type": "float",
-        "name": "Trv",
-        "comment": "Alias for trv"
-    },
-    "PjcDistance": {
-        "type": "float",
-        "name": "PjcDistance",
-        "comment": "Alias for pjc_distance"
-    },
-    "Trrq_v3": {
-        "type": "float",
-        "name": "Trrq_v3",
-        "comment": "Alias for trrq_v3"
-    },
-    "TrTrix": {
-        "type": "float",
-        "name": "TrTrix",
-        "comment": "Alias for trtrix"
     },
     "hma20": {
         "type": "float",
@@ -894,147 +569,106 @@
         "name": "TMA 10 for Signals",
         "comment": "Triangular Moving Average over 10 periods"
     },
-
     "linreg_upper20": {
         "type": "float",
         "name": "20-Bar Linear Regression Upper Channel",
         "comment": "linreg_mid20 plus two times std20"
-    }
-,
-
+    },
     "linreg_lower20": {
         "type": "float",
         "name": "20-Bar Linear Regression Lower Channel",
         "comment": "linreg_mid20 minus two times std20"
-    }
-,
-
+    },
     "high_5": {
         "type": "float",
         "name": "5-Bar High",
         "comment": "5-bar rolling maximum of High"
-    }
-,
-
+    },
     "low_5": {
         "type": "float",
         "name": "5-Bar Low",
         "comment": "5-bar rolling minimum of Low"
-    }
-,
-
+    },
     "high_10": {
         "type": "float",
         "name": "10-Bar High",
         "comment": "10-bar rolling maximum of High"
-    }
-,
-
+    },
     "low_10": {
         "type": "float",
         "name": "10-Bar Low",
         "comment": "10-bar rolling minimum of Low"
-    }
-,
-
+    },
     "high_20": {
         "type": "float",
         "name": "20-Bar High",
         "comment": "20-bar rolling maximum of High"
-    }
-,
-
+    },
     "low_20": {
         "type": "float",
         "name": "20-Bar Low",
         "comment": "20-bar rolling minimum of Low"
-    }
-,
-
+    },
     "range_mid_10": {
         "type": "float",
         "name": "10-Bar Range Midpoint",
         "comment": "Midpoint between high_10 and low_10"
-    }
-,
-
+    },
     "recent_high": {
         "type": "float",
         "name": "Previous 20-Bar High",
         "comment": "20-bar rolling High shifted by one bar"
-    }
-,
-
+    },
     "recent_low": {
         "type": "float",
         "name": "Previous 20-Bar Low",
         "comment": "20-bar rolling Low shifted by one bar"
-    }
-,
-
+    },
     "recent_high_prev": {
         "type": "float",
         "name": "Prior Recent High",
         "comment": "recent_high shifted by 5 bars"
-    }
-,
-
+    },
     "recent_low_prev": {
         "type": "float",
         "name": "Prior Recent Low",
         "comment": "recent_low shifted by 5 bars"
-    }
-,
-
+    },
     "prev_5_low": {
         "type": "float",
         "name": "Previous 5-Bar Low",
         "comment": "low_5 shifted by one bar"
-    }
-,
-
+    },
     "prev_5_high": {
         "type": "float",
         "name": "Previous 5-Bar High",
         "comment": "high_5 shifted by one bar"
-    }
-,
-
+    },
     "prev_10_low": {
         "type": "float",
         "name": "Previous 10-Bar Low",
         "comment": "low_10 shifted by one bar"
-    }
-,
-
+    },
     "prev_10_high": {
         "type": "float",
         "name": "Previous 10-Bar High",
         "comment": "high_10 shifted by one bar"
-    }
-,
-
+    },
     "prev_20_low": {
         "type": "float",
         "name": "Previous 20-Bar Low",
         "comment": "low_20 shifted by one bar"
-    }
-,
-
+    },
     "prev_20_high": {
         "type": "float",
         "name": "Previous 20-Bar High",
         "comment": "high_20 shifted by one bar"
-    }
-,
-
+    },
     "lower_range_pos": {
         "type": "float",
         "name": "Lower Range Position",
         "comment": "30 percent level above low_10 within the 10-bar high-low range"
-    }
-,
-
+    },
     "upper_range_pos": {
         "type": "float",
         "name": "Upper Range Position",
@@ -1115,5 +749,4 @@
         "name": "Linear Regression Slope 8",
         "comment": "Linear regression slope of Close over 8 periods"
     }
-
 }

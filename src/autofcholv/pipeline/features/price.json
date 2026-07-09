@@ -61,48 +61,18 @@
     },
     "avgprice": {
         "type": "float",
-        "name": "AvgPrice",
+        "name": "Average Price",
         "comment": "Rolling VWAP normalized within its rolling range"
     },
     "avgpricetohigh": {
         "type": "float",
-        "name": "AvgPriceToHigh",
+        "name": "Average Price to High",
         "comment": "VWAP relative to current high"
     },
     "avgpricetolow": {
         "type": "float",
-        "name": "AvgPriceToLow",
+        "name": "Average Price to Low",
         "comment": "VWAP relative to current low"
-    },
-    "AvgPrice": {
-        "type": "float",
-        "name": "AvgPrice",
-        "comment": "Alias for avgprice"
-    },
-    "AvgPriceToHigh": {
-        "type": "float",
-        "name": "AvgPriceToHigh",
-        "comment": "Alias for avgpricetohigh"
-    },
-    "AvgPriceToLow": {
-        "type": "float",
-        "name": "AvgPriceToLow",
-        "comment": "Alias for avgpricetolow"
-    },
-    "LowPrice": {
-        "type": "float",
-        "name": "LowPrice",
-        "comment": "Alias for lowprice"
-    },
-    "Typ": {
-        "type": "float",
-        "name": "Typ",
-        "comment": "Alias for typ"
-    },
-    "VwapSignal": {
-        "type": "float",
-        "name": "VwapSignal",
-        "comment": "Alias for vwap_signal"
     },
     "WVAD": {
         "type": "float",
@@ -114,98 +84,31 @@
         "name": "Vwapbias",
         "comment": "Rolling VWAP divided by its moving average minus 1"
     },
-
-    "Vwap": {
-        "type": "float",
-        "name": "Vwap",
-        "comment": "Alias for rolling_vwap"
-    },
-
-    "Wc": {
-        "type": "float",
-        "name": "Wc",
-        "comment": "Alias for wc"
-    },
-
     "lowprice": {
         "type": "float",
-        "name": "LowPrice",
+        "name": "Low Price",
         "comment": "Rolling mean close price"
     },
     "typ": {
         "type": "float",
-        "name": "Typ",
+        "name": "Typical Price",
         "comment": "Typical price (H+L+C)/3"
     },
     "vwap_signal": {
         "type": "float",
-        "name": "VwapSignal",
+        "name": "VWAP Signal",
         "comment": "Typical price relative to rolling VWAP minus 1"
     },
     "wc": {
         "type": "float",
-        "name": "Wc",
+        "name": "Weighted Close",
         "comment": "Weighted close EMA ratio"
     },
-    "AvgPrice": {
-        "type": "float",
-        "name": "AvgPrice",
-        "comment": "Alias for avgprice"
-    },
-    "AvgPriceToHigh": {
-        "type": "float",
-        "name": "AvgPriceToHigh",
-        "comment": "Alias for avgpricetohigh"
-    },
-    "AvgPriceToLow": {
-        "type": "float",
-        "name": "AvgPriceToLow",
-        "comment": "Alias for avgpricetolow"
-    },
-    "LowPrice": {
-        "type": "float",
-        "name": "LowPrice",
-        "comment": "Alias for lowprice"
-    },
-    "Typ": {
-        "type": "float",
-        "name": "Typ",
-        "comment": "Alias for typ"
-    },
-    "VwapSignal": {
-        "type": "float",
-        "name": "VwapSignal",
-        "comment": "Alias for vwap_signal"
-    },
-    "WVAD": {
-        "type": "float",
-        "name": "WVAD",
-        "comment": "Normalized rolling candle-body volume accumulation"
-    },
-    "Vwapbias": {
-        "type": "float",
-        "name": "Vwapbias",
-        "comment": "Rolling VWAP divided by its moving average minus 1"
-    },
-    "Vwap": {
-        "type": "float",
-        "name": "Vwap",
-        "comment": "Alias for rolling_vwap"
-    },
-
-    "Wc": {
-        "type": "float",
-        "name": "Wc",
-        "comment": "Alias for wc"
-    },
-
     "midpoint": {
         "type": "float",
         "name": "Price Midpoint",
         "comment": "Midpoint of High and Low"
-    }
-,
-
+    },
     "close_vs_mid": {
         "type": "float",
         "name": "Close Versus Midpoint",
@@ -311,5 +214,4 @@
         "name": "Morning Breakout Long",
         "comment": "Close minus morning_high divided by morning range"
     }
-
 }

@@ -79,13 +79,6 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     wc = (df["High"] + df["Low"] + 2.0 * df["Close"]) / 4.0
     df["wc"] = wc.ewm(span=momentum_n, adjust=False).mean() / (wc.ewm(span=momentum_n * 2, adjust=False).mean() + EPS) - 1.0
 
-    df["AvgPrice"] = df["avgprice"]
-    df["AvgPriceToHigh"] = df["avgpricetohigh"]
-    df["AvgPriceToLow"] = df["avgpricetolow"]
-    df["LowPrice"] = df["lowprice"]
-    df["Typ"] = df["typ"]
-    df["VwapSignal"] = df["vwap_signal"]
-    df["Wc"] = df["wc"]
 
     vad = (df["Close"] - df["Open"]) / (df["High"] - df["Low"] + EPS) * df["Volume"]
     df["WVAD"] = vad.rolling(momentum_n, min_periods=1).sum() / (vad.rolling(momentum_n, min_periods=1).max() - vad.rolling(momentum_n, min_periods=1).min() + EPS)
@@ -94,7 +87,6 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     vwap_ma = vwap_proxy.rolling(momentum_n, min_periods=1).mean()
     df["Vwapbias"] = vwap_proxy / (vwap_ma + EPS) - 1.0
 
-    df["Vwap"] = df["rolling_vwap"]
 
     trade_date = pd.Series(df.index.normalize(), index=df.index)
     grouped = df.groupby(trade_date)

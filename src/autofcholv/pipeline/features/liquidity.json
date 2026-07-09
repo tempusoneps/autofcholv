@@ -48,40 +48,5 @@
         "type": "float",
         "name": "Amihud",
         "comment": "Amihud illiquidity proxy using intraday shortest price path"
-    },
-    "marketpl": {
-        "type": "float",
-        "name": "MarketPl",
-        "comment": "Market placement / average holding cost"
-    },
-    "marketpl_v2": {
-        "type": "float",
-        "name": "MarketPl_v2",
-        "comment": "Market placement with VWAP validity check"
-    },
-    "MarketPl": {
-        "type": "float",
-        "name": "MarketPl",
-        "comment": "Alias for marketpl"
-    },
-    "MarketPl_v2": {
-        "type": "float",
-        "name": "MarketPl_v2",
-        "comment": "Alias for marketpl_v2"
-    },
-    "Liquidity_v3": {
-        "type": "float",
-        "name": "Liquidity_v3",
-        "comment": "Alias for liquidity_v3"
-    },
-    "Amihud": {
-        "type": "float",
-        "name": "Amihud",
-        "comment": "Alias for amihud"
-    },
-    "BidaskSpread": {
-        "type": "float",
-        "name": "BidaskSpread",
-        "comment": "Alias for bidask_spread"
     }
 }

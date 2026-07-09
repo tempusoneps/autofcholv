@@ -490,10 +490,6 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     lower = median - std * m1
     df["v1dn"] = lower - v1
 
-    emap_1 = df["Volume"].ewm(span=momentum_n, adjust=False, min_periods=1).mean()
-    emap_2 = df["Volume"].ewm(span=2 * momentum_n, adjust=False, min_periods=1).mean()
-    df["Pvo"] = (emap_1 - emap_2) / (emap_2 + EPS)
-
     av = np.where(df["Close"] > df["Close"].shift(1), df["Volume"], 0.0)
     bv = np.where(df["Close"] < df["Close"].shift(1), df["Volume"], 0.0)
     cv = np.where(df["Close"] == df["Close"].shift(1), df["Volume"], 0.0)
@@ -543,56 +539,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     df["ko"] = (ko - ko.rolling(momentum_n, min_periods=1).min()) / (ko.rolling(momentum_n, min_periods=1).max() - ko.rolling(momentum_n, min_periods=1).min() + EPS)
 
-    df["Amv"] = df["amv"]
-    df["Volume_Bias"] = df["volume_bias"]
-    df["QuoteVolumeMean"] = df["quote_volume_mean"]
-    df["QuoteVolumeRatio"] = df["quote_volume_ratio"]
-    df["VolumeReg"] = df["volume_reg"]
-    df["VolumeTSF"] = df["volume_tsf"]
-    df["TradeNum"] = df["trade_num"]
-    df["BuyVolRatio_fancy"] = df["buy_vol_ratio_fancy"]
-    df["VolPerTrade_fancy"] = df["vol_per_trade_fancy"]
-    df["BuyVwapDivVwap_fancy"] = df["buy_vwap_div_vwap_fancy"]
-    df["TakerByRatio"] = df["taker_by_ratio"]
-    df["TakerByRatioPerTrade"] = df["taker_by_ratio_per_trade"]
-    df["V1"] = df["v1"]
-    df["V1Up"] = df["v1up"]
-    df["V1Dn"] = df["v1dn"]
-    df["V1_v2"] = df["v1_v2"]
-    df["V1Up_v2"] = df["v1up_v2"]
-    df["V1Dn_v2"] = df["v1dn_v2"]
 
-    df["Pvt"] = df["pvt"]
-    df["Pvt_v2"] = df["pvt_v2"]
-    df["Pvt_v3"] = df["pvt_v3"]
-    df["Pvt_v4"] = df["pvt_v4"]
-    df["Pvi"] = df["pvi"]
-    df["Nvi"] = df["nvi"]
-    df["Wad"] = df["wad"]
-    df["Tmf"] = df["tmf"]
-    df["Emv"] = df["emv"]
-    df["Clv"] = df["clv_ma"]
-    df["Adosc"] = df["adosc"]
-    df["Fi"] = df["fi"]
-    df["FiRsi"] = df["fi_rsi"]
-    df["Vra"] = df["vra"]
-    df["Ke"] = df["ke"]
-    df["Ko"] = df["ko"]
-    df["Mfi"] = df["mfi"]
-    df["Vr"] = df["vr"]
-    df["Vao"] = df["vao"]
-    df["Vao_v2"] = df["vao_v2"]
-    df["Volumechg"] = df["volumechg"]
-    df["Wvad"] = df["wvad"]
-    df["QuanlityPriceCorr"] = df["price_volume_corr"]
-    df["Volume"] = df["volume"]
-    df["Force"] = df["force_index"]
-    df["Cmf"] = df["cmf"]
-    df["Obv"] = df["obv"]
-    df["Pvo"] = df["pvo"]
-    df["VRA"] = df["vra"]
-    df["Chla_fancy"] = df["chla_fancy"]
-    df["NetVol_fancy"] = df["net_vol_fancy"]
 
     # --- Indicator features used by signal.py ---
 
@@ -602,7 +549,6 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     vpt_increment = df["Volume"] * df["Close"].pct_change().fillna(0.0)
     df["vpt"] = vpt_increment.cumsum()
 
-    df["volume_ma_20"] = df["Volume"].rolling(20).mean()
     bar_delta = df["Close"] - df["Open"]
     fallback_delta = df["Close"].diff()
     direction = bar_delta.where(bar_delta != 0, fallback_delta)

@@ -4,11 +4,11 @@ from autofcholv.config.config import Config
 
 
 def _daily_time_value(data: pd.DataFrame, column: str, hhmm: int, how: str) -> pd.Series:
-    time_code = 100 * data.index.hour + data.index.minute
+    time_int = 100 * data.index.hour + data.index.minute
     trade_date = data.index.normalize()
 
     def aggregate(series: pd.Series) -> float:
-        codes = pd.Series(time_code, index=data.index).loc[series.index]
+        codes = pd.Series(time_int, index=data.index).loc[series.index]
         if how == "first_at":
             values = series[codes == hhmm]
             return values.iloc[0] if not values.empty else np.nan
@@ -96,8 +96,8 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     day_bias[trading_daily["day_close"] < day_ema] = -1
     merged_data["prev_day_ema_bias_20"] = trade_date.map(day_bias.shift(1))
 
-    time_code = 100 * merged_data.index.hour + merged_data.index.minute
-    morning = merged_data[time_code <= 1100].groupby(trade_date[time_code <= 1100]).agg(
+    time_int = 100 * merged_data.index.hour + merged_data.index.minute
+    morning = merged_data[time_int <= 1100].groupby(trade_date[time_int <= 1100]).agg(
         morning_high=("High", "max"),
         morning_low=("Low", "min"),
     )

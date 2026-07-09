@@ -111,7 +111,7 @@
     },
     "damaov10": {
         "type": "float",
-        "name": "Damaov10",
+        "name": "DAMAOV 10",
         "comment": "Coppock, Bollinger width, and ATR composite"
     },
     "adx_mtm": {
@@ -139,11 +139,6 @@
         "name": "Price Volume Resistance",
         "comment": "Close-to-volume breakout difficulty ratio normalized by window length"
     },
-    "adx_mtm": {
-        "type": "float",
-        "name": "ADX MTM",
-        "comment": "Positive directional movement multiplied by rolling momentum"
-    },
     "Mtam": {
         "type": "float",
         "name": "Mtam",
@@ -163,16 +158,6 @@
         "type": "float",
         "name": "ADX MTM Neg",
         "comment": "Negative directional movement multiplied by rolling momentum"
-    },
-    "Damaov10": {
-        "type": "float",
-        "name": "Damaov10",
-        "comment": "Alias for damaov10"
-    },
-    "FearGreed_Yidai_v1": {
-        "type": "float",
-        "name": "FearGreed_Yidai_v1",
-        "comment": "Alias for fear_greed_yidai_v1"
     },
     "connors_rsi": {
         "type": "float",
