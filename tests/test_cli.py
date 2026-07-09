@@ -81,7 +81,7 @@ def test_cli_successful_extraction():
     with tempfile.TemporaryDirectory() as tmpdir:
         input_path  = os.path.join(tmpdir, "input.csv")
         output_path = os.path.join(tmpdir, "output.csv")
-        _make_ohlcv_csv(input_path, n_bars=300)
+        _make_ohlcv_csv(input_path, n_bars=7000)
 
         result = subprocess.run(
             [*_cli_command(), "extract", input_path, "--output", output_path],
@@ -91,7 +91,7 @@ def test_cli_successful_extraction():
         assert result.returncode == 0, f"CLI failed:\n{result.stderr}"
         assert os.path.exists(output_path), "Output file was not created"
 
-        out_df = pd.read_csv(output_path, index_col="Date")
+        out_df = pd.read_csv(output_path, index_col="Date", low_memory=False)
         assert len(out_df) > 0, "Output CSV is empty"
 
         # Spot-check one key column per module
@@ -114,7 +114,7 @@ def test_cli_output_log_messages():
     with tempfile.TemporaryDirectory() as tmpdir:
         input_path  = os.path.join(tmpdir, "input.csv")
         output_path = os.path.join(tmpdir, "output.csv")
-        _make_ohlcv_csv(input_path, n_bars=300)
+        _make_ohlcv_csv(input_path, n_bars=7000)
 
         result = subprocess.run(
             [*_cli_command(), "extract", input_path, "--output", output_path],

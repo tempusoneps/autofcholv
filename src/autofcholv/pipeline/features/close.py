@@ -31,6 +31,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     momentum_n = config.momentum_lookback
     epsilon = 1e-8
 
+    df = df.copy()
+
     df["price_change"] = df["Close"].diff()
     df["price_change_lag1"] = df["price_change"].shift(1)
     df["return_5"] = df["Close"].pct_change(5)
@@ -448,6 +450,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
             df["Close"] - df["Open"].shift(momentum_n) < 0
         ).fillna(0.0)
     )
+
+    df = df.copy()
 
     mid_price = (df["High"] + df["Low"]) / 2.0
     macd_v2_ema1 = mid_price.ewm(span=momentum_n, adjust=False).mean()

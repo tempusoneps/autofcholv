@@ -1,12 +1,14 @@
 import json
 import os
 import tempfile
+import warnings
 
 import pandas as pd
 import numpy as np
 import pytest
 from autofcholv.core import extract_features
 from autofcholv.config.config import Config, load_config, DEFAULT_CONFIG
+from autofcholv.pipeline.features import close as close_features
 from autofcholv.pipeline.features.close import _rolling_regression_last as close_regression_last
 from autofcholv.pipeline.features.trend import _linear_regression_midline, _linear_regression_slope
 from autofcholv.pipeline.features.volume import (
@@ -42,6 +44,38 @@ def make_ohlcv(n_bars: int = 300) -> pd.DataFrame:
     df["High"] = df[["Open", "Close", "High"]].max(axis=1)
     df["Low"]  = df[["Open", "Close", "Low"]].min(axis=1)
     return df
+
+
+def test_close_features_defragments_input_without_performance_warning():
+    idx = pd.date_range(start="2024-01-02 09:05:00", periods=180, freq="5min")
+    close = pd.Series(np.linspace(100.0, 120.0, len(idx)), index=idx)
+    df = pd.DataFrame(
+        {
+            "Open": close - 0.2,
+            "High": close + 0.5,
+            "Low": close - 0.5,
+            "Close": close,
+            "Volume": np.linspace(1000.0, 2000.0, len(idx)),
+        },
+        index=idx,
+    )
+    df.index.name = "Date"
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", pd.errors.PerformanceWarning)
+        for i in range(140):
+            df[f"fragment_{i}"] = i
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        result = close_features.extract_features(df, Config())
+
+    performance_warnings = [
+        warning for warning in caught
+        if issubclass(warning.category, pd.errors.PerformanceWarning)
+    ]
+    assert performance_warnings == []
+    assert "ppo_v1" in result.columns
 
 
 # ─────────────────────────────────────────────
@@ -150,21 +184,39 @@ def test_extract_features_candlestick_columns():
 def test_extract_features_close_columns():
     result = extract_features(make_ohlcv(300))
     expected = [
-        "ema_fast", "ema_slow", "rsi", "rsi_slope",
-        "tsi", "roc_close", "close_zscore", "efficiency_ratio",
-        "macd", "macd_line", "macd_hist",
-        "ppo", "ppo_line", "ppo_hist",
-        "ulcer_index", "cmo", "roc_skew", "roc_kurt",
-        "mb", "std", "ub", "lb",
-        "cci", "kdj_k", "kdj_d", "kdj_j", "fisher",
-        "kama", "kama_bias", "high_ma_bias",
-        "bollinger_width", "bollinger_percent_b",
-        "change_std", "dpo", "pfe",
-        "williams_r", "slow_stoch_d", "coppock", "pmo", "smi", "psy",
-        "return_autocorr", "demarker", "imi", "rvi", "bop", "ultimate_oscillator_src",
-        "kst", "rmi", "tii",
-        "ar", "br", "cr", "adtm", "qstick", "mtm",
-        "bias", "rbias", "mtm_mean", "mtm_max_diff", "sroc", "rsi_mean", "tdi", "osc", "short_quiet_momentum", "long_quiet_momentum", "price_volume_momentum", "dbcd", "pmarp", "pos", "bias36", "swing_index", "rsi_v2", "cmo_v2", "bias_v13", "abs_chg", "stc", "return_autocorr_2", "erbull", "erbear", "er_balance", "burr", "do", "po", "cci_magic", "cs_mtm", "cs_mtm_v2", "Cs_mtm", "Cs_mtm_v2", "MtmMean_v4", "MtmMean_v8", "MtmMean_v10", "MtmMean_v12", "MtmVolMean", "MtmHcm", "ShortMoment", "LongMoment", "PmoTEMA", "Pmarp_Yidai_v1", "Dbcd_v2", "Dbcd_v3", "Rsj", "Rsiv", "Rsih", "Sroc_v2", "rsi_bbw", "rccd", "rccd_v2", "bias_vol", "bias_cubic_v2", "srocvol", "roc_vol", "copp_min_route", "adtm_v2", "adtm_v3", "mtm_mean_gap", "cmo_v3", "rsis_v2", "mtm_vol_resonance", "tii_signal", "tii_signal_v2", "macd_v2", "ppo_v1", "sroc_v2", "pmo_tema", "fisher_v2", "fisher_v3", "arbr_ar", "arbr_br", "bias_v3", "bias_v4", "bias_v11", "bias_v14", "bias36ma", "bir", "copp_v3", "roc", "cci_v2", "cci_v3", "rsimean", "dbcd_v3", "micd", "rsj", "mtm_max", "bias_v2", "rsiv", "rsih", "fi", "fi_rsi", "force", "ko", "vramt", "rsis", "pmarp_yidai_v1", "dbcd_v2", "smi_v2", "volume_reg", "volume_tsf", "v1_v2", "v1up_v2", "v1dn_v2", "mtmmean_v10", "mtmmean_v12", "mtmhcm", "short_moment", "long_moment", "si", "wr", "rocvol", "mtmmean_v4", "atr_count", "zfabsmean", "bbw", "amv", "mfi", "obv", "pvt_v2", "pvt_v3", "pvt_v4", "vr", "vao", "vao_v2", "volume_bias", "volume", "volumechg", "maamt", "upnum_fancy", "trade_num", "taker_by_ratio", "buy_vol_ratio_fancy", "taker_by_ratio_per_trade", "vol_per_trade_fancy", "mtm_tb", "dbcd_taker", "mtm_bull", "mtm_bear", "buy_vwap_div_vwap_fancy", "Vramt", "v1", "v1up", "v1_v2", "v1up_v2", "v1dn_v2", "v1dn", "Volume", "autocorrelation", "copp", "demaker", "er", "kdjdk", "kdjdd", "skdj", "magiccci", "magiccci_v2",
+        "ema_fast", "ema_slow", "rsi", "rsi_slope", "tsi", "roc_close",
+        "close_zscore", "efficiency_ratio", "macd", "macd_line", "macd_hist", "ppo",
+        "ppo_line", "ppo_hist", "ulcer_index", "cmo", "roc_skew", "roc_kurt",
+        "mb", "std", "ub", "lb", "cci", "kdj_k",
+        "kdj_d", "kdj_j", "fisher", "kama", "kama_bias", "high_ma_bias",
+        "bollinger_width", "bollinger_percent_b", "change_std", "dpo", "pfe", "williams_r",
+        "slow_stoch_d", "coppock", "pmo", "smi", "psy", "return_autocorr",
+        "demarker", "imi", "rvi", "bop", "ultimate_oscillator_src", "kst",
+        "rmi", "tii", "ar", "br", "cr", "adtm",
+        "qstick", "mtm", "bias", "rbias", "mtm_mean", "mtm_max_diff",
+        "sroc", "rsi_mean", "tdi", "osc", "short_quiet_momentum", "long_quiet_momentum",
+        "price_volume_momentum", "dbcd", "pmarp", "pos", "bias36", "swing_index",
+        "rsi_v2", "cmo_v2", "bias_v13", "abs_chg", "stc", "return_autocorr_2",
+        "erbull", "erbear", "er_balance", "burr", "do", "po",
+        "cci_magic", "cs_mtm", "cs_mtm_v2", "rsi_bbw", "rccd", "rccd_v2",
+        "bias_vol", "bias_cubic_v2", "srocvol", "roc_vol", "copp_min_route", "adtm_v2",
+        "adtm_v3", "mtm_mean_gap", "cmo_v3", "rsis_v2", "mtm_vol_resonance", "tii_signal",
+        "tii_signal_v2", "macd_v2", "ppo_v1", "sroc_v2", "pmo_tema", "fisher_v2",
+        "fisher_v3", "arbr_ar", "arbr_br", "bias_v3", "bias_v4", "bias_v11",
+        "bias_v14", "bias36ma", "bir", "copp_v3", "roc", "cci_v2",
+        "cci_v3", "rsimean", "dbcd_v3", "micd", "rsj", "mtm_max",
+        "bias_v2", "rsiv", "rsih", "fi", "fi_rsi", "force",
+        "ko", "vramt", "rsis", "pmarp_yidai_v1", "dbcd_v2", "smi_v2",
+        "volume_reg", "volume_tsf", "v1_v2", "v1up_v2", "v1dn_v2", "mtmmean_v10",
+        "mtmmean_v12", "mtmhcm", "short_moment", "long_moment", "si", "wr",
+        "rocvol", "mtmmean_v4", "atr_count", "zfabsmean", "bbw", "amv",
+        "mfi", "obv", "pvt_v2", "pvt_v3", "pvt_v4", "vr",
+        "vao", "vao_v2", "volume_bias", "volume", "volumechg", "maamt",
+        "upnum_fancy", "trade_num", "taker_by_ratio", "buy_vol_ratio_fancy", "taker_by_ratio_per_trade", "vol_per_trade_fancy",
+        "mtm_tb", "dbcd_taker", "mtm_bull", "mtm_bear", "buy_vwap_div_vwap_fancy", "Vramt",
+        "v1", "v1up", "v1_v2", "v1up_v2", "v1dn_v2", "v1dn",
+        "Volume", "autocorrelation", "copp", "demaker", "er", "kdjdk",
+        "kdjdd", "skdj", "magiccci", "magiccci_v2",
     ]
     for col in expected:
         assert col in result.columns, f"Missing close column: '{col}'"
@@ -280,11 +332,9 @@ def test_extract_features_group_columns():
 def test_extract_features_signal_columns():
     result = extract_features(make_ohlcv(300))
     expected = [
-        "momentum_signal",
-        "prev_day_bias",
-        "strategy_003_signal",
-        "strategy_003_entry_signal",
-        "signal",
+        "couple_cs_signal",
+        "ema_cross_signal",
+        "prev_day_momentum_signal_bias",
     ]
     for col in expected:
         assert col in result.columns, f"Missing signal column: '{col}'"
@@ -315,7 +365,7 @@ def test_extract_features_no_nan_in_ohlcv():
 
 def test_extract_features_color_values():
     result = extract_features(make_ohlcv(300))
-    assert set(result["color"].unique()).issubset({"green", "red", "doji"})
+    assert set(result["color"].unique()).issubset({1, -1})
 
 
 def test_extract_features_direction_values():
@@ -325,8 +375,8 @@ def test_extract_features_direction_values():
 
 def test_extract_features_signal_values():
     result = extract_features(make_ohlcv(300))
-    assert set(result["strategy_003_entry_signal"].unique()).issubset({"None", "Buy", "Sell"})
-    assert set(result["strategy_003_signal"].unique()).issubset({"", "long", "short"})
+    assert set(result["couple_cs_signal"].unique()).issubset({"None", "Buy", "Sell"})
+    assert set(result["ema_cross_signal"].unique()).issubset({"None", "Buy", "Sell"})
 
 
 def test_extract_features_strategy_signal_columns():
