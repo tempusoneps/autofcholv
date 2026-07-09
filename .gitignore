@@ -11,3 +11,4 @@ project_guide.md
 .pytest_cache
 .claude/settings.local.json
 config.json
+docs/superpowers

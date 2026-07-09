@@ -1,5 +1,30 @@
 import pandas as pd
+import numpy as np
 from autofcholv.config.config import Config
+
+
+def _daily_time_value(data: pd.DataFrame, column: str, hhmm: int, how: str) -> pd.Series:
+    time_code = 100 * data.index.hour + data.index.minute
+    trade_date = data.index.normalize()
+
+    def aggregate(series: pd.Series) -> float:
+        codes = pd.Series(time_code, index=data.index).loc[series.index]
+        if how == "first_at":
+            values = series[codes == hhmm]
+            return values.iloc[0] if not values.empty else np.nan
+        if how == "last_at":
+            values = series[codes == hhmm]
+            return values.iloc[-1] if not values.empty else np.nan
+        if how == "max_before":
+            values = series[codes < hhmm]
+            return values.max() if not values.empty else np.nan
+        if how == "min_before":
+            values = series[codes < hhmm]
+            return values.min() if not values.empty else np.nan
+        raise ValueError(f"Unsupported aggregation: {how}")
+
+    daily = data[column].groupby(trade_date).agg(aggregate)
+    return pd.Series(trade_date, index=data.index).map(daily)
 
 
 def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
@@ -39,4 +64,45 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     merged_data = pd.merge(data, daily_data, left_on="time_d", right_index=True, how="left")
     merged_data = merged_data.drop(columns=['time_d'])
     merged_data.index = data.index
+
+    trade_date = pd.Series(merged_data.index.normalize(), index=merged_data.index)
+    grouped = merged_data.groupby(trade_date)
+    trading_daily = grouped.agg(
+        day_high=("High", "max"),
+        day_low=("Low", "min"),
+        day_close=("Close", "last"),
+    )
+    prev_trading_daily = trading_daily.shift(1)
+    merged_data["prev_trading_day_high"] = trade_date.map(prev_trading_daily["day_high"])
+    merged_data["prev_trading_day_low"] = trade_date.map(prev_trading_daily["day_low"])
+    merged_data["prev_trading_day_close"] = trade_date.map(prev_trading_daily["day_close"])
+    prev = prev_trading_daily
+    pp = (prev["day_high"] + prev["day_low"] + prev["day_close"]) / 3.0
+    merged_data["prev_day_r1"] = trade_date.map(2.0 * pp - prev["day_low"])
+    merged_data["prev_day_s1"] = trade_date.map(2.0 * pp - prev["day_high"])
+
+    merged_data["first_close_0915"] = _daily_time_value(merged_data, "Close", 915, "first_at")
+    merged_data["pre_1345_high"] = _daily_time_value(merged_data, "High", 1345, "max_before")
+    merged_data["pre_1355_low"] = _daily_time_value(merged_data, "Low", 1355, "min_before")
+    day_close_1445 = _daily_time_value(merged_data, "Close", 1445, "last_at")
+    prev_1445 = day_close_1445.groupby(trade_date).first().shift(1)
+    merged_data["prev_day_1445_close"] = trade_date.map(prev_1445).fillna(
+        merged_data["prev_trading_day_close"]
+    )
+
+    day_ema = trading_daily["day_close"].ewm(span=20, adjust=False).mean()
+    day_bias = pd.Series(0, index=trading_daily.index)
+    day_bias[trading_daily["day_close"] > day_ema] = 1
+    day_bias[trading_daily["day_close"] < day_ema] = -1
+    merged_data["prev_day_ema_bias_20"] = trade_date.map(day_bias.shift(1))
+
+    time_code = 100 * merged_data.index.hour + merged_data.index.minute
+    morning = merged_data[time_code <= 1100].groupby(trade_date[time_code <= 1100]).agg(
+        morning_high=("High", "max"),
+        morning_low=("Low", "min"),
+    )
+    merged_data["morning_high"] = trade_date.map(morning["morning_high"])
+    merged_data["morning_low"] = trade_date.map(morning["morning_low"])
+    merged_data["morning_mid"] = (merged_data["morning_high"] + merged_data["morning_low"]) / 2.0
+
     return merged_data

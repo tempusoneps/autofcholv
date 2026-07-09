@@ -38,5 +38,50 @@
         "type": "int",
         "name": "Year",
         "comment": "Năm"
+    },
+    "trade_date": {
+        "type": "datetime",
+        "name": "Trade Date",
+        "comment": "Normalized trading date from the timestamp index"
+    },
+    "time_code": {
+        "type": "int",
+        "name": "Time Code",
+        "comment": "HHMM integer alias for intraday signal logic"
+    },
+    "bar_in_day": {
+        "type": "int",
+        "name": "Bar In Day",
+        "comment": "Zero-based bar number within each trading day"
+    },
+    "session_0930_1335": {
+        "type": "bool",
+        "name": "Session 09:30-13:35",
+        "comment": "True when time_code is between 09:30 and 13:35 inclusive"
+    },
+    "session_0935_1425": {
+        "type": "bool",
+        "name": "Session 09:35-14:25",
+        "comment": "True when time_code is between 09:35 inclusive and 14:25 exclusive"
+    },
+    "session_0935_1335": {
+        "type": "bool",
+        "name": "Session 09:35-13:35",
+        "comment": "True when time_code is between 09:35 and 13:35 inclusive"
+    },
+    "late_session_1325": {
+        "type": "bool",
+        "name": "Late Session 13:25 Set",
+        "comment": "True for 13:25, 13:40, and 13:55 bars"
+    },
+    "late_session_1310": {
+        "type": "bool",
+        "name": "Late Session 13:10 Set",
+        "comment": "True for 13:10, 13:25, 13:40, and 13:55 bars"
+    },
+    "entry_window_1300_1425": {
+        "type": "bool",
+        "name": "Entry Window 13:00-14:25",
+        "comment": "True when time_code is between 13:00 and 14:25 inclusive"
     }
 }

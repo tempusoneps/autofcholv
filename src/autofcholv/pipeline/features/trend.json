@@ -1039,6 +1039,81 @@
         "type": "float",
         "name": "Upper Range Position",
         "comment": "30 percent level below high_10 within the 10-bar high-low range"
+    },
+    "ema_8": {
+        "type": "float",
+        "name": "EMA 8",
+        "comment": "Exponential moving average of Close over 8 periods"
+    },
+    "ema_20": {
+        "type": "float",
+        "name": "EMA 20",
+        "comment": "Exponential moving average of Close over 20 periods"
+    },
+    "ema_21": {
+        "type": "float",
+        "name": "EMA 21",
+        "comment": "Exponential moving average of Close over 21 periods"
+    },
+    "ema_55": {
+        "type": "float",
+        "name": "EMA 55",
+        "comment": "Exponential moving average of Close over 55 periods"
+    },
+    "ema_250": {
+        "type": "float",
+        "name": "EMA 250",
+        "comment": "Exponential moving average of Close over 250 periods"
+    },
+    "ema_20_cross_above_ema_250": {
+        "type": "bool",
+        "name": "EMA 20 Cross Above EMA 250",
+        "comment": "True when EMA 20 crosses above EMA 250 on the current bar"
+    },
+    "ema_20_cross_below_ema_250": {
+        "type": "bool",
+        "name": "EMA 20 Cross Below EMA 250",
+        "comment": "True when EMA 20 crosses below EMA 250 on the current bar"
+    },
+    "adx_14": {
+        "type": "float",
+        "name": "ADX 14",
+        "comment": "Average Directional Index over 14 periods"
+    },
+    "adx_42": {
+        "type": "float",
+        "name": "ADX 42",
+        "comment": "Average Directional Index over 42 periods"
+    },
+    "dmp_14": {
+        "type": "float",
+        "name": "DMP 14",
+        "comment": "Positive directional movement over 14 periods"
+    },
+    "dmn_14": {
+        "type": "float",
+        "name": "DMN 14",
+        "comment": "Negative directional movement over 14 periods"
+    },
+    "psar_bull": {
+        "type": "bool",
+        "name": "PSAR Bull",
+        "comment": "True when Parabolic SAR indicates a bullish leg"
+    },
+    "psar_bear": {
+        "type": "bool",
+        "name": "PSAR Bear",
+        "comment": "True when Parabolic SAR indicates a bearish leg"
+    },
+    "linear_regression_slope_5": {
+        "type": "float",
+        "name": "Linear Regression Slope 5",
+        "comment": "Linear regression slope of Close over 5 periods"
+    },
+    "linear_regression_slope_8": {
+        "type": "float",
+        "name": "Linear Regression Slope 8",
+        "comment": "Linear regression slope of Close over 8 periods"
     }
 
 }

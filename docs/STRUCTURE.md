@@ -20,7 +20,7 @@
 │   ├── RULE.md                       # Project rules or conventions.
 │   ├── STRUCTURE.md                  # This repository structure guide.
 │   ├── TODO.md                       # Pending documentation and implementation notes.
-│   └── USAGE.md                      # CLI and Python API usage examples.
+│   ├── USAGE.md                      # CLI and Python API usage examples.
 │
 ├── examples/                         # Small examples for users.
 │   └── simple_usage.py               # Minimal Python API usage example.

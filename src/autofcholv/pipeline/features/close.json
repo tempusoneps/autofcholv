@@ -936,6 +936,46 @@
         "type": "float",
         "name": "10-Bar Close High",
         "comment": "10-bar rolling maximum of Close"
+    },
+    "rsi_5": {
+        "type": "float",
+        "name": "RSI 5",
+        "comment": "Relative Strength Index over 5 periods"
+    },
+    "rsi_8": {
+        "type": "float",
+        "name": "RSI 8",
+        "comment": "Relative Strength Index over 8 periods"
+    },
+    "rsi_14": {
+        "type": "float",
+        "name": "RSI 14",
+        "comment": "Relative Strength Index over 14 periods"
+    },
+    "rsi_21": {
+        "type": "float",
+        "name": "RSI 21",
+        "comment": "Relative Strength Index over 21 periods"
+    },
+    "stochrsi_k_14_14_3_3": {
+        "type": "float",
+        "name": "StochRSI K 14 14 3 3",
+        "comment": "StochRSI K with length 14, RSI length 14, K 3, D 3"
+    },
+    "williams_r_14": {
+        "type": "float",
+        "name": "Williams %R 14",
+        "comment": "Williams %R over 14 periods"
+    },
+    "bb_percent_b_20_2": {
+        "type": "float",
+        "name": "Bollinger Percent B 20 2",
+        "comment": "Bollinger Band percent B with length 20 and 2 standard deviations"
+    },
+    "macd_hist_12_26_9": {
+        "type": "float",
+        "name": "MACD Histogram 12 26 9",
+        "comment": "MACD histogram with fast 12, slow 26, signal 9"
     }
 
 }

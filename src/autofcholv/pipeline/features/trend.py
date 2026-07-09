@@ -832,4 +832,47 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["lower_range_pos"] = df["low_10"] + (df["high_10"] - df["low_10"]) * 0.3
     df["upper_range_pos"] = df["high_10"] - (df["high_10"] - df["low_10"]) * 0.3
 
+    df["ema_8"] = ta.ema(df["Close"], length=8)
+    df["ema_20"] = ta.ema(df["Close"], length=20)
+    df["ema_21"] = ta.ema(df["Close"], length=21)
+    df["ema_55"] = ta.ema(df["Close"], length=55)
+    df["ema_250"] = ta.ema(df["Close"], length=250)
+    df["ema_20_cross_above_ema_250"] = (
+        (df["ema_20"].shift(1) < df["ema_250"].shift(1))
+        & (df["ema_20"] > df["ema_250"])
+    )
+    df["ema_20_cross_below_ema_250"] = (
+        (df["ema_20"].shift(1) > df["ema_250"].shift(1))
+        & (df["ema_20"] < df["ema_250"])
+    )
+
+    adx_14 = ta.adx(df["High"], df["Low"], df["Close"], length=14)
+    if adx_14 is not None and not adx_14.empty:
+        df["adx_14"] = adx_14["ADX_14"] if "ADX_14" in adx_14 else np.nan
+        df["dmp_14"] = adx_14["DMP_14"] if "DMP_14" in adx_14 else np.nan
+        df["dmn_14"] = adx_14["DMN_14"] if "DMN_14" in adx_14 else np.nan
+    else:
+        df["adx_14"] = np.nan
+        df["dmp_14"] = np.nan
+        df["dmn_14"] = np.nan
+
+    adx_42 = ta.adx(df["High"], df["Low"], df["Close"], length=42)
+    if adx_42 is not None and not adx_42.empty and "ADX_42" in adx_42:
+        df["adx_42"] = adx_42["ADX_42"]
+    else:
+        df["adx_42"] = np.nan
+
+    psar = ta.psar(df["High"], df["Low"], df["Close"])
+    if psar is not None and not psar.empty:
+        bull_cols = [col for col in psar.columns if "PSARl" in col]
+        bear_cols = [col for col in psar.columns if "PSARs" in col]
+        df["psar_bull"] = psar[bull_cols[0]].notna() if bull_cols else False
+        df["psar_bear"] = psar[bear_cols[0]].notna() if bear_cols else False
+    else:
+        df["psar_bull"] = False
+        df["psar_bear"] = False
+
+    df["linear_regression_slope_5"] = ta.slope(df["Close"], length=5)
+    df["linear_regression_slope_8"] = ta.slope(df["Close"], length=8)
+
     return df

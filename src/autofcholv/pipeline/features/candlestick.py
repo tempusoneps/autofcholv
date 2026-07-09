@@ -53,6 +53,7 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
 
     # IBS
     df['ibs'] = ((df['Close'] - df['Low']) / (height_safe + epsilon)).fillna(0)
+    df["bar_close_position"] = df["ibs"]
 
     # Candle strength
     df['candle_strength'] = df['body'] / (height_safe + epsilon)
@@ -67,6 +68,20 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
 
     # Numeric color
     df['color'] = np.where(df['body'] > 0, 1, np.where(df['body'] < 0, -1, 0))
+
+    df["heikin_ashi_close"] = (df["Open"] + df["High"] + df["Low"] + df["Close"]) / 4.0
+    df["heikin_ashi_open"] = (df["Open"].shift(1) + df["Close"].shift(1)) / 2.0
+    df["heikin_ashi_bull"] = df["heikin_ashi_close"] > df["heikin_ashi_open"]
+    df["bullish_high_break_candle"] = (
+        (df["Open"] < df["Close"])
+        & (df["Close"] <= df["High"] - 0.1)
+        & (df["High"] > df["High"].shift(1))
+    )
+    df["bearish_low_break_candle"] = (
+        (df["Open"] > df["Close"])
+        & (df["Close"] >= df["Low"] + 0.1)
+        & (df["Low"] < df["Low"].shift(1))
+    )
 
     # --- Indicator features used by signal.py ---
 
