@@ -249,8 +249,6 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["Msbt"] = mtm.rolling(volatility_n, min_periods=1).mean() * mtm_std_mtm * bbw_mean * taker_buy_ratio
     rc = 100.0 * ((df["Close"] - df["Close"].shift(volatility_n)) / (df["Close"].shift(volatility_n) + EPS) + (df["Close"] - df["Close"].shift(2 * volatility_n)) / (df["Close"].shift(2 * volatility_n) + EPS))
     rc_mean = rc.rolling(volatility_n, min_periods=1).mean()
-    df["Damaov10"] = df["damaov10"]
-    df["FearGreed_Yidai_v1"] = df["fear_greed_yidai_v1"]
     df["CoppAtrBull"] = rc_mean * wd_atr * taker_ratio
 
     not_extreme = (
@@ -269,7 +267,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         & (df["body_rate_first_close"] < -0.39)
         & (df["adx_42"] < 26.5)
     )
-    at_1355 = df["time_code"] == 1355
+    at_1355 = df["time_int"] == 1355
     daily_momentum_signal = pd.Series("", index=df.index)
     daily_momentum_signal[at_1355 & daily_momentum_long] = "Buy"
     daily_momentum_signal[at_1355 & daily_momentum_short] = "Sell"

@@ -82,12 +82,12 @@
     "morning_high": {
         "type": "float",
         "name": "Morning High",
-        "comment": "Current trading day's High through time_code <= 1100"
+        "comment": "Current trading day's High through time_int <= 1100"
     },
     "morning_low": {
         "type": "float",
         "name": "Morning Low",
-        "comment": "Current trading day's Low through time_code <= 1100"
+        "comment": "Current trading day's Low through time_int <= 1100"
     },
     "morning_mid": {
         "type": "float",

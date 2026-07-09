@@ -215,13 +215,6 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     amihud_premium = (df["Close"] * df["Volume"]) / (normalized_shortest_path + EPS)
     df["amihud"] = pd.Series(amihud_premium, index=df.index).rolling(n, min_periods=2).mean()
 
-    df["marketpl"] = df["market_placement"]
-    df["marketpl_v2"] = df["market_placement_v2"]
 
-    df["MarketPl"] = df["marketpl"]
-    df["MarketPl_v2"] = df["marketpl_v2"]
-    df["Liquidity_v3"] = df["liquidity_v3"]
-    df["BidaskSpread"] = df["bidask_spread"]
-    df["Amihud"] = df["amihud"]
 
     return df

@@ -336,8 +336,6 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["pacupper_v2"] = (df["Close"] - pac_upper - 0.0).rolling(volatility_n, min_periods=1).mean()
     df["paclower_v2"] = (pac_lower - df["Close"]).rolling(volatility_n, min_periods=1).mean()
 
-    df["rwih"] = df["rwi_high"]
-    df["rwil"] = df["rwi_low"]
 
     df = df.copy()
 
@@ -499,22 +497,6 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     vix_bw = vix_bw.where(direction == short_dir, 0.0)
     vix_bw = vix_bw.where(direction == prev_short_dir, 0.0)
     df["VixBw"] = vix_bw
-    df["VolumeStd"] = df["volume_std"]
-    df["Grid"] = df["grid"]
-    df["Lcsd"] = df["lcsd"]
-    df["Apz"] = df["apz"]
-    df["ApzUpper"] = df["apz_upper"]
-    df["ApzLower"] = df["apz_lower"]
-    df["Bbw"] = df["bbw"]
-    df["Cv"] = df["cv"]
-    df["Dc"] = df["dc"]
-    df["DcSignal"] = df["dc_signal"]
-    df["Dc_v2"] = df["dc_v2"]
-    df["EnvUpperSignal"] = df["env_upper_signal"]
-    df["EnvLowerSignal"] = df["env_lower_signal"]
-    df["Rwi"] = df["rwi"]
-    df["RwiH"] = df["rwi_high"]
-    df["RwiL"] = df["rwi_low"]
 
     # --- Indicator features used by signal.py ---
 

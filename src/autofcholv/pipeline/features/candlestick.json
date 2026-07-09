@@ -39,11 +39,6 @@
         "name": "Close Location Value",
         "comment": "clv = 1 if High = Low else ((Close-Low) - (High-Close)) / (High - Low)"
     },
-    "cbr": {
-        "type": "float",
-        "name": "Candlestick Body Ratio",
-        "comment": "cbr = abs(close - open) / height"
-    },
     "vbr": {
         "type": "float",
         "name": "Volume Box Ratio",
@@ -89,44 +84,25 @@
         "name": "Fractal Low Forward-Filled",
         "comment": "Fractal low (5-bar window) forward-filled for signal generation"
     },
-
-    "range": {
-        "type": "float",
-        "name": "Candle Range",
-        "comment": "High minus Low"
-    }
-,
-
     "body_abs": {
         "type": "float",
         "name": "Absolute Candle Body",
         "comment": "Absolute candlestick body length"
-    }
-,
-
+    },
     "body_abs_sma20": {
         "type": "float",
         "name": "20-Bar Average Absolute Body",
         "comment": "20-bar simple moving average of absolute body length"
-    }
-,
-
+    },
     "range_sma20": {
         "type": "float",
         "name": "20-Bar Average Range",
         "comment": "20-bar simple moving average of High minus Low"
-    }
-,
-
+    },
     "candle_range_ratio": {
         "type": "float",
         "name": "Candle Range Ratio",
         "comment": "Absolute body divided by High minus Low"
-    },
-    "bar_close_position": {
-        "type": "float",
-        "name": "Bar Close Position",
-        "comment": "Close position within current High-Low bar range"
     },
     "heikin_ashi_close": {
         "type": "float",
@@ -153,5 +129,4 @@
         "name": "Bearish Low Break Candle",
         "comment": "Bearish candle with Low below previous Low and Close above the bar Low by at least 0.1"
     }
-
 }

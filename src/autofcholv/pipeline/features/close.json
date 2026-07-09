@@ -601,13 +601,13 @@
     },
     "short_moment": {
         "type": "float",
-        "name": "Short Moment",
-        "comment": "Quiet-candle momentum over a short rolling window"
+        "name": "short_moment",
+        "comment": "Momentum based on the lowest-amplitude candles in a short window"
     },
     "long_moment": {
         "type": "float",
-        "name": "Long Moment",
-        "comment": "Quiet-candle momentum over a long rolling window"
+        "name": "long_moment",
+        "comment": "Momentum based on the lowest-amplitude candles in a long window"
     },
     "rsis": {
         "type": "float",
@@ -809,21 +809,6 @@
         "name": "MagicCci_v2",
         "comment": "CCI variant using HLC EWM-smoothed typical price"
     },
-    "short_moment": {
-        "type": "float",
-        "name": "short_moment",
-        "comment": "Momentum based on the lowest-amplitude candles in a short window"
-    },
-    "long_moment": {
-        "type": "float",
-        "name": "long_moment",
-        "comment": "Momentum based on the lowest-amplitude candles in a long window"
-    },
-    "Fi": {
-        "type": "float",
-        "name": "Fi",
-        "comment": "Alias for fi"
-    },
     "stoch_rsi": {
         "type": "float",
         "name": "Stochastic RSI for Signals",
@@ -854,84 +839,61 @@
         "name": "StochRSI D for Signals",
         "comment": "StochRSI D line"
     },
-
     "price_change": {
         "type": "float",
         "name": "Close Price Change",
         "comment": "One-bar difference of Close"
-    }
-,
-
+    },
     "price_change_lag1": {
         "type": "float",
         "name": "Previous Close Price Change",
         "comment": "Previous value of price_change"
-    }
-,
-
+    },
     "return_5": {
         "type": "float",
         "name": "5-Bar Return",
         "comment": "Close percent change over 5 bars"
-    }
-,
-
+    },
     "return_10": {
         "type": "float",
         "name": "10-Bar Return",
         "comment": "Close percent change over 10 bars"
-    }
-,
-
+    },
     "sma20": {
         "type": "float",
         "name": "20-Bar SMA",
         "comment": "20-bar simple moving average of Close"
-    }
-,
-
+    },
     "sma50": {
         "type": "float",
         "name": "50-Bar SMA",
         "comment": "50-bar simple moving average of Close"
-    }
-,
-
+    },
     "std5": {
         "type": "float",
         "name": "5-Bar Close Std",
         "comment": "5-bar rolling standard deviation of Close"
-    }
-,
-
+    },
     "std10": {
         "type": "float",
         "name": "10-Bar Close Std",
         "comment": "10-bar rolling standard deviation of Close"
-    }
-,
-
+    },
     "std20": {
         "type": "float",
         "name": "20-Bar Close Std",
         "comment": "20-bar rolling standard deviation of Close"
-    }
-,
-
+    },
     "std50": {
         "type": "float",
         "name": "50-Bar Close Std",
         "comment": "50-bar rolling standard deviation of Close"
-    }
-,
-
+    },
     "close_min_10": {
         "type": "float",
         "name": "10-Bar Close Low",
         "comment": "10-bar rolling minimum of Close"
-    }
-,
-
+    },
     "close_max_10": {
         "type": "float",
         "name": "10-Bar Close High",
@@ -957,11 +919,6 @@
         "name": "RSI 21",
         "comment": "Relative Strength Index over 21 periods"
     },
-    "stochrsi_k_14_14_3_3": {
-        "type": "float",
-        "name": "StochRSI K 14 14 3 3",
-        "comment": "StochRSI K with length 14, RSI length 14, K 3, D 3"
-    },
     "williams_r_14": {
         "type": "float",
         "name": "Williams %R 14",
@@ -977,5 +934,4 @@
         "name": "MACD Histogram 12 26 9",
         "comment": "MACD histogram with fast 12, slow 26, signal 9"
     }
-
 }

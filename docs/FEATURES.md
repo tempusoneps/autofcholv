@@ -18,14 +18,13 @@ The pipeline executes in the order listed below.
 | `month` | int | Tháng |
 | `year` | int | Năm |
 | `trade_date` | datetime | Normalized trading date from the timestamp index |
-| `time_code` | int | HHMM integer alias for intraday signal logic |
 | `bar_in_day` | int | Zero-based bar number within each trading day |
-| `session_0930_1335` | bool | True when time_code is between 09:30 and 13:35 inclusive |
-| `session_0935_1425` | bool | True when time_code is between 09:35 inclusive and 14:25 exclusive |
-| `session_0935_1335` | bool | True when time_code is between 09:35 and 13:35 inclusive |
+| `session_0930_1335` | bool | True when time_int is between 09:30 and 13:35 inclusive |
+| `session_0935_1425` | bool | True when time_int is between 09:35 inclusive and 14:25 exclusive |
+| `session_0935_1335` | bool | True when time_int is between 09:35 and 13:35 inclusive |
 | `late_session_1325` | bool | True for 13:25, 13:40, and 13:55 bars |
 | `late_session_1310` | bool | True for 13:10, 13:25, 13:40, and 13:55 bars |
-| `entry_window_1300_1425` | bool | True when time_code is between 13:00 and 14:25 inclusive |
+| `entry_window_1300_1425` | bool | True when time_int is between 13:00 and 14:25 inclusive |
 
 ---
 
@@ -49,8 +48,8 @@ The pipeline executes in the order listed below.
 | `pre_1355_low` | float | Minimum Low before 13:55 for the current trading day |
 | `prev_day_1445_close` | float | Previous trading day's 14:45 close, falling back to previous completed close |
 | `prev_day_ema_bias_20` | int | Previous trading day close versus its 20-day EMA, encoded as 1, -1, or 0 |
-| `morning_high` | float | Current trading day's High through time_code <= 1100 |
-| `morning_low` | float | Current trading day's Low through time_code <= 1100 |
+| `morning_high` | float | Current trading day's High through time_int <= 1100 |
+| `morning_low` | float | Current trading day's Low through time_int <= 1100 |
 | `morning_mid` | float | Midpoint between morning_high and morning_low |
 
 ---
@@ -67,7 +66,6 @@ The pipeline executes in the order listed below.
 | `lowwick_rate` | float | lower wick rate = lower wick / height |
 | `body_rate` | float | body rate = body / height |
 | `clv` | float | clv = 1 if High = Low else ((Close-Low) - (High-Close)) / (High - Low) |
-| `cbr` | float | cbr = abs(close - open) / height |
 | `vbr` | float | vbr = Volume / (High - Low) |
 | `ibs` | float | ibs = (close - low) / (high - low) |
 | `color` | str | color |
@@ -77,12 +75,10 @@ The pipeline executes in the order listed below.
 | `fractal_low` | float | Fractal low detected with a 5-bar window |
 | `fractal_high_ffill` | float | Fractal high (5-bar window) forward-filled for signal generation |
 | `fractal_low_ffill` | float | Fractal low (5-bar window) forward-filled for signal generation |
-| `range` | float | High minus Low |
 | `body_abs` | float | Absolute candlestick body length |
 | `body_abs_sma20` | float | 20-bar simple moving average of absolute body length |
 | `range_sma20` | float | 20-bar simple moving average of High minus Low |
 | `candle_range_ratio` | float | Absolute body divided by High minus Low |
-| `bar_close_position` | float | Close position within current High-Low bar range |
 | `heikin_ashi_close` | float | (Open + High + Low + Close) / 4 |
 | `heikin_ashi_open` | float | Previous bar Open and Close midpoint |
 | `heikin_ashi_bull` | bool | True when heikin_ashi_close is greater than heikin_ashi_open |
@@ -257,7 +253,6 @@ The pipeline executes in the order listed below.
 | `skdj` | float | Slow KDJ oscillator |
 | `magiccci` | float | CCI variant using OHLC EWM-smoothed typical price |
 | `magiccci_v2` | float | CCI variant using HLC EWM-smoothed typical price |
-| `Fi` | float | Alias for fi |
 | `stoch_rsi` | float | Stochastic RSI of Close |
 | `awesome_oscillator` | float | Awesome Oscillator (5-34) |
 | `roc10` | float | Rate of change over 10 periods |
@@ -280,7 +275,6 @@ The pipeline executes in the order listed below.
 | `rsi_8` | float | Relative Strength Index over 8 periods |
 | `rsi_14` | float | Relative Strength Index over 14 periods |
 | `rsi_21` | float | Relative Strength Index over 21 periods |
-| `stochrsi_k_14_14_3_3` | float | StochRSI K with length 14, RSI length 14, K 3, D 3 |
 | `williams_r_14` | float | Williams %R over 14 periods |
 | `bb_percent_b_20_2` | float | Bollinger Band percent B with length 20 and 2 standard deviations |
 | `macd_hist_12_26_9` | float | MACD histogram with fast 12, slow 26, signal 9 |
@@ -306,16 +300,8 @@ The pipeline executes in the order listed below.
 | `avgprice` | float | Rolling VWAP normalized within its rolling range |
 | `avgpricetohigh` | float | VWAP relative to current high |
 | `avgpricetolow` | float | VWAP relative to current low |
-| `AvgPrice` | float | Alias for avgprice |
-| `AvgPriceToHigh` | float | Alias for avgpricetohigh |
-| `AvgPriceToLow` | float | Alias for avgpricetolow |
-| `LowPrice` | float | Alias for lowprice |
-| `Typ` | float | Alias for typ |
-| `VwapSignal` | float | Alias for vwap_signal |
 | `WVAD` | float | Normalized rolling candle-body volume accumulation |
 | `Vwapbias` | float | Rolling VWAP divided by its moving average minus 1 |
-| `Vwap` | float | Alias for rolling_vwap |
-| `Wc` | float | Alias for wc |
 | `lowprice` | float | Rolling mean close price |
 | `typ` | float | Typical price (H+L+C)/3 |
 | `vwap_signal` | float | Typical price relative to rolling VWAP minus 1 |
@@ -440,8 +426,6 @@ The pipeline executes in the order listed below.
 | `angle` | float | Angle of the rolling linear regression line of close prices |
 | `vi` | float | Vortex positive minus negative directional spread |
 | `trrq_v3` | float | Asymmetric regression-return signal using quote-volume proxy |
-| `adxdip` | float | Source ADX DI+ alias |
-| `adxdim` | float | Source ADX DI- alias |
 | `adxr` | float | Source ADXR spread between smoothed DI+ and DI- |
 | `bbi` | float | Bull and Bear Index normalized by close |
 | `hullma` | float | Hull moving-average ratio using the source formula |
@@ -453,66 +437,6 @@ The pipeline executes in the order listed below.
 | `turtle` | float | Source turtle-channel breakout distance normalized by channel width |
 | `vidya` | float | Close relative to the source VIDYA baseline |
 | `t3` | float | Close divided by Tillson T3 minus 1 |
-| `Mac_v2` | float | Alias for mac_v2 |
-| `Mac_v3` | float | Alias for mac_v3 |
-| `Mac_v4` | float | Alias for mac_v4 |
-| `Mac_v5` | float | Alias for mac_v5 |
-| `Vidya_v2` | float | Alias for vidya_v2 |
-| `Vidya_v3` | float | Alias for vidya_v3 |
-| `Vidya_v4` | float | Alias for vidya_v4 |
-| `Vidya_v5` | float | Alias for vidya_v5 |
-| `Tma_v2` | float | Alias for tma_v2 |
-| `Tma_v3` | float | Alias for tma_v3 |
-| `Arron` | float | Alias for arron |
-| `Acs` | float | Alias for acs |
-| `Mac` | float | Alias for mac |
-| `Vidya` | float | Alias for vidya |
-| `Tma` | float | Alias for tma |
-| `Ma` | float | Alias for ma |
-| `Vma` | float | Alias for vma |
-| `Mm` | float | Alias for mm |
-| `Gap` | float | Alias for gap |
-| `Dema` | float | Alias for dema |
-| `Tema` | float | Alias for tema |
-| `Hma` | float | Alias for hma |
-| `Reg` | float | Alias for reg |
-| `Reg_v2` | float | Alias for reg_v2 |
-| `Reg_v3` | float | Alias for reg_v3 |
-| `T3` | float | Alias for t3 |
-| `DiffEma` | float | Alias for diff_ema |
-| `Adxrpos` | float | Alias for adxr_pos |
-| `Adxrneg` | float | Alias for adxr_neg |
-| `Expma` | float | Alias for expma |
-| `Vi` | float | Alias for vi |
-| `Bbi` | float | Alias for bbi |
-| `RegTema` | float | Alias for regtema |
-| `Turtle` | float | Alias for turtle |
-| `MaSignal` | float | Alias for ma_signal |
-| `HmaSignal` | float | Alias for hma_signal |
-| `HullmaSignal` | float | Alias for hullma_signal |
-| `Ic` | float | Alias for ic |
-| `Ic_v2` | float | Alias for ic_v2 |
-| `Ic_v3` | float | Alias for ic_v3 |
-| `Ic_v4` | float | Alias for ic_v4 |
-| `Adxr` | float | Alias for adxr |
-| `Regema` | float | Alias for regema |
-| `Adx` | float | Alias for adx_strength |
-| `Dma` | float | Alias for dma |
-| `Vi+` | float | Alias for vi_plus |
-| `Vi-` | float | Alias for vi_minus |
-| `Mak` | float | Alias for mak |
-| `Sgcz` | float | Alias for sgcz |
-| `Cse` | float | Alias for cse |
-| `Trrq` | float | Alias for trrq |
-| `Mreg` | float | Alias for mreg |
-| `Angle` | float | Alias for angle_reg |
-| `AdxDi+` | float | Alias for adx_di_plus |
-| `AdxDi-` | float | Alias for adx_di_minus |
-| `BbiBias` | float | Alias for bbi_bias |
-| `Trv` | float | Alias for trv |
-| `PjcDistance` | float | Alias for pjc_distance |
-| `Trrq_v3` | float | Alias for trrq_v3 |
-| `TrTrix` | float | Alias for trtrix |
 | `hma20` | float | Hull Moving Average over 20 periods |
 | `kama10` | float | Kaufman Adaptive Moving Average over 10 periods |
 | `trix15` | float | TRIX indicator over 15 periods |
@@ -622,67 +546,6 @@ The pipeline executes in the order listed below.
 | `paclower` | float | PAC lower band normalized to rolling range |
 | `pacupper_v2` | float | Close minus PAC upper band, rolling averaged |
 | `paclower_v2` | float | PAC lower band minus close, rolling averaged |
-| `rwih` | float | Random Walk Index high-side measure |
-| `rwil` | float | Random Walk Index low-side measure |
-| `Bolling` | float | Alias for bolling |
-| `Bolling_v2` | float | Alias for bolling_v2 |
-| `Bolling_v3` | float | Alias for bolling_v3 |
-| `Bolling_fancy` | float | Alias for bolling_fancy |
-| `EnvSignal` | float | Alias for env_signal |
-| `EnvUpper` | float | Alias for env_upper |
-| `EnvLower` | float | Alias for env_lower |
-| `KcSignal` | float | Alias for kc_signal |
-| `KcUpperSignal` | float | Alias for kc_upper_signal |
-| `KcLowerSignal` | float | Alias for kc_lower_signal |
-| `VwapBbw` | float | Alias for vwap_bbw |
-| `RetBoll_fancy` | float | Alias for ret_boll_fancy |
-| `Lchc_fancy` | float | Alias for lchc_fancy |
-| `AdaptBollingv3` | float | Alias for adapt_bollingv3 |
-| `Bollcount_dem` | float | Alias for bollcount_dem |
-| `DzcciLower` | float | Alias for dzcci_lower |
-| `DzcciUpper` | float | Alias for dzcci_upper |
-| `DzrsiLowerSignal` | float | Alias for dzrsi_lower_signal |
-| `DzrsiUpperSignal` | float | Alias for dzrsi_upper_signal |
-| `FbLower` | float | Alias for fb_lower |
-| `FbUpper` | float | Alias for fb_upper |
-| `DzcciLowerSignal` | float | Alias for dzcci_lower_signal |
-| `DzcciLowerSignal_v2` | float | Alias for dzcci_lower_signal_v2 |
-| `DzcciUpperSignal` | float | Alias for dzcci_upper_signal |
-| `DzcciUpperSignal_v2` | float | Alias for dzcci_upper_signal_v2 |
-| `FbLowerSignal` | float | Alias for fb_lower_signal |
-| `FbLowerSignal_v2` | float | Alias for fb_lower_signal_v2 |
-| `FbLowerSignal_v3` | float | Alias for fb_lower_signal_v3 |
-| `FbUpperSignal` | float | Alias for fb_upper_signal |
-| `FbUpperSignal_v2` | float | Alias for fb_upper_signal_v2 |
-| `FbUpperSignal_v3` | float | Alias for fb_upper_signal_v3 |
-| `VixBw` | float | Alias for vix_bw |
-| `VolumeStd` | float | Alias for volume_std |
-| `Grid` | float | Alias for grid |
-| `Lcsd` | float | Alias for lcsd |
-| `Apz` | float | Alias for apz |
-| `ApzUpper` | float | Alias for apz_upper |
-| `ApzLower` | float | Alias for apz_lower |
-| `Bbw` | float | Alias for bbw |
-| `Cv` | float | Alias for cv |
-| `Dc` | float | Alias for dc |
-| `DcSignal` | float | Alias for dc_signal |
-| `Dc_v2` | float | Alias for dc_v2 |
-| `EnvUpperSignal` | float | Alias for env_upper_signal |
-| `EnvLowerSignal` | float | Alias for env_lower_signal |
-| `Rwi` | float | Alias for rwi |
-| `RwiH` | float | Alias for rwi_high |
-| `RwiL` | float | Alias for rwi_low |
-| `Atr` | float | Alias for atr |
-| `AtrPct` | float | Alias for atr_pct |
-| `AtrUpper` | float | Alias for atr_upper |
-| `AtrLower` | float | Alias for atr_lower |
-| `Pac` | float | Alias for pac |
-| `PacUpper` | float | Alias for pacupper |
-| `PacLower` | float | Alias for paclower |
-| `PacUpper_v2` | float | Alias for pacupper_v2 |
-| `PacLower_v2` | float | Alias for paclower_v2 |
-| `Pfe` | float | Direction-signed price efficiency |
-| `ChangeStd` | float | N-period return multiplied by rolling return std |
 | `bb_width` | float | Standard Bollinger Band Width used for signals |
 | `kc_mid` | float | Keltner Channel mid line (EMA 20) |
 | `kc_upper` | float | Keltner Channel upper band (mid + 2 * ATR) |
@@ -783,49 +646,16 @@ The pipeline executes in the order listed below.
 | `mtm_bull` | float | Momentum, ATR, and taker-buy composite |
 | `mtm_bear` | float | Momentum, ATR, and taker-sell composite |
 | `buy_vwap_div_vwap_fancy` | float | Taker-buy VWAP divided by rolling VWAP |
-| `Pvo` | float | Alias for pvo |
 | `Vramt` | float | Volume ratio based on up, down, and unchanged bars |
 | `v1up` | float | Upper adaptive band distance for the V1 composite |
 | `v1_v2` | float | V1 momentum-volatility composite using mean-based z-score bands |
 | `v1up_v2` | float | Upper adaptive band distance for the V1_v2 composite |
 | `v1dn_v2` | float | Lower adaptive band distance for the V1_v2 composite |
 | `v1dn` | float | Lower adaptive band distance for the V1 composite |
-| `Volume_Bias` | float | Alias for volume_bias |
-| `QuoteVolumeMean` | float | Alias for quote_volume_mean |
-| `QuoteVolumeRatio` | float | Alias for quote_volume_ratio |
-| `VolumeReg` | float | Alias for volume_reg |
-| `VolumeTSF` | float | Alias for volume_tsf |
-| `TradeNum` | float | Alias for trade_num |
-| `BuyVolRatio_fancy` | float | Alias for buy_vol_ratio_fancy |
-| `VolPerTrade_fancy` | float | Alias for vol_per_trade_fancy |
-| `BuyVwapDivVwap_fancy` | float | Alias for buy_vwap_div_vwap_fancy |
-| `TakerByRatio` | float | Alias for taker_by_ratio |
-| `TakerByRatioPerTrade` | float | Alias for taker_by_ratio_per_trade |
-| `V1` | float | Alias for v1 |
-| `V1Up` | float | Alias for v1up |
-| `V1Dn` | float | Alias for v1dn |
-| `V1_v2` | float | Alias for v1_v2 |
-| `V1Up_v2` | float | Alias for v1up_v2 |
-| `V1Dn_v2` | float | Alias for v1dn_v2 |
-| `Mfi` | float | Alias for mfi |
-| `Vr` | float | Alias for vr |
-| `Vao` | float | Alias for vao |
-| `Vao_v2` | float | Alias for vao_v2 |
-| `Volumechg` | float | Alias for volumechg |
-| `Wvad` | float | Alias for wvad |
-| `QuanlityPriceCorr` | float | Alias for price_volume_corr |
 | `Volume` | float | Alias for volume |
-| `Force` | float | Alias for force_index |
-| `Cmf` | float | Alias for cmf |
-| `Obv` | float | Alias for obv |
-| `VRA` | float | Alias for vra |
-| `Chla_fancy` | float | Alias for chla_fancy |
-| `NetVol_fancy` | float | Alias for net_vol_fancy |
-| `Amv` | float | Alias for amv |
 | `mfi14` | float | Money Flow Index over 14 periods |
 | `vpt` | float | Cumulative Volume Price Trend indicator |
 | `volume_sma20` | float | 20-bar simple moving average of Volume |
-| `volume_ma_20` | float | 20-bar simple moving average of Volume |
 | `signed_volume` | float | Volume signed by candle direction with Close diff fallback |
 | `session_flow_imbalance` | float | Running signed_volume divided by running session Volume |
 
@@ -845,13 +675,6 @@ The pipeline executes in the order listed below.
 | `market_placement_v2` | float | VWAP-validity checked market placement proxy |
 | `liquidity_v3` | float | Volume divided by log spread and return volatility proxy |
 | `amihud` | float | Amihud illiquidity proxy using intraday shortest price path |
-| `marketpl` | float | Market placement / average holding cost |
-| `marketpl_v2` | float | Market placement with VWAP validity check |
-| `MarketPl` | float | Alias for marketpl |
-| `MarketPl_v2` | float | Alias for marketpl_v2 |
-| `Liquidity_v3` | float | Alias for liquidity_v3 |
-| `Amihud` | float | Alias for amihud |
-| `BidaskSpread` | float | Alias for bidask_spread |
 
 ---
 
@@ -910,8 +733,6 @@ The pipeline executes in the order listed below.
 | `Msbt` | float | Momentum, std momentum, BBW, and taker buy composite |
 | `CoppAtrBull` | float | Coppock momentum times ATR times taker buy activity |
 | `adx_mtm_neg` | float | Negative directional movement multiplied by rolling momentum |
-| `Damaov10` | float | Alias for damaov10 |
-| `FearGreed_Yidai_v1` | float | Alias for fear_greed_yidai_v1 |
 | `connors_rsi` | float | ConnorsRSI indicator (RSI(3) + StreakRSI(2) + PriceRank) |
 | `prev_day_momentum_signal_bias` | string | Previous trading day's 13:55 daily momentum signal, Buy or Sell when present |
 | `persist_short_12_shift1` | float | 12-bar rolling share of closes below session_open shifted one bar |
