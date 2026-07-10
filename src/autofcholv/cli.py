@@ -9,6 +9,34 @@ from autofcholv.core import EXTRACT_PROGRESS_STEPS
 from autofcholv.config.config import generate_default_config_file, load_config
 
 
+SUPPORTED_OUTPUT_FORMATS = {
+    ".csv": "CSV",
+    ".parquet": "Parquet",
+}
+
+
+def _get_output_format(output_path: str) -> tuple[str, str]:
+    suffix = Path(output_path).suffix.lower()
+    if suffix not in SUPPORTED_OUTPUT_FORMATS:
+        display_suffix = suffix or "<none>"
+        supported = ", ".join(SUPPORTED_OUTPUT_FORMATS)
+        raise ValueError(
+            f"Unsupported output format {display_suffix}. "
+            f"Supported output formats: {supported}."
+        )
+    return suffix, SUPPORTED_OUTPUT_FORMATS[suffix]
+
+
+def _write_features(features: pd.DataFrame, output_path: str, output_format: str) -> None:
+    if output_format == ".csv":
+        features.to_csv(output_path)
+        return
+    if output_format == ".parquet":
+        features.to_parquet(output_path)
+        return
+    raise ValueError(f"Unsupported output format {output_format!r}.")
+
+
 class ProgressBar:
     def __init__(self, total: int, enabled: bool = True) -> None:
         self.total = total
@@ -57,7 +85,7 @@ def main():
     parser_extract.add_argument(
         "--output", "-o", 
         default="output_features.csv",
-        help="Path to save the extracted features (default: output_features.csv)"
+        help="Path to save the extracted features as CSV or Parquet (default: output_features.csv)"
     )
     parser_extract.add_argument(
         "--config", "-c",
@@ -98,7 +126,13 @@ def main():
         if not input_path.exists():
             print(f"Error: Input file '{args.input}' does not exist.", file=sys.stderr)
             sys.exit(1)
-        
+
+        try:
+            output_format, output_format_label = _get_output_format(args.output)
+        except ValueError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+
         try:
             config = load_config(args.config)
         except Exception as e:
@@ -122,11 +156,11 @@ def main():
             progress.close()
         elapsed = time.time() - start_time
         
-        features.to_csv(args.output)
+        _write_features(features, args.output, output_format)
         print(f"Features successfully extracted and saved to {args.output}")
         print(f"Total extracting time: {elapsed:.2f}s")
-        print(f"Output CSV length: {len(features)} rows")
-        print(f"Output CSV columns: {len(features.columns)} columns")
+        print(f"Output {output_format_label} length: {len(features)} rows")
+        print(f"Output {output_format_label} columns: {len(features.columns)} columns")
         print("\nResult Sample:")
         print(features.tail())
         

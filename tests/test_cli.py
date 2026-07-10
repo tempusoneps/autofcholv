@@ -58,6 +58,12 @@ def test_cli_extract_help_mentions_progress_toggle():
     assert "--no-progress" in result.stdout
 
 
+def test_cli_extract_help_mentions_supported_output_formats():
+    result = subprocess.run([*_cli_command(), "extract", "--help"], capture_output=True, text=True)
+    assert result.returncode == 0
+    assert "CSV or Parquet" in result.stdout
+
+
 def test_cli_version():
     result = subprocess.run([*_cli_command(), "--version"], capture_output=True, text=True)
     assert result.returncode == 0
@@ -108,6 +114,59 @@ def test_cli_successful_extraction():
         ]
         for col in expected_cols:
             assert col in out_df.columns, f"Missing output column: '{col}'"
+
+
+def test_cli_successful_parquet_extraction(monkeypatch, tmp_path, capsys):
+    import autofcholv.cli as cli
+
+    input_path = tmp_path / "input.csv"
+    output_path = tmp_path / "output.parquet"
+    _make_ohlcv_csv(str(input_path), n_bars=10)
+
+    expected = pd.DataFrame(
+        {"feature": [1.0, 2.0]},
+        index=pd.date_range("2024-01-02 09:05:00", periods=2, freq="5min"),
+    )
+    expected.index.name = "Date"
+    calls = []
+
+    def fake_extract_features(df, config=None, progress_callback=None):
+        calls.append((df, config, progress_callback))
+        return expected
+
+    monkeypatch.setattr(cli, "extract_features", fake_extract_features)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["autofcholv", "extract", str(input_path), "--output", str(output_path), "--no-progress"],
+    )
+
+    cli.main()
+
+    captured = capsys.readouterr()
+    assert len(calls) == 1
+    assert output_path.exists(), "Output file was not created"
+    pd.testing.assert_frame_equal(pd.read_parquet(output_path), expected, check_freq=False)
+    assert "Output Parquet length: 2 rows" in captured.out
+    assert "Output Parquet columns: 1 columns" in captured.out
+
+
+def test_cli_invalid_output_extension_fails_before_extraction():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        input_path = os.path.join(tmpdir, "input.csv")
+        output_path = os.path.join(tmpdir, "output.txt")
+        _make_ohlcv_csv(input_path, n_bars=10)
+
+        result = subprocess.run(
+            [*_cli_command(), "extract", input_path, "--output", output_path],
+            capture_output=True, text=True,
+        )
+
+        assert result.returncode == 1
+        assert not os.path.exists(output_path)
+        assert "Unsupported output format .txt" in result.stderr
+        assert "Supported output formats: .csv, .parquet" in result.stderr
+        assert "Extracting features" not in result.stdout
 
 
 def test_cli_output_log_messages():
