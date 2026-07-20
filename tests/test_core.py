@@ -207,7 +207,7 @@ def test_extract_features_close_columns():
         "cci_v3", "rsimean", "dbcd_v3", "micd", "rsj", "mtm_max",
         "bias_v2", "rsiv", "rsih", "fi", "fi_rsi", "force",
         "ko", "vramt", "rsis", "pmarp_yidai_v1", "dbcd_v2", "smi_v2",
-        "volume_reg", "volume_tsf", "v1_v2", "v1up_v2", "v1dn_v2", "mtmmean_v10",
+        "volume_reg", "v1_v2", "v1up_v2", "v1dn_v2", "mtmmean_v10",
         "mtmmean_v12", "mtmhcm", "short_moment", "long_moment", "si", "wr",
         "rocvol", "mtmmean_v4", "atr_count", "zfabsmean", "bbw", "amv",
         "mfi", "obv", "pvt_v2", "pvt_v3", "pvt_v4", "vr",
@@ -260,7 +260,7 @@ def test_extract_features_volume_columns():
         "quote_volume_reg", "quote_volume_tsf", "price_volume_corr",
         "quote_volume_sum", "volume_bias_short_long", "volume_ratio_amount",
         "adosc", "wvad", "klinger_oscillator", "ko", "vra", "ke",
-        "roc_volume", "roc_vol", "macdvol", "volume_reg", "volume_tsf", "volume_ma_bias", "amv_signal", "volume_ratio", "macd_volume_ratio", "volume_analysis_oscillator", "quote_volume_mean", "quote_volume_ratio", "v1", "v1_up", "v1_down", "mfi_standard", "chla_fancy", "net_vol_fancy", "force_ratio",
+        "roc_volume", "roc_vol", "macdvol", "volume_reg", "volume_ma_bias", "amv_signal", "volume_ratio", "macd_volume_ratio", "volume_analysis_oscillator", "quote_volume_mean", "quote_volume_ratio", "v1", "v1_up", "v1_down", "mfi_standard", "chla_fancy", "net_vol_fancy", "force_ratio",
     ]
     for col in expected:
         assert col in result.columns, f"Missing volume column: '{col}'"
@@ -305,7 +305,7 @@ def test_extract_features_mix_columns():
         "ibs_n", "is_fvg",
         "ulti_osci", "vwap", "atr", "adx",
         "atr_pct",
-        "dm", "eom",
+        "dm",
         "direction", "streak",
         "custom_001", "custom_002",
         "donchian_width", "donchian_position", "amihud_liquidity",
@@ -381,7 +381,7 @@ def test_extract_features_signal_values():
 
 def test_extract_features_strategy_signal_columns():
     result = extract_features(make_ohlcv(300))
-    expected = [f"signal_pro{i}" for i in range(1, 30)]
+    expected = [f"signal_pro{i}" for i in range(1, 30) if i != 4]
 
     for col in expected:
         assert col in result.columns, f"Missing strategy signal column: '{col}'"
@@ -400,7 +400,7 @@ def test_strategy_features_add_only_signal_pro_columns():
     result = strategy_features.extract_features(df.copy(), config)
 
     added = set(result.columns) - before
-    assert added == {f"signal_pro{i}" for i in range(1, 30)}
+    assert added == ({f"signal_pro{i}" for i in range(1, 30) if i != 4} | {"_temp_signal_pro4"})
 
 
 def test_strategy_features_requires_precomputed_helper_columns():

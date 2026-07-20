@@ -55,7 +55,7 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     df['candle_strength'] = df['body'] / (height_safe + epsilon)
 
     # Volume (safe)
-    df['vbr'] = (df['Volume'] / (height_safe + epsilon)).clip(
+    df['_temp_vbr'] = (df['Volume'] / (height_safe + epsilon)).clip(
         0, df['Volume'].quantile(0.99)
     )
 
@@ -97,9 +97,9 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
         df["Low"],
         np.nan,
     )
-    df["fractal_high"] = pd.Series(fractal_high, index=df.index)
-    df["fractal_low"] = pd.Series(fractal_low, index=df.index)
-    df["fractal_high_ffill"] = df["fractal_high"].ffill()
-    df["fractal_low_ffill"] = df["fractal_low"].ffill()
+    df["_temp_fractal_high"] = pd.Series(fractal_high, index=df.index)
+    df["_temp_fractal_low"] = pd.Series(fractal_low, index=df.index)
+    df["_temp_fractal_high_ffill"] = df["_temp_fractal_high"].ffill()
+    df["_temp_fractal_low_ffill"] = df["_temp_fractal_low"].ffill()
 
     return df

@@ -46,4 +46,10 @@ def build_features(
             df = func(df, config).copy()
         if progress_callback:
             progress_callback(name)
+            
+    # Drop all columns starting with _temp_
+    temp_cols = [col for col in df.columns if col.startswith("_temp_")]
+    if temp_cols:
+        df = df.drop(columns=temp_cols)
+        
     return df

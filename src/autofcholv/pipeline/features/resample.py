@@ -81,9 +81,9 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     merged_data["prev_day_r1"] = trade_date.map(2.0 * pp - prev["day_low"])
     merged_data["prev_day_s1"] = trade_date.map(2.0 * pp - prev["day_high"])
 
-    merged_data["first_close_0915"] = _daily_time_value(merged_data, "Close", 915, "first_at")
-    merged_data["pre_1345_high"] = _daily_time_value(merged_data, "High", 1345, "max_before")
-    merged_data["pre_1355_low"] = _daily_time_value(merged_data, "Low", 1355, "min_before")
+    merged_data["_temp_first_close_0915"] = _daily_time_value(merged_data, "Close", 915, "first_at")
+    merged_data["_temp_pre_1345_high"] = _daily_time_value(merged_data, "High", 1345, "max_before")
+    merged_data["_temp_pre_1355_low"] = _daily_time_value(merged_data, "Low", 1355, "min_before")
     day_close_1445 = _daily_time_value(merged_data, "Close", 1445, "last_at")
     prev_1445 = day_close_1445.groupby(trade_date).first().shift(1)
     merged_data["prev_day_1445_close"] = trade_date.map(prev_1445).fillna(
@@ -101,8 +101,8 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
         morning_high=("High", "max"),
         morning_low=("Low", "min"),
     )
-    merged_data["morning_high"] = trade_date.map(morning["morning_high"])
-    merged_data["morning_low"] = trade_date.map(morning["morning_low"])
-    merged_data["morning_mid"] = (merged_data["morning_high"] + merged_data["morning_low"]) / 2.0
+    merged_data["_temp_morning_high"] = trade_date.map(morning["morning_high"])
+    merged_data["_temp_morning_low"] = trade_date.map(morning["morning_low"])
+    merged_data["_temp_morning_mid"] = (merged_data["_temp_morning_high"] + merged_data["_temp_morning_low"]) / 2.0
 
     return merged_data
