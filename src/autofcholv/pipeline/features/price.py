@@ -114,11 +114,11 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["mom_y"] = (
         100.0 * (df["Close"] - df["prev_day_1445_close"]) / df["prev_day_1445_close"].replace(0, np.nan)
     )
-    df["body_rate_first_close"] = (df["Close"] - df["first_close_0915"]) / (
-        (df["pre_1345_high"] - df["pre_1355_low"]).replace(0, np.nan)
+    df["_temp_body_rate_first_close"] = (df["Close"] - df["_temp_first_close_0915"]) / (
+        (df["_temp_pre_1345_high"] - df["_temp_pre_1355_low"]).replace(0, np.nan)
     )
-    df["opening_gap_pct"] = (
-        100.0 * (df["first_close_0915"] - df["prev_day_1445_close"]) / df["prev_day_1445_close"].replace(0, np.nan)
+    df["_temp_opening_gap_pct"] = (
+        100.0 * (df["_temp_first_close_0915"] - df["prev_day_1445_close"]) / df["prev_day_1445_close"].replace(0, np.nan)
     )
 
     pv = df["Close"] * df["Volume"]
@@ -133,7 +133,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["session_vwap_z"] = (df["Close"] - df["session_vwap"]) / df["session_vwap_std"].replace(0, np.nan)
     df["session_vwap_dev_pct"] = 100.0 * (df["Close"] - df["session_vwap"]) / df["Close"].replace(0, np.nan)
 
-    morning_range = (df["morning_high"] - df["morning_low"]).replace(0, np.nan)
-    df["morning_breakout_long"] = (df["Close"] - df["morning_high"]) / morning_range
+    morning_range = (df["_temp_morning_high"] - df["_temp_morning_low"]).replace(0, np.nan)
+    df["_temp_morning_breakout_long"] = (df["Close"] - df["_temp_morning_high"]) / morning_range
 
     return df
