@@ -73,10 +73,6 @@ REQUIRED_COLUMNS = [
     "hurst_proxy",
     "mfi14",
     "vpt",
-    "_temp_fractal_high",
-    "_temp_fractal_low",
-    "_temp_fractal_high_ffill",
-    "_temp_fractal_low_ffill",
     "connors_rsi",
     "height",
     "body_abs",
@@ -166,13 +162,13 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     df["macd_histogram_reversal_signal"] = _signal_from_conditions(
         (df["open_lag1"] >= df["close_lag1"])
         & (df["macd_hist"] < 0)
-        & is_min_macd_hist.shift(1).fillna(False)
+        & is_min_macd_hist.shift(1, fill_value=False)
         & (df["macd_hist"].rolling(5).sum() < 0)
         & (df["Close"] > df["open_lag1"])
         & ((df["Close"] - df["low_lag1"]) < 5),
         (df["open_lag1"] <= df["close_lag1"])
         & (df["macd_hist"] > 0)
-        & is_max_macd_hist.shift(1).fillna(False)
+        & is_max_macd_hist.shift(1, fill_value=False)
         & (df["macd_hist"].rolling(5).sum() > 0)
         & (df["Close"] < df["open_lag1"])
         & ((df["high_lag1"] - df["Close"]) < 5),
@@ -240,10 +236,7 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
         (df["Close"] < df["kc_lower"]) & (df["close_lag1"] > df["kc_lower"].shift(1)),
         (df["Close"] > df["kc_upper"]) & (df["close_lag1"] < df["kc_upper"].shift(1)),
     )
-    df["fractal_breakout_signal"] = _signal_from_conditions(
-        df["Close"] > df["_temp_fractal_high_ffill"].shift(2),
-        df["Close"] < df["_temp_fractal_low_ffill"].shift(2),
-    )
+    
     df["supertrend_reversal"] = _signal_from_conditions(
         (df["supertrend_dir"] > 0) & (df["supertrend_dir"].shift(1) < 0),
         (df["supertrend_dir"] < 0) & (df["supertrend_dir"].shift(1) > 0),
@@ -281,7 +274,6 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
         (df["linreg_slope20"] > 0) & (df["linreg_slope20"].shift(1) < df["linreg_slope20"]),
         (df["linreg_slope20"] < 0) & (df["linreg_slope20"].shift(1) > df["linreg_slope20"]),
     )
-    df["_temp_zig_zag_reversal_signal"] = _signal_from_conditions(df["_temp_fractal_low"].notna(), df["_temp_fractal_high"].notna())
     df["kaufman_ama_signal"] = _signal_from_conditions(
         (df["kama10"] > df["kama10"].shift(1)) & (df["kama10"].shift(1) < df["kama10"].shift(2)),
         (df["kama10"] < df["kama10"].shift(1)) & (df["kama10"].shift(1) > df["kama10"].shift(2)),
@@ -294,7 +286,6 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
         (df["Close"] < df["linreg_lower20"]) & (df["close_lag1"] > df["linreg_lower20"].shift(1)),
         (df["Close"] > df["linreg_upper20"]) & (df["close_lag1"] < df["linreg_upper20"].shift(1)),
     )
-    df["_temp_fractal_channel_signal"] = _signal_from_conditions(df["Close"] > df["_temp_fractal_high_ffill"], df["Close"] < df["_temp_fractal_low_ffill"])
     df["hurst_exponent_signal"] = (df["hurst_proxy"] < 0.5).fillna(False)
     df["vpt_divergence_signal"] = _signal_from_conditions(
         (df["Low"] < df["Low"].shift(5)) & (df["vpt"] > df["vpt"].shift(5)),

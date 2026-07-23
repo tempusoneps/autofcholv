@@ -68,8 +68,6 @@
 │       │       ├── resample.json     # Resample feature metadata.
 │       │       ├── signal.py         # Signal/idea features.
 │       │       ├── signal.json       # Signal feature metadata.
-│       │       ├── strategy.py       # Strategy-oriented feature logic under development.
-│       │       ├── strategy.json     # Strategy metadata placeholder.
 │       │       ├── time.py           # Time/session features.
 │       │       ├── time.json         # Time feature metadata.
 │       │       ├── trend.py          # Trend and moving-average features.

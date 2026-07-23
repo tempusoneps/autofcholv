@@ -734,7 +734,6 @@ The pipeline executes in the order listed below.
 | `CoppAtrBull` | float | Coppock momentum times ATR times taker buy activity |
 | `adx_mtm_neg` | float | Negative directional movement multiplied by rolling momentum |
 | `connors_rsi` | float | ConnorsRSI indicator (RSI(3) + StreakRSI(2) + PriceRank) |
-| `prev_day_momentum_signal_bias` | string | Previous trading day's 13:55 daily momentum signal, Buy or Sell when present |
 | `persist_short_12_shift1` | float | 12-bar rolling share of closes below session_open shifted one bar |
 | `accept_long_4_shift1` | float | 4-bar rolling share of closes above morning_mid shifted one bar |
 
@@ -837,7 +836,6 @@ The pipeline executes in the order listed below.
 | `connors_rsi_signal` | string | Tín hiệu Mean Reversion cực nhanh cho scalping |
 | `choppiness_signal` | boolean | Dùng để bật/tắt các signal khác. < 38.2 là có xu hướng, > 61.8 là đi ngang |
 | `keltner_channel_reversal` | string | Tín hiệu đảo chiều khi giá chạm biên Keltner |
-| `fractal_breakout_signal` | string | Xác định đỉnh/đáy cục bộ để giao dịch breakout |
 | `supertrend_reversal` | string | Tín hiệu đảo chiều xu hướng mạnh mẽ |
 | `aroon_oscillator_signal` | string | Xác định sức mạnh và hướng của xu hướng |
 | `chande_momentum_oscillator_signal` | string | Đo lường động lượng thị trường |
@@ -896,41 +894,5 @@ The pipeline executes in the order listed below.
 | `range_flip_signal` | string | Đảo range |
 | `vol_price_divergence_signal` | string | Volume không confirm giá |
 | `final_push_signal` | string | Đẩy cuối trend |
-
----
-
-## 14. Strategy — `strategy.py`
-
-| Column | Type | Description |
-|---|---|---|
-| `signal_pro1` | string | Entry direction migrated from strategy-001.py / MomentumStrategy: Buy \| Sell \| None |
-| `signal_pro2` | string | Entry direction migrated from strategy-002.py / OpeningGapORBStrategy: Buy \| Sell \| None |
-| `signal_pro3` | string | Entry direction migrated from strategy-003.py / NextDayMomentumBreakoutStrategy: Buy \| Sell \| None |
-| `signal_pro4` | string | Entry direction migrated from strategy-004.py / MainStrategy: Buy \| Sell \| None |
-| `signal_pro5` | string | Entry direction migrated from strategy-005.py / Mix3Strategy: Buy \| Sell \| None |
-| `signal_pro6` | string | Entry direction migrated from strategy-006.py / OpenRangeTrendStrategy: Buy \| Sell \| None |
-| `signal_pro7` | string | Entry direction migrated from strategy-007.py / OpenRangeTrend52Strategy: Buy \| Sell \| None |
-| `signal_pro8` | string | Entry direction migrated from strategy-008.py / OpenRangeTrendDayBiasStrategy: Buy \| Sell \| None |
-| `signal_pro9` | string | Entry direction migrated from strategy-009.py / KeltnerBreakoutStrategy: Buy \| Sell \| None |
-| `signal_pro10` | string | Entry direction migrated from strategy-010.py / DonchianBreakoutStrategy: Buy \| Sell \| None |
-| `signal_pro11` | string | Entry direction migrated from strategy-011.py / VWAPBandBreakoutStrategy: Buy \| Sell \| None |
-| `signal_pro12` | string | Entry direction migrated from strategy-012.py / KeltnerHeikinAshiStrategy: Buy \| Sell \| None |
-| `signal_pro13` | string | Entry direction migrated from strategy-013.py / PivotPointBreakoutStrategy: Buy \| Sell \| None |
-| `signal_pro14` | string | Entry direction migrated from strategy-014.py / CloseDonchianBreakoutStrategy: Buy \| Sell \| None |
-| `signal_pro15` | string | Entry direction migrated from strategy-015.py / KeltnerStochRSIStrategy: Buy \| Sell \| None |
-| `signal_pro16` | string | Entry direction migrated from strategy-016.py / KeltnerMACDStrategy: Buy \| Sell \| None |
-| `signal_pro17` | string | Entry direction migrated from strategy-017.py / KeltnerTripleEMAStrategy: Buy \| Sell \| None |
-| `signal_pro18` | string | Entry direction migrated from strategy-018.py / KeltnerPSARStrategy: Buy \| Sell \| None |
-| `signal_pro19` | string | Entry direction migrated from strategy-019.py / DonchianMACDStrategy: Buy \| Sell \| None |
-| `signal_pro20` | string | Entry direction migrated from strategy-020.py / WilliamsRMACDStrategy: Buy \| Sell \| None |
-| `signal_pro21` | string | Entry direction migrated from strategy-021.py / BBPctMACDStrategy: Buy \| Sell \| None |
-| `signal_pro22` | string | Entry direction migrated from strategy-022.py / BarClosePctMACDStrategy: Buy \| Sell \| None |
-| `signal_pro23` | string | Entry direction migrated from strategy-023.py / LateSessionStrengthContinuationStrategy: Buy \| Sell \| None |
-| `signal_pro24` | string | Entry direction migrated from strategy-024.py / LateSessionFlowImbalanceStrategy: Buy \| Sell \| None |
-| `signal_pro25` | string | Entry direction migrated from strategy-025.py / OrbBodyStrengthStrategy: Buy \| Sell \| None |
-| `signal_pro26` | string | Entry direction migrated from strategy-026.py / IntradayBodyRateMomStrategy: Buy \| Sell \| None |
-| `signal_pro27` | string | Entry direction migrated from strategy-027.py / LateSessionRangePositionStrategy: Buy \| Sell \| None |
-| `signal_pro28` | string | Entry direction migrated from strategy-028.py / LateSessionVWAPZScoreExpansionStrategy: Buy \| Sell \| None |
-| `signal_pro29` | string | Entry direction migrated from strategy-029.py / MorningRangeAcceptanceStrategy: Buy \| None |
 
 ---

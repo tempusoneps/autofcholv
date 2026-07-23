@@ -15,7 +15,6 @@ from autofcholv.pipeline.features.volume import (
     _rolling_regression_forecast as volume_regression_forecast,
     _rolling_regression_last as volume_regression_last,
 )
-from autofcholv.pipeline.features import strategy as strategy_features
 from autofcholv.pipeline.feature_engineering import FEATURE_STEPS
 
 
@@ -334,7 +333,6 @@ def test_extract_features_signal_columns():
     expected = [
         "couple_cs_signal",
         "ema_cross_signal",
-        "prev_day_momentum_signal_bias",
     ]
     for col in expected:
         assert col in result.columns, f"Missing signal column: '{col}'"
@@ -377,37 +375,6 @@ def test_extract_features_signal_values():
     result = extract_features(make_ohlcv(300))
     assert set(result["couple_cs_signal"].unique()).issubset({"None", "Buy", "Sell"})
     assert set(result["ema_cross_signal"].unique()).issubset({"None", "Buy", "Sell"})
-
-
-def test_extract_features_strategy_signal_columns():
-    result = extract_features(make_ohlcv(300))
-    expected = [f"signal_pro{i}" for i in range(1, 30) if i != 4]
-
-    for col in expected:
-        assert col in result.columns, f"Missing strategy signal column: '{col}'"
-        assert set(result[col].unique()).issubset({"Buy", "Sell", "None"})
-
-
-def test_strategy_features_add_only_signal_pro_columns():
-    df = make_ohlcv(300)
-    config = Config()
-    for name, func in FEATURE_STEPS:
-        if name == "strategy_features":
-            break
-        df = func(df, config).copy()
-    before = set(df.columns)
-
-    result = strategy_features.extract_features(df.copy(), config)
-
-    added = set(result.columns) - before
-    assert added == ({f"signal_pro{i}" for i in range(1, 30) if i != 4} | {"_temp_signal_pro4"})
-
-
-def test_strategy_features_requires_precomputed_helper_columns():
-    df = make_ohlcv(300)
-
-    with pytest.raises(ValueError, match="Missing strategy helper columns"):
-        strategy_features.extract_features(df.copy(), Config())
 
 
 def test_extract_features_candlestick_non_negative():

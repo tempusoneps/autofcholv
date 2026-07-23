@@ -167,14 +167,6 @@
         "buy_condition": "Close < Lower_KC VÀ Close[1] > Lower_KC (Giá xuyên xuống rồi bật lên)",
         "sell_condition": "Close > Upper_KC VÀ Close[1] < Upper_KC (Giá xuyên lên rồi bật xuống)"
     },
-    "fractal_breakout_signal": {
-        "no": 22,
-        "type": "string",
-        "name": "Fractal Breakout",
-        "comment": "Xác định đỉnh/đáy cục bộ để giao dịch breakout",
-        "buy_condition": "Close > Fractal_High[2] (Phá vỡ đỉnh cục bộ)",
-        "sell_condition": "Close < Fractal_Low[2] (Phá vỡ đáy cục bộ)"
-    },
     "supertrend_reversal": {
         "no": 23,
         "type": "string",

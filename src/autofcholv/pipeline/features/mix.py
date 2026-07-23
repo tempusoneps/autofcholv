@@ -64,7 +64,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     midpoint = (df["High"] + df["Low"]) / 2
     df["dm"] = midpoint - midpoint.shift(1)
 
-    df["_temp_eom"] = np.where(df["_temp_vbr"] != 0, df["dm"] / df["_temp_vbr"], np.nan)
+    df["eom"] = np.where(df["vbr"] != 0, df["dm"] / df["vbr"], np.nan)
 
     df["direction"] = np.where(df["Close"] > df["Open"], 1, -1)
 
@@ -251,33 +251,9 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     rc_mean = rc.rolling(volatility_n, min_periods=1).mean()
     df["CoppAtrBull"] = rc_mean * wd_atr * taker_ratio
 
-    not_extreme = (
-        (df["Close"] - df["_temp_pre_1355_low"] <= 21)
-        & (df["_temp_pre_1345_high"] - df["Close"] <= 21)
-    )
-    daily_momentum_long = (
-        not_extreme
-        & (df["mom_y"] > 0.26)
-        & (df["_temp_body_rate_first_close"] > 0.65)
-        & (df["adx_42"] < 26.5)
-    )
-    daily_momentum_short = (
-        not_extreme
-        & (df["mom_y"] < -0.18)
-        & (df["_temp_body_rate_first_close"] < -0.39)
-        & (df["adx_42"] < 26.5)
-    )
-    at_1355 = df["time_int"] == 1355
-    daily_momentum_signal = pd.Series("", index=df.index)
-    daily_momentum_signal[at_1355 & daily_momentum_long] = "Buy"
-    daily_momentum_signal[at_1355 & daily_momentum_short] = "Sell"
-    trade_date = pd.Series(df.index.normalize(), index=df.index)
-    daily_bias = daily_momentum_signal.replace("", np.nan).groupby(trade_date).first().shift(1)
-    df["prev_day_momentum_signal_bias"] = trade_date.map(daily_bias)
 
     below_open = (df["Close"] < df["session_open"]).astype(float)
     df["persist_short_12_shift1"] = below_open.rolling(12).mean().shift(1)
-    df["_temp_accept_long_4_shift1"] = (df["Close"] > df["_temp_morning_mid"]).astype(float).rolling(4).mean().shift(1)
 
     # --- Signal-support indicators ---
     # Connors RSI is consumed by signal.py
