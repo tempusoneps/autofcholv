@@ -55,8 +55,8 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     df['candle_strength'] = df['body'] / (height_safe + epsilon)
 
     # Volume (safe)
-    df['_temp_vbr'] = (df['Volume'] / (height_safe + epsilon)).clip(
-        0, df['Volume'].quantile(0.99)
+    df['vbr'] = (df['Volume'] / (height_safe + epsilon)).clip(
+        0, df['Volume'].rolling(window=99, min_periods=1).quantile(0.99)
     )
 
     # Wick imbalance
@@ -78,28 +78,5 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
         & (df["Close"] >= df["Low"] + 0.1)
         & (df["Low"] < df["Low"].shift(1))
     )
-
-    # --- Indicator features used by signal.py ---
-
-    fractal_high = np.where(
-        (df["High"] > df["High"].shift(1))
-        & (df["High"] > df["High"].shift(2))
-        & (df["High"] > df["High"].shift(-1))
-        & (df["High"] > df["High"].shift(-2)),
-        df["High"],
-        np.nan,
-    )
-    fractal_low = np.where(
-        (df["Low"] < df["Low"].shift(1))
-        & (df["Low"] < df["Low"].shift(2))
-        & (df["Low"] < df["Low"].shift(-1))
-        & (df["Low"] < df["Low"].shift(-2)),
-        df["Low"],
-        np.nan,
-    )
-    df["_temp_fractal_high"] = pd.Series(fractal_high, index=df.index)
-    df["_temp_fractal_low"] = pd.Series(fractal_low, index=df.index)
-    df["_temp_fractal_high_ffill"] = df["_temp_fractal_high"].ffill()
-    df["_temp_fractal_low_ffill"] = df["_temp_fractal_low"].ffill()
 
     return df

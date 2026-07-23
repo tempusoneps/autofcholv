@@ -326,7 +326,6 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     quote_volume_proxy = df["Close"] * df["Volume"]
     df["volume_reg"] = quote_volume_proxy.rolling(momentum_n, min_periods=1).apply(lambda x: x.iloc[-1] if len(x) else np.nan, raw=False)
-    df["_temp_volume_tsf"] = quote_volume_proxy.rolling(momentum_n, min_periods=1).mean().shift(-1)
 
     volume_ema_1 = df["Volume"].ewm(span=2 * momentum_n, adjust=False).mean()
     volume_ema_2 = df["Volume"].ewm(span=4 * momentum_n, adjust=False).mean()

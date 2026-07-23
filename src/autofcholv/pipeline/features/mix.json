@@ -164,11 +164,6 @@
         "name": "Connors RSI for Signals",
         "comment": "ConnorsRSI indicator (RSI(3) + StreakRSI(2) + PriceRank)"
     },
-    "prev_day_momentum_signal_bias": {
-        "type": "string",
-        "name": "Previous Day Momentum Signal Bias",
-        "comment": "Previous trading day's 13:55 daily momentum signal, Buy or Sell when present"
-    },
     "persist_short_12_shift1": {
         "type": "float",
         "name": "Persist Short 12 Shift 1",
