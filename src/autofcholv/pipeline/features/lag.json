@@ -30,33 +30,98 @@
         "comment": "Body phiên trước"
     },
     "upwick_lag1": {
-        "type": "numerical",
+        "type": "float",
         "name": "Upper Wick of previous candlestick",
-        "comment": ""
+        "comment": "Bóng trên phiên trước"
     },
     "lowwick_lag1": {
-        "type": "numerical",
+        "type": "float",
         "name": "Lower Wick of previous candlestick",
-        "comment": ""
+        "comment": "Bóng dưới phiên trước"
     },
-    "prev_ema_fast": {
-        "type": "numerical",
-        "name": "Ema Fast of previous candlestick",
-        "comment": ""
+    "lowwick_rate_lag1": {
+        "type": "float",
+        "name": "Lower Wick Rate of previous candlestick",
+        "comment": "Tỷ lệ bóng dưới phiên trước"
     },
-    "prev_ema_slow": {
-        "type": "numerical",
-        "name": "Ema Slow of previous candlestick",
-        "comment": ""
+    "upwick_rate_lag1": {
+        "type": "float",
+        "name": "Upper Wick Rate of previous candlestick",
+        "comment": "Tỷ lệ bóng trên phiên trước"
+    },
+    "clv_lag1": {
+        "type": "float",
+        "name": "CLV of previous candlestick",
+        "comment": "Close Location Value phiên trước"
     },
     "ibs_lag1": {
-        "type": "numerical",
+        "type": "float",
         "name": "IBS of previous candlestick",
-        "comment": ""
+        "comment": "Internal Bar Strength phiên trước"
     },
     "rsi_lag1": {
-        "type": "numerical",
+        "type": "float",
         "name": "RSI of previous candlestick",
-        "comment": ""
+        "comment": "RSI phiên trước"
+    },
+    "rsi_delta": {
+        "type": "float",
+        "name": "RSI Acceleration Delta",
+        "comment": "Độ dốc/Gia tốc RSI (rsi - rsi_lag1)"
+    },
+    "macd_hist_lag1": {
+        "type": "float",
+        "name": "MACD Histogram of previous candlestick",
+        "comment": "MACD Histogram phiên trước"
+    },
+    "macd_hist_delta": {
+        "type": "float",
+        "name": "MACD Histogram Delta",
+        "comment": "Độ dốc/Gia tốc MACD Histogram (macd_hist - macd_hist_lag1)"
+    },
+    "kdj_j_lag1": {
+        "type": "float",
+        "name": "KDJ J-line of previous candlestick",
+        "comment": "KDJ J phiên trước"
+    },
+    "ema_fast_lag1": {
+        "type": "float",
+        "name": "EMA Fast of previous candlestick",
+        "comment": "EMA Fast phiên trước"
+    },
+    "ema_slow_lag1": {
+        "type": "float",
+        "name": "EMA Slow of previous candlestick",
+        "comment": "EMA Slow phiên trước"
+    },
+    "vwap_lag1": {
+        "type": "float",
+        "name": "VWAP of previous candlestick",
+        "comment": "VWAP phiên trước"
+    },
+    "atr_lag1": {
+        "type": "float",
+        "name": "ATR of previous candlestick",
+        "comment": "ATR phiên trước"
+    },
+    "volatility_expansion_ratio": {
+        "type": "float",
+        "name": "Volatility Expansion Ratio",
+        "comment": "Tỷ lệ bùng nổ biến động thanh nến hiện tại so với ATR phiên trước"
+    },
+    "bbw_lag1": {
+        "type": "float",
+        "name": "Bollinger Band Width of previous candlestick",
+        "comment": "Độ rộng băng Bollinger phiên trước"
+    },
+    "volume_avg_lag1": {
+        "type": "float",
+        "name": "Average Volume of previous candlestick",
+        "comment": "Khối lượng trung bình phiên trước"
+    },
+    "volume_ratio_lag1": {
+        "type": "float",
+        "name": "Volume Ratio to Previous Candlestick",
+        "comment": "Tỷ lệ khối lượng phiên hiện tại so với phiên trước"
     }
 }

@@ -93,5 +93,155 @@
         "type": "float",
         "name": "Morning Mid",
         "comment": "Midpoint between morning_high and morning_low"
+    },
+    "prev_15m_open": {
+        "type": "float",
+        "name": "Previous 15m Open",
+        "comment": "Open price of completed 15-minute bar"
+    },
+    "prev_15m_high": {
+        "type": "float",
+        "name": "Previous 15m High",
+        "comment": "High price of completed 15-minute bar"
+    },
+    "prev_15m_low": {
+        "type": "float",
+        "name": "Previous 15m Low",
+        "comment": "Low price of completed 15-minute bar"
+    },
+    "prev_15m_close": {
+        "type": "float",
+        "name": "Previous 15m Close",
+        "comment": "Close price of completed 15-minute bar"
+    },
+    "prev_15m_volume": {
+        "type": "float",
+        "name": "Previous 15m Volume",
+        "comment": "Volume of completed 15-minute bar"
+    },
+    "prev_15m_pivot": {
+        "type": "float",
+        "name": "Previous 15m Pivot",
+        "comment": "Pivot point of completed 15-minute bar"
+    },
+    "prev_15m_r1": {
+        "type": "float",
+        "name": "Previous 15m R1",
+        "comment": "Pivot resistance R1 of completed 15-minute bar"
+    },
+    "prev_15m_s1": {
+        "type": "float",
+        "name": "Previous 15m S1",
+        "comment": "Pivot support S1 of completed 15-minute bar"
+    },
+    "prev_15m_return": {
+        "type": "float",
+        "name": "Previous 15m Return",
+        "comment": "Return ratio of completed 15-minute bar"
+    },
+    "prev_15m_ema_bias_20": {
+        "type": "int",
+        "name": "Previous 15m EMA Bias 20",
+        "comment": "Completed 15-minute close versus its 20-period EMA, encoded as 1, -1, or 0"
+    },
+    "prev_30m_open": {
+        "type": "float",
+        "name": "Previous 30m Open",
+        "comment": "Open price of completed 30-minute bar"
+    },
+    "prev_30m_high": {
+        "type": "float",
+        "name": "Previous 30m High",
+        "comment": "High price of completed 30-minute bar"
+    },
+    "prev_30m_low": {
+        "type": "float",
+        "name": "Previous 30m Low",
+        "comment": "Low price of completed 30-minute bar"
+    },
+    "prev_30m_close": {
+        "type": "float",
+        "name": "Previous 30m Close",
+        "comment": "Close price of completed 30-minute bar"
+    },
+    "prev_30m_volume": {
+        "type": "float",
+        "name": "Previous 30m Volume",
+        "comment": "Volume of completed 30-minute bar"
+    },
+    "prev_30m_pivot": {
+        "type": "float",
+        "name": "Previous 30m Pivot",
+        "comment": "Pivot point of completed 30-minute bar"
+    },
+    "prev_30m_r1": {
+        "type": "float",
+        "name": "Previous 30m R1",
+        "comment": "Pivot resistance R1 of completed 30-minute bar"
+    },
+    "prev_30m_s1": {
+        "type": "float",
+        "name": "Previous 30m S1",
+        "comment": "Pivot support S1 of completed 30-minute bar"
+    },
+    "prev_30m_return": {
+        "type": "float",
+        "name": "Previous 30m Return",
+        "comment": "Return ratio of completed 30-minute bar"
+    },
+    "prev_30m_ema_bias_20": {
+        "type": "int",
+        "name": "Previous 30m EMA Bias 20",
+        "comment": "Completed 30-minute close versus its 20-period EMA, encoded as 1, -1, or 0"
+    },
+    "prev_1h_open": {
+        "type": "float",
+        "name": "Previous 1H Open",
+        "comment": "Open price of completed 1-hour bar"
+    },
+    "prev_1h_high": {
+        "type": "float",
+        "name": "Previous 1H High",
+        "comment": "High price of completed 1-hour bar"
+    },
+    "prev_1h_low": {
+        "type": "float",
+        "name": "Previous 1H Low",
+        "comment": "Low price of completed 1-hour bar"
+    },
+    "prev_1h_close": {
+        "type": "float",
+        "name": "Previous 1H Close",
+        "comment": "Close price of completed 1-hour bar"
+    },
+    "prev_1h_volume": {
+        "type": "float",
+        "name": "Previous 1H Volume",
+        "comment": "Volume of completed 1-hour bar"
+    },
+    "prev_1h_pivot": {
+        "type": "float",
+        "name": "Previous 1H Pivot",
+        "comment": "Pivot point of completed 1-hour bar"
+    },
+    "prev_1h_r1": {
+        "type": "float",
+        "name": "Previous 1H R1",
+        "comment": "Pivot resistance R1 of completed 1-hour bar"
+    },
+    "prev_1h_s1": {
+        "type": "float",
+        "name": "Previous 1H S1",
+        "comment": "Pivot support S1 of completed 1-hour bar"
+    },
+    "prev_1h_return": {
+        "type": "float",
+        "name": "Previous 1H Return",
+        "comment": "Return ratio of completed 1-hour bar"
+    },
+    "prev_1h_ema_bias_20": {
+        "type": "int",
+        "name": "Previous 1H EMA Bias 20",
+        "comment": "Completed 1-hour close versus its 20-period EMA, encoded as 1, -1, or 0"
     }
 }

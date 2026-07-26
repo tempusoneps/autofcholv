@@ -9,6 +9,7 @@ import pytest
 from autofcholv.core import extract_features
 from autofcholv.config.config import Config, load_config, DEFAULT_CONFIG
 from autofcholv.pipeline.features import close as close_features
+from autofcholv.pipeline.features import resample as resample_features
 from autofcholv.pipeline.features.close import _rolling_regression_last as close_regression_last
 from autofcholv.pipeline.features.trend import _linear_regression_midline, _linear_regression_slope
 from autofcholv.pipeline.features.volume import (
@@ -157,6 +158,15 @@ def test_extract_features_resample_columns():
     expected = [
         "prev_day_open", "prev_day_high", "prev_day_low", "prev_day_close",
         "prev_day_volume", "prev_day_pivot",
+        "prev_15m_open", "prev_15m_high", "prev_15m_low", "prev_15m_close",
+        "prev_15m_volume", "prev_15m_pivot", "prev_15m_r1", "prev_15m_s1",
+        "prev_15m_return", "prev_15m_ema_bias_20",
+        "prev_30m_open", "prev_30m_high", "prev_30m_low", "prev_30m_close",
+        "prev_30m_volume", "prev_30m_pivot", "prev_30m_r1", "prev_30m_s1",
+        "prev_30m_return", "prev_30m_ema_bias_20",
+        "prev_1h_open", "prev_1h_high", "prev_1h_low", "prev_1h_close",
+        "prev_1h_volume", "prev_1h_pivot", "prev_1h_r1", "prev_1h_s1",
+        "prev_1h_return", "prev_1h_ema_bias_20",
     ]
     for col in expected:
         assert col in result.columns, f"Missing resample column: '{col}'"
@@ -166,6 +176,40 @@ def test_extract_features_resample_columns():
     ]
     for col in leaking_cols:
         assert col not in result.columns, f"Leaking current-day column should be dropped: '{col}'"
+
+
+def test_htf_resample_features_non_leakage():
+    idx = pd.date_range(start="2024-01-02 09:05:00", periods=12, freq="5min")
+    df = pd.DataFrame(
+        {
+            "Open": [10.0, 12.0, 14.0, 20.0, 22.0, 24.0, 30.0, 32.0, 34.0, 40.0, 42.0, 44.0],
+            "High": [11.0, 13.0, 15.0, 21.0, 23.0, 25.0, 31.0, 33.0, 35.0, 41.0, 43.0, 45.0],
+            "Low":  [9.0,  11.0, 13.0, 19.0, 21.0, 23.0, 29.0, 31.0, 33.0, 39.0, 41.0, 43.0],
+            "Close": [10.5, 12.5, 14.5, 20.5, 22.5, 24.5, 30.5, 32.5, 34.5, 40.5, 42.5, 44.5],
+            "Volume": [100.0] * 12,
+        },
+        index=idx,
+    )
+    df.index.name = "Date"
+    res = resample_features.extract_features(df, Config())
+
+    # Bars at 09:05:00 and 09:10:00 are before first 15m block (09:00-09:15) completion at 09:15:00
+    assert np.isnan(res.loc["2024-01-02 09:05:00", "prev_15m_close"])
+    assert np.isnan(res.loc["2024-01-02 09:10:00", "prev_15m_close"])
+
+    # At 09:15:00, the 09:00-09:15 block (09:05 and 09:10 bars) is completed
+    # prev_15m_close at 09:15:00 should equal the Close of 09:10:00 bar (14.5)
+    close_0910 = df.loc["2024-01-02 09:10:00", "Close"]
+    assert res.loc["2024-01-02 09:15:00", "prev_15m_close"] == close_0910
+    assert res.loc["2024-01-02 09:20:00", "prev_15m_close"] == close_0910
+
+    # At 09:30:00, the 09:15-09:30 block (09:15, 09:20, 09:25 bars) is completed
+    close_0925 = df.loc["2024-01-02 09:25:00", "Close"]
+    assert res.loc["2024-01-02 09:30:00", "prev_15m_close"] == close_0925
+
+
+
+
 
 
 def test_extract_features_candlestick_columns():
@@ -292,10 +336,16 @@ def test_extract_features_lag_columns():
     result = extract_features(make_ohlcv(300))
     expected = [
         "open_lag1", "high_lag1", "low_lag1", "close_lag1",
-        "volume_lag1", "ibs_lag1", "rsi_lag1",
+        "volume_lag1", "body_lag1", "upwick_lag1", "lowwick_lag1",
+        "lowwick_rate_lag1", "upwick_rate_lag1", "clv_lag1", "ibs_lag1",
+        "rsi_lag1", "rsi_delta", "macd_hist_lag1", "macd_hist_delta",
+        "kdj_j_lag1", "ema_fast_lag1", "ema_slow_lag1", "vwap_lag1",
+        "atr_lag1", "volatility_expansion_ratio", "bbw_lag1",
+        "volume_avg_lag1", "volume_ratio_lag1",
     ]
     for col in expected:
         assert col in result.columns, f"Missing lag column: '{col}'"
+
 
 
 def test_extract_features_mix_columns():

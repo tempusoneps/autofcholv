@@ -51,6 +51,36 @@ The pipeline executes in the order listed below.
 | `morning_high` | float | Current trading day's High through time_int <= 1100 |
 | `morning_low` | float | Current trading day's Low through time_int <= 1100 |
 | `morning_mid` | float | Midpoint between morning_high and morning_low |
+| `prev_15m_open` | float | Open price of completed 15-minute bar |
+| `prev_15m_high` | float | High price of completed 15-minute bar |
+| `prev_15m_low` | float | Low price of completed 15-minute bar |
+| `prev_15m_close` | float | Close price of completed 15-minute bar |
+| `prev_15m_volume` | float | Volume of completed 15-minute bar |
+| `prev_15m_pivot` | float | Pivot point of completed 15-minute bar |
+| `prev_15m_r1` | float | Pivot resistance R1 of completed 15-minute bar |
+| `prev_15m_s1` | float | Pivot support S1 of completed 15-minute bar |
+| `prev_15m_return` | float | Return ratio of completed 15-minute bar |
+| `prev_15m_ema_bias_20` | int | Completed 15-minute close versus its 20-period EMA, encoded as 1, -1, or 0 |
+| `prev_30m_open` | float | Open price of completed 30-minute bar |
+| `prev_30m_high` | float | High price of completed 30-minute bar |
+| `prev_30m_low` | float | Low price of completed 30-minute bar |
+| `prev_30m_close` | float | Close price of completed 30-minute bar |
+| `prev_30m_volume` | float | Volume of completed 30-minute bar |
+| `prev_30m_pivot` | float | Pivot point of completed 30-minute bar |
+| `prev_30m_r1` | float | Pivot resistance R1 of completed 30-minute bar |
+| `prev_30m_s1` | float | Pivot support S1 of completed 30-minute bar |
+| `prev_30m_return` | float | Return ratio of completed 30-minute bar |
+| `prev_30m_ema_bias_20` | int | Completed 30-minute close versus its 20-period EMA, encoded as 1, -1, or 0 |
+| `prev_1h_open` | float | Open price of completed 1-hour bar |
+| `prev_1h_high` | float | High price of completed 1-hour bar |
+| `prev_1h_low` | float | Low price of completed 1-hour bar |
+| `prev_1h_close` | float | Close price of completed 1-hour bar |
+| `prev_1h_volume` | float | Volume of completed 1-hour bar |
+| `prev_1h_pivot` | float | Pivot point of completed 1-hour bar |
+| `prev_1h_r1` | float | Pivot resistance R1 of completed 1-hour bar |
+| `prev_1h_s1` | float | Pivot support S1 of completed 1-hour bar |
+| `prev_1h_return` | float | Return ratio of completed 1-hour bar |
+| `prev_1h_ema_bias_20` | int | Completed 1-hour close versus its 20-period EMA, encoded as 1, -1, or 0 |
 
 ---
 
@@ -688,12 +718,25 @@ The pipeline executes in the order listed below.
 | `close_lag1` | float | Close phiên trước |
 | `volume_lag1` | float | Volume phiên trước |
 | `body_lag1` | float | Body phiên trước |
-| `upwick_lag1` | numerical |  |
-| `lowwick_lag1` | numerical |  |
-| `prev_ema_fast` | numerical |  |
-| `prev_ema_slow` | numerical |  |
-| `ibs_lag1` | numerical |  |
-| `rsi_lag1` | numerical |  |
+| `upwick_lag1` | float | Bóng trên phiên trước |
+| `lowwick_lag1` | float | Bóng dưới phiên trước |
+| `lowwick_rate_lag1` | float | Tỷ lệ bóng dưới phiên trước |
+| `upwick_rate_lag1` | float | Tỷ lệ bóng trên phiên trước |
+| `clv_lag1` | float | Close Location Value phiên trước |
+| `ibs_lag1` | float | Internal Bar Strength phiên trước |
+| `rsi_lag1` | float | RSI phiên trước |
+| `rsi_delta` | float | Độ dốc/Gia tốc RSI (rsi - rsi_lag1) |
+| `macd_hist_lag1` | float | MACD Histogram phiên trước |
+| `macd_hist_delta` | float | Độ dốc/Gia tốc MACD Histogram (macd_hist - macd_hist_lag1) |
+| `kdj_j_lag1` | float | KDJ J phiên trước |
+| `ema_fast_lag1` | float | EMA Fast phiên trước |
+| `ema_slow_lag1` | float | EMA Slow phiên trước |
+| `vwap_lag1` | float | VWAP phiên trước |
+| `atr_lag1` | float | ATR phiên trước |
+| `volatility_expansion_ratio` | float | Tỷ lệ bùng nổ biến động thanh nến hiện tại so với ATR phiên trước |
+| `bbw_lag1` | float | Độ rộng băng Bollinger phiên trước |
+| `volume_avg_lag1` | float | Khối lượng trung bình phiên trước |
+| `volume_ratio_lag1` | float | Tỷ lệ khối lượng phiên hiện tại so với phiên trước |
 
 ---
 
