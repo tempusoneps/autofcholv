@@ -16,6 +16,7 @@ DEFAULT_OUTPUT = REPO_ROOT / "docs" / "FEATURES.md"
 PIPELINE_ORDER = [
     "time",
     "resample",
+    "vn30f1m",
     "candlestick",
     "close",
     "price",
@@ -42,6 +43,7 @@ MODULE_TITLES = {
     "lag": "Lag Features",
     "mix": "Mixed / Advanced Indicators",
     "group": "Group / Pattern Features",
+    "vn30f1m": "VN30F1M Specific Features",
     "signal": "Signals",
 }
 
