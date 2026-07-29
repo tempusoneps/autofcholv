@@ -889,6 +889,7 @@ The pipeline executes in the order listed below.
 | `higher_high_lower_vol` | bool | High > high_lag1 AND Volume < volume_lag1 |
 | `Volume_higher_avg` | bool | Volume > volume_avg |
 | `Volume_vs_prev_Vol` | string | compare(Volume, volume_lag1) = Increase \| Not Increase |
+| `Volume_avg_group` | string | compare(volume_avg, prev_volume_avg) = Increase \| Not Increase |
 | `close_price_group` | string | > prev High \| Bong nen tren \| Than nen \| Bong nen duoi \| < prev Low |
 | `open_price_group` | string | Open > prev_Close \| Open = prev_Close \| Open < prev_Close |
 | `High_position` | string | > upper BB \| < upper BB |
