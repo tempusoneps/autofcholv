@@ -354,6 +354,11 @@
         "name": "Volume vs Previous Volume",
         "comment": "compare(Volume, volume_lag1) = Increase | Not Increase"
     },
+    "Volume_avg_group": {
+        "type": "string",
+        "name": "Volume Moving Average Trend Group",
+        "comment": "compare(volume_avg, prev_volume_avg) = Increase | Not Increase"
+    },
     "close_price_group": {
         "type": "string",
         "name": "Close Price Position Group",
