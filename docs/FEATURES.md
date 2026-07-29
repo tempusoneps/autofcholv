@@ -884,6 +884,20 @@ The pipeline executes in the order listed below.
 | `equal_low` | bool | Low is approximately equal to low_lag1 within 0.1 percent of Close |
 | `equal_high` | bool | High is approximately equal to high_lag1 within 0.1 percent of Close |
 | `inside_bar_prev` | bool | Previous bar high-low range is inside the bar before it |
+| `is_max_4` | bool | High is higher than the max High of the previous 3 bars |
+| `MFI_group` | string | compare(MFI, prev_MFI) = Increase \| Not Increase |
+| `higher_high_lower_vol` | bool | High > high_lag1 AND Volume < volume_lag1 |
+| `Volume_higher_avg` | bool | Volume > volume_avg |
+| `Volume_vs_prev_Vol` | string | compare(Volume, volume_lag1) = Increase \| Not Increase |
+| `close_price_group` | string | > prev High \| Bong nen tren \| Than nen \| Bong nen duoi \| < prev Low |
+| `open_price_group` | string | Open > prev_Close \| Open = prev_Close \| Open < prev_Close |
+| `High_position` | string | > upper BB \| < upper BB |
+| `BB_rejection` | bool | High > ub AND Close < ub |
+| `lower_shadow_group` | string | compare(lowwick, prev_lowwick) = Increase \| Not Increase |
+| `ibs_vol_group` | string | Vol up, ibs incre \| Vol up, ibs decr \| Vol down, ibs incre \| Vol down, ibs decr |
+| `rsi_area` | string | >55 \| <45 \| 45-55 |
+| `lower_low_lower_vol` | bool | Low < low_lag1 AND Volume < volume_lag1 |
+| `Low_position` | string | > lower BB \| <= lower BB |
 
 ---
 
