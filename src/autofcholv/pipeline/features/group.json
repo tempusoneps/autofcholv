@@ -328,6 +328,75 @@
         "type": "bool",
         "name": "Previous Inside Bar",
         "comment": "Previous bar high-low range is inside the bar before it"
+    },
+    "is_max_4": {
+        "type": "bool",
+        "name": "Is Max High in 4 Bars",
+        "comment": "High is higher than the max High of the previous 3 bars"
+    },
+    "MFI_group": {
+        "type": "string",
+        "name": "MFI Group",
+        "comment": "compare(MFI, prev_MFI) = Increase | Not Increase"
+    },
+    "higher_high_lower_vol": {
+        "type": "bool",
+        "name": "Higher High Lower Volume",
+        "comment": "High > high_lag1 AND Volume < volume_lag1"
+    },
+    "Volume_higher_avg": {
+        "type": "bool",
+        "name": "Volume Higher than Average",
+        "comment": "Volume > volume_avg"
+    },
+    "Volume_vs_prev_Vol": {
+        "type": "string",
+        "name": "Volume vs Previous Volume",
+        "comment": "compare(Volume, volume_lag1) = Increase | Not Increase"
+    },
+    "close_price_group": {
+        "type": "string",
+        "name": "Close Price Position Group",
+        "comment": "> prev High | Bong nen tren | Than nen | Bong nen duoi | < prev Low"
+    },
+    "open_price_group": {
+        "type": "string",
+        "name": "Open Price Position Group",
+        "comment": "Open > prev_Close | Open = prev_Close | Open < prev_Close"
+    },
+    "High_position": {
+        "type": "string",
+        "name": "High Position vs Upper BB",
+        "comment": "> upper BB | < upper BB"
+    },
+    "BB_rejection": {
+        "type": "bool",
+        "name": "Bollinger Band Rejection",
+        "comment": "High > ub AND Close < ub"
+    },
+    "lower_shadow_group": {
+        "type": "string",
+        "name": "Lower Shadow Group",
+        "comment": "compare(lowwick, prev_lowwick) = Increase | Not Increase"
+    },
+    "ibs_vol_group": {
+        "type": "string",
+        "name": "IBS Volume Combination Group",
+        "comment": "Vol up, ibs incre | Vol up, ibs decr | Vol down, ibs incre | Vol down, ibs decr"
+    },
+    "rsi_area": {
+        "type": "string",
+        "name": "RSI Zone Group",
+        "comment": ">55 | <45 | 45-55"
+    },
+    "lower_low_lower_vol": {
+        "type": "bool",
+        "name": "Lower Low Lower Volume",
+        "comment": "Low < low_lag1 AND Volume < volume_lag1"
+    },
+    "Low_position": {
+        "type": "string",
+        "name": "Low Position vs Lower BB",
+        "comment": "> lower BB | <= lower BB"
     }
-
 }

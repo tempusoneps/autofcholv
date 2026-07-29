@@ -597,3 +597,57 @@ def test_extract_features_includes_vn30f1m_columns():
     for col in meta.keys():
         assert col in res.columns
 
+
+def test_extract_features_todo_group_columns():
+    df = make_ohlcv(300)
+    result = extract_features(df)
+    new_cols = [
+        "is_max_4", "upper_wick_group", "MFI_group", "higher_high_lower_vol",
+        "Volume_higher_avg", "Volume_vs_prev_Vol", "Volume_avg_group",
+        "close_price_group", "open_price_group", "High_position",
+        "BB_rejection", "lower_shadow_group", "ibs_vol_group",
+        "rsi_area", "lower_low_lower_vol", "Low_position",
+    ]
+    for col in new_cols:
+        assert col in result.columns, f"Missing expected column: '{col}'"
+
+    # Specific assertion checks
+    assert result["is_max_4"].dtype == bool
+    assert result["higher_high_lower_vol"].dtype == bool
+    assert result["BB_rejection"].dtype == bool
+    assert result["lower_low_lower_vol"].dtype == bool
+    assert set(result["rsi_area"].dropna().unique()).issubset({">55", "<45", "45-55"})
+
+
+def test_group_features_module_direct_extraction():
+    from autofcholv.pipeline.features import group as group_features
+    df = make_ohlcv(50)
+    # Add dummy prerequisite columns required by group module
+    df['high_lag1'] = df['High'].shift(1)
+    df['low_lag1'] = df['Low'].shift(1)
+    df['open_lag1'] = df['Open'].shift(1)
+    df['close_lag1'] = df['Close'].shift(1)
+    df['volume_lag1'] = df['Volume'].shift(1)
+    df['upwick'] = df['High'] - df[['Open', 'Close']].max(axis=1)
+    df['lowwick'] = df[['Open', 'Close']].min(axis=1) - df['Low']
+    df['ibs'] = (df['Close'] - df['Low']) / (df['High'] - df['Low'] + 1e-9)
+    df['ibs_lag1'] = df['ibs'].shift(1)
+    df['rsi'] = 50.0
+    df['rsi_lag1'] = 50.0
+    df['volume_avg'] = df['Volume'].rolling(10, min_periods=1).mean()
+    df['ub'] = df['Close'] * 1.02
+    df['lb'] = df['Close'] * 0.98
+
+    res = group_features.extract_features(df, Config())
+    new_cols = [
+        "is_max_4", "upper_wick_group", "MFI_group", "higher_high_lower_vol",
+        "Volume_higher_avg", "Volume_vs_prev_Vol", "Volume_avg_group",
+        "close_price_group", "open_price_group", "High_position",
+        "BB_rejection", "lower_shadow_group", "ibs_vol_group",
+        "rsi_area", "lower_low_lower_vol", "Low_position",
+    ]
+    for col in new_cols:
+        assert col in res.columns
+
+
+
