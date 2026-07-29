@@ -7,7 +7,7 @@
     "upper_wick_group": {
         "type": "string",
         "name": "Upper Wick Group",
-        "comment": "upper_wick_group = compare(upper_wick, prev_upper_wick) = Longer | Shorter"
+        "comment": "upper_wick_group = compare(upper_wick, prev_upper_wick) = Increase | Not Increase"
     },
     "lower_wick_group": {
         "type": "string",

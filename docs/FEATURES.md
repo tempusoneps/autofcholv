@@ -820,7 +820,7 @@ The pipeline executes in the order listed below.
 | Column | Type | Description |
 |---|---|---|
 | `volume_group` | string | volume_group = comapre(Volume, vol_lag1) = VolUp \| Voldown |
-| `upper_wick_group` | string | upper_wick_group = compare(upper_wick, prev_upper_wick) = Longer \| Shorter |
+| `upper_wick_group` | string | upper_wick_group = compare(upper_wick, prev_upper_wick) = Increase \| Not Increase |
 | `lower_wick_group` | string | lower_wick_group = compare(lower_wick, prev_lower_wick) = Longer \| Shorter |
 | `vol_high_pattern` | string | vol_high_pattern = compare(Volume, vol_lag1) + compare(High, high_lag1) = VolUp_HighUp \| VolUp_HighDown \| VolDown_HighUp \| VolDown_HighDown |
 | `ibs_volume_pattern` | string | ibs_volume_group = compare(Volume, vol_lag1) + compare(IBS, ibs_lag1) = VolUp_IBSUp \| VolUp_IBSDown \| VolDown_IBSUp \| VolDown_IBSDown |
