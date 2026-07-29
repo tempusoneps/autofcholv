@@ -131,13 +131,6 @@ When moving, renaming, adding, or deleting documentation/source files, update al
 │   ├── STRUCTURE.md                  # This repository structure guide.
 │   ├── TODO.md                       # Pending documentation and implementation notes.
 │   ├── USAGE.md                      # CLI and Python API usage examples.
-│   └── superpowers/                  # Superpowers brainstorming and planning artifacts.
-│       ├── plans/                    # Implementation plans for agentic execution.
-│       │   └── 2026-07-09-strategy-signal-migration.md
-│       │                               # Strategy signal migration implementation plan.
-│       └── specs/                    # Approved design specs for implementation planning.
-│           └── 2026-07-09-strategy-signal-migration-design.md
-│                                       # Strategy signal migration design.
 │
 ├── examples/                         # Small examples for users.
 │   └── simple_usage.py               # Minimal Python API usage example.
@@ -185,12 +178,12 @@ When moving, renaming, adding, or deleting documentation/source files, update al
 │       │       ├── resample.json     # Resample feature metadata.
 │       │       ├── signal.py         # Signal/idea features.
 │       │       ├── signal.json       # Signal feature metadata.
-│       │       ├── strategy.py       # Strategy-oriented feature logic under development.
-│       │       ├── strategy.json     # Strategy metadata placeholder.
 │       │       ├── time.py           # Time/session features.
 │       │       ├── time.json         # Time feature metadata.
 │       │       ├── trend.py          # Trend and moving-average features.
 │       │       ├── trend.json        # Trend feature metadata.
+│       │       ├── vn30f1m.py        # VN30F1M specific futures features.
+│       │       ├── vn30f1m.json      # VN30F1M feature metadata.
 │       │       ├── volatility.py     # Volatility, bands, ATR, and channel features.
 │       │       ├── volatility.json   # Volatility feature metadata.
 │       │       ├── volume.py         # Volume and money-flow features.

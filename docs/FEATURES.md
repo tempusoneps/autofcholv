@@ -43,14 +43,7 @@ The pipeline executes in the order listed below.
 | `prev_trading_day_low` | float | Completed previous trading day's low |
 | `prev_day_r1` | float | Pivot resistance R1 from completed previous trading day |
 | `prev_day_s1` | float | Pivot support S1 from completed previous trading day |
-| `first_close_0915` | float | First Close value at 09:15 for the current trading day |
-| `pre_1345_high` | float | Maximum High before 13:45 for the current trading day |
-| `pre_1355_low` | float | Minimum Low before 13:55 for the current trading day |
-| `prev_day_1445_close` | float | Previous trading day's 14:45 close, falling back to previous completed close |
 | `prev_day_ema_bias_20` | int | Previous trading day close versus its 20-day EMA, encoded as 1, -1, or 0 |
-| `morning_high` | float | Current trading day's High through time_int <= 1100 |
-| `morning_low` | float | Current trading day's Low through time_int <= 1100 |
-| `morning_mid` | float | Midpoint between morning_high and morning_low |
 | `prev_15m_open` | float | Open price of completed 15-minute bar |
 | `prev_15m_high` | float | High price of completed 15-minute bar |
 | `prev_15m_low` | float | Low price of completed 15-minute bar |
@@ -84,7 +77,47 @@ The pipeline executes in the order listed below.
 
 ---
 
-## 3. Candlestick Geometry — `candlestick.py`
+## 3. VN30F1M Specific Features — `vn30f1m.py`
+
+| Column | Type | Description |
+|---|---|---|
+| `vn30_is_ato` | bool | True during VN30F1M ATO opening call auction (08:45-09:00) |
+| `vn30_is_atc` | bool | True during VN30F1M ATC closing call auction (14:30-14:45) |
+| `vn30_session_morning` | bool | True during VN30F1M morning trading session (08:45-11:30) |
+| `vn30_session_afternoon` | bool | True during VN30F1M afternoon trading session (13:00-14:45) |
+| `vn30_pre_market_lead` | bool | True when VN30F1M trades before underlying spot market open (08:45-09:00) |
+| `vn30_session_0930_1335` | bool | True when time_int is between 09:30 and 13:35 inclusive |
+| `vn30_session_0935_1425` | bool | True when time_int is between 09:35 inclusive and 14:25 exclusive |
+| `vn30_session_0935_1335` | bool | True when time_int is between 09:35 and 13:35 inclusive |
+| `vn30_late_session_1325` | bool | True for 13:25, 13:40, and 13:55 bars |
+| `vn30_late_session_1310` | bool | True for 13:10, 13:25, 13:40, and 13:55 bars |
+| `vn30_entry_window_1300_1425` | bool | True when time_int is between 13:00 and 14:25 inclusive |
+| `vn30_session_progress` | float | Normalized progression of VN30F1M daily trading hours (0.0 to 1.0) |
+| `vn30_is_expiration_day` | bool | True if trade date is the 3rd Thursday of the month (VN30F1M contract settlement day) |
+| `vn30_is_expiration_week` | bool | True if current trading week contains the VN30F1M contract expiration day |
+| `vn30_is_expiry_settlement_window` | bool | True during the settlement price calculation window (14:00-14:45) on expiration day |
+| `vn30_days_to_expiration` | int | Number of calendar days remaining until current monthly contract expiration |
+| `vn30_opening_gap` | float | Percentage gap between session open price and previous day close price |
+| `vn30_orb_15m_high` | float | High price of the first 15 minutes of the trading session |
+| `vn30_orb_15m_low` | float | Low price of the first 15 minutes of the trading session |
+| `vn30_orb_15m_range` | float | Range (High - Low) of the first 15 minutes of the trading session |
+| `vn30_orb_15m_breakout` | int | 1 if close breaks above 15m ORB high, -1 if below 15m ORB low, 0 otherwise |
+| `vn30_orb_30m_high` | float | High price of the first 30 minutes of the trading session |
+| `vn30_orb_30m_low` | float | Low price of the first 30 minutes of the trading session |
+| `vn30_orb_30m_range` | float | Range (High - Low) of the first 30 minutes of the trading session |
+| `vn30_orb_30m_breakout` | int | 1 if close breaks above 30m ORB high, -1 if below 30m ORB low, 0 otherwise |
+| `vn30_late_session_range_pos` | float | Position of current close within session cumulative low-high range (0.0 to 1.0) |
+| `first_close_0915` | float | First Close value at 09:15 for the current trading day |
+| `pre_1345_high` | float | Maximum High before 13:45 for the current trading day |
+| `pre_1355_low` | float | Minimum Low before 13:55 for the current trading day |
+| `prev_day_1445_close` | float | Previous trading day's 14:45 close, falling back to previous completed close |
+| `morning_high` | float | Current trading day's High through time_int <= 1100 |
+| `morning_low` | float | Current trading day's Low through time_int <= 1100 |
+| `morning_mid` | float | Midpoint between morning_high and morning_low |
+
+---
+
+## 4. Candlestick Geometry — `candlestick.py`
 
 | Column | Type | Description |
 |---|---|---|
@@ -117,7 +150,7 @@ The pipeline executes in the order listed below.
 
 ---
 
-## 4. Close Price Indicators — `close.py`
+## 5. Close Price Indicators — `close.py`
 
 | Column | Type | Description |
 |---|---|---|
@@ -311,7 +344,7 @@ The pipeline executes in the order listed below.
 
 ---
 
-## 5. Price Derived Indicators — `price.py`
+## 6. Price Derived Indicators — `price.py`
 
 | Column | Type | Description |
 |---|---|---|
@@ -361,7 +394,7 @@ The pipeline executes in the order listed below.
 
 ---
 
-## 6. Trend Indicators — `trend.py`
+## 7. Trend Indicators — `trend.py`
 
 | Column | Type | Description |
 |---|---|---|
@@ -518,7 +551,7 @@ The pipeline executes in the order listed below.
 
 ---
 
-## 7. Volatility Indicators — `volatility.py`
+## 8. Volatility Indicators — `volatility.py`
 
 | Column | Type | Description |
 |---|---|---|
@@ -598,7 +631,7 @@ The pipeline executes in the order listed below.
 
 ---
 
-## 8. Volume — `volume.py`
+## 9. Volume — `volume.py`
 
 | Column | Type | Description |
 |---|---|---|
@@ -691,7 +724,7 @@ The pipeline executes in the order listed below.
 
 ---
 
-## 9. Liquidity / Composite Proxies — `liquidity.py`
+## 10. Liquidity / Composite Proxies — `liquidity.py`
 
 | Column | Type | Description |
 |---|---|---|
@@ -708,7 +741,7 @@ The pipeline executes in the order listed below.
 
 ---
 
-## 10. Lag Features — `lag.py`
+## 11. Lag Features — `lag.py`
 
 | Column | Type | Description |
 |---|---|---|
@@ -740,7 +773,7 @@ The pipeline executes in the order listed below.
 
 ---
 
-## 11. Mixed / Advanced Indicators — `mix.py`
+## 12. Mixed / Advanced Indicators — `mix.py`
 
 | Column | Type | Description |
 |---|---|---|
@@ -782,7 +815,7 @@ The pipeline executes in the order listed below.
 
 ---
 
-## 12. Group / Pattern Features — `group.py`
+## 13. Group / Pattern Features — `group.py`
 
 | Column | Type | Description |
 |---|---|---|
@@ -854,7 +887,7 @@ The pipeline executes in the order listed below.
 
 ---
 
-## 13. Signals — `signal.py`
+## 14. Signals — `signal.py`
 
 | Column | Type | Description |
 |---|---|---|

@@ -13,12 +13,14 @@ from autofcholv.pipeline.features.lag import extract_features as extract_lag_fea
 from autofcholv.pipeline.features.liquidity import extract_features as extract_liquidity_features
 from autofcholv.pipeline.features.group import extract_features as extract_group_features
 from autofcholv.pipeline.features.signal import extract_features as extract_signal_features
+from autofcholv.pipeline.features.vn30f1m import extract_features as extract_vn30f1m_features
 from autofcholv.pipeline.features.volume import extract_features as extract_volume_features
 from autofcholv.utils.timing import timing, timeit
 
 FEATURE_STEPS = [
     ("time_features", extract_time_features),
     ("resample_features", extract_resample_features),
+    ("vn30f1m_features", extract_vn30f1m_features),
     ("candlestick_features", extract_candlestick_features),
     ("close_features", extract_close_features),
     ("price_features", extract_price_features),

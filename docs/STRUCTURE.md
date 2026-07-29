@@ -72,6 +72,8 @@
 │       │       ├── time.json         # Time feature metadata.
 │       │       ├── trend.py          # Trend and moving-average features.
 │       │       ├── trend.json        # Trend feature metadata.
+│       │       ├── vn30f1m.py        # VN30F1M specific futures features.
+│       │       ├── vn30f1m.json      # VN30F1M feature metadata.
 │       │       ├── volatility.py     # Volatility, bands, ATR, and channel features.
 │       │       ├── volatility.json   # Volatility feature metadata.
 │       │       ├── volume.py         # Volume and money-flow features.
