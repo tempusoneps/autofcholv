@@ -111,8 +111,9 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["session_mom_y"] = (
         100.0 * (df["Close"] - df["prev_trading_day_close"]) / df["prev_trading_day_close"].replace(0, np.nan)
     )
+    prev_close_ref = df["prev_day_close"] if "prev_day_close" in df.columns else df["prev_trading_day_close"]
     df["mom_y"] = (
-        100.0 * (df["Close"] - df["prev_day_1445_close"]) / df["prev_day_1445_close"].replace(0, np.nan)
+        100.0 * (df["Close"] - prev_close_ref) / prev_close_ref.replace(0, np.nan)
     )
 
     pv = df["Close"] * df["Volume"]

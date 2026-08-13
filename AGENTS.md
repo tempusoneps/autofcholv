@@ -100,13 +100,19 @@ When adding a new feature module, update all relevant places in the same change 
 
 ## Run Relevant Tests
 
-When changing pipeline, feature, preprocessing, validation, config, or CLI behavior, run the relevant tests.
+When changing pipeline, feature, preprocessing, validation, config, or CLI behavior, prefer running only specific, targeted tests (e.g. `uv run pytest tests/test_core.py::test_name -q`).
 
-If tests cannot be run, note the reason in the final change summary.
+**Do NOT run the full pytest test suite automatically.** Because full feature extraction tests are expensive in time and resources, AI agents must ask the user for confirmation and get explicit approval before executing the complete test suite (`uv run pytest` without targeted filters).
+
+If tests cannot be run or are skipped per user instruction, note the reason in the final change summary.
 
 ## Keep Documentation Links Valid
 
 When moving, renaming, adding, or deleting documentation/source files, update all affected links in `README.md`, `docs/*.md`, and pipeline docs.
+
+## Do Not Commit Automatically
+
+AI agents must **NOT** create git commits automatically (`git commit`). Always ask the user for confirmation and get explicit approval before executing any `git commit` command.
 
 # Project Structure
 
@@ -182,8 +188,6 @@ When moving, renaming, adding, or deleting documentation/source files, update al
 │       │       ├── time.json         # Time feature metadata.
 │       │       ├── trend.py          # Trend and moving-average features.
 │       │       ├── trend.json        # Trend feature metadata.
-│       │       ├── vn30f1m.py        # VN30F1M specific futures features.
-│       │       ├── vn30f1m.json      # VN30F1M feature metadata.
 │       │       ├── volatility.py     # Volatility, bands, ATR, and channel features.
 │       │       ├── volatility.json   # Volatility feature metadata.
 │       │       ├── volume.py         # Volume and money-flow features.

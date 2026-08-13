@@ -555,48 +555,6 @@ def test_load_config_does_not_read_environment_variables():
         os.environ.pop("SELECTED_TIME_FRAME", None)
 
 
-def test_vn30f1m_features_module_direct_extraction():
-    from autofcholv.pipeline.features import vn30f1m
-    df = make_ohlcv(50)
-    res = vn30f1m.extract_features(df, Config())
-
-    expected_cols = [
-        "vn30_is_ato",
-        "vn30_is_atc",
-        "vn30_session_morning",
-        "vn30_session_afternoon",
-        "vn30_pre_market_lead",
-        "vn30_is_expiration_day",
-        "vn30_is_expiration_week",
-        "vn30_days_to_expiration",
-        "vn30_opening_gap",
-        "vn30_orb_15m_high",
-        "vn30_orb_15m_low",
-        "vn30_orb_15m_breakout",
-        "vn30_orb_30m_high",
-        "vn30_orb_30m_low",
-        "vn30_orb_30m_breakout",
-        "vn30_late_session_range_pos",
-        "first_close_0915",
-        "pre_1345_high",
-        "pre_1355_low",
-        "prev_day_1445_close",
-        "morning_high",
-        "morning_low",
-        "morning_mid",
-    ]
-    for col in expected_cols:
-        assert col in res.columns
-
-
-def test_extract_features_includes_vn30f1m_columns():
-    with open("src/autofcholv/pipeline/features/vn30f1m.json") as f:
-        meta = json.load(f)
-
-    res = extract_features(make_ohlcv(100))
-    for col in meta.keys():
-        assert col in res.columns
-
 
 def test_extract_features_todo_group_columns():
     df = make_ohlcv(300)
