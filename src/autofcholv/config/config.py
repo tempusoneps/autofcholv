@@ -12,6 +12,11 @@ class Config:
     one_week_bars: int = 245
     morning_bars: int = 30
     afternoon_bars: int = 19
+    micro_lookback: int = 5
+    short_lookback: int = 10
+    medium_lookback: int = 20
+    long_lookback: int = 50
+    macro_lookback: int = 100
     momentum_lookback: int = 24
     volatility_lookback: int = 24
     volume_lookback: int = 24
@@ -30,6 +35,11 @@ CONFIG_KEY_ALIASES = {
     "ONE_WEEK_BARS": "one_week_bars",
     "MORNING_BARS": "morning_bars",
     "AFTERNOON_BARS": "afternoon_bars",
+    "MICRO_LOOKBACK": "micro_lookback",
+    "SHORT_LOOKBACK": "short_lookback",
+    "MEDIUM_LOOKBACK": "medium_lookback",
+    "LONG_LOOKBACK": "long_lookback",
+    "MACRO_LOOKBACK": "macro_lookback",
     "MOMENTUM_LOOKBACK": "momentum_lookback",
     "VOLATILITY_LOOKBACK": "volatility_lookback",
     "VOLUME_LOOKBACK": "volume_lookback",

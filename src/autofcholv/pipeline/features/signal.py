@@ -137,7 +137,7 @@ def _true_series(df: pd.DataFrame) -> pd.Series:
     return pd.Series(True, index=df.index)
 
 
-def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
+def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     missing_cols = [col for col in REQUIRED_COLUMNS if col not in df.columns]
     if missing_cols:
         raise ValueError(f"Missing columns: {missing_cols}")
@@ -313,7 +313,7 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
         (df["Close"] < df["Open"]) & (df["Open"] > df["close_lag1"]) & (df["Close"] < df["open_lag1"]),
     )
     compression = df["std5"] < (df["std20"] * 0.5)
-    df["compression_breakout_signal"] = _signal_from_conditions(compression & (df["Close"] > df["Close"].rolling(5).max().shift(1)), compression & (df["Close"] < df["Close"].rolling(5).min().shift(1)))
+    df["compression_breakout_signal"] = _signal_from_conditions(compression & (df["Close"] > df["Close"].rolling(config.micro_lookback).max().shift(1)), compression & (df["Close"] < df["Close"].rolling(config.micro_lookback).min().shift(1)))
     df["atr_expansion_signal"] = _signal_from_conditions(
         (df["atr"] > df["atr_sma20"] * 1.5) & (df["Close"] > df["close_lag1"]),
         (df["atr"] > df["atr_sma20"] * 1.5) & (df["Close"] < df["close_lag1"]),

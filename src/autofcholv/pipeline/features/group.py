@@ -32,9 +32,9 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["inside_bar_prev"] = (df["high_lag1"] < df["High"].shift(2)) & (df["low_lag1"] > df["Low"].shift(2))
 
     # New TODO features
-    df['is_max_4'] = df["High"] > df["High"].shift(1).rolling(3).max()
-    df['is_max_10'] = df["High"] > df["High"].shift(1).rolling(9).max()
-    df['is_min_10'] = df["Low"] < df["Low"].shift(1).rolling(9).min()
+    df['is_max_4'] = df["High"] > df["High"].shift(1).rolling(max(2, config.micro_lookback - 2)).max()
+    df['is_max_10'] = df["High"] > df["High"].shift(1).rolling(max(3, config.short_lookback - 1)).max()
+    df['is_min_10'] = df["Low"] < df["Low"].shift(1).rolling(max(3, config.short_lookback - 1)).min()
     mfi_col = "mfi14" if "mfi14" in df.columns else ("mfi" if "mfi" in df.columns else None)
     if mfi_col:
         df['mfi_group'] = np.where(df[mfi_col] > df[mfi_col].shift(1), "Increase", "Not Increase")
