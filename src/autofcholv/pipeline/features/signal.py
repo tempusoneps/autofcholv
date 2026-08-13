@@ -124,11 +124,11 @@ REQUIRED_COLUMNS = [
 ]
 
 
-def _signal_from_conditions(buy_condition: pd.Series, sell_condition: pd.Series) -> pd.Series:
-    buy = buy_condition.fillna(False)
-    sell = sell_condition.fillna(False)
+def _signal_from_conditions(buy: pd.Series, sell: pd.Series) -> pd.Series:
+    buy_clean = buy.fillna(False).astype(bool)
+    sell_clean = sell.fillna(False).astype(bool)
     return pd.Series(
-        np.where(buy, BUY_SIGNAL, np.where(sell, SELL_SIGNAL, NONE_SIGNAL)),
+        np.where(buy_clean, BUY_SIGNAL, np.where(sell_clean, SELL_SIGNAL, NONE_SIGNAL)),
         index=buy.index,
     )
 

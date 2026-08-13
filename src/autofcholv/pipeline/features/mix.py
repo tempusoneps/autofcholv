@@ -207,15 +207,11 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     close_shift = df["Close"].shift(volatility_n)
     volume_shift = df["Volume"].shift(volatility_n)
     close_ratio = (df["Close"] - close_shift.rolling(volatility_n).mean()).abs() / close_shift
-    volume_ratio = (df["Volume"] - volume_shift.rolling(volatility_n).mean()) / volume_shift
+    volume_ratio = (df["Volume"] - volume_shift.rolling(volatility_n).mean()) / (volume_shift + 1e-8)
     angle = close_ratio * volume_ratio
-    direction = np.ones(len(df), dtype=float)
-    adj = np.ones(len(df), dtype=float)
-    condition = angle < 0
-    direction[condition.to_numpy()] = -1
-    adj[condition.to_numpy()] = np.inf
-    price_volume_resist = close_ratio / volume_ratio * direction * adj
-    df["PriceVolumeResist"] = price_volume_resist / volatility_n
+    direction = np.where(angle < 0, -1.0, 1.0)
+    price_volume_resist = (close_ratio / (volume_ratio.abs() + 1e-8)) * direction
+    df["PriceVolumeResist"] = (price_volume_resist / volatility_n).replace([np.inf, -np.inf], np.nan).fillna(0.0)
     adx_up_move = np.where(df["High"] > df["High"].shift(1), df["High"] - df["High"].shift(1), 0.0)
     adx_down_move = np.where(df["Low"].shift(1) > df["Low"], df["Low"].shift(1) - df["Low"], 0.0)
     adx_xpdm = np.where(adx_up_move > adx_down_move, df["High"] - df["High"].shift(1), 0.0)

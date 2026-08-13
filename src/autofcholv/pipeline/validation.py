@@ -21,6 +21,14 @@ def validate_ohlcv_dataset(data: pd.DataFrame) -> Tuple[bool, Dict[str, Any]]:
         }
 
     df = data.copy()
+    if not isinstance(df.index, pd.DatetimeIndex):
+        date_col = next((c for c in ["Date", "date", "datetime", "time", "Timestamp"] if c in df.columns), None)
+        if date_col is not None:
+            df = df.set_index(date_col)
+        try:
+            df.index = pd.to_datetime(df.index)
+        except Exception:
+            pass
 
     # ==============================
     # 2️⃣ Convert numeric columns
