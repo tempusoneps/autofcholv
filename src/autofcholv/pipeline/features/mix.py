@@ -179,7 +179,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     vol = pc.rolling(cvr_n).std()
     ret = pc.rolling(cvr_n).sum()
     cvr = (ret / (vol + 1e-8)) * (df["Close"] * df["Volume"] / ((df["Close"] * df["Volume"]).rolling(cvr_n, min_periods=1).mean()))
-    df["Cvr_v0"] = cvr.rolling(cvr_n, min_periods=1).mean()
+    df["cvr_v0"] = cvr.rolling(cvr_n, min_periods=1).mean()
 
     rc = 100.0 * (
         (df["Close"] - df["Close"].shift(volatility_n)) / (df["Close"].shift(volatility_n) + 1e-8)
@@ -191,7 +191,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     bbw = std / (median + 1e-8)
     corr = df["Close"].rolling(volatility_n).corr(df["Volume"]).fillna(0.0) + 1.0
     corr = corr.rolling(volatility_n, min_periods=1).mean()
-    df["Cbr_v1"] = rc * bbw * corr
+    df["cbr_v1"] = rc * bbw * corr
 
     params = [5, 8, 13, 21, 34, 55, 89]
     fbnq_mean = 0.0
@@ -202,7 +202,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     fbnq_mean = fbnq_mean / len(params)
     fbnq_mean = fbnq_mean.pct_change(volatility_n)
     bbw_ori = bbw_ori / len(params)
-    df["Fbnq_pct_v5"] = fbnq_mean * bbw_ori
+    df["fbnq_pct_v5"] = fbnq_mean * bbw_ori
 
     close_shift = df["Close"].shift(volatility_n)
     volume_shift = df["Volume"].shift(volatility_n)
@@ -211,7 +211,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     angle = close_ratio * volume_ratio
     direction = np.where(angle < 0, -1.0, 1.0)
     price_volume_resist = (close_ratio / (volume_ratio.abs() + 1e-8)) * direction
-    df["PriceVolumeResist"] = (price_volume_resist / volatility_n).replace([np.inf, -np.inf], np.nan).fillna(0.0)
+    df["price_volume_resist"] = (price_volume_resist / volatility_n).replace([np.inf, -np.inf], np.nan).fillna(0.0)
     adx_up_move = np.where(df["High"] > df["High"].shift(1), df["High"] - df["High"].shift(1), 0.0)
     adx_down_move = np.where(df["Low"].shift(1) > df["Low"], df["Low"].shift(1) - df["Low"], 0.0)
     adx_xpdm = np.where(adx_up_move > adx_down_move, df["High"] - df["High"].shift(1), 0.0)
@@ -236,16 +236,16 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     avg_price = df["Close"].rolling(volatility_n, min_periods=1).mean()
     wd_atr = atr / (avg_price + EPS)
     mtm = df["Close"] / (df["Close"].shift(volatility_n) + EPS) - 1.0
-    df["Mtam"] = (mtm * taker_ratio * wd_atr).rolling(volatility_n, min_periods=1).mean()
+    df["mtam"] = (mtm * taker_ratio * wd_atr).rolling(volatility_n, min_periods=1).mean()
     mtm_std = df["Close"].rolling(volatility_n, min_periods=1).std(ddof=0)
     mtm_std_mtm = (mtm_std / (mtm_std.shift(volatility_n) + EPS) - 1.0).rolling(volatility_n, min_periods=1).mean()
     bbw = mtm_std / (df["Close"].rolling(volatility_n, min_periods=1).mean() + EPS)
     bbw_mean = bbw.rolling(volatility_n, min_periods=1).mean()
     taker_buy_ratio = taker_buy.rolling(volatility_n, min_periods=1).sum() / (taker_buy.rolling(max(1, int(0.5 * volatility_n)), min_periods=1).sum() + EPS)
-    df["Msbt"] = mtm.rolling(volatility_n, min_periods=1).mean() * mtm_std_mtm * bbw_mean * taker_buy_ratio
+    df["msbt"] = mtm.rolling(volatility_n, min_periods=1).mean() * mtm_std_mtm * bbw_mean * taker_buy_ratio
     rc = 100.0 * ((df["Close"] - df["Close"].shift(volatility_n)) / (df["Close"].shift(volatility_n) + EPS) + (df["Close"] - df["Close"].shift(2 * volatility_n)) / (df["Close"].shift(2 * volatility_n) + EPS))
     rc_mean = rc.rolling(volatility_n, min_periods=1).mean()
-    df["CoppAtrBull"] = rc_mean * wd_atr * taker_ratio
+    df["copp_atr_bull"] = rc_mean * wd_atr * taker_ratio
 
 
     below_open = (df["Close"] < df["session_open"]).astype(float)

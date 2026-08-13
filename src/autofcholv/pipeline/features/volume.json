@@ -134,11 +134,6 @@
         "name": "Accumulation Distribution Oscillator",
         "comment": "Normalized EMA spread of cumulative CLV-weighted volume"
     },
-    "wvad": {
-        "type": "float",
-        "name": "Williams Variable Accumulation Distribution",
-        "comment": "Normalized rolling sum of body-weighted volume"
-    },
     "klinger_oscillator": {
         "type": "float",
         "name": "Klinger Oscillator",
@@ -368,11 +363,6 @@
         "type": "float",
         "name": "V1Dn",
         "comment": "Lower adaptive band distance for the V1 composite"
-    },
-    "Vramt": {
-        "type": "float",
-        "name": "Vramt",
-        "comment": "Volume ratio based on up, down, and unchanged bars"
     },
     "v1up": {
         "type": "float",

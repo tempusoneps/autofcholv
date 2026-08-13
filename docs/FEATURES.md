@@ -348,7 +348,7 @@ The pipeline executes in the order listed below.
 | `typical_price_momentum` | float | Z-scored spread between fast EMA and slow EMA of typical_price |
 | `weighted_close_bias` | float | weighted_close EMA(n) / weighted_close EMA(2n) - 1 with n = MOMENTUM_LOOKBACK |
 | `rolling_vwap` | float | rolling_vwap = rolling sum(typical_price * Volume) / rolling sum(Volume) |
-| `vwap_bias` | float | rolling_vwap / rolling mean(rolling_vwap, n) - 1 with n = MOMENTUM_LOOKBACK |
+| `vwap_bias` | float | Rolling VWAP divided by its moving average minus 1 |
 | `close_to_vwap` | float | close_to_vwap = Close / rolling_vwap - 1 |
 | `vwap_range_position` | float | Rolling VWAP normalized within its rolling min/max range |
 | `vwap_to_high` | float | rolling_vwap / High - 1 |
@@ -362,8 +362,7 @@ The pipeline executes in the order listed below.
 | `typ` | float | Typical price (H+L+C)/3 |
 | `vwap_signal` | float | Typical price relative to rolling VWAP minus 1 |
 | `wc` | float | Weighted close EMA ratio |
-| `WVAD` | float | Normalized rolling candle-body volume accumulation |
-| `Vwapbias` | float | Rolling VWAP divided by its moving average minus 1 |
+| `wvad` | float | Normalized rolling candle-body volume accumulation |
 | `open_range_high_2` | float | High of the first two bars in each trading day |
 | `open_range_low_2` | float | Low of the first two bars in each trading day |
 | `session_open` | float | First Open value of each trading day |
@@ -559,7 +558,7 @@ The pipeline executes in the order listed below.
 | `realized_volatility_zscore` | float | Z-score of realized_volatility over VOLATILITY_LOOKBACK |
 | `rwi` | float | Close normalized within upward/downward Random Walk Index range |
 | `mssi` | float | Max of average drawdown from rolling high and reverse drawdown from rolling low |
-| `vix_bw` | float | Signed adaptive bandwidth of n-period close return |
+| `vix_bw` | float | Volatile directional bandwidth proxy |
 | `keltner_width` | float | Keltner channel width normalized by EMA middle band |
 | `keltner_upper_signal` | float | Rolling-normalized Keltner upper band |
 | `keltner_lower_signal` | float | Rolling-normalized Keltner lower band |
@@ -573,10 +572,10 @@ The pipeline executes in the order listed below.
 | `rwi_high` | float | RWI high component based on upward range |
 | `rwi_low` | float | RWI low component based on downward range |
 | `bbw_signal` | float | Bollinger bandwidth change times n-period momentum and RSI-like close pressure |
-| `kc_signal` | float | Close position inside Keltner channel using ATR bands |
+| `kc_signal` | float | (Close - kc_middle + 2 * kc_atr) / (4 * kc_atr + epsilon) |
 | `atr_upper` | float | ATR-based upper channel ratio normalized by moving average |
 | `atr_lower` | float | ATR-based lower channel ratio normalized by moving average |
-| `fb_upper_signal` | float | Close position relative to Fibonacci upper ATR band |
+| `fb_upper_signal` | float | Scaled signal for 1.618 Fibonacci upper band distance |
 | `pac_width_signal` | float | PAC width normalized by its rolling mean minus 1 |
 | `volume_std` | float | Rolling standard deviation of Volume |
 | `grid` | float | N-period percent change of rolling z-score position |
@@ -587,7 +586,7 @@ The pipeline executes in the order listed below.
 | `apz` | float | Adaptive Price Zone channel width normalized by double EMA close |
 | `apz_upper` | float | Upper Adaptive Price Zone channel normalized to rolling range |
 | `apz_lower` | float | Lower Adaptive Price Zone channel normalized to rolling range |
-| `bolling` | float | Bollinger breakout distance normalized by standard deviation |
+| `bolling` | float | Distance from Bollinger Band normalized by standard deviation |
 | `bolling_width` | float | Adaptive Bollinger width based on rolling z-score mean |
 | `cv` | float | Rate of change of high-low EMA amplitude |
 | `dc` | float | Distance between close and Donchian middle channel normalized by channel width |
@@ -600,38 +599,34 @@ The pipeline executes in the order listed below.
 | `paclower` | float | PAC lower band normalized to rolling range |
 | `pacupper_v2` | float | Close minus PAC upper band, rolling averaged |
 | `paclower_v2` | float | PAC lower band minus close, rolling averaged |
-| `Bolling` | float | Distance from Bollinger Band normalized by standard deviation |
-| `Bolling_v2` | float | 2 * std / (ma + epsilon) |
-| `Bolling_v3` | float | (upper - upper.shift(1)) / (ma + epsilon) |
-| `Bolling_fancy` | float | (Close - ma) / (std + epsilon) |
-| `EnvSignal` | float | (Close - env_lower) / (0.1 * env_middle + epsilon) |
-| `EnvUpper` | float | Scaled upper envelope over volatility lookback |
-| `EnvLower` | float | Scaled lower envelope over volatility lookback |
-| `KcSignal` | float | (Close - kc_middle + 2 * kc_atr) / (4 * kc_atr + epsilon) |
-| `KcUpperSignal` | float | Scaled distance to Keltner upper band |
-| `KcLowerSignal` | float | Scaled distance to Keltner lower band |
-| `VwapBbw` | float | Cumulative product of VWAP change and BBW change over volume |
-| `RetBoll_fancy` | float | Z-score of returns over rolling volatility lookback |
-| `Lchc_fancy` | float | -1.0 * min(Low) / Close - max(High) / Close |
-| `AdaptBollingv3` | float | Multi-period momentum and ATR composite index |
-| `Bollcount_dem` | float | Rolling sum of DeMarker directional signals |
-| `DzcciLower` | float | Distance between lower CCI band and short CCI MA |
-| `DzcciUpper` | float | Scaled upper CCI band over volatility lookback |
-| `DzrsiLowerSignal` | float | Standardized dynamic zone RSI lower signal |
-| `DzrsiUpperSignal` | float | Scaled dynamic zone RSI upper signal |
-| `FbLower` | float | Scaled lower Fibonacci ATR channel band |
-| `FbUpper` | float | Scaled upper Fibonacci ATR channel band |
-| `DzcciLowerSignal` | float | Standardized difference between CCI lower band and close |
-| `DzcciLowerSignal_v2` | float | Scaled difference between CCI lower band and short CCI MA |
-| `DzcciUpperSignal` | float | Scaled difference between close and CCI upper band |
-| `DzcciUpperSignal_v2` | float | Scaled difference between short CCI MA and CCI upper band |
-| `FbLowerSignal` | float | Scaled signal for 1.618 Fibonacci lower band distance |
-| `FbLowerSignal_v2` | float | Scaled signal for 2.618 Fibonacci lower band distance |
-| `FbLowerSignal_v3` | float | Scaled signal for 4.236 Fibonacci lower band distance |
-| `FbUpperSignal` | float | Scaled signal for 1.618 Fibonacci upper band distance |
-| `FbUpperSignal_v2` | float | Scaled signal for 2.618 Fibonacci upper band distance |
-| `FbUpperSignal_v3` | float | Scaled signal for 4.236 Fibonacci upper band distance |
-| `VixBw` | float | Volatile directional bandwidth proxy |
+| `bolling_v2` | float | 2 * std / (ma + epsilon) |
+| `bolling_v3` | float | (upper - upper.shift(1)) / (ma + epsilon) |
+| `bolling_fancy` | float | (Close - ma) / (std + epsilon) |
+| `env_signal` | float | (Close - env_lower) / (0.1 * env_middle + epsilon) |
+| `env_upper` | float | Scaled upper envelope over volatility lookback |
+| `env_lower` | float | Scaled lower envelope over volatility lookback |
+| `kc_upper_signal` | float | Scaled distance to Keltner upper band |
+| `kc_lower_signal` | float | Scaled distance to Keltner lower band |
+| `vwap_bbw` | float | Cumulative product of VWAP change and BBW change over volume |
+| `ret_boll_fancy` | float | Z-score of returns over rolling volatility lookback |
+| `lchc_fancy` | float | -1.0 * min(Low) / Close - max(High) / Close |
+| `adapt_bolling_v3` | float | Multi-period momentum and ATR composite index |
+| `bollcount_dem` | float | Rolling sum of DeMarker directional signals |
+| `dzcci_lower` | float | Distance between lower CCI band and short CCI MA |
+| `dzcci_upper` | float | Scaled upper CCI band over volatility lookback |
+| `dzrsi_lower_signal` | float | Standardized dynamic zone RSI lower signal |
+| `dzrsi_upper_signal` | float | Scaled dynamic zone RSI upper signal |
+| `fb_lower` | float | Scaled lower Fibonacci ATR channel band |
+| `fb_upper` | float | Scaled upper Fibonacci ATR channel band |
+| `dzcci_lower_signal` | float | Standardized difference between CCI lower band and close |
+| `dzcci_lower_signal_v2` | float | Scaled difference between CCI lower band and short CCI MA |
+| `dzcci_upper_signal` | float | Scaled difference between close and CCI upper band |
+| `dzcci_upper_signal_v2` | float | Scaled difference between short CCI MA and CCI upper band |
+| `fb_lower_signal` | float | Scaled signal for 1.618 Fibonacci lower band distance |
+| `fb_lower_signal_v2` | float | Scaled signal for 2.618 Fibonacci lower band distance |
+| `fb_lower_signal_v3` | float | Scaled signal for 4.236 Fibonacci lower band distance |
+| `fb_upper_signal_v2` | float | Scaled signal for 2.618 Fibonacci upper band distance |
+| `fb_upper_signal_v3` | float | Scaled signal for 4.236 Fibonacci upper band distance |
 | `bb_width` | float | Standard Bollinger Band Width used for signals |
 | `bb_width_q20` | float | 100-bar rolling 20th percentile of bb_width |
 | `bb_width_sma20` | float | 20-bar simple moving average of bb_width |
@@ -685,7 +680,6 @@ The pipeline executes in the order listed below.
 | `directional_volume_change` | float | Rolling maximum of quote-volume proxy change signed by close direction |
 | `volume_ratio_amount` | float | (up amount + flat amount / 2) / (down amount + flat amount / 2) |
 | `adosc` | float | Normalized EMA spread of cumulative CLV-weighted volume |
-| `wvad` | float | Normalized rolling sum of body-weighted volume |
 | `klinger_oscillator` | float | Normalized EMA spread of signed volume by typical price direction |
 | `vra` | float | Dual-horizon price ROC multiplied by rolling close volatility |
 | `ke` | float | Signed squared n-period price change amplified by normalized volume |
@@ -732,7 +726,6 @@ The pipeline executes in the order listed below.
 | `mtm_bull` | float | Momentum, ATR, and taker-buy composite |
 | `mtm_bear` | float | Momentum, ATR, and taker-sell composite |
 | `v1dn` | float | Lower adaptive band distance for the V1 composite |
-| `Vramt` | float | Volume ratio based on up, down, and unchanged bars |
 | `v1up` | float | Upper adaptive band distance for the V1 composite |
 | `mfi14` | float | Money Flow Index over 14 periods |
 | `vpt` | float | Cumulative Volume Price Trend indicator |
@@ -815,15 +808,15 @@ The pipeline executes in the order listed below.
 | `keltner_position` | float | (Close - EMA(Close,n) + 2 * ATR) / (4 * ATR) adapted from quant-ohlcv-feature |
 | `fear_greed_yidai_v1` | float | Weighted momentum of bullish and bearish true-range amplitudes |
 | `damaov10` | float | Coppock, Bollinger width, and ATR composite |
-| `Cvr_v0` | float | Cumulative return over rolling return volatility multiplied by relative quote volume |
-| `Cbr_v1` | float | Coppock-style momentum multiplied by Bollinger bandwidth and price-volume correlation |
-| `Fbnq_pct_v5` | float | Fibonacci EMA momentum percent change multiplied by average Bollinger bandwidth |
-| `PriceVolumeResist` | float | Close-to-volume breakout difficulty ratio normalized by window length |
+| `cvr_v0` | float | Cumulative return over rolling return volatility multiplied by relative quote volume |
+| `cbr_v1` | float | Coppock-style momentum multiplied by Bollinger bandwidth and price-volume correlation |
+| `fbnq_pct_v5` | float | Fibonacci EMA momentum percent change multiplied by average Bollinger bandwidth |
+| `price_volume_resist` | float | Close-to-volume breakout difficulty ratio normalized by window length |
 | `adx_mtm` | float | Positive directional movement multiplied by rolling momentum |
 | `adx_mtm_neg` | float | Negative directional movement multiplied by rolling momentum |
-| `Mtam` | float | Momentum times taker buy ratio times ATR volatility composite |
-| `Msbt` | float | Momentum, std momentum, BBW, and taker buy composite |
-| `CoppAtrBull` | float | Coppock momentum times ATR times taker buy activity |
+| `mtam` | float | Momentum times taker buy ratio times ATR volatility composite |
+| `msbt` | float | Momentum, std momentum, BBW, and taker buy composite |
+| `copp_atr_bull` | float | Coppock momentum times ATR times taker buy activity |
 | `persist_short_12_shift1` | float | 12-bar rolling share of closes below session_open shifted one bar |
 | `connors_rsi` | float | ConnorsRSI indicator (RSI(3) + StreakRSI(2) + PriceRank) |
 
@@ -839,7 +832,7 @@ The pipeline executes in the order listed below.
 | `lower_shadow_group` | str | compare(lowwick, prev_lowwick) = Increase \| Not Increase |
 | `vol_high_pattern` | str | vol_high_pattern = compare(Volume, vol_lag1) + compare(High, high_lag1) = VolUp_HighUp \| VolUp_HighDown \| VolDown_HighUp \| VolDown_HighDown |
 | `ibs_volume_pattern` | str | ibs_volume_group = compare(Volume, vol_lag1) + compare(IBS, ibs_lag1) = VolUp_IBSUp \| VolUp_IBSDown \| VolDown_IBSUp \| VolDown_IBSDown |
-| `volume_avg_group` | str | volume_avg_group = comapre(Volume, vol_avg) = VolAboveAvg \| VolBelowAvg |
+| `volume_avg_group` | str | compare(volume_avg, prev_volume_avg) = Increase \| Not Increase |
 | `high_rsi_pattern` | str | high_rsi_pattern = compare(High, high_lag1) + compare(RSI, rsi_lag1) = HighUp_RSIUp \| HighUp_RSIDown \| HighDown_RSIUp \| HighDown_RSIDown |
 | `high_ub_pattern` | str | high_ub_pattern = compare(High, ub) = HighAboveUB \| HighBelowUB |
 | `low_lb_pattern` | str | low_lb_pattern = compare(Low, lb) = LowAboveLB \| LowBelowLB |
@@ -849,17 +842,16 @@ The pipeline executes in the order listed below.
 | `is_max_4` | bool | High is higher than the max High of the previous 3 bars |
 | `is_max_10` | bool | True if High is greater than maximum High of previous 9 bars |
 | `is_min_10` | bool | True if Low is less than minimum Low of previous 9 bars |
-| `MFI_group` | str | compare(MFI, prev_MFI) = Increase \| Not Increase |
+| `mfi_group` | str | compare(MFI, prev_MFI) = Increase \| Not Increase |
 | `higher_high_lower_vol` | bool | High > high_lag1 AND Volume < volume_lag1 |
 | `lower_low_lower_vol` | bool | Low < low_lag1 AND Volume < volume_lag1 |
-| `Volume_higher_avg` | bool | Volume > volume_avg |
-| `Volume_vs_prev_Vol` | str | compare(Volume, volume_lag1) = Increase \| Not Increase |
-| `Volume_avg_group` | str | compare(volume_avg, prev_volume_avg) = Increase \| Not Increase |
+| `volume_higher_avg` | bool | Volume > volume_avg |
+| `volume_vs_prev_vol` | str | compare(Volume, volume_lag1) = Increase \| Not Increase |
 | `close_price_group` | str | > prev High \| Bong nen tren \| Than nen \| Bong nen duoi \| < prev Low |
 | `open_price_group` | str | Open > prev_Close \| Open = prev_Close \| Open < prev_Close |
-| `High_position` | str | > upper BB \| < upper BB |
-| `BB_rejection` | bool | High > ub AND Close < ub |
-| `Low_position` | str | > lower BB \| <= lower BB |
+| `high_position` | str | > upper BB \| < upper BB |
+| `bb_rejection` | bool | High > ub AND Close < ub |
+| `low_position` | str | > lower BB \| <= lower BB |
 | `ibs_vol_group` | str | Vol up, ibs incre \| Vol up, ibs decr \| Vol down, ibs incre \| Vol down, ibs decr |
 | `rsi_area` | str | >55 \| <45 \| 45-55 |
 | `long_trend` | str | StrongUp \| StrongDown = EMA_1month > EMA_6months \| EMA_1month < EMA_6months |

@@ -256,7 +256,7 @@ def test_extract_features_close_columns():
         "mfi", "obv", "pvt_v2", "pvt_v3", "pvt_v4", "vr",
         "vao", "vao_v2", "volume_bias", "volume", "volumechg", "maamt",
         "upnum_fancy", "trade_num", "taker_by_ratio", "buy_vol_ratio_fancy", "taker_by_ratio_per_trade", "vol_per_trade_fancy",
-        "mtm_tb", "dbcd_taker", "mtm_bull", "mtm_bear", "buy_vwap_div_vwap_fancy", "Vramt",
+        "mtm_tb", "dbcd_taker", "mtm_bull", "mtm_bear", "buy_vwap_div_vwap_fancy", "vramt",
         "v1", "v1up", "v1_v2", "v1up_v2", "v1dn_v2", "v1dn",
         "Volume", "autocorrelation", "copp", "demaker", "er", "kdjdk",
         "kdjdd", "skdj", "magiccci", "magiccci_v2",
@@ -316,7 +316,7 @@ def test_extract_features_price_columns():
         "typical_price_momentum", "weighted_close_bias",
         "rolling_vwap", "vwap_bias", "close_to_vwap",
         "vwap_range_position", "vwap_to_high", "vwap_to_low",
-        "close_ma_price", "typical_to_vwap", "avgprice", "avgpricetohigh", "avgpricetolow", "lowprice", "typ", "vwap_signal", "WVAD", "Vwapbias", "wc",
+        "close_ma_price", "typical_to_vwap", "avgprice", "avgpricetohigh", "avgpricetolow", "lowprice", "typ", "vwap_signal", "wvad", "vwap_bias", "wc",
     ]
     for col in expected:
         assert col in result.columns, f"Missing price column: '{col}'"
@@ -359,8 +359,8 @@ def test_extract_features_mix_columns():
         "custom_001", "custom_002",
         "donchian_width", "donchian_position", "amihud_liquidity",
         "keltner_position",
-        "true_range_pct", "gap_pct", "range_position", "body_to_true_range", "fear_greed_yidai_v1", "damaov10", "adx_mtm", "Mtam", "Msbt", "CoppAtrBull", "adx_mtm_neg",
-        "Cvr_v0", "Cbr_v1", "Fbnq_pct_v5", "PriceVolumeResist",
+        "true_range_pct", "gap_pct", "range_position", "body_to_true_range", "fear_greed_yidai_v1", "damaov10", "adx_mtm", "mtam", "msbt", "copp_atr_bull", "adx_mtm_neg",
+        "cvr_v0", "cbr_v1", "fbnq_pct_v5", "price_volume_resist",
     ]
     for col in expected:
         assert col in result.columns, f"Missing mix column: '{col}'"
@@ -602,11 +602,11 @@ def test_extract_features_todo_group_columns():
     df = make_ohlcv(300)
     result = extract_features(df)
     new_cols = [
-        "is_max_4", "upper_wick_group", "MFI_group", "higher_high_lower_vol",
-        "Volume_higher_avg", "Volume_vs_prev_Vol", "Volume_avg_group",
-        "close_price_group", "open_price_group", "High_position",
-        "BB_rejection", "lower_shadow_group", "ibs_vol_group",
-        "rsi_area", "lower_low_lower_vol", "Low_position",
+        "is_max_4", "upper_wick_group", "mfi_group", "higher_high_lower_vol",
+        "volume_higher_avg", "volume_vs_prev_vol", "volume_avg_group",
+        "close_price_group", "open_price_group", "high_position",
+        "bb_rejection", "lower_shadow_group", "ibs_vol_group",
+        "rsi_area", "lower_low_lower_vol", "low_position",
     ]
     for col in new_cols:
         assert col in result.columns, f"Missing expected column: '{col}'"
@@ -614,7 +614,7 @@ def test_extract_features_todo_group_columns():
     # Specific assertion checks
     assert result["is_max_4"].dtype == bool
     assert result["higher_high_lower_vol"].dtype == bool
-    assert result["BB_rejection"].dtype == bool
+    assert result["bb_rejection"].dtype == bool
     assert result["lower_low_lower_vol"].dtype == bool
     assert set(result["rsi_area"].dropna().unique()).issubset({">55", "<45", "45-55"})
 
@@ -640,11 +640,11 @@ def test_group_features_module_direct_extraction():
 
     res = group_features.extract_features(df, Config())
     new_cols = [
-        "is_max_4", "upper_wick_group", "MFI_group", "higher_high_lower_vol",
-        "Volume_higher_avg", "Volume_vs_prev_Vol", "Volume_avg_group",
-        "close_price_group", "open_price_group", "High_position",
-        "BB_rejection", "lower_shadow_group", "ibs_vol_group",
-        "rsi_area", "lower_low_lower_vol", "Low_position",
+        "is_max_4", "upper_wick_group", "mfi_group", "higher_high_lower_vol",
+        "volume_higher_avg", "volume_vs_prev_vol", "volume_avg_group",
+        "close_price_group", "open_price_group", "high_position",
+        "bb_rejection", "lower_shadow_group", "ibs_vol_group",
+        "rsi_area", "lower_low_lower_vol", "low_position",
     ]
     for col in new_cols:
         assert col in res.columns

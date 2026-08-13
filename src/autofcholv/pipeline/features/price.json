@@ -36,8 +36,8 @@
     },
     "vwap_bias": {
         "type": "float",
-        "name": "VWAP Bias",
-        "comment": "rolling_vwap / rolling mean(rolling_vwap, n) - 1 with n = MOMENTUM_LOOKBACK"
+        "name": "Vwapbias",
+        "comment": "Rolling VWAP divided by its moving average minus 1"
     },
     "close_to_vwap": {
         "type": "float",
@@ -104,15 +104,10 @@
         "name": "Weighted Close",
         "comment": "Weighted close EMA ratio"
     },
-    "WVAD": {
+    "wvad": {
         "type": "float",
         "name": "WVAD",
         "comment": "Normalized rolling candle-body volume accumulation"
-    },
-    "Vwapbias": {
-        "type": "float",
-        "name": "Vwapbias",
-        "comment": "Rolling VWAP divided by its moving average minus 1"
     },
     "open_range_high_2": {
         "type": "float",

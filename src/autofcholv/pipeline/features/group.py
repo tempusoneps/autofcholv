@@ -37,15 +37,15 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df['is_min_10'] = df["Low"] < df["Low"].shift(1).rolling(9).min()
     mfi_col = "mfi14" if "mfi14" in df.columns else ("mfi" if "mfi" in df.columns else None)
     if mfi_col:
-        df['MFI_group'] = np.where(df[mfi_col] > df[mfi_col].shift(1), "Increase", "Not Increase")
+        df['mfi_group'] = np.where(df[mfi_col] > df[mfi_col].shift(1), "Increase", "Not Increase")
     else:
-        df['MFI_group'] = "Not Increase"
+        df['mfi_group'] = "Not Increase"
 
     df['higher_high_lower_vol'] = (df["High"] > df["high_lag1"]) & (df["Volume"] < df["volume_lag1"])
     df['lower_low_lower_vol'] = (df["Low"] < df["low_lag1"]) & (df["Volume"] < df["volume_lag1"])
-    df['Volume_higher_avg'] = df["Volume"] > df["volume_avg"]
-    df['Volume_vs_prev_Vol'] = np.where(df["Volume"] > df["volume_lag1"], "Increase", "Not Increase")
-    df['Volume_avg_group'] = np.where(df["volume_avg"] > df["volume_avg"].shift(1), "Increase", "Not Increase")
+    df['volume_higher_avg'] = df["Volume"] > df["volume_avg"]
+    df['volume_vs_prev_vol'] = np.where(df["Volume"] > df["volume_lag1"], "Increase", "Not Increase")
+    df['volume_avg_group'] = np.where(df["volume_avg"] > df["volume_avg"].shift(1), "Increase", "Not Increase")
 
     # close_price_group
     c_prev_max = np.maximum(df["close_lag1"], df["open_lag1"])
@@ -70,9 +70,9 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df['open_price_group'] = np.select(open_conds, open_choices, default="Open < prev_Close")
 
     # Bollinger band positions
-    df['High_position'] = np.where(df["High"] > df["ub"], "> upper BB", "< upper BB")
-    df['BB_rejection'] = (df["High"] > df["ub"]) & (df["Close"] < df["ub"])
-    df['Low_position'] = np.where(df["Low"] > df["lb"], "> lower BB", "<= lower BB")
+    df['high_position'] = np.where(df["High"] > df["ub"], "> upper BB", "< upper BB")
+    df['bb_rejection'] = (df["High"] > df["ub"]) & (df["Close"] < df["ub"])
+    df['low_position'] = np.where(df["Low"] > df["lb"], "> lower BB", "<= lower BB")
 
     # ibs_vol_group
     vol_up = df["Volume"] > df["volume_lag1"]

@@ -81,11 +81,11 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
 
     vad = (df["Close"] - df["Open"]) / (df["High"] - df["Low"] + EPS) * df["Volume"]
-    df["WVAD"] = vad.rolling(momentum_n, min_periods=1).sum() / (vad.rolling(momentum_n, min_periods=1).max() - vad.rolling(momentum_n, min_periods=1).min() + EPS)
+    df["wvad"] = vad.rolling(momentum_n, min_periods=1).sum() / (vad.rolling(momentum_n, min_periods=1).max() - vad.rolling(momentum_n, min_periods=1).min() + EPS)
 
     vwap_proxy = rolling_turnover / (rolling_volume + EPS)
     vwap_ma = vwap_proxy.rolling(momentum_n, min_periods=1).mean()
-    df["Vwapbias"] = vwap_proxy / (vwap_ma + EPS) - 1.0
+    df["vwap_bias"] = vwap_proxy / (vwap_ma + EPS) - 1.0
 
 
     trade_date = pd.Series(df.index.normalize(), index=df.index)
