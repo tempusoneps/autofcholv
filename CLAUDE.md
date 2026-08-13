@@ -1,7 +1,3 @@
-# Agent Guide
-
-This file is generated from project documentation. Do not edit it directly.
-
 
 ## Repository Guidelines
 
