@@ -3,6 +3,7 @@ import pandas as pd
 EPS = 1e-8
 import pandas_ta as ta
 from autofcholv.config.config import Config
+from autofcholv.utils.indicators import get_atr, get_rolling_vwap
 
 
 def _wma(series: pd.Series, k: int) -> pd.Series:
@@ -52,10 +53,9 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     if vwap is not None and not vwap.empty:
         df["vwap"] = vwap.values
 
-    atr = ta.atr(df["High"], df["Low"], df["Close"], length=volatility_n)
-    if atr is not None and not atr.empty:
-        df["atr"] = atr.values
-        df["atr_pct"] = df["atr"] / df["Close"]
+    atr = get_atr(df, volatility_n)
+    df["atr"] = atr
+    df["atr_pct"] = df["atr"] / df["Close"]
 
     adx_result = ta.adx(df["High"], df["Low"], df["Close"], length=volatility_n)
     if adx_result is not None and not adx_result.empty:

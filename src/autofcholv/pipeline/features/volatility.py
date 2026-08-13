@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import pandas_ta as ta
 from autofcholv.config.config import Config
+from autofcholv.utils.indicators import get_true_range, get_atr, get_sma_close, get_std_close
 
 
 EPS = 1e-8
@@ -168,18 +169,11 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["donchian_mid_signal"] = df["Close"] - donchian_mid
 
 
-    prev_close_for_atr = df["Close"].shift(1)
-    atr_tr = pd.concat(
-        [
-            (df["High"] - df["Low"]).abs(),
-            (df["High"] - prev_close_for_atr).abs(),
-            (prev_close_for_atr - df["Low"]).abs(),
-        ],
-        axis=1,
-    ).max(axis=1)
-    atr_pct = atr_tr.rolling(volatility_n, min_periods=1).mean() / (df["Close"] + EPS)
-    atr_middle = df["Close"].rolling(volatility_n, min_periods=1).mean()
-    df["atr"] = atr_tr.rolling(volatility_n, min_periods=1).mean() / (atr_middle + EPS)
+    atr_tr = get_true_range(df)
+    atr_val = get_atr(df, volatility_n)
+    atr_pct = atr_val / (df["Close"] + EPS)
+    atr_middle = get_sma_close(df, volatility_n)
+    df["atr"] = atr_val / (atr_middle + EPS)
     pfe_direct = (df["Close"] - df["Close"].shift(volatility_n - 1))
     pfe_direct = (pfe_direct ** 2 + (volatility_n - 1) ** 2) ** 0.5
     pfe_each = (df["Close"].diff() ** 2 + 1.0) ** 0.5
@@ -507,9 +501,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     ema20 = ta.ema(df["Close"], length=20)
     kc_mid = ema20 if ema20 is not None else pd.Series(np.nan, index=df.index)
-    atr_local = ta.atr(df["High"], df["Low"], df["Close"], length=volatility_n)
-    if atr_local is None or atr_local.empty:
-        atr_local = pd.Series(np.nan, index=df.index)
+    atr_local = get_atr(df, volatility_n)
 
     df["kc_mid"] = kc_mid
     df["kc_upper"] = kc_mid + 2 * atr_local
