@@ -162,7 +162,7 @@
     "mom_y": {
         "type": "float",
         "name": "Momentum Y",
-        "comment": "Close percent change versus previous day 14:45 close fallback"
+        "comment": "Close percent change versus previous day close"
     },
     "session_vwap": {
         "type": "float",
