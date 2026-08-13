@@ -237,8 +237,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     grid_median = df["Close"].rolling(volatility_n, min_periods=1).mean()
     grid_std = df["Close"].rolling(volatility_n, min_periods=1).std(ddof=0)
     grid = (df["Close"] - grid_median) / (grid_std + EPS)
-    grid = grid.replace([np.inf, -np.inf], np.nan).fillna(0.0).rolling(volatility_n, min_periods=1).mean()
-    df["grid"] = grid.pct_change(volatility_n)
+    grid_shift = grid.shift(volatility_n)
+    df["grid"] = ((grid - grid_shift) / (grid_shift.abs() + EPS)).replace([np.inf, -np.inf], np.nan).fillna(0.0)
 
     df["lcsd"] = (df["Low"] - df["Close"].rolling(volatility_n, min_periods=1).mean()) / (df["Low"] + EPS)
 

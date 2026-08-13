@@ -94,16 +94,12 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df['rsi_area'] = np.select(rsi_conds, rsi_choices, default="45-55")
 
     _1day_bars     = config.one_day_bars
-    _1month_bars   = _1day_bars * 22
-    _6month_bars   = _1month_bars * 6
-    if len(df) < _6month_bars:
-        raise ValueError(f"Not enough data to calculate long trend. Need {_6month_bars} bars, got {len(df)}")
-    ema_1month = ta.ema(df["Close"], length=_1month_bars)
-    ema_6month = ta.ema(df["Close"], length=_6month_bars)
-    mask = ema_1month.notna() & ema_6month.notna()   
-    df["long_trend"] = None
-    df.loc[mask, "long_trend"] = np.where(
-        ema_1month[mask] > ema_6month[mask],
+    span_short     = min(_1day_bars * 22, max(5, len(df) // 4))
+    span_long      = min(_1day_bars * 132, max(10, len(df)))
+    ema_short      = df["Close"].ewm(span=span_short, adjust=False).mean()
+    ema_long       = df["Close"].ewm(span=span_long, adjust=False).mean()
+    df["long_trend"] = np.where(
+        ema_short > ema_long,
         "StrongUp",
         "StrongDown"
     )
