@@ -9,21 +9,6 @@
         "name": "Minute",
         "comment": "Phút giao dịch"
     },
-    "time_int": {
-        "type": "int",
-        "name": "Time Int",
-        "comment": "Time Int = 100 * hour + minute"
-    },
-    "session_progress": {
-        "type": "float",
-        "name": "Session Progress",
-        "comment": "Vị trí trong phiên"
-    },
-    "day_of_week": {
-        "type": "int",
-        "name": "Day of Week",
-        "comment": "Ngày trong tuần"
-    },
     "day_of_month": {
         "type": "int",
         "name": "Day of Month",
@@ -39,9 +24,29 @@
         "name": "Year",
         "comment": "Năm"
     },
-    "bar_in_day": {
+    "day_of_week": {
         "type": "int",
-        "name": "Bar In Day",
-        "comment": "Zero-based bar number within each trading day"
+        "name": "Day of Week",
+        "comment": "Ngày trong tuần"
+    },
+    "time_int": {
+        "type": "int",
+        "name": "Time Int",
+        "comment": "Time Int = 100 * hour + minute"
+    },
+    "session_progress": {
+        "type": "float",
+        "name": "Session Progress",
+        "comment": "Vị trí trong phiên"
+    },
+    "is_morning": {
+        "type": "bool",
+        "name": "Is Morning",
+        "comment": "True if timestamp is in morning session (time_int < 1200)"
+    },
+    "is_afternoon": {
+        "type": "bool",
+        "name": "Is Afternoon",
+        "comment": "True if timestamp is in afternoon session (time_int > 1200)"
     }
 }

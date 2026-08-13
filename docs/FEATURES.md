@@ -11,20 +11,14 @@ The pipeline executes in the order listed below.
 |---|---|---|
 | `hour` | int | Giờ giao dịch |
 | `minute` | int | Phút giao dịch |
-| `time_int` | int | Time Int = 100 * hour + minute |
-| `session_progress` | float | Vị trí trong phiên |
-| `day_of_week` | int | Ngày trong tuần |
 | `day_of_month` | int | Ngày trong tháng |
 | `month` | int | Tháng |
 | `year` | int | Năm |
-| `trade_date` | datetime | Normalized trading date from the timestamp index |
-| `bar_in_day` | int | Zero-based bar number within each trading day |
-| `session_0930_1335` | bool | True when time_int is between 09:30 and 13:35 inclusive |
-| `session_0935_1425` | bool | True when time_int is between 09:35 inclusive and 14:25 exclusive |
-| `session_0935_1335` | bool | True when time_int is between 09:35 and 13:35 inclusive |
-| `late_session_1325` | bool | True for 13:25, 13:40, and 13:55 bars |
-| `late_session_1310` | bool | True for 13:10, 13:25, 13:40, and 13:55 bars |
-| `entry_window_1300_1425` | bool | True when time_int is between 13:00 and 14:25 inclusive |
+| `day_of_week` | int | Ngày trong tuần |
+| `time_int` | int | Time Int = 100 * hour + minute |
+| `session_progress` | float | Vị trí trong phiên |
+| `is_morning` | bool | True if timestamp is in morning session (time_int < 1200) |
+| `is_afternoon` | bool | True if timestamp is in afternoon session (time_int > 1200) |
 
 ---
 
@@ -38,12 +32,12 @@ The pipeline executes in the order listed below.
 | `prev_day_low` | float | day_low.shift(1) |
 | `prev_day_volume` | float | day_volume.shift(1) |
 | `prev_day_pivot` | float | day_pivot.shift(1) |
-| `prev_trading_day_close` | float | Completed previous trading day's close |
 | `prev_trading_day_high` | float | Completed previous trading day's high |
 | `prev_trading_day_low` | float | Completed previous trading day's low |
+| `prev_trading_day_close` | float | Completed previous trading day's close |
 | `prev_day_r1` | float | Pivot resistance R1 from completed previous trading day |
 | `prev_day_s1` | float | Pivot support S1 from completed previous trading day |
-| `prev_day_ema_bias_20` | int | Previous trading day close versus its 20-day EMA, encoded as 1, -1, or 0 |
+| `prev_day_ema_bias_20` | float | Previous trading day close versus its 20-day EMA, encoded as 1, -1, or 0 |
 | `prev_15m_open` | float | Open price of completed 15-minute bar |
 | `prev_15m_high` | float | High price of completed 15-minute bar |
 | `prev_15m_low` | float | Low price of completed 15-minute bar |
@@ -53,7 +47,7 @@ The pipeline executes in the order listed below.
 | `prev_15m_r1` | float | Pivot resistance R1 of completed 15-minute bar |
 | `prev_15m_s1` | float | Pivot support S1 of completed 15-minute bar |
 | `prev_15m_return` | float | Return ratio of completed 15-minute bar |
-| `prev_15m_ema_bias_20` | int | Completed 15-minute close versus its 20-period EMA, encoded as 1, -1, or 0 |
+| `prev_15m_ema_bias_20` | float | Completed 15-minute close versus its 20-period EMA, encoded as 1, -1, or 0 |
 | `prev_30m_open` | float | Open price of completed 30-minute bar |
 | `prev_30m_high` | float | High price of completed 30-minute bar |
 | `prev_30m_low` | float | Low price of completed 30-minute bar |
@@ -63,7 +57,7 @@ The pipeline executes in the order listed below.
 | `prev_30m_r1` | float | Pivot resistance R1 of completed 30-minute bar |
 | `prev_30m_s1` | float | Pivot support S1 of completed 30-minute bar |
 | `prev_30m_return` | float | Return ratio of completed 30-minute bar |
-| `prev_30m_ema_bias_20` | int | Completed 30-minute close versus its 20-period EMA, encoded as 1, -1, or 0 |
+| `prev_30m_ema_bias_20` | float | Completed 30-minute close versus its 20-period EMA, encoded as 1, -1, or 0 |
 | `prev_1h_open` | float | Open price of completed 1-hour bar |
 | `prev_1h_high` | float | High price of completed 1-hour bar |
 | `prev_1h_low` | float | Low price of completed 1-hour bar |
@@ -73,7 +67,7 @@ The pipeline executes in the order listed below.
 | `prev_1h_r1` | float | Pivot resistance R1 of completed 1-hour bar |
 | `prev_1h_s1` | float | Pivot support S1 of completed 1-hour bar |
 | `prev_1h_return` | float | Return ratio of completed 1-hour bar |
-| `prev_1h_ema_bias_20` | int | Completed 1-hour close versus its 20-period EMA, encoded as 1, -1, or 0 |
+| `prev_1h_ema_bias_20` | float | Completed 1-hour close versus its 20-period EMA, encoded as 1, -1, or 0 |
 
 ---
 
@@ -106,7 +100,6 @@ The pipeline executes in the order listed below.
 | `vn30_orb_30m_low` | float | Low price of the first 30 minutes of the trading session |
 | `vn30_orb_30m_range` | float | Range (High - Low) of the first 30 minutes of the trading session |
 | `vn30_orb_30m_breakout` | int | 1 if close breaks above 30m ORB high, -1 if below 30m ORB low, 0 otherwise |
-| `vn30_late_session_range_pos` | float | Position of current close within session cumulative low-high range (0.0 to 1.0) |
 | `first_close_0915` | float | First Close value at 09:15 for the current trading day |
 | `pre_1345_high` | float | Maximum High before 13:45 for the current trading day |
 | `pre_1355_low` | float | Minimum Low before 13:55 for the current trading day |
@@ -114,6 +107,7 @@ The pipeline executes in the order listed below.
 | `morning_high` | float | Current trading day's High through time_int <= 1100 |
 | `morning_low` | float | Current trading day's Low through time_int <= 1100 |
 | `morning_mid` | float | Midpoint between morning_high and morning_low |
+| `vn30_late_session_range_pos` | float | Position of current close within session cumulative low-high range (0.0 to 1.0) |
 
 ---
 
@@ -123,25 +117,23 @@ The pipeline executes in the order listed below.
 |---|---|---|
 | `body` | float | candlestick body length (include both negative & positive values) |
 | `height` | float | candlestick height = high - low |
+| `body_abs` | float | Absolute candlestick body length |
+| `body_abs_sma20` | float | 20-bar simple moving average of absolute body length |
+| `range_sma20` | float | 20-bar simple moving average of High minus Low |
 | `upwick` | float | candlestick upper wick length = high - max(open, close) |
 | `lowwick` | float | candlestick lower wick length = min(open, close) - low |
 | `upwick_rate` | float | upper wick rate = upper wick / height |
 | `lowwick_rate` | float | lower wick rate = lower wick / height |
 | `body_rate` | float | body rate = body / height |
-| `clv` | float | clv = 1 if High = Low else ((Close-Low) - (High-Close)) / (High - Low) |
-| `vbr` | float | vbr = Volume / (High - Low) |
-| `ibs` | float | ibs = (close - low) / (high - low) |
-| `color` | str | color |
-| `wick_imbalance` | float | wick imbalance = upper wick - lower wick |
-| `upwick_ratio` | float | upwick_ratio = upwick / (lowwick + epsilon) |
-| `fractal_high` | float | Fractal high detected with a 5-bar window |
-| `fractal_low` | float | Fractal low detected with a 5-bar window |
-| `fractal_high_ffill` | float | Fractal high (5-bar window) forward-filled for signal generation |
-| `fractal_low_ffill` | float | Fractal low (5-bar window) forward-filled for signal generation |
-| `body_abs` | float | Absolute candlestick body length |
-| `body_abs_sma20` | float | 20-bar simple moving average of absolute body length |
-| `range_sma20` | float | 20-bar simple moving average of High minus Low |
 | `candle_range_ratio` | float | Absolute body divided by High minus Low |
+| `wick_ratio` | float | wick_ratio = upwick / (upwick + lowwick + epsilon) |
+| `upwick_ratio` | float | upwick_ratio = upwick / (lowwick + epsilon) |
+| `clv` | float | clv = 1 if High = Low else ((Close-Low) - (High-Close)) / (High - Low) |
+| `ibs` | float | ibs = (close - low) / (high - low) |
+| `candle_strength` | float | candle_strength = body / (height + epsilon) |
+| `vbr` | float | vbr = Volume / (High - Low) |
+| `wick_imbalance` | float | wick imbalance = upper wick - lower wick |
+| `color` | int | color |
 | `heikin_ashi_close` | float | (Open + High + Low + Close) / 4 |
 | `heikin_ashi_open` | float | Previous bar Open and Close midpoint |
 | `heikin_ashi_bull` | bool | True when heikin_ashi_close is greater than heikin_ashi_open |
@@ -154,6 +146,18 @@ The pipeline executes in the order listed below.
 
 | Column | Type | Description |
 |---|---|---|
+| `price_change` | float | One-bar difference of Close |
+| `price_change_lag1` | float | Previous value of price_change |
+| `return_5` | float | Close percent change over 5 bars |
+| `return_10` | float | Close percent change over 10 bars |
+| `sma20` | float | 20-bar simple moving average of Close |
+| `sma50` | float | 50-bar simple moving average of Close |
+| `std5` | float | 5-bar rolling standard deviation of Close |
+| `std10` | float | 10-bar rolling standard deviation of Close |
+| `std20` | float | 20-bar rolling standard deviation of Close |
+| `std50` | float | 50-bar rolling standard deviation of Close |
+| `close_min_10` | float | 10-bar rolling minimum of Close |
+| `close_max_10` | float | 10-bar rolling maximum of Close |
 | `ema_fast` | float | EMA fast = ta.ema(close, length=n) with n = FAST_TREND_LOOKBACK |
 | `ema_slow` | float | EMA slow = ta.ema(close, length=n) with n = SLOW_TREND_LOOKBACK |
 | `rsi` | float | RSI = ta.rsi(close, length=n) with n = MOMENTUM_LOOKBACK |
@@ -163,11 +167,11 @@ The pipeline executes in the order listed below.
 | `close_zscore` | float | Z-score of Close = ta.zscore(close, length=n) with n = MOMENTUM_LOOKBACK |
 | `efficiency_ratio` | float | ER = change / volatility; change = abs(close - close.shift(n)); volatility = sum(abs(close - close.shift(1))) over n periods; with n = MOMENTUM_LOOKBACK |
 | `macd` | float | MACD = ta.macd(close, fast=12, slow=26, signal=9) |
-| `macd_signal` | float | MACD Signal = ta.macd(close, fast=12, slow=26, signal=9) |
 | `macd_hist` | float | MACD Hist = ta.macd(close, fast=12, slow=26, signal=9) |
+| `macd_line` | float | MACD signal line generated by pandas-ta macd |
 | `ppo` | float | PPO = ta.ppo(close, fast=12, slow=26, signal=9) |
-| `ppo_signal` | float | PPO Signal = ta.ppo(close, fast=12, slow=26, signal=9) |
 | `ppo_hist` | float | PPO Hist = ta.ppo(close, fast=12, slow=26, signal=9) |
+| `ppo_line` | float | PPO signal line generated by pandas-ta ppo |
 | `ulcer_index` | float | Ulcer Index = ta.ui(close, length=n) with n = MOMENTUM_LOOKBACK |
 | `cmo` | float | CMO = ta.cmo(close, length=n) with n = MOMENTUM_LOOKBACK |
 | `roc_skew` | float | df['roc_close'].rolling(n).skew() with n = MOMENTUM_LOOKBACK |
@@ -183,38 +187,38 @@ The pipeline executes in the order listed below.
 | `fisher` | float | Fisher transform of median price position within the rolling high-low range |
 | `kama` | float | Adaptive moving average weighted by efficiency ratio |
 | `kama_bias` | float | kama_bias = Close / kama - 1 |
-| `high_ma_bias` | float | (High - rolling mean High) / rolling mean High with n = FAST_TREND_LOOKBACK |
-| `bollinger_width` | float | (ub - lb) / mb |
-| `bollinger_percent_b` | float | (Close - lb) / (ub - lb) |
-| `change_std` | float | Close.pct_change(n) * rolling std of one-bar returns adapted from quant-ohlcv-feature |
-| `dpo` | float | (Close - shifted rolling mean Close) / rolling mean Close |
-| `pfe` | float | Direction-signed price efficiency based on direct distance divided by path distance |
-| `williams_r` | float | (rolling high - Close) / (rolling high - rolling low) * 100 |
-| `slow_stoch_d` | float | Slow stochastic oscillator D line adapted from SKDJ |
-| `coppock` | float | Rolling mean of combined n-period and 2n-period close ROC |
-| `pmo` | float | Double-smoothed close ROC momentum oscillator |
-| `smi` | float | Smoothed close distance from rolling high-low midpoint |
-| `psy` | float | Percent of bars in lookback where Close rose |
-| `return_autocorr` | float | Rolling correlation of one-bar returns with lagged returns |
-| `demarker` | float | Rolling positive high movement divided by positive high plus low movement |
-| `imi` | float | Rolling close-open up movement divided by total close-open movement |
-| `rvi` | float | Upward close volatility divided by upward plus downward close volatility |
-| `bop` | float | Rolling mean of (Close - Open) / (High - Low) |
-| `ultimate_oscillator_src` | float | Triple-timeframe buying pressure oscillator adapted from quant-ohlcv-feature |
-| `kst` | float | Weighted multi-horizon close ROC oscillator normalized by its rolling mean |
-| `rmi` | float | Four-bar positive close momentum divided by rolling absolute close movement |
-| `tii` | float | Normalized ratio of positive close deviations from rolling mean |
+| `bias` | float | Close / rolling mean Close - 1 |
+| `rbias` | float | One-bar rate of change of Close / rolling mean Close |
+| `mtm_mean` | float | Rolling mean of n-period close momentum |
+| `mtm_max_diff` | float | Current n-period momentum minus prior rolling max momentum |
+| `sroc` | float | Rate of change of EMA-smoothed Close over 2n bars |
 | `ar` | float | 100 * rolling sum(High - Open) / rolling sum(Open - Low) |
 | `br` | float | 100 * rolling sum(High - previous Close) / rolling sum(previous Close - Low) |
 | `cr` | float | 100 * rolling upward pressure over previous typical price divided by downward pressure |
 | `adtm` | float | (rolling DTM - rolling DBM) / max(rolling DTM, rolling DBM) |
 | `qstick` | float | (Close - Open) normalized by rolling mean Close - Open |
 | `mtm` | float | (Close / Close.shift(n) - 1) * 100 |
-| `bias` | float | Close / rolling mean Close - 1 |
-| `rbias` | float | One-bar rate of change of Close / rolling mean Close |
-| `mtm_mean` | float | Rolling mean of n-period close momentum |
-| `mtm_max_diff` | float | Current n-period momentum minus prior rolling max momentum |
-| `sroc` | float | Rate of change of EMA-smoothed Close over 2n bars |
+| `kst` | float | Weighted multi-horizon close ROC oscillator normalized by its rolling mean |
+| `rmi` | float | Four-bar positive close momentum divided by rolling absolute close movement |
+| `tii` | float | Normalized ratio of positive close deviations from rolling mean |
+| `return_autocorr` | float | Rolling correlation of one-bar returns with lagged returns |
+| `demarker` | float | Rolling positive high movement divided by positive high plus low movement |
+| `imi` | float | Rolling close-open up movement divided by total close-open movement |
+| `rvi` | float | Upward close volatility divided by upward plus downward close volatility |
+| `bop` | float | Rolling mean of (Close - Open) / (High - Low) |
+| `ultimate_oscillator_src` | float | Triple-timeframe buying pressure oscillator adapted from quant-ohlcv-feature |
+| `williams_r` | float | (rolling high - Close) / (rolling high - rolling low) * 100 |
+| `slow_stoch_d` | float | Slow stochastic oscillator D line adapted from SKDJ |
+| `coppock` | float | Rolling mean of combined n-period and 2n-period close ROC |
+| `pmo` | float | Double-smoothed close ROC momentum oscillator |
+| `smi` | float | Smoothed close distance from rolling high-low midpoint |
+| `psy` | float | Percent of bars in lookback where Close rose |
+| `change_std` | float | Close.pct_change(n) * rolling std of one-bar returns adapted from quant-ohlcv-feature |
+| `dpo` | float | (Close - shifted rolling mean Close) / rolling mean Close |
+| `pfe` | float | Direction-signed price efficiency based on direct distance divided by path distance |
+| `high_ma_bias` | float | (High - rolling mean High) / rolling mean High with n = FAST_TREND_LOOKBACK |
+| `bollinger_width` | float | (ub - lb) / mb |
+| `bollinger_percent_b` | float | (Close - lb) / (ub - lb) |
 | `rsi_mean` | float | Rolling mean of RSI scaled to 0-1, adapted from quant-ohlcv Rsimean |
 | `tdi` | float | Rolling-normalized spread between RSI price and signal lines |
 | `osc` | float | Rolling mean of close minus its 2n-period moving average |
@@ -236,25 +240,6 @@ The pipeline executes in the order listed below.
 | `erbear` | float | Low minus EMA(close) normalized by EMA(close) |
 | `er_balance` | float | Bull power plus bear power |
 | `burr` | float | Pullback depth or rebound height conditioned on N-bar trend direction |
-| `do` | float | Double-smoothed RSI variant |
-| `po` | float | Percent oscillator from short and long EMAs |
-| `cci_magic` | float | Smoothed CCI variant using MA of OHLC prices |
-| `cs_mtm` | float | Composite momentum: close momentum x std momentum x volume momentum |
-| `cs_mtm_v2` | float | Composite momentum using close momentum, std momentum, and quote-volume momentum |
-| `rsi_bbw` | float | Bollinger bandwidth change times momentum and RSI |
-| `rccd` | float | Smoothed difference of moving averages applied to smoothed close ratio |
-| `rccd_v2` | float | SMA-smoothed variant of RCCD |
-| `bias_vol` | float | Volume relative to its moving average minus 1 |
-| `bias_cubic_v2` | float | Product of three bias terms amplified by quote-volume proxy |
-| `copp_min_route` | float | Coppock curve divided by normalized shortest intraday route |
-| `adtm_v2` | float | Open-price sentiment normalized to 0-1 |
-| `adtm_v3` | float | Open-price sentiment contrasted against close-adjusted term |
-| `mtm_mean_gap` | float | Close momentum divided by candle body gap mean |
-| `cmo_v3` | float | Rolling mean of a smoothed Chande Momentum Oscillator |
-| `rsis_v2` | float | RSI scaled within its rolling min-max band |
-| `mtm_vol_resonance` | float | Close momentum blended with quote-volume expansion |
-| `tii_signal` | float | EMA-smoothed Traders Intensity Index |
-| `tii_signal_v2` | float | Normalized spread between TII and its signal line |
 | `macd_v2` | float | MACD histogram variant on midpoint price (High+Low)/2 |
 | `ppo_v1` | float | EMA acceleration product variant of PPO |
 | `sroc_v2` | float | Smoothed rate of change of an adaptive moving average proxy |
@@ -270,6 +255,26 @@ The pipeline executes in the order listed below.
 | `bias36ma` | float | Rolling mean of the 3-period minus 6-period close MA spread |
 | `bir` | float | Four-price average breakout pressure over rolling extrema |
 | `copp_v3` | float | Coppock-style average of N and 1.618N close rates of change |
+| `do` | float | Double-smoothed RSI variant |
+| `po` | float | Percent oscillator from short and long EMAs |
+| `cci_magic` | float | Smoothed CCI variant using MA of OHLC prices |
+| `cs_mtm` | float | Composite momentum: close momentum x std momentum x volume momentum |
+| `cs_mtm_v2` | float | Composite momentum using close momentum, std momentum, and quote-volume momentum |
+| `mtmmean_v12` | float | MTM weighted by taker-buy volume ratio and averaged over a rolling window |
+| `rsi_bbw` | float | Bollinger bandwidth change times momentum and RSI |
+| `rccd` | float | Smoothed difference of moving averages applied to smoothed close ratio |
+| `rccd_v2` | float | SMA-smoothed variant of RCCD |
+| `bias_vol` | float | Volume relative to its moving average minus 1 |
+| `bias_cubic_v2` | float | Product of three bias terms amplified by quote-volume proxy |
+| `copp_min_route` | float | Coppock curve divided by normalized shortest intraday route |
+| `adtm_v2` | float | Open-price sentiment normalized to 0-1 |
+| `adtm_v3` | float | Open-price sentiment contrasted against close-adjusted term |
+| `mtm_mean_gap` | float | Close momentum divided by candle body gap mean |
+| `cmo_v3` | float | Rolling mean of a smoothed Chande Momentum Oscillator |
+| `rsis_v2` | float | RSI scaled within its rolling min-max band |
+| `mtm_vol_resonance` | float | Close momentum blended with quote-volume expansion |
+| `tii_signal` | float | EMA-smoothed Traders Intensity Index |
+| `tii_signal_v2` | float | Normalized spread between TII and its signal line |
 | `roc` | float | Close divided by its N-period lag minus 1 |
 | `cci_v2` | float | WMA-based CCI using all four prices |
 | `cci_v3` | float | EMA-smoothed CCI using all four prices |
@@ -296,7 +301,6 @@ The pipeline executes in the order listed below.
 | `v1up_v2` | float | Upper adaptive band distance for V1 |
 | `v1dn_v2` | float | Lower adaptive band distance for V1 |
 | `mtmmean_v10` | float | Momentum mean multiplied by combined long-range and intrabar volatility |
-| `mtmmean_v12` | float | MTM weighted by taker-buy volume ratio and averaged over a rolling window |
 | `mtmhcm` | float | High-based momentum mean relative to close moving-average compression |
 | `si` | float | Weighted price-movement strength normalized by range components |
 | `wr` | float | Position of close within the rolling high-low range |
@@ -316,24 +320,13 @@ The pipeline executes in the order listed below.
 | `skdj` | float | Slow KDJ oscillator |
 | `magiccci` | float | CCI variant using OHLC EWM-smoothed typical price |
 | `magiccci_v2` | float | CCI variant using HLC EWM-smoothed typical price |
+| `amplitude` | float | amplitude = (High / Low) - 1.0 |
 | `stoch_rsi` | float | Stochastic RSI of Close |
 | `awesome_oscillator` | float | Awesome Oscillator (5-34) |
 | `roc10` | float | Rate of change over 10 periods |
 | `ultimate_osc` | float | Ultimate Oscillator (7-14-28) |
 | `stochrsi_k` | float | StochRSI K line |
 | `stochrsi_d` | float | StochRSI D line |
-| `price_change` | float | One-bar difference of Close |
-| `price_change_lag1` | float | Previous value of price_change |
-| `return_5` | float | Close percent change over 5 bars |
-| `return_10` | float | Close percent change over 10 bars |
-| `sma20` | float | 20-bar simple moving average of Close |
-| `sma50` | float | 50-bar simple moving average of Close |
-| `std5` | float | 5-bar rolling standard deviation of Close |
-| `std10` | float | 10-bar rolling standard deviation of Close |
-| `std20` | float | 20-bar rolling standard deviation of Close |
-| `std50` | float | 50-bar rolling standard deviation of Close |
-| `close_min_10` | float | 10-bar rolling minimum of Close |
-| `close_max_10` | float | 10-bar rolling maximum of Close |
 | `rsi_5` | float | Relative Strength Index over 5 periods |
 | `rsi_8` | float | Relative Strength Index over 8 periods |
 | `rsi_14` | float | Relative Strength Index over 14 periods |
@@ -350,6 +343,8 @@ The pipeline executes in the order listed below.
 |---|---|---|
 | `typical_price` | float | typical_price = (High + Low + Close) / 3 |
 | `weighted_close` | float | weighted_close = (High + Low + 2 * Close) / 4 |
+| `midpoint` | float | Midpoint of High and Low |
+| `close_vs_mid` | float | Close minus the High-Low midpoint |
 | `typical_price_momentum` | float | Z-scored spread between fast EMA and slow EMA of typical_price |
 | `weighted_close_bias` | float | weighted_close EMA(n) / weighted_close EMA(2n) - 1 with n = MOMENTUM_LOOKBACK |
 | `rolling_vwap` | float | rolling_vwap = rolling sum(typical_price * Volume) / rolling sum(Volume) |
@@ -363,14 +358,12 @@ The pipeline executes in the order listed below.
 | `avgprice` | float | Rolling VWAP normalized within its rolling range |
 | `avgpricetohigh` | float | VWAP relative to current high |
 | `avgpricetolow` | float | VWAP relative to current low |
-| `WVAD` | float | Normalized rolling candle-body volume accumulation |
-| `Vwapbias` | float | Rolling VWAP divided by its moving average minus 1 |
 | `lowprice` | float | Rolling mean close price |
 | `typ` | float | Typical price (H+L+C)/3 |
 | `vwap_signal` | float | Typical price relative to rolling VWAP minus 1 |
 | `wc` | float | Weighted close EMA ratio |
-| `midpoint` | float | Midpoint of High and Low |
-| `close_vs_mid` | float | Close minus the High-Low midpoint |
+| `WVAD` | float | Normalized rolling candle-body volume accumulation |
+| `Vwapbias` | float | Rolling VWAP divided by its moving average minus 1 |
 | `open_range_high_2` | float | High of the first two bars in each trading day |
 | `open_range_low_2` | float | Low of the first two bars in each trading day |
 | `session_open` | float | First Open value of each trading day |
@@ -382,15 +375,12 @@ The pipeline executes in the order listed below.
 | `session_body_rate` | float | Close minus session_open divided by previous trading day range |
 | `session_mom_y` | float | Close percent change versus previous trading day close |
 | `mom_y` | float | Close percent change versus previous day 14:45 close fallback |
-| `body_rate_first_close` | float | Close minus first_close_0915 divided by pre-13:45 high minus pre-13:55 low |
-| `opening_gap_pct` | float | First 09:15 close versus previous day 14:45 close fallback, percent |
 | `session_vwap` | float | Running session VWAP from Close and Volume |
 | `session_vwap_std` | float | Running volume-weighted standard deviation around session_vwap |
 | `session_vwap_upper_1_5` | float | session_vwap plus 1.5 session_vwap_std |
 | `session_vwap_lower_1_5` | float | session_vwap minus 1.5 session_vwap_std |
 | `session_vwap_z` | float | Close minus session_vwap divided by session_vwap_std |
 | `session_vwap_dev_pct` | float | Close deviation from session_vwap divided by Close, percent |
-| `morning_breakout_long` | float | Close minus morning_high divided by morning range |
 
 ---
 
@@ -398,6 +388,9 @@ The pipeline executes in the order listed below.
 
 | Column | Type | Description |
 |---|---|---|
+| `hullma_bias` | float | Low-lag Hull-style EMA component divided by its sqrt-window EMA smoother minus 1 |
+| `ichimoku_cloud_ratio` | float | Ichimoku span A divided by span B using trend lookback multiples |
+| `t3_bias` | float | Close / Tillson T3 moving average - 1 |
 | `dema_bias` | float | Double EMA normalized by single EMA minus 1 |
 | `tema_bias` | float | EMA divided by triple EMA minus 1 |
 | `trix` | float | One-bar percent change of triple-smoothed EMA |
@@ -409,9 +402,6 @@ The pipeline executes in the order listed below.
 | `vortex_diff` | float | vortex_plus - vortex_minus |
 | `regression_bias` | float | Close / rolling linear-regression estimate - 1 |
 | `regression_slope` | float | Rolling linear-regression slope normalized by rolling mean close |
-| `hullma_bias` | float | Low-lag Hull-style EMA component divided by its sqrt-window EMA smoother minus 1 |
-| `ichimoku_cloud_ratio` | float | Ichimoku span A divided by span B using trend lookback multiples |
-| `t3_bias` | float | Close / Tillson T3 moving average - 1 |
 | `ma_signal` | float | Rolling-normalized close minus moving average trend signal |
 | `bbi_ratio` | float | Bull and Bear Index moving-average blend divided by close |
 | `bbi_bias` | float | Close divided by Bull and Bear Index minus 1 |
@@ -435,6 +425,10 @@ The pipeline executes in the order listed below.
 | `mm_ratio` | float | Fast MA divided by slow MA minus 1 |
 | `reg_angle` | float | Angle of rolling close regression slope in degrees |
 | `expma_ratio` | float | Fast EMA divided by slower EMA minus 1 |
+| `reg` | float | Close divided by rolling linear regression minus 1 |
+| `reg_v2` | float | Percentage deviation of Close from a 2N rolling regression line |
+| `reg_v3` | float | Close divided by rolling OLS regression fit minus 1 |
+| `diff_ema` | float | Difference between short and long EMAs |
 | `diff_ema_ratio` | float | EMA spread normalized by its own EMA |
 | `regema_bias` | float | Close relative to its EMA baseline minus 1 |
 | `regtema_bias` | float | TEMA relative to its regression baseline minus 1 |
@@ -453,10 +447,6 @@ The pipeline executes in the order listed below.
 | `mreg` | float | Rolling mean of close versus linear regression residual |
 | `adxr_pos` | float | Smoothed positive directional index component |
 | `adxr_neg` | float | Smoothed negative directional index component |
-| `reg` | float | Close divided by rolling linear regression minus 1 |
-| `reg_v2` | float | Percentage deviation of Close from a 2N rolling regression line |
-| `reg_v3` | float | Close divided by rolling OLS regression fit minus 1 |
-| `diff_ema` | float | Difference between short and long EMAs |
 | `hma_signal` | float | High price minus its rolling mean, normalized to a 0-1 range |
 | `hullma_signal` | float | Hull moving-average spread normalized to a 0-1 range |
 | `mac_v2` | float | Midpoint-price MAC normalized to a 0-1 range |
@@ -478,13 +468,13 @@ The pipeline executes in the order listed below.
 | `mm` | float | Fast moving average divided by slow moving average minus 1 |
 | `expma` | float | Difference between fast and slow EMAs normalized to [0,1] |
 | `lma` | float | Low-price moving average bias |
+| `dema` | float | Double exponential moving average normalized by its EMA baseline |
+| `tema` | float | Triple exponential moving average normalized by its EMA baseline |
+| `hlma` | float | High-low moving average spread normalized by its own mean |
 | `ic_v2` | float | Close relative to the Ichimoku cloud span boundaries |
 | `ic_v3` | float | Normalized Ichimoku cloud thickness |
 | `ic_v4` | float | Normalized close position inside the Ichimoku cloud |
 | `adxrpos` | float | Smoothed positive directional movement component |
-| `dema` | float | Double exponential moving average normalized by its EMA baseline |
-| `tema` | float | Triple exponential moving average normalized by its EMA baseline |
-| `hlma` | float | High-low moving average spread normalized by its own mean |
 | `dma` | float | ATR-weighted moving average difference |
 | `angle` | float | Angle of the rolling linear regression line of close prices |
 | `vi` | float | Vortex positive minus negative directional spread |
@@ -511,9 +501,9 @@ The pipeline executes in the order listed below.
 | `span_b` | float | Ichimoku Senkou Span B component |
 | `linreg_slope20` | float | Linear regression slope over 20 periods |
 | `linreg_mid20` | float | Linear regression midline over 20 periods |
-| `tma10` | float | Triangular Moving Average over 10 periods |
 | `linreg_upper20` | float | linreg_mid20 plus two times std20 |
 | `linreg_lower20` | float | linreg_mid20 minus two times std20 |
+| `tma10` | float | Triangular Moving Average over 10 periods |
 | `high_5` | float | 5-bar rolling maximum of High |
 | `low_5` | float | 5-bar rolling minimum of Low |
 | `high_10` | float | 10-bar rolling maximum of High |
@@ -541,9 +531,9 @@ The pipeline executes in the order listed below.
 | `ema_20_cross_above_ema_250` | bool | True when EMA 20 crosses above EMA 250 on the current bar |
 | `ema_20_cross_below_ema_250` | bool | True when EMA 20 crosses below EMA 250 on the current bar |
 | `adx_14` | float | Average Directional Index over 14 periods |
-| `adx_42` | float | Average Directional Index over 42 periods |
 | `dmp_14` | float | Positive directional movement over 14 periods |
 | `dmn_14` | float | Negative directional movement over 14 periods |
+| `adx_42` | float | Average Directional Index over 42 periods |
 | `psar_bull` | bool | True when Parabolic SAR indicates a bullish leg |
 | `psar_bear` | bool | True when Parabolic SAR indicates a bearish leg |
 | `linear_regression_slope_5` | float | Linear regression slope of Close over 5 periods |
@@ -562,14 +552,14 @@ The pipeline executes in the order listed below.
 | `pac_width_bias` | float | PAC width divided by rolling mean PAC width minus 1 |
 | `pac_position` | float | (Close - PAC lower) / PAC width |
 | `env_position` | float | Close position inside +/-5 percent moving-average envelope |
+| `adaptive_bollinger_width` | float | Adaptive z-score Bollinger bandwidth normalized by close moving average |
+| `vwap_bbw_efficiency` | float | Rolling VWAP change times Bollinger-width change normalized by quote-volume proxy |
+| `chaikin_volatility` | float | Rate of change of EMA high-low range |
 | `realized_volatility` | float | Rolling standard deviation of one-bar returns |
 | `realized_volatility_zscore` | float | Z-score of realized_volatility over VOLATILITY_LOOKBACK |
 | `rwi` | float | Close normalized within upward/downward Random Walk Index range |
 | `mssi` | float | Max of average drawdown from rolling high and reverse drawdown from rolling low |
 | `vix_bw` | float | Signed adaptive bandwidth of n-period close return |
-| `adaptive_bollinger_width` | float | Adaptive z-score Bollinger bandwidth normalized by close moving average |
-| `vwap_bbw_efficiency` | float | Rolling VWAP change times Bollinger-width change normalized by quote-volume proxy |
-| `chaikin_volatility` | float | Rate of change of EMA high-low range |
 | `keltner_width` | float | Keltner channel width normalized by EMA middle band |
 | `keltner_upper_signal` | float | Rolling-normalized Keltner upper band |
 | `keltner_lower_signal` | float | Rolling-normalized Keltner lower band |
@@ -578,6 +568,7 @@ The pipeline executes in the order listed below.
 | `fibonacci_band_width` | float | Fibonacci ATR channel width normalized by rolling close mean |
 | `fibonacci_band_position` | float | Close position inside first Fibonacci ATR channel |
 | `donchian_mid_signal` | float | Close minus Donchian channel midpoint |
+| `atr` | float | atr = ta.atr(high, low, close, length=n) with n = VOLATILITY_LOOKBACK |
 | `atr_pct` | float | ATR divided by close |
 | `rwi_high` | float | RWI high component based on upward range |
 | `rwi_low` | float | RWI low component based on downward range |
@@ -609,15 +600,47 @@ The pipeline executes in the order listed below.
 | `paclower` | float | PAC lower band normalized to rolling range |
 | `pacupper_v2` | float | Close minus PAC upper band, rolling averaged |
 | `paclower_v2` | float | PAC lower band minus close, rolling averaged |
+| `Bolling` | float | Distance from Bollinger Band normalized by standard deviation |
+| `Bolling_v2` | float | 2 * std / (ma + epsilon) |
+| `Bolling_v3` | float | (upper - upper.shift(1)) / (ma + epsilon) |
+| `Bolling_fancy` | float | (Close - ma) / (std + epsilon) |
+| `EnvSignal` | float | (Close - env_lower) / (0.1 * env_middle + epsilon) |
+| `EnvUpper` | float | Scaled upper envelope over volatility lookback |
+| `EnvLower` | float | Scaled lower envelope over volatility lookback |
+| `KcSignal` | float | (Close - kc_middle + 2 * kc_atr) / (4 * kc_atr + epsilon) |
+| `KcUpperSignal` | float | Scaled distance to Keltner upper band |
+| `KcLowerSignal` | float | Scaled distance to Keltner lower band |
+| `VwapBbw` | float | Cumulative product of VWAP change and BBW change over volume |
+| `RetBoll_fancy` | float | Z-score of returns over rolling volatility lookback |
+| `Lchc_fancy` | float | -1.0 * min(Low) / Close - max(High) / Close |
+| `AdaptBollingv3` | float | Multi-period momentum and ATR composite index |
+| `Bollcount_dem` | float | Rolling sum of DeMarker directional signals |
+| `DzcciLower` | float | Distance between lower CCI band and short CCI MA |
+| `DzcciUpper` | float | Scaled upper CCI band over volatility lookback |
+| `DzrsiLowerSignal` | float | Standardized dynamic zone RSI lower signal |
+| `DzrsiUpperSignal` | float | Scaled dynamic zone RSI upper signal |
+| `FbLower` | float | Scaled lower Fibonacci ATR channel band |
+| `FbUpper` | float | Scaled upper Fibonacci ATR channel band |
+| `DzcciLowerSignal` | float | Standardized difference between CCI lower band and close |
+| `DzcciLowerSignal_v2` | float | Scaled difference between CCI lower band and short CCI MA |
+| `DzcciUpperSignal` | float | Scaled difference between close and CCI upper band |
+| `DzcciUpperSignal_v2` | float | Scaled difference between short CCI MA and CCI upper band |
+| `FbLowerSignal` | float | Scaled signal for 1.618 Fibonacci lower band distance |
+| `FbLowerSignal_v2` | float | Scaled signal for 2.618 Fibonacci lower band distance |
+| `FbLowerSignal_v3` | float | Scaled signal for 4.236 Fibonacci lower band distance |
+| `FbUpperSignal` | float | Scaled signal for 1.618 Fibonacci upper band distance |
+| `FbUpperSignal_v2` | float | Scaled signal for 2.618 Fibonacci upper band distance |
+| `FbUpperSignal_v3` | float | Scaled signal for 4.236 Fibonacci upper band distance |
+| `VixBw` | float | Volatile directional bandwidth proxy |
 | `bb_width` | float | Standard Bollinger Band Width used for signals |
+| `bb_width_q20` | float | 100-bar rolling 20th percentile of bb_width |
+| `bb_width_sma20` | float | 20-bar simple moving average of bb_width |
+| `atr_sma20` | float | 20-bar simple moving average of atr |
 | `kc_mid` | float | Keltner Channel mid line (EMA 20) |
 | `kc_upper` | float | Keltner Channel upper band (mid + 2 * ATR) |
 | `kc_lower` | float | Keltner Channel lower band (mid - 2 * ATR) |
 | `chop14` | float | Choppiness Index over 14 periods |
 | `hurst_proxy` | float | Hurst Exponent Proxy over 20 periods |
-| `bb_width_q20` | float | 100-bar rolling 20th percentile of bb_width |
-| `bb_width_sma20` | float | 20-bar simple moving average of bb_width |
-| `atr_sma20` | float | 20-bar simple moving average of atr |
 | `atr_14` | float | Average True Range over 14 periods |
 | `body_atr_ratio` | float | Close minus Open divided by ATR 14 |
 | `keltner_upper_20_2` | float | Keltner upper band with length 20 and scalar 2 |
@@ -636,7 +659,11 @@ The pipeline executes in the order listed below.
 | Column | Type | Description |
 |---|---|---|
 | `volume_avg` | float | Trung bình khối lượng n phiên |
+| `volume_sma20` | float | 20-bar simple moving average of Volume |
 | `volume_zscore` | float | Z-score khối lượng |
+| `roc_volume` | float | Volume / Volume.shift(n) - 1 |
+| `quote_volume_sum` | float | Rolling sum of Close * Volume quote-volume proxy |
+| `volume_bias_short_long` | float | Short-window quote-volume proxy mean divided by long-window mean minus 1 |
 | `pvt` | float | pvt = Close.pct_change() * Volume |
 | `pvt_signal` | float | Rolling normalized PVT signal adapted from quant-ohlcv-feature |
 | `volume_up_ratio` | float | Rolling share of volume on bars where Close rises |
@@ -647,25 +674,21 @@ The pipeline executes in the order listed below.
 | `clv_ma` | float | Rolling mean of (2 * Close - Low - High) / (High - Low) |
 | `wad` | float | Cumulative Williams AD normalized by its rolling mean |
 | `tmf` | float | EMA of true-range volume flow divided by EMA volume |
+| `quote_volume_reg` | float | Rolling linear-regression fitted value of Close * Volume proxy |
+| `quote_volume_tsf` | float | One-step rolling linear-regression forecast of Close * Volume proxy |
+| `price_volume_corr` | float | Rolling correlation between Close and Close * Volume proxy |
 | `obv_clv` | float | Rolling CLV-weighted volume normalized by its rolling mean |
 | `cmf` | float | Rolling CLV-weighted volume divided by rolling volume |
 | `emv` | float | Midpoint move divided by volume density per price range |
 | `force_index` | float | EMA-smoothed z-score of Volume * Close.diff() |
 | `pvo` | float | (EMA(Volume,n) - EMA(Volume,2n)) / EMA(Volume,2n) |
 | `directional_volume_change` | float | Rolling maximum of quote-volume proxy change signed by close direction |
-| `quote_volume_reg` | float | Rolling linear-regression fitted value of Close * Volume proxy |
-| `quote_volume_tsf` | float | One-step rolling linear-regression forecast of Close * Volume proxy |
-| `price_volume_corr` | float | Rolling correlation between Close and Close * Volume proxy |
-| `quote_volume_sum` | float | Rolling sum of Close * Volume quote-volume proxy |
-| `volume_bias_short_long` | float | Short-window quote-volume proxy mean divided by long-window mean minus 1 |
 | `volume_ratio_amount` | float | (up amount + flat amount / 2) / (down amount + flat amount / 2) |
 | `adosc` | float | Normalized EMA spread of cumulative CLV-weighted volume |
 | `wvad` | float | Normalized rolling sum of body-weighted volume |
 | `klinger_oscillator` | float | Normalized EMA spread of signed volume by typical price direction |
-| `ko` | float | Klinger oscillator variant normalized to rolling range |
 | `vra` | float | Dual-horizon price ROC multiplied by rolling close volatility |
 | `ke` | float | Signed squared n-period price change amplified by normalized volume |
-| `roc_volume` | float | Volume / Volume.shift(n) - 1 |
 | `volume_ma_bias` | float | Volume divided by its moving average minus 1 |
 | `amv_signal` | float | Rolling-normalized volume-weighted average of open-close midpoint |
 | `volume_ratio` | float | Up-volume plus half neutral volume divided by down-volume plus half neutral volume |
@@ -682,9 +705,8 @@ The pipeline executes in the order listed below.
 | `net_vol_fancy` | float | Return-signed quote-volume proxy rolling sum |
 | `srocvol` | float | Rate of change of long EMA-smoothed volume |
 | `roc_vol` | float | Volume divided by its N-period lag minus 1 |
-| `macdvol` | float | Volume-based MACD normalized by its signal line |
 | `volume_reg` | float | Linear regression of quote-volume proxy |
-| `volume_tsf` | float | Time series forecast of quote-volume proxy |
+| `macdvol` | float | Volume-based MACD normalized by its signal line |
 | `amv` | float | Volume-weighted moving average of open-close midpoint |
 | `mfi` | float | Money Flow Index based on typical price and volume |
 | `obv` | float | CLV-weighted On Balance Volume variant |
@@ -700,25 +722,20 @@ The pipeline executes in the order listed below.
 | `maamt` | float | Volume relative to its rolling mean |
 | `upnum_fancy` | float | Rolling count of positive close changes |
 | `trade_num` | float | Rolling sum of trade count proxy |
-| `buy_vol_ratio_fancy` | float | Taker-buy quote volume divided by quote volume |
 | `taker_by_ratio` | float | Rolling taker-buy quote volume divided by rolling quote volume |
+| `buy_vol_ratio_fancy` | float | Taker-buy quote volume divided by quote volume |
 | `taker_by_ratio_per_trade` | float | Taker-buy ratio normalized by rolling trade count |
 | `vol_per_trade_fancy` | float | Rolling quote volume divided by rolling trade count |
+| `buy_vwap_div_vwap_fancy` | float | Taker-buy VWAP divided by rolling VWAP |
 | `mtm_tb` | float | EMA-smoothed close momentum multiplied by taker-buy pressure |
 | `dbcd_taker` | float | DBCD bias oscillator multiplied by taker-buy ratio |
 | `mtm_bull` | float | Momentum, ATR, and taker-buy composite |
 | `mtm_bear` | float | Momentum, ATR, and taker-sell composite |
-| `buy_vwap_div_vwap_fancy` | float | Taker-buy VWAP divided by rolling VWAP |
+| `v1dn` | float | Lower adaptive band distance for the V1 composite |
 | `Vramt` | float | Volume ratio based on up, down, and unchanged bars |
 | `v1up` | float | Upper adaptive band distance for the V1 composite |
-| `v1_v2` | float | V1 momentum-volatility composite using mean-based z-score bands |
-| `v1up_v2` | float | Upper adaptive band distance for the V1_v2 composite |
-| `v1dn_v2` | float | Lower adaptive band distance for the V1_v2 composite |
-| `v1dn` | float | Lower adaptive band distance for the V1 composite |
-| `Volume` | float | Alias for volume |
 | `mfi14` | float | Money Flow Index over 14 periods |
 | `vpt` | float | Cumulative Volume Price Trend indicator |
-| `volume_sma20` | float | 20-bar simple moving average of Volume |
 | `signed_volume` | float | Volume signed by candle direction with Close diff fallback |
 | `session_flow_imbalance` | float | Running signed_volume divided by running session Volume |
 
@@ -733,10 +750,10 @@ The pipeline executes in the order listed below.
 | `spread_proxy` | float | Rolling mean log high-low range as an OHLC bid-ask spread proxy |
 | `spread_volatility_ratio` | float | spread_proxy divided by rolling close-return volatility |
 | `price_volume_resistance` | float | Price move magnitude per volume move magnitude adapted from PriceVolumeResist |
-| `coppock_atr_volume` | float | Coppock momentum multiplied by normalized ATR and volume pressure |
 | `bidask_spread` | float | Rolling bid-ask spread estimate from OHLC prices |
 | `market_placement_v2` | float | VWAP-validity checked market placement proxy |
 | `liquidity_v3` | float | Volume divided by log spread and return volatility proxy |
+| `coppock_atr_volume` | float | Coppock momentum multiplied by normalized ATR and volume pressure |
 | `amihud` | float | Amihud illiquidity proxy using intraday shortest price path |
 
 ---
@@ -745,10 +762,10 @@ The pipeline executes in the order listed below.
 
 | Column | Type | Description |
 |---|---|---|
+| `close_lag1` | float | Close phiên trước |
 | `open_lag1` | float | Open phiên trước |
 | `high_lag1` | float | High phiên trước |
 | `low_lag1` | float | Low phiên trước |
-| `close_lag1` | float | Close phiên trước |
 | `volume_lag1` | float | Volume phiên trước |
 | `body_lag1` | float | Body phiên trước |
 | `upwick_lag1` | float | Bóng trên phiên trước |
@@ -781,8 +798,6 @@ The pipeline executes in the order listed below.
 | `is_fvg` | bool | is_fvg = True if (high_prev > low_curr) or (low_prev < high_curr) else False |
 | `ulti_osci` | float | Ultimate Oscillator = ta.ultimate_oscillator(high, low, close, length=n) with n = VOLATILITY_LOOKBACK |
 | `vwap` | float | vwap = ta.vwap(high, low, close, volume) |
-| `atr` | float | atr = ta.atr(high, low, close, length=n) with n = VOLATILITY_LOOKBACK |
-| `atr_pct` | float | atr_pct = atr / Close |
 | `adx` | float | adx = ta.adx(high, low, close, length=n) with n = ADX_VOLATILITY_LOOKBACKLOOKBACK |
 | `dm` | float | dm = (High + Low) / 2 - (high_lag1 + low_lag1) / 2 |
 | `eom` | float | eom = dm / vbr |
@@ -793,25 +808,24 @@ The pipeline executes in the order listed below.
 | `donchian_width` | float | (rolling max High - rolling min Low) / channel midpoint with n = VOLATILITY_LOOKBACK |
 | `donchian_position` | float | (Close - rolling min Low) / (rolling max High - rolling min Low) with n = VOLATILITY_LOOKBACK |
 | `amihud_liquidity` | float | Rolling quote-volume proxy per normalized intraday shortest path adapted from quant-ohlcv-feature |
-| `keltner_position` | float | (Close - EMA(Close,n) + 2 * ATR) / (4 * ATR) adapted from quant-ohlcv-feature |
 | `true_range_pct` | float | True range divided by Close |
 | `gap_pct` | float | (Open - previous Close) / previous Close |
 | `range_position` | float | (Close - Low) / (High - Low) |
 | `body_to_true_range` | float | Absolute candlestick body divided by true range |
+| `keltner_position` | float | (Close - EMA(Close,n) + 2 * ATR) / (4 * ATR) adapted from quant-ohlcv-feature |
 | `fear_greed_yidai_v1` | float | Weighted momentum of bullish and bearish true-range amplitudes |
 | `damaov10` | float | Coppock, Bollinger width, and ATR composite |
-| `adx_mtm` | float | Positive directional movement multiplied by rolling momentum |
 | `Cvr_v0` | float | Cumulative return over rolling return volatility multiplied by relative quote volume |
 | `Cbr_v1` | float | Coppock-style momentum multiplied by Bollinger bandwidth and price-volume correlation |
 | `Fbnq_pct_v5` | float | Fibonacci EMA momentum percent change multiplied by average Bollinger bandwidth |
 | `PriceVolumeResist` | float | Close-to-volume breakout difficulty ratio normalized by window length |
+| `adx_mtm` | float | Positive directional movement multiplied by rolling momentum |
+| `adx_mtm_neg` | float | Negative directional movement multiplied by rolling momentum |
 | `Mtam` | float | Momentum times taker buy ratio times ATR volatility composite |
 | `Msbt` | float | Momentum, std momentum, BBW, and taker buy composite |
 | `CoppAtrBull` | float | Coppock momentum times ATR times taker buy activity |
-| `adx_mtm_neg` | float | Negative directional movement multiplied by rolling momentum |
-| `connors_rsi` | float | ConnorsRSI indicator (RSI(3) + StreakRSI(2) + PriceRank) |
 | `persist_short_12_shift1` | float | 12-bar rolling share of closes below session_open shifted one bar |
-| `accept_long_4_shift1` | float | 4-bar rolling share of closes above morning_mid shifted one bar |
+| `connors_rsi` | float | ConnorsRSI indicator (RSI(3) + StreakRSI(2) + PriceRank) |
 
 ---
 
@@ -819,86 +833,36 @@ The pipeline executes in the order listed below.
 
 | Column | Type | Description |
 |---|---|---|
-| `volume_group` | string | volume_group = comapre(Volume, vol_lag1) = VolUp \| Voldown |
-| `upper_wick_group` | string | upper_wick_group = compare(upper_wick, prev_upper_wick) = Increase \| Not Increase |
-| `lower_wick_group` | string | lower_wick_group = compare(lower_wick, prev_lower_wick) = Longer \| Shorter |
-| `vol_high_pattern` | string | vol_high_pattern = compare(Volume, vol_lag1) + compare(High, high_lag1) = VolUp_HighUp \| VolUp_HighDown \| VolDown_HighUp \| VolDown_HighDown |
-| `ibs_volume_pattern` | string | ibs_volume_group = compare(Volume, vol_lag1) + compare(IBS, ibs_lag1) = VolUp_IBSUp \| VolUp_IBSDown \| VolDown_IBSUp \| VolDown_IBSDown |
-| `volume_avg_group` | string | volume_avg_group = comapre(Volume, vol_avg) = VolAboveAvg \| VolBelowAvg |
-| `high_rsi_pattern` | string | high_rsi_pattern = compare(High, high_lag1) + compare(RSI, rsi_lag1) = HighUp_RSIUp \| HighUp_RSIDown \| HighDown_RSIUp \| HighDown_RSIDown |
-| `high_ub_pattern` | string | high_ub_pattern = compare(High, ub) = HighAboveUB \| HighBelowUB |
-| `low_lb_pattern` | string | low_lb_pattern = compare(Low, lb) = LowAboveLB \| LowBelowLB |
-| `long_trend` | string | StrongUp \| StrongDown = EMA_1month > EMA_6months \| EMA_1month < EMA_6months |
-| `body_size_group` | string | body_size_group = compare(abs(Close-Open), prev_abs_body) = Expanding \| Contracting |
-| `candle_color_sequence` | string | sequence = current_color + prev_color = Bull_Bull \| Bull_Bear \| Bear_Bull \| Bear_Bear |
-| `gap_pattern` | string | gap_pattern = compare(Open, prev_Close) = GapUp \| GapDown \| Flat |
-| `atr_regime` | string | atr_regime = compare(ATR, ATR_avg) = HighVol \| LowVol |
-| `bb_width_group` | string | bb_width_group = compare(BB_Width, prev_BB_Width) = Expanding \| Squeezing |
-| `range_position` | string | range_pos = (Close - Low) / (High - Low) = Top_Third \| Mid_Third \| Bottom_Third |
-| `ma_cross_pattern` | string | ma_cross = compare(Close, EMA_20) = PriceAboveMA \| PriceBelowMA |
-| `distance_from_ma` | string | dist_ma = (Close - EMA_20) / ATR = Overextended_Up \| Neutral \| Overextended_Down |
-| `rsi_extreme_group` | string | rsi_group = RSI > 70 ? Overbought : (RSI < 30 ? Oversold : Neutral) |
-| `volume_price_divergence` | string | vol_price = compare(Vol, vol_lag1) + compare(Abs_Return, abs_ret_lag1) = Effort_Confirmed \| Effort_Divergence |
-| `obv_trend` | string | obv_trend = compare(OBV, OBV_lag1) = Accumulation \| Distribution |
-| `effort_result_pattern` | string | effort_result = compare(Volume, vol_lag1) + compare(abs(Close-Open), abs_body_lag1) = HighEffort_LowResult \| HighEffort_HighResult \| LowEffort_HighResult \| LowEffort_LowResult |
-| `spread_group` | string | spread_group = compare(High-Low, avg_range_20) = WideSpread \| NarrowSpread |
-| `stopping_volume_pattern` | string | stopping_vol = (Volume > vol_avg_20) + (ibs > 0.8 \| ibs < 0.2) = Potential_Climax \| Normal_Flow |
-| `ma_distance_group` | string | ma_dist = (Close - EMA20) / ATR = Extreme_Upper \| Above_Mean \| Below_Mean \| Extreme_Lower |
-| `bollinger_bandwidth_regime` | string | bb_regime = compare(bb_width, bb_width_avg_100) = High_Vol_Expansion \| Low_Vol_Squeeze |
-| `consecutive_days_group` | string | consecutive_group = count_consecutive(Close > Open) = 3_Up_Days \| 3_Down_Days \| Mixed |
-| `rsi_velocity_pattern` | string | rsi_velocity = compare(RSI, rsi_lag1) + compare(RSI, rsi_lag2) = Accelerating_Up \| Decelerating_Up \| Accelerating_Down \| Decelerating_Down |
-| `price_rsi_divergence` | string | div_hint = compare(High, high_lag1) + compare(RSI, rsi_lag1) = Bullish_Confirm \| Bearish_Divergence \| Bearish_Confirm \| Bullish_Divergence |
-| `volatility_regime_shift` | string | vol_shift = compare(ATR_short, ATR_long) = Vol_Rising \| Vol_Falling |
-| `ma_slope_direction` | string | ma_slope = compare(EMA_20, EMA_20_lag1) = Uptrend \| Downtrend \| Sideways |
-| `ma_ribbon_position` | string | ribbon_pos = compare(Close, EMA_50) = Above_Ribbon \| Below_Ribbon |
-| `ma_cross_count` | string | cross_count = count_cross(EMA_20, EMA_50) = Frequent_Cross \| Rare_Cross |
-| `close_return_group` | string | close_return = compare(Close, close_lag1) = Up \| Down \| Flat |
-| `return_magnitude_group` | string | ret_mag = abs(Return) compare ret_avg = LargeMove \| NormalMove \| SmallMove |
-| `high_low_expansion` | string | range_expansion = compare(High-Low, prev_range) = Expansion \| Contraction |
-| `close_position_vs_prev_range` | string | close_pos_prev = (Close - prev_Low) / (prev_High - prev_Low) = BreakAbove \| Inside \| BreakBelow |
-| `open_position_vs_prev_range` | string | open_pos_prev = (Open - prev_Low) / (prev_High - prev_Low) = GapBreakUp \| Inside \| GapBreakDown |
-| `wick_to_body_ratio` | string | wick_body = (upper_wick + lower_wick) / body = WickDominant \| Balanced \| BodyDominant |
-| `upper_lower_wick_balance` | string | wick_balance = compare(upper_wick, lower_wick) = UpperDominant \| LowerDominant \| Symmetric |
-| `volume_spike_pattern` | string | vol_spike = Volume > 2 * vol_avg_20 = Spike \| Normal |
-| `price_acceleration` | string | price_acc = compare(Return, return_lag1) = Accelerating \| Decelerating |
-| `multi_timeframe_trend_alignment` | string | mtf_trend = EMA_20 > EMA_50 > EMA_200 = StrongBull \| StrongBear \| Mixed |
-| `ema_compression_pattern` | string | ema_compress = std(EMA_20, EMA_50, EMA_100) = Tight \| Expanding |
-| `price_vs_vwap` | string | price_vwap = compare(Close, VWAP) = AboveVWAP \| BelowVWAP |
-| `vwap_deviation_group` | string | vwap_dev = (Close - VWAP) / ATR = Overextended \| Neutral |
-| `intraday_trend_pattern` | string | intra_trend = compare(Open, Close) + compare(Close, High/Low) = TrendUp \| TrendDown \| Chop |
-| `breakout_strength` | string | breakout = (Close > prev_High) + volume_condition = StrongBreak \| WeakBreak \| NoBreak |
-| `false_break_pattern` | string | false_break = (High > prev_High AND Close < prev_High) OR (Low < prev_Low AND Close > prev_Low) = BullTrap \| BearTrap \| None |
-| `liquidity_sweep_pattern` | string | liq_sweep = sweep(prev_high/low) + rejection = SweepHighReject \| SweepLowReject \| NoSweep |
-| `orderflow_proxy_pattern` | string | orderflow = compare(body_size, wick_size) + volume = AggressiveBuy \| AggressiveSell \| Passive |
-| `imbalance_candle_pattern` | string | imbalance = body >> wick AND range_expansion = ImbalanceUp \| ImbalanceDown \| Balanced |
-| `mean_reversion_signal` | string | mean_rev = distance_from_ma + rsi_extreme = RevertDown \| RevertUp \| Neutral |
-| `trend_exhaustion_pattern` | string | exhaustion = HighUp + RSI_Down OR LowDown + RSI_Up = BullExhaust \| BearExhaust \| None |
-| `compression_breakout_setup` | string | compression = BB squeeze + low ATR = ReadyBreakout \| NotReady |
-| `volatility_cluster_pattern` | string | vol_cluster = consecutive HighVol OR LowVol = ClusterHigh \| ClusterLow \| Mixed |
-| `price_efficiency_ratio` | string | efficiency = abs(Close - Close_n) / sum(abs(return)) = EfficientTrend \| Noisy |
-| `swing_structure_pattern` | string | structure = HH_HL \| LH_LL \| Range |
-| `micro_trend_pattern` | string | micro_trend = compare(Close, Close_lag3) = MicroUp \| MicroDown \| Flat |
-| `range_compression_ratio` | string | range_ratio = (High-Low)/avg_range_10 = Compressed \| Normal \| Expanded |
-| `volume_trend_alignment` | string | vol_trend = compare(Volume_trend, Price_trend) = Confirmed \| Diverging |
-| `breakout_failure_strength` | string | failure = breakout_attempt + reversal_strength = StrongFailure \| WeakFailure \| None |
+| `volume_group` | str | volume_group = comapre(Volume, vol_lag1) = VolUp \| Voldown |
+| `upper_wick_group` | str | upper_wick_group = compare(upper_wick, prev_upper_wick) = Increase \| Not Increase |
+| `lower_wick_group` | str | lower_wick_group = compare(lower_wick, prev_lower_wick) = Longer \| Shorter |
+| `lower_shadow_group` | str | compare(lowwick, prev_lowwick) = Increase \| Not Increase |
+| `vol_high_pattern` | str | vol_high_pattern = compare(Volume, vol_lag1) + compare(High, high_lag1) = VolUp_HighUp \| VolUp_HighDown \| VolDown_HighUp \| VolDown_HighDown |
+| `ibs_volume_pattern` | str | ibs_volume_group = compare(Volume, vol_lag1) + compare(IBS, ibs_lag1) = VolUp_IBSUp \| VolUp_IBSDown \| VolDown_IBSUp \| VolDown_IBSDown |
+| `volume_avg_group` | str | volume_avg_group = comapre(Volume, vol_avg) = VolAboveAvg \| VolBelowAvg |
+| `high_rsi_pattern` | str | high_rsi_pattern = compare(High, high_lag1) + compare(RSI, rsi_lag1) = HighUp_RSIUp \| HighUp_RSIDown \| HighDown_RSIUp \| HighDown_RSIDown |
+| `high_ub_pattern` | str | high_ub_pattern = compare(High, ub) = HighAboveUB \| HighBelowUB |
+| `low_lb_pattern` | str | low_lb_pattern = compare(Low, lb) = LowAboveLB \| LowBelowLB |
 | `equal_low` | bool | Low is approximately equal to low_lag1 within 0.1 percent of Close |
 | `equal_high` | bool | High is approximately equal to high_lag1 within 0.1 percent of Close |
 | `inside_bar_prev` | bool | Previous bar high-low range is inside the bar before it |
 | `is_max_4` | bool | High is higher than the max High of the previous 3 bars |
-| `MFI_group` | string | compare(MFI, prev_MFI) = Increase \| Not Increase |
+| `is_max_10` | bool | True if High is greater than maximum High of previous 9 bars |
+| `is_min_10` | bool | True if Low is less than minimum Low of previous 9 bars |
+| `MFI_group` | str | compare(MFI, prev_MFI) = Increase \| Not Increase |
 | `higher_high_lower_vol` | bool | High > high_lag1 AND Volume < volume_lag1 |
-| `Volume_higher_avg` | bool | Volume > volume_avg |
-| `Volume_vs_prev_Vol` | string | compare(Volume, volume_lag1) = Increase \| Not Increase |
-| `Volume_avg_group` | string | compare(volume_avg, prev_volume_avg) = Increase \| Not Increase |
-| `close_price_group` | string | > prev High \| Bong nen tren \| Than nen \| Bong nen duoi \| < prev Low |
-| `open_price_group` | string | Open > prev_Close \| Open = prev_Close \| Open < prev_Close |
-| `High_position` | string | > upper BB \| < upper BB |
-| `BB_rejection` | bool | High > ub AND Close < ub |
-| `lower_shadow_group` | string | compare(lowwick, prev_lowwick) = Increase \| Not Increase |
-| `ibs_vol_group` | string | Vol up, ibs incre \| Vol up, ibs decr \| Vol down, ibs incre \| Vol down, ibs decr |
-| `rsi_area` | string | >55 \| <45 \| 45-55 |
 | `lower_low_lower_vol` | bool | Low < low_lag1 AND Volume < volume_lag1 |
-| `Low_position` | string | > lower BB \| <= lower BB |
+| `Volume_higher_avg` | bool | Volume > volume_avg |
+| `Volume_vs_prev_Vol` | str | compare(Volume, volume_lag1) = Increase \| Not Increase |
+| `Volume_avg_group` | str | compare(volume_avg, prev_volume_avg) = Increase \| Not Increase |
+| `close_price_group` | str | > prev High \| Bong nen tren \| Than nen \| Bong nen duoi \| < prev Low |
+| `open_price_group` | str | Open > prev_Close \| Open = prev_Close \| Open < prev_Close |
+| `High_position` | str | > upper BB \| < upper BB |
+| `BB_rejection` | bool | High > ub AND Close < ub |
+| `Low_position` | str | > lower BB \| <= lower BB |
+| `ibs_vol_group` | str | Vol up, ibs incre \| Vol up, ibs decr \| Vol down, ibs incre \| Vol down, ibs decr |
+| `rsi_area` | str | >55 \| <45 \| 45-55 |
+| `long_trend` | str | StrongUp \| StrongDown = EMA_1month > EMA_6months \| EMA_1month < EMA_6months |
 
 ---
 
@@ -906,84 +870,82 @@ The pipeline executes in the order listed below.
 
 | Column | Type | Description |
 |---|---|---|
-| `couple_cs_signal` | string | Signal of couple candlestick pattern (Both Green or Both Red) |
-| `ema_cross_signal` | string | Signal of EMA cross pattern (cross up or cross down) |
-| `min_max_10_signal` | string | Signal of min max 10 Close (min or max) |
-| `macd_histogram_reversal_signal` | string | Tín hiệu sớm về sự suy yếu của lực đẩy |
-| `bb_rejection_signal` | string | Signal of BB rejection pattern |
-| `bb_squeeze_signal` | string | Tín hiệu dự báo bùng nổ biến động khi giá đi ngang quá lâu |
-| `rsi_divergence_signal` | string | Tín hiệu phân kỳ giữa giá và RSI để bắt đỉnh/đáy |
-| `atr_breakout_signal` | string | Xác nhận tín hiệu dựa trên độ biến động thực tế |
-| `vsa_confirmation_signal` | string | Xác nhận nỗ lực tăng/giảm qua khối lượng giao dịch |
-| `ichimoku_cloud_signal` | string | Tín hiệu dựa trên mây Ichimoku |
-| `ma_stretch_signal` | string | Đo lường độ căng của giá so với đường trung bình (Z-Score concept) |
-| `market_structure_break_signal` | string | Xác định sự thay đổi xu hướng từ Bearish sang Bullish và ngược lại |
-| `bollinger_band_width_signal` | string | Đo lường độ biến động (Volatility) của thị trường |
-| `volume_confirmation_signal` | boolean | Xác nhận nỗ lực của giá thông qua khối lượng |
-| `mfi_rejection_signal` | string | Dòng tiền thông minh vào vùng cực đại |
-| `donchian_breakout_signal` | string | Tín hiệu thuận xu hướng dựa trên đỉnh/đáy cao nhất |
-| `hma_reversal_signal` | string | Xác định điểm xoay của xu hướng nhanh hơn EMA |
-| `adx_trend_filter` | boolean | Chỉ kích hoạt giao dịch khi xu hướng đủ mạnh (> 25) |
-| `connors_rsi_signal` | string | Tín hiệu Mean Reversion cực nhanh cho scalping |
-| `choppiness_signal` | boolean | Dùng để bật/tắt các signal khác. < 38.2 là có xu hướng, > 61.8 là đi ngang |
-| `keltner_channel_reversal` | string | Tín hiệu đảo chiều khi giá chạm biên Keltner |
-| `supertrend_reversal` | string | Tín hiệu đảo chiều xu hướng mạnh mẽ |
-| `aroon_oscillator_signal` | string | Xác định sức mạnh và hướng của xu hướng |
-| `chande_momentum_oscillator_signal` | string | Đo lường động lượng thị trường |
-| `ultimate_oscillator_signal` | string | Tín hiệu kết hợp 3 chu kỳ (7, 14, 28) |
-| `trix_crossover_signal` | string | Tín hiệu đảo chiều dựa trên TRIX |
-| `stochastic_rsi_signal` | string | Đo lường RSI trong vùng quá mua/quá bán |
-| `awesome_oscillator_signal` | string | Tín hiệu động lượng dựa trên nến |
-| `rate_of_change_signal` | string | Đo lường tốc độ thay đổi giá |
-| `price_channel_breakout_signal` | string | Tín hiệu breakout dựa trên kênh giá |
-| `linear_regression_slope_signal` | string | Đo lường độ dốc của đường xu hướng |
-| `zig_zag_reversal_signal` | string | Xác định đỉnh/đáy cục bộ |
-| `kaufman_ama_signal` | string | Đường trung bình thích ứng với biến động |
-| `tma_reversal_signal` | string | Tín hiệu đảo chiều dựa trên TMA |
-| `linear_regression_channel_signal` | string | Kênh giá dựa trên hồi quy tuyến tính |
-| `fractal_channel_signal` | string | Kênh giá dựa trên fractal |
-| `hurst_exponent_signal` | boolean | Xác định tính ngẫu nhiên của thị trường |
-| `vpt_divergence_signal` | string | Xác định sự phân kỳ của dòng tiền thực |
-| `liquidity_sweep_signal` | string | Quét high/low gần nhất và đảo chiều |
-| `equal_high_low_sweep_signal` | string | Quét vùng equal highs/lows |
-| `inside_bar_breakout_signal` | string | Breakout khỏi inside bar |
-| `fakey_pattern_signal` | string | False breakout |
-| `pin_bar_signal` | string | Nến rút chân mạnh |
-| `engulfing_signal` | string | Bao trùm nến trước |
-| `compression_breakout_signal` | string | Nhiều nến nhỏ → breakout |
-| `atr_expansion_signal` | string | Volatility breakout |
-| `zscore_reversion_signal` | string | Giá lệch khỏi mean |
-| `range_breakout_signal` | string | Break range |
-| `volume_spike_signal` | string | Volume đột biến |
-| `return_momentum_signal` | string | Momentum dựa trên return |
-| `volatility_break_signal` | string | Biến động vượt ngưỡng |
-| `mean_cross_signal` | string | Giá cắt MA |
-| `high_low_break_signal` | string | Phá đỉnh/đáy gần |
-| `range_compression_signal` | string | Range co hẹp |
-| `gap_up_down_signal` | string | Gap giá |
-| `body_size_signal` | string | Thân nến lớn |
-| `wick_rejection_signal` | string | Từ chối giá bằng bóng nến |
-| `trend_strength_signal` | string | Xu hướng mạnh |
-| `pullback_signal` | string | Pullback trong trend |
-| `break_retest_signal` | string | Break và retest |
-| `momentum_shift_signal` | string | Đổi chiều momentum |
-| `range_mid_reversion_signal` | string | Hồi về mid range |
-| `volatility_drop_signal` | string | Giảm biến động |
-| `price_acceleration_signal` | string | Gia tốc giá |
-| `extreme_move_signal` | string | Move lớn bất thường |
-| `mean_distance_signal` | string | Khoảng cách tới MA |
-| `range_shift_signal` | string | Dịch chuyển range |
-| `volume_trend_signal` | string | Xu hướng volume |
-| `price_rejection_signal` | string | Từ chối vùng giá |
-| `micro_trend_signal` | string | Trend ngắn hạn |
-| `micro_reversal_signal` | string | Đảo chiều ngắn hạn |
-| `range_expansion_signal` | string | Range tăng |
-| `body_direction_signal` | string | Chuỗi nến cùng màu |
-| `range_position_signal` | string | Vị trí trong range |
-| `close_strength_signal` | string | Đóng cửa gần high/low |
-| `trend_exhaustion_signal` | string | Kiệt sức xu hướng |
-| `range_flip_signal` | string | Đảo range |
-| `vol_price_divergence_signal` | string | Volume không confirm giá |
-| `final_push_signal` | string | Đẩy cuối trend |
+| `couple_cs_signal` | str | Signal of couple candlestick pattern (Both Green or Both Red) |
+| `ema_cross_signal` | str | Signal of EMA cross pattern (cross up or cross down) |
+| `min_max_10_signal` | str | Signal of min max 10 Close (min or max) |
+| `macd_histogram_reversal_signal` | str | Tín hiệu sớm về sự suy yếu của lực đẩy |
+| `bb_rejection_signal` | str | Signal of BB rejection pattern |
+| `bb_squeeze_signal` | str | Tín hiệu dự báo bùng nổ biến động khi giá đi ngang quá lâu |
+| `rsi_divergence_signal` | str | Tín hiệu phân kỳ giữa giá và RSI để bắt đỉnh/đáy |
+| `atr_breakout_signal` | str | Xác nhận tín hiệu dựa trên độ biến động thực tế |
+| `vsa_confirmation_signal` | str | Xác nhận nỗ lực tăng/giảm qua khối lượng giao dịch |
+| `ichimoku_cloud_signal` | str | Tín hiệu dựa trên mây Ichimoku |
+| `ma_stretch_signal` | str | Đo lường độ căng của giá so với đường trung bình (Z-Score concept) |
+| `market_structure_break_signal` | str | Xác định sự thay đổi xu hướng từ Bearish sang Bullish và ngược lại |
+| `bollinger_band_width_signal` | str | Đo lường độ biến động (Volatility) của thị trường |
+| `volume_confirmation_signal` | bool | Xác nhận nỗ lực của giá thông qua khối lượng |
+| `mfi_rejection_signal` | str | Dòng tiền thông minh vào vùng cực đại |
+| `donchian_breakout_signal` | str | Tín hiệu thuận xu hướng dựa trên đỉnh/đáy cao nhất |
+| `hma_reversal_signal` | str | Xác định điểm xoay của xu hướng nhanh hơn EMA |
+| `adx_trend_filter` | bool | Chỉ kích hoạt giao dịch khi xu hướng đủ mạnh (> 25) |
+| `connors_rsi_signal` | str | Tín hiệu Mean Reversion cực nhanh cho scalping |
+| `choppiness_signal` | bool | Dùng để bật/tắt các signal khác. < 38.2 là có xu hướng, > 61.8 là đi ngang |
+| `keltner_channel_reversal` | str | Tín hiệu đảo chiều khi giá chạm biên Keltner |
+| `supertrend_reversal` | str | Tín hiệu đảo chiều xu hướng mạnh mẽ |
+| `aroon_oscillator_signal` | str | Xác định sức mạnh và hướng của xu hướng |
+| `chande_momentum_oscillator_signal` | str | Đo lường động lượng thị trường |
+| `ultimate_oscillator_signal` | str | Tín hiệu kết hợp 3 chu kỳ (7, 14, 28) |
+| `trix_crossover_signal` | str | Tín hiệu đảo chiều dựa trên TRIX |
+| `stochastic_rsi_signal` | str | Đo lường RSI trong vùng quá mua/quá bán |
+| `awesome_oscillator_signal` | str | Tín hiệu động lượng dựa trên nến |
+| `rate_of_change_signal` | str | Đo lường tốc độ thay đổi giá |
+| `price_channel_breakout_signal` | str | Tín hiệu breakout dựa trên kênh giá |
+| `linear_regression_slope_signal` | str | Đo lường độ dốc của đường xu hướng |
+| `kaufman_ama_signal` | str | Đường trung bình thích ứng với biến động |
+| `tma_reversal_signal` | str | Tín hiệu đảo chiều dựa trên TMA |
+| `linear_regression_channel_signal` | str | Kênh giá dựa trên hồi quy tuyến tính |
+| `hurst_exponent_signal` | bool | Xác định tính ngẫu nhiên của thị trường |
+| `vpt_divergence_signal` | str | Xác định sự phân kỳ của dòng tiền thực |
+| `liquidity_sweep_signal` | str | Quét high/low gần nhất và đảo chiều |
+| `equal_high_low_sweep_signal` | str | Quét vùng equal highs/lows |
+| `inside_bar_breakout_signal` | str | Breakout khỏi inside bar |
+| `fakey_pattern_signal` | str | False breakout |
+| `pin_bar_signal` | str | Nến rút chân mạnh |
+| `engulfing_signal` | str | Bao trùm nến trước |
+| `compression_breakout_signal` | str | Nhiều nến nhỏ → breakout |
+| `atr_expansion_signal` | str | Volatility breakout |
+| `zscore_reversion_signal` | str | Giá lệch khỏi mean |
+| `range_breakout_signal` | str | Break range |
+| `volume_spike_signal` | str | Volume đột biến |
+| `return_momentum_signal` | str | Momentum dựa trên return |
+| `volatility_break_signal` | str | Biến động vượt ngưỡng |
+| `mean_cross_signal` | str | Giá cắt MA |
+| `high_low_break_signal` | str | Phá đỉnh/đáy gần |
+| `range_compression_signal` | str | Range co hẹp |
+| `gap_up_down_signal` | str | Gap giá |
+| `body_size_signal` | str | Thân nến lớn |
+| `wick_rejection_signal` | str | Từ chối giá bằng bóng nến |
+| `trend_strength_signal` | str | Xu hướng mạnh |
+| `pullback_signal` | str | Pullback trong trend |
+| `break_retest_signal` | str | Break và retest |
+| `momentum_shift_signal` | str | Đổi chiều momentum |
+| `range_mid_reversion_signal` | str | Hồi về mid range |
+| `volatility_drop_signal` | str | Giảm biến động |
+| `price_acceleration_signal` | str | Gia tốc giá |
+| `extreme_move_signal` | str | Move lớn bất thường |
+| `mean_distance_signal` | str | Khoảng cách tới MA |
+| `range_shift_signal` | str | Dịch chuyển range |
+| `volume_trend_signal` | str | Xu hướng volume |
+| `price_rejection_signal` | str | Từ chối vùng giá |
+| `micro_trend_signal` | str | Trend ngắn hạn |
+| `micro_reversal_signal` | str | Đảo chiều ngắn hạn |
+| `range_expansion_signal` | str | Range tăng |
+| `body_direction_signal` | str | Chuỗi nến cùng màu |
+| `range_position_signal` | str | Vị trí trong range |
+| `close_strength_signal` | str | Đóng cửa gần high/low |
+| `trend_exhaustion_signal` | str | Kiệt sức xu hướng |
+| `range_flip_signal` | str | Đảo range |
+| `vol_price_divergence_signal` | str | Volume không confirm giá |
+| `final_push_signal` | str | Đẩy cuối trend |
 
 ---

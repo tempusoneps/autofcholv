@@ -24,11 +24,6 @@
         "name": "Price Volume Resistance",
         "comment": "Price move magnitude per volume move magnitude adapted from PriceVolumeResist"
     },
-    "coppock_atr_volume": {
-        "type": "float",
-        "name": "Coppock ATR Volume Composite",
-        "comment": "Coppock momentum multiplied by normalized ATR and volume pressure"
-    },
     "bidask_spread": {
         "type": "float",
         "name": "Bid-Ask Spread",
@@ -43,6 +38,11 @@
         "type": "float",
         "name": "Liquidity v3",
         "comment": "Volume divided by log spread and return volatility proxy"
+    },
+    "coppock_atr_volume": {
+        "type": "float",
+        "name": "Coppock ATR Volume Composite",
+        "comment": "Coppock momentum multiplied by normalized ATR and volume pressure"
     },
     "amihud": {
         "type": "float",

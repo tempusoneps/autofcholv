@@ -1,4 +1,19 @@
 {
+    "hullma_bias": {
+        "type": "float",
+        "name": "Hull MA Bias",
+        "comment": "Low-lag Hull-style EMA component divided by its sqrt-window EMA smoother minus 1"
+    },
+    "ichimoku_cloud_ratio": {
+        "type": "float",
+        "name": "Ichimoku Cloud Ratio",
+        "comment": "Ichimoku span A divided by span B using trend lookback multiples"
+    },
+    "t3_bias": {
+        "type": "float",
+        "name": "T3 Bias",
+        "comment": "Close / Tillson T3 moving average - 1"
+    },
     "dema_bias": {
         "type": "float",
         "name": "DEMA Bias",
@@ -53,21 +68,6 @@
         "type": "float",
         "name": "Regression Slope",
         "comment": "Rolling linear-regression slope normalized by rolling mean close"
-    },
-    "hullma_bias": {
-        "type": "float",
-        "name": "Hull MA Bias",
-        "comment": "Low-lag Hull-style EMA component divided by its sqrt-window EMA smoother minus 1"
-    },
-    "ichimoku_cloud_ratio": {
-        "type": "float",
-        "name": "Ichimoku Cloud Ratio",
-        "comment": "Ichimoku span A divided by span B using trend lookback multiples"
-    },
-    "t3_bias": {
-        "type": "float",
-        "name": "T3 Bias",
-        "comment": "Close / Tillson T3 moving average - 1"
     },
     "ma_signal": {
         "type": "float",
@@ -184,6 +184,26 @@
         "name": "EXPMA Ratio",
         "comment": "Fast EMA divided by slower EMA minus 1"
     },
+    "reg": {
+        "type": "float",
+        "name": "Regression Bias",
+        "comment": "Close divided by rolling linear regression minus 1"
+    },
+    "reg_v2": {
+        "type": "float",
+        "name": "Regression Bias v2",
+        "comment": "Percentage deviation of Close from a 2N rolling regression line"
+    },
+    "reg_v3": {
+        "type": "float",
+        "name": "Regression Bias v3",
+        "comment": "Close divided by rolling OLS regression fit minus 1"
+    },
+    "diff_ema": {
+        "type": "float",
+        "name": "Diff EMA",
+        "comment": "Difference between short and long EMAs"
+    },
     "diff_ema_ratio": {
         "type": "float",
         "name": "Diff EMA Ratio",
@@ -273,26 +293,6 @@
         "type": "float",
         "name": "ADXR Negative",
         "comment": "Smoothed negative directional index component"
-    },
-    "reg": {
-        "type": "float",
-        "name": "Regression Bias",
-        "comment": "Close divided by rolling linear regression minus 1"
-    },
-    "reg_v2": {
-        "type": "float",
-        "name": "Regression Bias v2",
-        "comment": "Percentage deviation of Close from a 2N rolling regression line"
-    },
-    "reg_v3": {
-        "type": "float",
-        "name": "Regression Bias v3",
-        "comment": "Close divided by rolling OLS regression fit minus 1"
-    },
-    "diff_ema": {
-        "type": "float",
-        "name": "Diff EMA",
-        "comment": "Difference between short and long EMAs"
     },
     "hma_signal": {
         "type": "float",
@@ -399,6 +399,21 @@
         "name": "LMA",
         "comment": "Low-price moving average bias"
     },
+    "dema": {
+        "type": "float",
+        "name": "DEMA",
+        "comment": "Double exponential moving average normalized by its EMA baseline"
+    },
+    "tema": {
+        "type": "float",
+        "name": "TEMA",
+        "comment": "Triple exponential moving average normalized by its EMA baseline"
+    },
+    "hlma": {
+        "type": "float",
+        "name": "HLMA",
+        "comment": "High-low moving average spread normalized by its own mean"
+    },
     "ic_v2": {
         "type": "float",
         "name": "Ichimoku Cloud v2",
@@ -418,21 +433,6 @@
         "type": "float",
         "name": "ADXR Positive",
         "comment": "Smoothed positive directional movement component"
-    },
-    "dema": {
-        "type": "float",
-        "name": "DEMA",
-        "comment": "Double exponential moving average normalized by its EMA baseline"
-    },
-    "tema": {
-        "type": "float",
-        "name": "TEMA",
-        "comment": "Triple exponential moving average normalized by its EMA baseline"
-    },
-    "hlma": {
-        "type": "float",
-        "name": "HLMA",
-        "comment": "High-low moving average spread normalized by its own mean"
     },
     "dma": {
         "type": "float",
@@ -564,11 +564,6 @@
         "name": "LinReg Midline 20 for Signals",
         "comment": "Linear regression midline over 20 periods"
     },
-    "tma10": {
-        "type": "float",
-        "name": "TMA 10 for Signals",
-        "comment": "Triangular Moving Average over 10 periods"
-    },
     "linreg_upper20": {
         "type": "float",
         "name": "20-Bar Linear Regression Upper Channel",
@@ -578,6 +573,11 @@
         "type": "float",
         "name": "20-Bar Linear Regression Lower Channel",
         "comment": "linreg_mid20 minus two times std20"
+    },
+    "tma10": {
+        "type": "float",
+        "name": "TMA 10 for Signals",
+        "comment": "Triangular Moving Average over 10 periods"
     },
     "high_5": {
         "type": "float",
@@ -714,11 +714,6 @@
         "name": "ADX 14",
         "comment": "Average Directional Index over 14 periods"
     },
-    "adx_42": {
-        "type": "float",
-        "name": "ADX 42",
-        "comment": "Average Directional Index over 42 periods"
-    },
     "dmp_14": {
         "type": "float",
         "name": "DMP 14",
@@ -728,6 +723,11 @@
         "type": "float",
         "name": "DMN 14",
         "comment": "Negative directional movement over 14 periods"
+    },
+    "adx_42": {
+        "type": "float",
+        "name": "ADX 42",
+        "comment": "Average Directional Index over 42 periods"
     },
     "psar_bull": {
         "type": "bool",

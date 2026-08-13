@@ -1,7 +1,7 @@
 {
     "couple_cs_signal": {
         "no": 1,
-        "type": "string",
+        "type": "str",
         "name": "Couple Candle Signal",
         "comment": "Signal of couple candlestick pattern (Both Green or Both Red)",
         "buy_condition": "Nến trước xanh (có bóng trên). Nến hiện tại xanh, đóng cửa cao nhất và vượt đỉnh nến trước.",
@@ -9,7 +9,7 @@
     },
     "ema_cross_signal": {
         "no": 2,
-        "type": "string",
+        "type": "str",
         "name": "EMA Cross Signal",
         "comment": "Signal of EMA cross pattern (cross up or cross down)",
         "buy_condition": "Đường EMA nhanh cắt lên đường EMA chậm.",
@@ -17,7 +17,7 @@
     },
     "min_max_10_signal": {
         "no": 3,
-        "type": "string",
+        "type": "str",
         "name": "Min Max 10 Signal",
         "comment": "Signal of min max 10 Close (min or max)",
         "buy_condition": "Giá tạo đáy thấp nhất trong 10 phiên gần nhất kết hợp RSI < 30 (quá bán).",
@@ -25,7 +25,7 @@
     },
     "macd_histogram_reversal_signal": {
         "no": 4,
-        "type": "string",
+        "type": "str",
         "name": "MACD Histogram Reversal Signal",
         "comment": "Tín hiệu sớm về sự suy yếu của lực đẩy",
         "buy_condition": "MACD Histogram âm liên tục và vừa tạo đáy. Nến trước đỏ, nến hiện tại đóng cửa vượt giá mở cửa nến trước.",
@@ -33,7 +33,7 @@
     },
     "bb_rejection_signal": {
         "no": 5,
-        "type": "string",
+        "type": "str",
         "name": "BB Rejection Signal",
         "comment": "Signal of BB rejection pattern",
         "buy_condition": "Xu hướng tăng mạnh (StrongUp), giá quét thủng dải dưới (LB) rồi rút chân dài (bóng dưới lớn hơn thân), RSI < 35.",
@@ -41,7 +41,7 @@
     },
     "bb_squeeze_signal": {
         "no": 6,
-        "type": "string",
+        "type": "str",
         "name": "Bollinger Band Squeeze",
         "comment": "Tín hiệu dự báo bùng nổ biến động khi giá đi ngang quá lâu",
         "buy_condition": "(BB_Width < Percentile(BB_Width, 20, 100)) VÀ (Close > Upper_Band)",
@@ -49,7 +49,7 @@
     },
     "rsi_divergence_signal": {
         "no": 7,
-        "type": "string",
+        "type": "str",
         "name": "RSI Divergence Signal",
         "comment": "Tín hiệu phân kỳ giữa giá và RSI để bắt đỉnh/đáy",
         "buy_condition": "Giá tạo đáy thấp hơn (Lower Low) nhưng RSI tạo đáy cao hơn (Higher Low) - Phân kỳ dương",
@@ -57,7 +57,7 @@
     },
     "atr_breakout_signal": {
         "no": 8,
-        "type": "string",
+        "type": "str",
         "name": "ATR Volatility Signal",
         "comment": "Xác nhận tín hiệu dựa trên độ biến động thực tế",
         "buy_condition": "Nến tăng có (High - Low) > 1.5 * ATR(14) (Thân nến lớn đột biến)",
@@ -65,7 +65,7 @@
     },
     "vsa_confirmation_signal": {
         "no": 9,
-        "type": "string",
+        "type": "str",
         "name": "Volume Spread Signal",
         "comment": "Xác nhận nỗ lực tăng/giảm qua khối lượng giao dịch",
         "buy_condition": "Close > Open VÀ Volume > Volume_SMA(20) * 1.2 (Tăng giá mạnh đi kèm Vol lớn)",
@@ -73,7 +73,7 @@
     },
     "ichimoku_cloud_signal": {
         "no": 10,
-        "type": "string",
+        "type": "str",
         "name": "Ichimoku Cloud Signal",
         "comment": "Tín hiệu dựa trên mây Ichimoku",
         "buy_condition": "(1) Giá nằm trên Mây (Kumo), (2) Tenkan-sen > Kijun-sen, (3) Chikou Span không bị cản bởi mây",
@@ -81,7 +81,7 @@
     },
     "ma_stretch_signal": {
         "no": 11,
-        "type": "string",
+        "type": "str",
         "name": "MA Stretch Signal",
         "comment": "Đo lường độ căng của giá so với đường trung bình (Z-Score concept)",
         "buy_condition": "Close < SMA(20) - (2 * Standard_Deviation(20))",
@@ -89,7 +89,7 @@
     },
     "market_structure_break_signal": {
         "no": 12,
-        "type": "string",
+        "type": "str",
         "name": "Market Structure Break",
         "comment": "Xác định sự thay đổi xu hướng từ Bearish sang Bullish và ngược lại",
         "buy_condition": "Giá đóng cửa vượt qua đỉnh gần nhất (Recent High) sau khi đã tạo một đáy thấp hơn (Lower Low)",
@@ -97,7 +97,7 @@
     },
     "bollinger_band_width_signal": {
         "no": 13,
-        "type": "string",
+        "type": "str",
         "name": "Bollinger Band Width",
         "comment": "Đo lường độ biến động (Volatility) của thị trường",
         "buy_condition": "BB_Width < BB_Width_SMA(20) * 0.7 (Thắt chặt - Chuẩn bị bùng nổ)",
@@ -105,7 +105,7 @@
     },
     "volume_confirmation_signal": {
         "no": 14,
-        "type": "boolean",
+        "type": "bool",
         "name": "Volume Price Confirmation",
         "comment": "Xác nhận nỗ lực của giá thông qua khối lượng",
         "buy_condition": "Close > Close[1] VÀ Volume > MA(Volume, 20)",
@@ -113,7 +113,7 @@
     },
     "mfi_rejection_signal": {
         "no": 15,
-        "type": "string",
+        "type": "str",
         "name": "MFI Overbought/Oversold",
         "comment": "Dòng tiền thông minh vào vùng cực đại",
         "buy_condition": "MFI(14) < 20 VÀ MFI(14) cắt lên trên 20",
@@ -121,7 +121,7 @@
     },
     "donchian_breakout_signal": {
         "no": 16,
-        "type": "string",
+        "type": "str",
         "name": "Donchian 20-Day Breakout",
         "comment": "Tín hiệu thuận xu hướng dựa trên đỉnh/đáy cao nhất",
         "buy_condition": "Close > Highest(High, 20) của phiên trước",
@@ -129,7 +129,7 @@
     },
     "hma_reversal_signal": {
         "no": 17,
-        "type": "string",
+        "type": "str",
         "name": "HMA Trend Reversal",
         "comment": "Xác định điểm xoay của xu hướng nhanh hơn EMA",
         "buy_condition": "HMA(20) > HMA(20)[1] VÀ HMA(20)[1] < HMA(20)[2] (Đường HMA ngóc đầu lên)",
@@ -137,7 +137,7 @@
     },
     "adx_trend_filter": {
         "no": 18,
-        "type": "boolean",
+        "type": "bool",
         "name": "ADX Trend Strength",
         "comment": "Chỉ kích hoạt giao dịch khi xu hướng đủ mạnh (> 25)",
         "buy_condition": "ADX(14) > 25 VÀ +DI > -DI",
@@ -145,7 +145,7 @@
     },
     "connors_rsi_signal": {
         "no": 19,
-        "type": "string",
+        "type": "str",
         "name": "Connors RSI (3,2,100)",
         "comment": "Tín hiệu Mean Reversion cực nhanh cho scalping",
         "buy_condition": "ConnorsRSI < 15 (Quá bán cực độ)",
@@ -153,7 +153,7 @@
     },
     "choppiness_signal": {
         "no": 20,
-        "type": "boolean",
+        "type": "bool",
         "name": "Market Choppiness Index",
         "comment": "Dùng để bật/tắt các signal khác. < 38.2 là có xu hướng, > 61.8 là đi ngang",
         "buy_condition": "CHOP(14) < 38.2 VÀ Close > MA(20)",
@@ -161,7 +161,7 @@
     },
     "keltner_channel_reversal": {
         "no": 21,
-        "type": "string",
+        "type": "str",
         "name": "Keltner Channel Reversal",
         "comment": "Tín hiệu đảo chiều khi giá chạm biên Keltner",
         "buy_condition": "Close < Lower_KC VÀ Close[1] > Lower_KC (Giá xuyên xuống rồi bật lên)",
@@ -169,7 +169,7 @@
     },
     "supertrend_reversal": {
         "no": 23,
-        "type": "string",
+        "type": "str",
         "name": "SuperTrend Reversal",
         "comment": "Tín hiệu đảo chiều xu hướng mạnh mẽ",
         "buy_condition": "SuperTrend chuyển từ Red sang Green",
@@ -177,7 +177,7 @@
     },
     "aroon_oscillator_signal": {
         "no": 24,
-        "type": "string",
+        "type": "str",
         "name": "Aroon Trend Signal",
         "comment": "Xác định sức mạnh và hướng của xu hướng",
         "buy_condition": "Aroon_Up > 70 VÀ Aroon_Down < 30 (Xu hướng tăng mạnh)",
@@ -185,7 +185,7 @@
     },
     "chande_momentum_oscillator_signal": {
         "no": 25,
-        "type": "string",
+        "type": "str",
         "name": "CMO Trend Signal",
         "comment": "Đo lường động lượng thị trường",
         "buy_condition": "CMO(14) > 50 VÀ CMO(14)[1] < 50 (Động lượng tăng mạnh)",
@@ -193,7 +193,7 @@
     },
     "ultimate_oscillator_signal": {
         "no": 26,
-        "type": "string",
+        "type": "str",
         "name": "Ultimate Oscillator",
         "comment": "Tín hiệu kết hợp 3 chu kỳ (7, 14, 28)",
         "buy_condition": "UO < 30 VÀ UO[1] < UO (Quá bán)",
@@ -201,7 +201,7 @@
     },
     "trix_crossover_signal": {
         "no": 27,
-        "type": "string",
+        "type": "str",
         "name": "TRIX Crossover",
         "comment": "Tín hiệu đảo chiều dựa trên TRIX",
         "buy_condition": "TRIX cắt lên trên TRIX_signal",
@@ -209,7 +209,7 @@
     },
     "stochastic_rsi_signal": {
         "no": 28,
-        "type": "string",
+        "type": "str",
         "name": "Stochastic RSI",
         "comment": "Đo lường RSI trong vùng quá mua/quá bán",
         "buy_condition": "StochRSI < 0.2 VÀ StochRSI[1] < StochRSI (Quá bán)",
@@ -217,7 +217,7 @@
     },
     "awesome_oscillator_signal": {
         "no": 29,
-        "type": "string",
+        "type": "str",
         "name": "Awesome Oscillator",
         "comment": "Tín hiệu động lượng dựa trên nến",
         "buy_condition": "AO > 0 VÀ AO[1] < AO (Động lượng tăng)",
@@ -225,7 +225,7 @@
     },
     "rate_of_change_signal": {
         "no": 30,
-        "type": "string",
+        "type": "str",
         "name": "Rate of Change (ROC)",
         "comment": "Đo lường tốc độ thay đổi giá",
         "buy_condition": "ROC(10) > 0 VÀ ROC(10)[1] < ROC(10) (Tốc độ tăng)",
@@ -233,7 +233,7 @@
     },
     "price_channel_breakout_signal": {
         "no": 31,
-        "type": "string",
+        "type": "str",
         "name": "Price Channel Breakout",
         "comment": "Tín hiệu breakout dựa trên kênh giá",
         "buy_condition": "Close > Upper_Channel",
@@ -241,23 +241,15 @@
     },
     "linear_regression_slope_signal": {
         "no": 32,
-        "type": "string",
+        "type": "str",
         "name": "Linear Regression Slope",
         "comment": "Đo lường độ dốc của đường xu hướng",
         "buy_condition": "Slope(20) > 0 VÀ Slope(20)[1] < Slope(20) (Độ dốc tăng)",
         "sell_condition": "Slope(20) < 0 VÀ Slope(20)[1] > Slope(20) (Độ dốc giảm)"
     },
-    "zig_zag_reversal_signal": {
-        "no": 33,
-        "type": "string",
-        "name": "Zig Zag Reversal",
-        "comment": "Xác định đỉnh/đáy cục bộ",
-        "buy_condition": "ZigZag_Type == 'Low'",
-        "sell_condition": "ZigZag_Type == 'High'"
-    },
     "kaufman_ama_signal": {
         "no": 34,
-        "type": "string",
+        "type": "str",
         "name": "Kaufman's AMA",
         "comment": "Đường trung bình thích ứng với biến động",
         "buy_condition": "AMA > AMA[1] VÀ AMA[1] < AMA[2] (AMA ngóc đầu lên)",
@@ -265,7 +257,7 @@
     },
     "tma_reversal_signal": {
         "no": 35,
-        "type": "string",
+        "type": "str",
         "name": "TMA Crossover",
         "comment": "Tín hiệu đảo chiều dựa trên TMA",
         "buy_condition": "Close > TMA VÀ Close[1] < TMA (Giá cắt lên TMA)",
@@ -273,23 +265,15 @@
     },
     "linear_regression_channel_signal": {
         "no": 36,
-        "type": "string",
+        "type": "str",
         "name": "Linear Regression Channel",
         "comment": "Kênh giá dựa trên hồi quy tuyến tính",
         "buy_condition": "Close < Lower_Channel VÀ Close[1] > Lower_Channel (Giá xuyên xuống rồi bật lên)",
         "sell_condition": "Close > Upper_Channel VÀ Close[1] < Upper_Channel (Giá xuyên lên rồi bật xuống)"
     },
-    "fractal_channel_signal": {
-        "no": 37,
-        "type": "string",
-        "name": "Fractal Channel",
-        "comment": "Kênh giá dựa trên fractal",
-        "buy_condition": "Close > Upper_Channel",
-        "sell_condition": "Close < Lower_Channel"
-    },
     "hurst_exponent_signal": {
         "no": 38,
-        "type": "boolean",
+        "type": "bool",
         "name": "Hurst Exponent",
         "comment": "Xác định tính ngẫu nhiên của thị trường",
         "buy_condition": "Hurst < 0.5 VÀ Close > MA(20) (Xu hướng mạnh)",
@@ -297,7 +281,7 @@
     },
     "vpt_divergence_signal": {
         "no": 39,
-        "type": "string",
+        "type": "str",
         "name": "Volume Price Trend Divergence",
         "comment": "Xác định sự phân kỳ của dòng tiền thực",
         "buy_condition": "Giá tạo đáy thấp mới nhưng VPT tạo đáy cao dần",
@@ -305,7 +289,7 @@
     },
     "liquidity_sweep_signal": {
         "no": 40,
-        "type": "string",
+        "type": "str",
         "name": "Liquidity Sweep",
         "comment": "Quét high/low gần nhất và đảo chiều",
         "buy_condition": "Low < Lowest(Low, 5)[1] AND Close > Lowest(Low, 5)[1]",
@@ -313,7 +297,7 @@
     },
     "equal_high_low_sweep_signal": {
         "no": 41,
-        "type": "string",
+        "type": "str",
         "name": "Equal High/Low Sweep",
         "comment": "Quét vùng equal highs/lows",
         "buy_condition": "abs(Low - Low[1]) < 0.001*Close AND Close > Low[1]",
@@ -321,7 +305,7 @@
     },
     "inside_bar_breakout_signal": {
         "no": 42,
-        "type": "string",
+        "type": "str",
         "name": "Inside Bar Breakout",
         "comment": "Breakout khỏi inside bar",
         "buy_condition": "High < High[1] AND Low > Low[1] AND Close > High[1]",
@@ -329,7 +313,7 @@
     },
     "fakey_pattern_signal": {
         "no": 43,
-        "type": "string",
+        "type": "str",
         "name": "Fakey Pattern",
         "comment": "False breakout",
         "buy_condition": "Low < Lowest(Low, 5)[1] AND Close > Open",
@@ -337,7 +321,7 @@
     },
     "pin_bar_signal": {
         "no": 44,
-        "type": "string",
+        "type": "str",
         "name": "Pin Bar",
         "comment": "Nến rút chân mạnh",
         "buy_condition": "(Close - Low) > 2*(High - Close)",
@@ -345,7 +329,7 @@
     },
     "engulfing_signal": {
         "no": 45,
-        "type": "string",
+        "type": "str",
         "name": "Engulfing",
         "comment": "Bao trùm nến trước",
         "buy_condition": "Close > Open AND Open < Close[1] AND Close > Open[1]",
@@ -353,7 +337,7 @@
     },
     "compression_breakout_signal": {
         "no": 46,
-        "type": "string",
+        "type": "str",
         "name": "Compression Breakout",
         "comment": "Nhiều nến nhỏ → breakout",
         "buy_condition": "STDDEV(Close,5) < STDDEV(Close,20)*0.5 AND Close > Highest(Close,5)[1]",
@@ -361,7 +345,7 @@
     },
     "atr_expansion_signal": {
         "no": 47,
-        "type": "string",
+        "type": "str",
         "name": "ATR Expansion",
         "comment": "Volatility breakout",
         "buy_condition": "ATR(14) > SMA(ATR(14),20)*1.5 AND Close > Close[1]",
@@ -369,7 +353,7 @@
     },
     "zscore_reversion_signal": {
         "no": 48,
-        "type": "string",
+        "type": "str",
         "name": "Z-Score Mean Reversion",
         "comment": "Giá lệch khỏi mean",
         "buy_condition": "(Close - SMA(Close,20)) / STDDEV(Close,20) < -2",
@@ -377,7 +361,7 @@
     },
     "range_breakout_signal": {
         "no": 49,
-        "type": "string",
+        "type": "str",
         "name": "Range Breakout",
         "comment": "Break range",
         "buy_condition": "Close > Highest(High,10)[1]",
@@ -385,7 +369,7 @@
     },
     "volume_spike_signal": {
         "no": 50,
-        "type": "string",
+        "type": "str",
         "name": "Volume Spike",
         "comment": "Volume đột biến",
         "buy_condition": "Volume > SMA(Volume,20)*2 AND Close > Open",
@@ -393,7 +377,7 @@
     },
     "return_momentum_signal": {
         "no": 51,
-        "type": "string",
+        "type": "str",
         "name": "Return Momentum",
         "comment": "Momentum dựa trên return",
         "buy_condition": "Close / Close[5] - 1 > 0.02",
@@ -401,7 +385,7 @@
     },
     "volatility_break_signal": {
         "no": 52,
-        "type": "string",
+        "type": "str",
         "name": "Volatility Break",
         "comment": "Biến động vượt ngưỡng",
         "buy_condition": "STDDEV(Close,10) > STDDEV(Close,50)",
@@ -409,7 +393,7 @@
     },
     "mean_cross_signal": {
         "no": 53,
-        "type": "string",
+        "type": "str",
         "name": "Mean Cross",
         "comment": "Giá cắt MA",
         "buy_condition": "Close > SMA(Close,20) AND Close[1] < SMA(Close,20)[1]",
@@ -417,7 +401,7 @@
     },
     "high_low_break_signal": {
         "no": 54,
-        "type": "string",
+        "type": "str",
         "name": "High Low Break",
         "comment": "Phá đỉnh/đáy gần",
         "buy_condition": "Close > High[1]",
@@ -425,7 +409,7 @@
     },
     "range_compression_signal": {
         "no": 55,
-        "type": "string",
+        "type": "str",
         "name": "Range Compression",
         "comment": "Range co hẹp",
         "buy_condition": "(High-Low) < SMA(High-Low,20)*0.5",
@@ -433,7 +417,7 @@
     },
     "gap_up_down_signal": {
         "no": 56,
-        "type": "string",
+        "type": "str",
         "name": "Gap Signal",
         "comment": "Gap giá",
         "buy_condition": "Open > High[1]",
@@ -441,7 +425,7 @@
     },
     "body_size_signal": {
         "no": 57,
-        "type": "string",
+        "type": "str",
         "name": "Body Size Expansion",
         "comment": "Thân nến lớn",
         "buy_condition": "abs(Close-Open) > SMA(abs(Close-Open),20)*2 AND Close > Open",
@@ -449,7 +433,7 @@
     },
     "wick_rejection_signal": {
         "no": 58,
-        "type": "string",
+        "type": "str",
         "name": "Wick Rejection",
         "comment": "Từ chối giá bằng bóng nến",
         "buy_condition": "(Close-Low) > 2*(High-Close)",
@@ -457,7 +441,7 @@
     },
     "trend_strength_signal": {
         "no": 59,
-        "type": "string",
+        "type": "str",
         "name": "Trend Strength",
         "comment": "Xu hướng mạnh",
         "buy_condition": "Close > SMA(Close,50) AND SMA(Close,20) > SMA(Close,50)",
@@ -465,7 +449,7 @@
     },
     "pullback_signal": {
         "no": 60,
-        "type": "string",
+        "type": "str",
         "name": "Pullback",
         "comment": "Pullback trong trend",
         "buy_condition": "Close < SMA(Close,20) AND SMA(Close,20) > SMA(Close,50)",
@@ -473,7 +457,7 @@
     },
     "break_retest_signal": {
         "no": 61,
-        "type": "string",
+        "type": "str",
         "name": "Break Retest",
         "comment": "Break và retest",
         "buy_condition": "Close[1] > Highest(High,10)[2] AND Close < Close[1]",
@@ -481,7 +465,7 @@
     },
     "momentum_shift_signal": {
         "no": 62,
-        "type": "string",
+        "type": "str",
         "name": "Momentum Shift",
         "comment": "Đổi chiều momentum",
         "buy_condition": "Close > Close[1] AND Close[1] < Close[2]",
@@ -489,7 +473,7 @@
     },
     "range_mid_reversion_signal": {
         "no": 63,
-        "type": "string",
+        "type": "str",
         "name": "Range Mid Reversion",
         "comment": "Hồi về mid range",
         "buy_condition": "Close < (Highest(High,10)+Lowest(Low,10))/2",
@@ -497,7 +481,7 @@
     },
     "volatility_drop_signal": {
         "no": 64,
-        "type": "string",
+        "type": "str",
         "name": "Volatility Drop",
         "comment": "Giảm biến động",
         "buy_condition": "STDDEV(Close,5) < STDDEV(Close,20)*0.5",
@@ -505,7 +489,7 @@
     },
     "price_acceleration_signal": {
         "no": 65,
-        "type": "string",
+        "type": "str",
         "name": "Price Acceleration",
         "comment": "Gia tốc giá",
         "buy_condition": "(Close - Close[1]) > (Close[1] - Close[2])",
@@ -513,7 +497,7 @@
     },
     "extreme_move_signal": {
         "no": 66,
-        "type": "string",
+        "type": "str",
         "name": "Extreme Move",
         "comment": "Move lớn bất thường",
         "buy_condition": "Close / Close[10] - 1 > 0.05",
@@ -521,7 +505,7 @@
     },
     "mean_distance_signal": {
         "no": 67,
-        "type": "string",
+        "type": "str",
         "name": "Mean Distance",
         "comment": "Khoảng cách tới MA",
         "buy_condition": "Close < SMA(Close,20)*0.95",
@@ -529,7 +513,7 @@
     },
     "range_shift_signal": {
         "no": 68,
-        "type": "string",
+        "type": "str",
         "name": "Range Shift",
         "comment": "Dịch chuyển range",
         "buy_condition": "Lowest(Low,5) > Lowest(Low,10)",
@@ -537,7 +521,7 @@
     },
     "volume_trend_signal": {
         "no": 69,
-        "type": "string",
+        "type": "str",
         "name": "Volume Trend",
         "comment": "Xu hướng volume",
         "buy_condition": "Volume > Volume[1] AND Volume[1] > Volume[2]",
@@ -545,7 +529,7 @@
     },
     "price_rejection_signal": {
         "no": 70,
-        "type": "string",
+        "type": "str",
         "name": "Price Rejection",
         "comment": "Từ chối vùng giá",
         "buy_condition": "Low < Low[1] AND Close > Open",
@@ -553,7 +537,7 @@
     },
     "micro_trend_signal": {
         "no": 71,
-        "type": "string",
+        "type": "str",
         "name": "Micro Trend",
         "comment": "Trend ngắn hạn",
         "buy_condition": "Close > Close[1] AND Close[1] > Close[2]",
@@ -561,7 +545,7 @@
     },
     "micro_reversal_signal": {
         "no": 72,
-        "type": "string",
+        "type": "str",
         "name": "Micro Reversal",
         "comment": "Đảo chiều ngắn hạn",
         "buy_condition": "Close > Close[1] AND Close[1] < Close[2]",
@@ -569,7 +553,7 @@
     },
     "range_expansion_signal": {
         "no": 73,
-        "type": "string",
+        "type": "str",
         "name": "Range Expansion",
         "comment": "Range tăng",
         "buy_condition": "(High-Low) > SMA(High-Low,20)*1.5",
@@ -577,7 +561,7 @@
     },
     "body_direction_signal": {
         "no": 74,
-        "type": "string",
+        "type": "str",
         "name": "Body Direction",
         "comment": "Chuỗi nến cùng màu",
         "buy_condition": "Close > Open AND Close[1] > Open[1]",
@@ -585,7 +569,7 @@
     },
     "range_position_signal": {
         "no": 75,
-        "type": "string",
+        "type": "str",
         "name": "Range Position",
         "comment": "Vị trí trong range",
         "buy_condition": "Close < Lowest(Low,10) + (Highest(High,10)-Lowest(Low,10))*0.3",
@@ -593,7 +577,7 @@
     },
     "close_strength_signal": {
         "no": 76,
-        "type": "string",
+        "type": "str",
         "name": "Close Strength",
         "comment": "Đóng cửa gần high/low",
         "buy_condition": "Close > (High+Low)/2 AND Close > Open",
@@ -601,7 +585,7 @@
     },
     "trend_exhaustion_signal": {
         "no": 77,
-        "type": "string",
+        "type": "str",
         "name": "Trend Exhaustion",
         "comment": "Kiệt sức xu hướng",
         "buy_condition": "Close < Close[1] AND Close[1] > Close[2] AND Close[2] > Close[3]",
@@ -609,7 +593,7 @@
     },
     "range_flip_signal": {
         "no": 78,
-        "type": "string",
+        "type": "str",
         "name": "Range Flip",
         "comment": "Đảo range",
         "buy_condition": "Close > Highest(High,5)[1]",
@@ -617,7 +601,7 @@
     },
     "vol_price_divergence_signal": {
         "no": 79,
-        "type": "string",
+        "type": "str",
         "name": "Volume Price Divergence",
         "comment": "Volume không confirm giá",
         "buy_condition": "Close < Close[1] AND Volume > Volume[1]",
@@ -625,7 +609,7 @@
     },
     "final_push_signal": {
         "no": 80,
-        "type": "string",
+        "type": "str",
         "name": "Final Push",
         "comment": "Đẩy cuối trend",
         "buy_condition": "Close > Close[1] AND Close[1] > Close[2] AND Volume < Volume[1]",

@@ -9,6 +9,21 @@
         "name": "height",
         "comment": "candlestick height = high - low"
     },
+    "body_abs": {
+        "type": "float",
+        "name": "Absolute Candle Body",
+        "comment": "Absolute candlestick body length"
+    },
+    "body_abs_sma20": {
+        "type": "float",
+        "name": "20-Bar Average Absolute Body",
+        "comment": "20-bar simple moving average of absolute body length"
+    },
+    "range_sma20": {
+        "type": "float",
+        "name": "20-Bar Average Range",
+        "comment": "20-bar simple moving average of High minus Low"
+    },
     "upwick": {
         "type": "float",
         "name": "upper wick",
@@ -34,75 +49,50 @@
         "name": "body rate",
         "comment": "body rate = body / height"
     },
-    "clv": {
+    "candle_range_ratio": {
         "type": "float",
-        "name": "Close Location Value",
-        "comment": "clv = 1 if High = Low else ((Close-Low) - (High-Close)) / (High - Low)"
+        "name": "Candle Range Ratio",
+        "comment": "Absolute body divided by High minus Low"
     },
-    "vbr": {
+    "wick_ratio": {
         "type": "float",
-        "name": "Volume Box Ratio",
-        "comment": "vbr = Volume / (High - Low)"
-    },
-    "ibs": {
-        "type": "float",
-        "name": "Internal Bar Strength",
-        "comment": "ibs = (close - low) / (high - low)"
-    },
-    "color": {
-        "type": "str",
-        "name": "color",
-        "comment": "color"
-    },
-    "wick_imbalance": {
-        "type": "float",
-        "name": "wick imbalance",
-        "comment": "wick imbalance = upper wick - lower wick"
+        "name": "Wick Ratio",
+        "comment": "wick_ratio = upwick / (upwick + lowwick + epsilon)"
     },
     "upwick_ratio": {
         "type": "float",
         "name": "upper wick ratio",
         "comment": "upwick_ratio = upwick / (lowwick + epsilon)"
     },
-    "fractal_high": {
+    "clv": {
         "type": "float",
-        "name": "Fractal High",
-        "comment": "Fractal high detected with a 5-bar window"
+        "name": "Close Location Value",
+        "comment": "clv = 1 if High = Low else ((Close-Low) - (High-Close)) / (High - Low)"
     },
-    "fractal_low": {
+    "ibs": {
         "type": "float",
-        "name": "Fractal Low",
-        "comment": "Fractal low detected with a 5-bar window"
+        "name": "Internal Bar Strength",
+        "comment": "ibs = (close - low) / (high - low)"
     },
-    "fractal_high_ffill": {
+    "candle_strength": {
         "type": "float",
-        "name": "Fractal High Forward-Filled",
-        "comment": "Fractal high (5-bar window) forward-filled for signal generation"
+        "name": "Candle Strength",
+        "comment": "candle_strength = body / (height + epsilon)"
     },
-    "fractal_low_ffill": {
+    "vbr": {
         "type": "float",
-        "name": "Fractal Low Forward-Filled",
-        "comment": "Fractal low (5-bar window) forward-filled for signal generation"
+        "name": "Volume Box Ratio",
+        "comment": "vbr = Volume / (High - Low)"
     },
-    "body_abs": {
+    "wick_imbalance": {
         "type": "float",
-        "name": "Absolute Candle Body",
-        "comment": "Absolute candlestick body length"
+        "name": "wick imbalance",
+        "comment": "wick imbalance = upper wick - lower wick"
     },
-    "body_abs_sma20": {
-        "type": "float",
-        "name": "20-Bar Average Absolute Body",
-        "comment": "20-bar simple moving average of absolute body length"
-    },
-    "range_sma20": {
-        "type": "float",
-        "name": "20-Bar Average Range",
-        "comment": "20-bar simple moving average of High minus Low"
-    },
-    "candle_range_ratio": {
-        "type": "float",
-        "name": "Candle Range Ratio",
-        "comment": "Absolute body divided by High minus Low"
+    "color": {
+        "type": "int",
+        "name": "color",
+        "comment": "color"
     },
     "heikin_ashi_close": {
         "type": "float",

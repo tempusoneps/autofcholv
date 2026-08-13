@@ -29,11 +29,6 @@
         "name": "Previous Day Pivot",
         "comment": "day_pivot.shift(1)"
     },
-    "prev_trading_day_close": {
-        "type": "float",
-        "name": "Previous Trading Day Close",
-        "comment": "Completed previous trading day's close"
-    },
     "prev_trading_day_high": {
         "type": "float",
         "name": "Previous Trading Day High",
@@ -43,6 +38,11 @@
         "type": "float",
         "name": "Previous Trading Day Low",
         "comment": "Completed previous trading day's low"
+    },
+    "prev_trading_day_close": {
+        "type": "float",
+        "name": "Previous Trading Day Close",
+        "comment": "Completed previous trading day's close"
     },
     "prev_day_r1": {
         "type": "float",
@@ -55,7 +55,7 @@
         "comment": "Pivot support S1 from completed previous trading day"
     },
     "prev_day_ema_bias_20": {
-        "type": "int",
+        "type": "float",
         "name": "Previous Day EMA Bias 20",
         "comment": "Previous trading day close versus its 20-day EMA, encoded as 1, -1, or 0"
     },
@@ -105,7 +105,7 @@
         "comment": "Return ratio of completed 15-minute bar"
     },
     "prev_15m_ema_bias_20": {
-        "type": "int",
+        "type": "float",
         "name": "Previous 15m EMA Bias 20",
         "comment": "Completed 15-minute close versus its 20-period EMA, encoded as 1, -1, or 0"
     },
@@ -155,7 +155,7 @@
         "comment": "Return ratio of completed 30-minute bar"
     },
     "prev_30m_ema_bias_20": {
-        "type": "int",
+        "type": "float",
         "name": "Previous 30m EMA Bias 20",
         "comment": "Completed 30-minute close versus its 20-period EMA, encoded as 1, -1, or 0"
     },
@@ -205,7 +205,7 @@
         "comment": "Return ratio of completed 1-hour bar"
     },
     "prev_1h_ema_bias_20": {
-        "type": "int",
+        "type": "float",
         "name": "Previous 1H EMA Bias 20",
         "comment": "Completed 1-hour close versus its 20-period EMA, encoded as 1, -1, or 0"
     }
