@@ -495,7 +495,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     avs = pd.Series(av, index=df.index).rolling(momentum_n, min_periods=1).sum()
     bvs = pd.Series(bv, index=df.index).rolling(momentum_n, min_periods=1).sum()
     cvs = pd.Series(cv, index=df.index).rolling(momentum_n, min_periods=1).sum()
-    df["Vramt"] = (avs + 0.5 * cvs) / (bvs + 0.5 * cvs + EPS)
+    df["vramt"] = (avs + 0.5 * cvs) / (bvs + 0.5 * cvs + EPS)
 
     mtm_v1 = df["Close"] / (df["Close"].shift(momentum_n) + EPS) - 1.0
     mtm_v1_mean = mtm_v1.rolling(window=momentum_n, min_periods=1).mean()

@@ -71,8 +71,8 @@
     },
     "vix_bw": {
         "type": "float",
-        "name": "VIX-like Bandwidth",
-        "comment": "Signed adaptive bandwidth of n-period close return"
+        "name": "VIX Bandwidth Proxy",
+        "comment": "Volatile directional bandwidth proxy"
     },
     "keltner_width": {
         "type": "float",
@@ -142,7 +142,7 @@
     "kc_signal": {
         "type": "float",
         "name": "Keltner Channel Signal",
-        "comment": "Close position inside Keltner channel using ATR bands"
+        "comment": "(Close - kc_middle + 2 * kc_atr) / (4 * kc_atr + epsilon)"
     },
     "atr_upper": {
         "type": "float",
@@ -156,8 +156,8 @@
     },
     "fb_upper_signal": {
         "type": "float",
-        "name": "Fibonacci Band Upper Signal",
-        "comment": "Close position relative to Fibonacci upper ATR band"
+        "name": "Fibonacci Upper Channel Signal 1.618",
+        "comment": "Scaled signal for 1.618 Fibonacci upper band distance"
     },
     "pac_width_signal": {
         "type": "float",
@@ -211,8 +211,8 @@
     },
     "bolling": {
         "type": "float",
-        "name": "Bolling",
-        "comment": "Bollinger breakout distance normalized by standard deviation"
+        "name": "Bollinger Distance Ratio",
+        "comment": "Distance from Bollinger Band normalized by standard deviation"
     },
     "bolling_width": {
         "type": "float",
@@ -274,165 +274,145 @@
         "name": "PacLower_v2",
         "comment": "PAC lower band minus close, rolling averaged"
     },
-    "Bolling": {
-        "type": "float",
-        "name": "Bollinger Distance Ratio",
-        "comment": "Distance from Bollinger Band normalized by standard deviation"
-    },
-    "Bolling_v2": {
+    "bolling_v2": {
         "type": "float",
         "name": "Bollinger Band Width v2",
         "comment": "2 * std / (ma + epsilon)"
     },
-    "Bolling_v3": {
+    "bolling_v3": {
         "type": "float",
         "name": "Bollinger Upper Band Shift Ratio",
         "comment": "(upper - upper.shift(1)) / (ma + epsilon)"
     },
-    "Bolling_fancy": {
+    "bolling_fancy": {
         "type": "float",
         "name": "Bollinger Z-Score Fancy",
         "comment": "(Close - ma) / (std + epsilon)"
     },
-    "EnvSignal": {
+    "env_signal": {
         "type": "float",
         "name": "Envelope Signal",
         "comment": "(Close - env_lower) / (0.1 * env_middle + epsilon)"
     },
-    "EnvUpper": {
+    "env_upper": {
         "type": "float",
         "name": "Envelope Upper Normalized",
         "comment": "Scaled upper envelope over volatility lookback"
     },
-    "EnvLower": {
+    "env_lower": {
         "type": "float",
         "name": "Envelope Lower Normalized",
         "comment": "Scaled lower envelope over volatility lookback"
     },
-    "KcSignal": {
-        "type": "float",
-        "name": "Keltner Channel Signal",
-        "comment": "(Close - kc_middle + 2 * kc_atr) / (4 * kc_atr + epsilon)"
-    },
-    "KcUpperSignal": {
+    "kc_upper_signal": {
         "type": "float",
         "name": "Keltner Channel Upper Signal",
         "comment": "Scaled distance to Keltner upper band"
     },
-    "KcLowerSignal": {
+    "kc_lower_signal": {
         "type": "float",
         "name": "Keltner Channel Lower Signal",
         "comment": "Scaled distance to Keltner lower band"
     },
-    "VwapBbw": {
+    "vwap_bbw": {
         "type": "float",
         "name": "VWAP Bollinger Width Composite",
         "comment": "Cumulative product of VWAP change and BBW change over volume"
     },
-    "RetBoll_fancy": {
+    "ret_boll_fancy": {
         "type": "float",
         "name": "Return Bollinger Fancy Z-Score",
         "comment": "Z-score of returns over rolling volatility lookback"
     },
-    "Lchc_fancy": {
+    "lchc_fancy": {
         "type": "float",
         "name": "Low High Close Fancy Ratio",
         "comment": "-1.0 * min(Low) / Close - max(High) / Close"
     },
-    "AdaptBollingv3": {
+    "adapt_bolling_v3": {
         "type": "float",
         "name": "Adaptive Bollinger v3",
         "comment": "Multi-period momentum and ATR composite index"
     },
-    "Bollcount_dem": {
+    "bollcount_dem": {
         "type": "float",
         "name": "DeMarker Bollinger Count",
         "comment": "Rolling sum of DeMarker directional signals"
     },
-    "DzcciLower": {
+    "dzcci_lower": {
         "type": "float",
         "name": "Dynamic Zone CCI Lower",
         "comment": "Distance between lower CCI band and short CCI MA"
     },
-    "DzcciUpper": {
+    "dzcci_upper": {
         "type": "float",
         "name": "Dynamic Zone CCI Upper",
         "comment": "Scaled upper CCI band over volatility lookback"
     },
-    "DzrsiLowerSignal": {
+    "dzrsi_lower_signal": {
         "type": "float",
         "name": "Dynamic Zone RSI Lower Signal",
         "comment": "Standardized dynamic zone RSI lower signal"
     },
-    "DzrsiUpperSignal": {
+    "dzrsi_upper_signal": {
         "type": "float",
         "name": "Dynamic Zone RSI Upper Signal",
         "comment": "Scaled dynamic zone RSI upper signal"
     },
-    "FbLower": {
+    "fb_lower": {
         "type": "float",
         "name": "Fibonacci ATR Channel Lower",
         "comment": "Scaled lower Fibonacci ATR channel band"
     },
-    "FbUpper": {
+    "fb_upper": {
         "type": "float",
         "name": "Fibonacci ATR Channel Upper",
         "comment": "Scaled upper Fibonacci ATR channel band"
     },
-    "DzcciLowerSignal": {
+    "dzcci_lower_signal": {
         "type": "float",
         "name": "Dynamic Zone CCI Lower Signal v1",
         "comment": "Standardized difference between CCI lower band and close"
     },
-    "DzcciLowerSignal_v2": {
+    "dzcci_lower_signal_v2": {
         "type": "float",
         "name": "Dynamic Zone CCI Lower Signal v2",
         "comment": "Scaled difference between CCI lower band and short CCI MA"
     },
-    "DzcciUpperSignal": {
+    "dzcci_upper_signal": {
         "type": "float",
         "name": "Dynamic Zone CCI Upper Signal v1",
         "comment": "Scaled difference between close and CCI upper band"
     },
-    "DzcciUpperSignal_v2": {
+    "dzcci_upper_signal_v2": {
         "type": "float",
         "name": "Dynamic Zone CCI Upper Signal v2",
         "comment": "Scaled difference between short CCI MA and CCI upper band"
     },
-    "FbLowerSignal": {
+    "fb_lower_signal": {
         "type": "float",
         "name": "Fibonacci Lower Channel Signal 1.618",
         "comment": "Scaled signal for 1.618 Fibonacci lower band distance"
     },
-    "FbLowerSignal_v2": {
+    "fb_lower_signal_v2": {
         "type": "float",
         "name": "Fibonacci Lower Channel Signal 2.618",
         "comment": "Scaled signal for 2.618 Fibonacci lower band distance"
     },
-    "FbLowerSignal_v3": {
+    "fb_lower_signal_v3": {
         "type": "float",
         "name": "Fibonacci Lower Channel Signal 4.236",
         "comment": "Scaled signal for 4.236 Fibonacci lower band distance"
     },
-    "FbUpperSignal": {
-        "type": "float",
-        "name": "Fibonacci Upper Channel Signal 1.618",
-        "comment": "Scaled signal for 1.618 Fibonacci upper band distance"
-    },
-    "FbUpperSignal_v2": {
+    "fb_upper_signal_v2": {
         "type": "float",
         "name": "Fibonacci Upper Channel Signal 2.618",
         "comment": "Scaled signal for 2.618 Fibonacci upper band distance"
     },
-    "FbUpperSignal_v3": {
+    "fb_upper_signal_v3": {
         "type": "float",
         "name": "Fibonacci Upper Channel Signal 4.236",
         "comment": "Scaled signal for 4.236 Fibonacci upper band distance"
-    },
-    "VixBw": {
-        "type": "float",
-        "name": "VIX Bandwidth Proxy",
-        "comment": "Volatile directional bandwidth proxy"
     },
     "bb_width": {
         "type": "float",

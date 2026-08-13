@@ -346,26 +346,26 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     distance = pd.Series(0.0, index=df.index)
     distance.loc[df["Close"] > upper] = df["Close"] - upper
     distance.loc[df["Close"] < lower] = df["Close"] - lower
-    df["Bolling"] = distance / (std + EPS)
-    df["Bolling_v2"] = (std * 2.0) / (ma + EPS)
-    df["Bolling_v3"] = (upper - upper.shift(1)) / (ma + EPS)
-    df["Bolling_fancy"] = (df["Close"] - ma) / (std + EPS)
+    df["bolling"] = distance / (std + EPS)
+    df["bolling_v2"] = (std * 2.0) / (ma + EPS)
+    df["bolling_v3"] = (upper - upper.shift(1)) / (ma + EPS)
+    df["bolling_fancy"] = (df["Close"] - ma) / (std + EPS)
 
     env_middle = df["Close"].rolling(volatility_n, min_periods=1).mean()
     env_lower = env_middle * 0.95
     env_upper = env_middle * 1.05
-    df["EnvSignal"] = (df["Close"] - env_lower) / (0.1 * env_middle + EPS)
-    df["EnvUpper"] = _scale_01(env_upper, volatility_n)
-    df["EnvLower"] = _scale_01(env_lower, volatility_n)
+    df["env_signal"] = (df["Close"] - env_lower) / (0.1 * env_middle + EPS)
+    df["env_upper"] = _scale_01(env_upper, volatility_n)
+    df["env_lower"] = _scale_01(env_lower, volatility_n)
 
     kc_tmp1 = df["High"] - df["Low"]
     kc_tmp2 = (df["High"] - df["Close"].shift(1)).abs()
     kc_tmp3 = (df["Low"] - df["Close"].shift(1)).abs()
     kc_atr = pd.Series(np.max(np.array([kc_tmp1, kc_tmp2, kc_tmp3]), axis=0), index=df.index).rolling(volatility_n, min_periods=1).mean()
     kc_middle = df["Close"].ewm(span=volatility_n, adjust=False, min_periods=1).mean()
-    df["KcSignal"] = (df["Close"] - kc_middle + 2.0 * kc_atr) / (4.0 * kc_atr + EPS)
-    df["KcUpperSignal"] = _scale_01(df["Close"] - kc_middle + 2.0 * kc_atr, volatility_n)
-    df["KcLowerSignal"] = _scale_01(kc_middle - 2.0 * kc_atr - df["Close"], volatility_n)
+    df["kc_signal"] = (df["Close"] - kc_middle + 2.0 * kc_atr) / (4.0 * kc_atr + EPS)
+    df["kc_upper_signal"] = _scale_01(df["Close"] - kc_middle + 2.0 * kc_atr, volatility_n)
+    df["kc_lower_signal"] = _scale_01(kc_middle - 2.0 * kc_atr - df["Close"], volatility_n)
 
     quote_volume_proxy = df["Close"] * df["Volume"]
     vwap = quote_volume_proxy / (df["Volume"] + EPS)
@@ -376,12 +376,12 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     bbw_chg = bbw.pct_change(volatility_n)
     quote_volume_normalized = quote_volume_proxy / (quote_volume_proxy.rolling(volatility_n, min_periods=1).mean() + EPS)
     feature = (vwap_chg * bbw_chg) / (quote_volume_normalized + EPS)
-    df["VwapBbw"] = feature.rolling(volatility_n, min_periods=1).sum()
+    df["vwap_bbw"] = feature.rolling(volatility_n, min_periods=1).sum()
 
     ret = df["Close"].pct_change()
-    df["RetBoll_fancy"] = (ret - ret.rolling(volatility_n, min_periods=1).mean()) / (ret.rolling(volatility_n, min_periods=1).std() + EPS)
+    df["ret_boll_fancy"] = (ret - ret.rolling(volatility_n, min_periods=1).mean()) / (ret.rolling(volatility_n, min_periods=1).std() + EPS)
 
-    df["Lchc_fancy"] = -1.0 * df["Low"].rolling(volatility_n, min_periods=1).min() / (df["Close"] + EPS) - df["High"].rolling(volatility_n, min_periods=1).max() / (df["Close"] + EPS)
+    df["lchc_fancy"] = -1.0 * df["Low"].rolling(volatility_n, min_periods=1).min() / (df["Close"] + EPS) - df["High"].rolling(volatility_n, min_periods=1).max() / (df["Close"] + EPS)
 
 
     mtm = df["Close"] / (df["Close"].shift(volatility_n) + EPS) - 1.0
@@ -408,7 +408,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     mtm_c2 = (mtm_h_mean - mtm_c_mean.shift(1)).abs()
     mtm_c3 = (mtm_l_mean - mtm_c_mean.shift(1)).abs()
     mtm_atr_mean = pd.concat([mtm_c1, mtm_c2, mtm_c3], axis=1).max(axis=1).rolling(volatility_n, min_periods=1).mean()
-    df["AdaptBollingv3"] = mtm_mean * mtm_atr * mtm_atr_mean * wd_atr * 100000000
+    df["adapt_bolling_v3"] = mtm_mean * mtm_atr * mtm_atr_mean * wd_atr * 100000000
 
     demax = df["High"].diff().clip(lower=0.0)
     demin = (df["Low"].shift(1) - df["Low"]).clip(lower=0.0)
@@ -418,7 +418,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     count = pd.Series(0.0, index=df.index)
     count.loc[demaker > 0.7] = 1.0
     count.loc[demaker < 0.3] = -1.0
-    df["Bollcount_dem"] = count.rolling(volatility_n, min_periods=1).sum()
+    df["bollcount_dem"] = count.rolling(volatility_n, min_periods=1).sum()
 
     tp = (df["High"] + df["Low"] + df["Close"]) / 3.0
     cci_ma = tp.rolling(volatility_n, min_periods=1).mean()
@@ -428,8 +428,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     cci_lower = cci_middle - 2.0 * cci.rolling(volatility_n, min_periods=1).std()
     cci_upper = cci_middle + 2.0 * cci.rolling(volatility_n, min_periods=1).std()
     cci_ma_short = cci.rolling(max(1, int(volatility_n / 4)), min_periods=1).mean()
-    df["DzcciLower"] = cci_lower - cci_ma_short
-    df["DzcciUpper"] = _scale_01(cci_upper, volatility_n)
+    df["dzcci_lower"] = cci_lower - cci_ma_short
+    df["dzcci_upper"] = _scale_01(cci_upper, volatility_n)
 
     rtn = df["Close"].diff()
     up = rtn.clip(lower=0.0)
@@ -445,8 +445,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     dzrsi_upper = rsi_ma - rsi_upper
     dzrsi_lower_mean = dzrsi_lower.rolling(volatility_n, min_periods=1).mean()
     dzrsi_lower_std = dzrsi_lower.rolling(volatility_n, min_periods=1).std()
-    df["DzrsiLowerSignal"] = (dzrsi_lower - dzrsi_lower_mean) / (dzrsi_lower_std + EPS)
-    df["DzrsiUpperSignal"] = (dzrsi_upper - dzrsi_upper.rolling(volatility_n, min_periods=1).min()) / (dzrsi_upper.rolling(volatility_n, min_periods=1).max() - dzrsi_upper.rolling(volatility_n, min_periods=1).min() + EPS)
+    df["dzrsi_lower_signal"] = (dzrsi_lower - dzrsi_lower_mean) / (dzrsi_lower_std + EPS)
+    df["dzrsi_upper_signal"] = (dzrsi_upper - dzrsi_upper.rolling(volatility_n, min_periods=1).min()) / (dzrsi_upper.rolling(volatility_n, min_periods=1).max() - dzrsi_upper.rolling(volatility_n, min_periods=1).min() + EPS)
 
     fb_atr = pd.concat([
         df["High"] - df["Low"],
@@ -454,8 +454,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         (df["Low"] - df["Close"].shift(1)).abs(),
     ], axis=1).max(axis=1).rolling(volatility_n, min_periods=1).mean()
     fb_middle = df["Close"].rolling(volatility_n, min_periods=1).mean()
-    df["FbLower"] = _scale_01(fb_middle - 1.618 * fb_atr, volatility_n)
-    df["FbUpper"] = _scale_01(fb_middle + 1.618 * fb_atr, volatility_n)
+    df["fb_lower"] = _scale_01(fb_middle - 1.618 * fb_atr, volatility_n)
+    df["fb_upper"] = _scale_01(fb_middle + 1.618 * fb_atr, volatility_n)
 
     tp2 = (df["High"] + df["Low"] + df["Close"]) / 3.0
     cci_ma2 = tp2.rolling(volatility_n, min_periods=1).mean()
@@ -465,10 +465,10 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     cci_lower2 = cci_middle2 - 2.0 * cci2.rolling(volatility_n, min_periods=1).std()
     cci_upper2 = cci_middle2 + 2.0 * cci2.rolling(volatility_n, min_periods=1).std()
     cci_ma_short2 = cci2.rolling(max(1, int(volatility_n / 4)), min_periods=1).mean()
-    df["DzcciLowerSignal"] = (cci_lower2 - df["Close"]).rolling(volatility_n, min_periods=1).mean() / ((cci_lower2 - df["Close"]).rolling(volatility_n, min_periods=1).std() + EPS)
-    df["DzcciLowerSignal_v2"] = _scale_01(cci_lower2 - cci_ma_short2, volatility_n)
-    df["DzcciUpperSignal"] = _scale_01(df["Close"] - cci_upper2, volatility_n)
-    df["DzcciUpperSignal_v2"] = _scale_01(cci_ma_short2 - cci_upper2, volatility_n)
+    df["dzcci_lower_signal"] = (cci_lower2 - df["Close"]).rolling(volatility_n, min_periods=1).mean() / ((cci_lower2 - df["Close"]).rolling(volatility_n, min_periods=1).std() + EPS)
+    df["dzcci_lower_signal_v2"] = _scale_01(cci_lower2 - cci_ma_short2, volatility_n)
+    df["dzcci_upper_signal"] = _scale_01(df["Close"] - cci_upper2, volatility_n)
+    df["dzcci_upper_signal_v2"] = _scale_01(cci_ma_short2 - cci_upper2, volatility_n)
 
     fb_tmp1 = df["High"] - df["Low"]
     fb_tmp2 = (df["High"] - df["Close"].shift(1)).abs()
@@ -476,12 +476,12 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     fb_tr = pd.concat([fb_tmp1, fb_tmp2, fb_tmp3], axis=1).max(axis=1)
     fb_atr = fb_tr.rolling(volatility_n, min_periods=1).mean()
     fb_middle = df["Close"].rolling(volatility_n, min_periods=1).mean()
-    df["FbLowerSignal"] = _scale_01(fb_middle - 1.618 * fb_atr - df["Close"], volatility_n)
-    df["FbLowerSignal_v2"] = _scale_01(fb_middle - 2.618 * fb_atr - df["Close"], volatility_n)
-    df["FbLowerSignal_v3"] = _scale_01(fb_middle - 4.236 * fb_atr - df["Close"], volatility_n)
-    df["FbUpperSignal"] = _scale_01(df["Close"] - fb_middle - 1.618 * fb_atr, volatility_n)
-    df["FbUpperSignal_v2"] = _scale_01(df["Close"] - fb_middle - 2.618 * fb_atr, volatility_n)
-    df["FbUpperSignal_v3"] = _scale_01(df["Close"] - fb_middle - 4.236 * fb_atr, volatility_n)
+    df["fb_lower_signal"] = _scale_01(fb_middle - 1.618 * fb_atr - df["Close"], volatility_n)
+    df["fb_lower_signal_v2"] = _scale_01(fb_middle - 2.618 * fb_atr - df["Close"], volatility_n)
+    df["fb_lower_signal_v3"] = _scale_01(fb_middle - 4.236 * fb_atr - df["Close"], volatility_n)
+    df["fb_upper_signal"] = _scale_01(df["Close"] - fb_middle - 1.618 * fb_atr, volatility_n)
+    df["fb_upper_signal_v2"] = _scale_01(df["Close"] - fb_middle - 2.618 * fb_atr, volatility_n)
+    df["fb_upper_signal_v3"] = _scale_01(df["Close"] - fb_middle - 4.236 * fb_atr, volatility_n)
 
     vix = df["Close"] / (df["Close"].shift(volatility_n) + EPS) - 1.0
     vix_median = vix.rolling(volatility_n, min_periods=1).mean()
@@ -496,7 +496,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     prev_short_dir = np.sign(vix_median.diff(1).shift(1))
     vix_bw = vix_bw.where(direction == short_dir, 0.0)
     vix_bw = vix_bw.where(direction == prev_short_dir, 0.0)
-    df["VixBw"] = vix_bw
+    df["vix_bw"] = vix_bw
 
     # --- Indicator features used by signal.py ---
 

@@ -104,22 +104,22 @@
         "name": "DAMAOV 10",
         "comment": "Coppock, Bollinger width, and ATR composite"
     },
-    "Cvr_v0": {
+    "cvr_v0": {
         "type": "float",
         "name": "Calmar-Volume Ratio",
         "comment": "Cumulative return over rolling return volatility multiplied by relative quote volume"
     },
-    "Cbr_v1": {
+    "cbr_v1": {
         "type": "float",
         "name": "Coppock Bollinger Ratio v1",
         "comment": "Coppock-style momentum multiplied by Bollinger bandwidth and price-volume correlation"
     },
-    "Fbnq_pct_v5": {
+    "fbnq_pct_v5": {
         "type": "float",
         "name": "Fibonacci momentum volatility composite",
         "comment": "Fibonacci EMA momentum percent change multiplied by average Bollinger bandwidth"
     },
-    "PriceVolumeResist": {
+    "price_volume_resist": {
         "type": "float",
         "name": "Price Volume Resistance",
         "comment": "Close-to-volume breakout difficulty ratio normalized by window length"
@@ -134,17 +134,17 @@
         "name": "ADX MTM Neg",
         "comment": "Negative directional movement multiplied by rolling momentum"
     },
-    "Mtam": {
+    "mtam": {
         "type": "float",
         "name": "Mtam",
         "comment": "Momentum times taker buy ratio times ATR volatility composite"
     },
-    "Msbt": {
+    "msbt": {
         "type": "float",
         "name": "Msbt",
         "comment": "Momentum, std momentum, BBW, and taker buy composite"
     },
-    "CoppAtrBull": {
+    "copp_atr_bull": {
         "type": "float",
         "name": "CoppAtrBull",
         "comment": "Coppock momentum times ATR times taker buy activity"
