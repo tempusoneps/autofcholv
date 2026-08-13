@@ -124,11 +124,6 @@
         "name": "VN30 30-Min ORB Breakout",
         "comment": "1 if close breaks above 30m ORB high, -1 if below 30m ORB low, 0 otherwise"
     },
-    "vn30_late_session_range_pos": {
-        "type": "float",
-        "name": "VN30 Late Session Range Position",
-        "comment": "Position of current close within session cumulative low-high range (0.0 to 1.0)"
-    },
     "first_close_0915": {
         "type": "float",
         "name": "First Close 09:15",
@@ -163,5 +158,10 @@
         "type": "float",
         "name": "Morning Mid",
         "comment": "Midpoint between morning_high and morning_low"
+    },
+    "vn30_late_session_range_pos": {
+        "type": "float",
+        "name": "VN30 Late Session Range Position",
+        "comment": "Position of current close within session cumulative low-high range (0.0 to 1.0)"
     }
 }

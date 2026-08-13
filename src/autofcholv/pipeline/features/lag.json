@@ -1,4 +1,9 @@
 {
+    "close_lag1": {
+        "type": "float",
+        "name": "Close of previous candlestick",
+        "comment": "Close phiên trước"
+    },
     "open_lag1": {
         "type": "float",
         "name": "Open of previous candlestick",
@@ -13,11 +18,6 @@
         "type": "float",
         "name": "Low of previous candlestick",
         "comment": "Low phiên trước"
-    },
-    "close_lag1": {
-        "type": "float",
-        "name": "Close of previous candlestick",
-        "comment": "Close phiên trước"
     },
     "volume_lag1": {
         "type": "float",

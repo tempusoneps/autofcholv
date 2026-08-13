@@ -9,6 +9,16 @@
         "name": "Weighted Close",
         "comment": "weighted_close = (High + Low + 2 * Close) / 4"
     },
+    "midpoint": {
+        "type": "float",
+        "name": "Price Midpoint",
+        "comment": "Midpoint of High and Low"
+    },
+    "close_vs_mid": {
+        "type": "float",
+        "name": "Close Versus Midpoint",
+        "comment": "Close minus the High-Low midpoint"
+    },
     "typical_price_momentum": {
         "type": "float",
         "name": "Typical Price Momentum",
@@ -74,16 +84,6 @@
         "name": "Average Price to Low",
         "comment": "VWAP relative to current low"
     },
-    "WVAD": {
-        "type": "float",
-        "name": "WVAD",
-        "comment": "Normalized rolling candle-body volume accumulation"
-    },
-    "Vwapbias": {
-        "type": "float",
-        "name": "Vwapbias",
-        "comment": "Rolling VWAP divided by its moving average minus 1"
-    },
     "lowprice": {
         "type": "float",
         "name": "Low Price",
@@ -104,15 +104,15 @@
         "name": "Weighted Close",
         "comment": "Weighted close EMA ratio"
     },
-    "midpoint": {
+    "WVAD": {
         "type": "float",
-        "name": "Price Midpoint",
-        "comment": "Midpoint of High and Low"
+        "name": "WVAD",
+        "comment": "Normalized rolling candle-body volume accumulation"
     },
-    "close_vs_mid": {
+    "Vwapbias": {
         "type": "float",
-        "name": "Close Versus Midpoint",
-        "comment": "Close minus the High-Low midpoint"
+        "name": "Vwapbias",
+        "comment": "Rolling VWAP divided by its moving average minus 1"
     },
     "open_range_high_2": {
         "type": "float",
@@ -169,16 +169,6 @@
         "name": "Momentum Y",
         "comment": "Close percent change versus previous day 14:45 close fallback"
     },
-    "body_rate_first_close": {
-        "type": "float",
-        "name": "Body Rate First Close",
-        "comment": "Close minus first_close_0915 divided by pre-13:45 high minus pre-13:55 low"
-    },
-    "opening_gap_pct": {
-        "type": "float",
-        "name": "Opening Gap Percent",
-        "comment": "First 09:15 close versus previous day 14:45 close fallback, percent"
-    },
     "session_vwap": {
         "type": "float",
         "name": "Session VWAP",
@@ -208,10 +198,5 @@
         "type": "float",
         "name": "Session VWAP Deviation Percent",
         "comment": "Close deviation from session_vwap divided by Close, percent"
-    },
-    "morning_breakout_long": {
-        "type": "float",
-        "name": "Morning Breakout Long",
-        "comment": "Close minus morning_high divided by morning range"
     }
 }

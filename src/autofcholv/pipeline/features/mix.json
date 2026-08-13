@@ -19,16 +19,6 @@
         "name": "Volume Weighted Average Price",
         "comment": "vwap = ta.vwap(high, low, close, volume)"
     },
-    "atr": {
-        "type": "float",
-        "name": "Average True Range",
-        "comment": "atr = ta.atr(high, low, close, length=n) with n = VOLATILITY_LOOKBACK"
-    },
-    "atr_pct": {
-        "type": "float",
-        "name": "Average True Range Percent",
-        "comment": "atr_pct = atr / Close"
-    },
     "adx": {
         "type": "float",
         "name": "Average Directional Index",
@@ -79,11 +69,6 @@
         "name": "Amihud Liquidity Proxy",
         "comment": "Rolling quote-volume proxy per normalized intraday shortest path adapted from quant-ohlcv-feature"
     },
-    "keltner_position": {
-        "type": "float",
-        "name": "Keltner Channel Position",
-        "comment": "(Close - EMA(Close,n) + 2 * ATR) / (4 * ATR) adapted from quant-ohlcv-feature"
-    },
     "true_range_pct": {
         "type": "float",
         "name": "True Range Percent",
@@ -104,6 +89,11 @@
         "name": "Body to True Range",
         "comment": "Absolute candlestick body divided by true range"
     },
+    "keltner_position": {
+        "type": "float",
+        "name": "Keltner Channel Position",
+        "comment": "(Close - EMA(Close,n) + 2 * ATR) / (4 * ATR) adapted from quant-ohlcv-feature"
+    },
     "fear_greed_yidai_v1": {
         "type": "float",
         "name": "Fear Greed Yidai v1",
@@ -113,11 +103,6 @@
         "type": "float",
         "name": "DAMAOV 10",
         "comment": "Coppock, Bollinger width, and ATR composite"
-    },
-    "adx_mtm": {
-        "type": "float",
-        "name": "ADX MTM",
-        "comment": "Positive directional movement multiplied by rolling momentum"
     },
     "Cvr_v0": {
         "type": "float",
@@ -139,6 +124,16 @@
         "name": "Price Volume Resistance",
         "comment": "Close-to-volume breakout difficulty ratio normalized by window length"
     },
+    "adx_mtm": {
+        "type": "float",
+        "name": "ADX MTM",
+        "comment": "Positive directional movement multiplied by rolling momentum"
+    },
+    "adx_mtm_neg": {
+        "type": "float",
+        "name": "ADX MTM Neg",
+        "comment": "Negative directional movement multiplied by rolling momentum"
+    },
     "Mtam": {
         "type": "float",
         "name": "Mtam",
@@ -154,24 +149,14 @@
         "name": "CoppAtrBull",
         "comment": "Coppock momentum times ATR times taker buy activity"
     },
-    "adx_mtm_neg": {
-        "type": "float",
-        "name": "ADX MTM Neg",
-        "comment": "Negative directional movement multiplied by rolling momentum"
-    },
-    "connors_rsi": {
-        "type": "float",
-        "name": "Connors RSI for Signals",
-        "comment": "ConnorsRSI indicator (RSI(3) + StreakRSI(2) + PriceRank)"
-    },
     "persist_short_12_shift1": {
         "type": "float",
         "name": "Persist Short 12 Shift 1",
         "comment": "12-bar rolling share of closes below session_open shifted one bar"
     },
-    "accept_long_4_shift1": {
+    "connors_rsi": {
         "type": "float",
-        "name": "Accept Long 4 Shift 1",
-        "comment": "4-bar rolling share of closes above morning_mid shifted one bar"
+        "name": "Connors RSI for Signals",
+        "comment": "ConnorsRSI indicator (RSI(3) + StreakRSI(2) + PriceRank)"
     }
 }

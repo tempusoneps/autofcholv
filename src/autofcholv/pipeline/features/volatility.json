@@ -34,6 +34,21 @@
         "name": "Envelope Channel Position",
         "comment": "Close position inside +/-5 percent moving-average envelope"
     },
+    "adaptive_bollinger_width": {
+        "type": "float",
+        "name": "Adaptive Bollinger Width",
+        "comment": "Adaptive z-score Bollinger bandwidth normalized by close moving average"
+    },
+    "vwap_bbw_efficiency": {
+        "type": "float",
+        "name": "VWAP BBW Efficiency",
+        "comment": "Rolling VWAP change times Bollinger-width change normalized by quote-volume proxy"
+    },
+    "chaikin_volatility": {
+        "type": "float",
+        "name": "Chaikin Volatility",
+        "comment": "Rate of change of EMA high-low range"
+    },
     "realized_volatility": {
         "type": "float",
         "name": "Realized Volatility",
@@ -58,21 +73,6 @@
         "type": "float",
         "name": "VIX-like Bandwidth",
         "comment": "Signed adaptive bandwidth of n-period close return"
-    },
-    "adaptive_bollinger_width": {
-        "type": "float",
-        "name": "Adaptive Bollinger Width",
-        "comment": "Adaptive z-score Bollinger bandwidth normalized by close moving average"
-    },
-    "vwap_bbw_efficiency": {
-        "type": "float",
-        "name": "VWAP BBW Efficiency",
-        "comment": "Rolling VWAP change times Bollinger-width change normalized by quote-volume proxy"
-    },
-    "chaikin_volatility": {
-        "type": "float",
-        "name": "Chaikin Volatility",
-        "comment": "Rate of change of EMA high-low range"
     },
     "keltner_width": {
         "type": "float",
@@ -113,6 +113,11 @@
         "type": "float",
         "name": "Donchian Mid Signal",
         "comment": "Close minus Donchian channel midpoint"
+    },
+    "atr": {
+        "type": "float",
+        "name": "Average True Range",
+        "comment": "atr = ta.atr(high, low, close, length=n) with n = VOLATILITY_LOOKBACK"
     },
     "atr_pct": {
         "type": "float",
@@ -269,10 +274,185 @@
         "name": "PacLower_v2",
         "comment": "PAC lower band minus close, rolling averaged"
     },
+    "Bolling": {
+        "type": "float",
+        "name": "Bollinger Distance Ratio",
+        "comment": "Distance from Bollinger Band normalized by standard deviation"
+    },
+    "Bolling_v2": {
+        "type": "float",
+        "name": "Bollinger Band Width v2",
+        "comment": "2 * std / (ma + epsilon)"
+    },
+    "Bolling_v3": {
+        "type": "float",
+        "name": "Bollinger Upper Band Shift Ratio",
+        "comment": "(upper - upper.shift(1)) / (ma + epsilon)"
+    },
+    "Bolling_fancy": {
+        "type": "float",
+        "name": "Bollinger Z-Score Fancy",
+        "comment": "(Close - ma) / (std + epsilon)"
+    },
+    "EnvSignal": {
+        "type": "float",
+        "name": "Envelope Signal",
+        "comment": "(Close - env_lower) / (0.1 * env_middle + epsilon)"
+    },
+    "EnvUpper": {
+        "type": "float",
+        "name": "Envelope Upper Normalized",
+        "comment": "Scaled upper envelope over volatility lookback"
+    },
+    "EnvLower": {
+        "type": "float",
+        "name": "Envelope Lower Normalized",
+        "comment": "Scaled lower envelope over volatility lookback"
+    },
+    "KcSignal": {
+        "type": "float",
+        "name": "Keltner Channel Signal",
+        "comment": "(Close - kc_middle + 2 * kc_atr) / (4 * kc_atr + epsilon)"
+    },
+    "KcUpperSignal": {
+        "type": "float",
+        "name": "Keltner Channel Upper Signal",
+        "comment": "Scaled distance to Keltner upper band"
+    },
+    "KcLowerSignal": {
+        "type": "float",
+        "name": "Keltner Channel Lower Signal",
+        "comment": "Scaled distance to Keltner lower band"
+    },
+    "VwapBbw": {
+        "type": "float",
+        "name": "VWAP Bollinger Width Composite",
+        "comment": "Cumulative product of VWAP change and BBW change over volume"
+    },
+    "RetBoll_fancy": {
+        "type": "float",
+        "name": "Return Bollinger Fancy Z-Score",
+        "comment": "Z-score of returns over rolling volatility lookback"
+    },
+    "Lchc_fancy": {
+        "type": "float",
+        "name": "Low High Close Fancy Ratio",
+        "comment": "-1.0 * min(Low) / Close - max(High) / Close"
+    },
+    "AdaptBollingv3": {
+        "type": "float",
+        "name": "Adaptive Bollinger v3",
+        "comment": "Multi-period momentum and ATR composite index"
+    },
+    "Bollcount_dem": {
+        "type": "float",
+        "name": "DeMarker Bollinger Count",
+        "comment": "Rolling sum of DeMarker directional signals"
+    },
+    "DzcciLower": {
+        "type": "float",
+        "name": "Dynamic Zone CCI Lower",
+        "comment": "Distance between lower CCI band and short CCI MA"
+    },
+    "DzcciUpper": {
+        "type": "float",
+        "name": "Dynamic Zone CCI Upper",
+        "comment": "Scaled upper CCI band over volatility lookback"
+    },
+    "DzrsiLowerSignal": {
+        "type": "float",
+        "name": "Dynamic Zone RSI Lower Signal",
+        "comment": "Standardized dynamic zone RSI lower signal"
+    },
+    "DzrsiUpperSignal": {
+        "type": "float",
+        "name": "Dynamic Zone RSI Upper Signal",
+        "comment": "Scaled dynamic zone RSI upper signal"
+    },
+    "FbLower": {
+        "type": "float",
+        "name": "Fibonacci ATR Channel Lower",
+        "comment": "Scaled lower Fibonacci ATR channel band"
+    },
+    "FbUpper": {
+        "type": "float",
+        "name": "Fibonacci ATR Channel Upper",
+        "comment": "Scaled upper Fibonacci ATR channel band"
+    },
+    "DzcciLowerSignal": {
+        "type": "float",
+        "name": "Dynamic Zone CCI Lower Signal v1",
+        "comment": "Standardized difference between CCI lower band and close"
+    },
+    "DzcciLowerSignal_v2": {
+        "type": "float",
+        "name": "Dynamic Zone CCI Lower Signal v2",
+        "comment": "Scaled difference between CCI lower band and short CCI MA"
+    },
+    "DzcciUpperSignal": {
+        "type": "float",
+        "name": "Dynamic Zone CCI Upper Signal v1",
+        "comment": "Scaled difference between close and CCI upper band"
+    },
+    "DzcciUpperSignal_v2": {
+        "type": "float",
+        "name": "Dynamic Zone CCI Upper Signal v2",
+        "comment": "Scaled difference between short CCI MA and CCI upper band"
+    },
+    "FbLowerSignal": {
+        "type": "float",
+        "name": "Fibonacci Lower Channel Signal 1.618",
+        "comment": "Scaled signal for 1.618 Fibonacci lower band distance"
+    },
+    "FbLowerSignal_v2": {
+        "type": "float",
+        "name": "Fibonacci Lower Channel Signal 2.618",
+        "comment": "Scaled signal for 2.618 Fibonacci lower band distance"
+    },
+    "FbLowerSignal_v3": {
+        "type": "float",
+        "name": "Fibonacci Lower Channel Signal 4.236",
+        "comment": "Scaled signal for 4.236 Fibonacci lower band distance"
+    },
+    "FbUpperSignal": {
+        "type": "float",
+        "name": "Fibonacci Upper Channel Signal 1.618",
+        "comment": "Scaled signal for 1.618 Fibonacci upper band distance"
+    },
+    "FbUpperSignal_v2": {
+        "type": "float",
+        "name": "Fibonacci Upper Channel Signal 2.618",
+        "comment": "Scaled signal for 2.618 Fibonacci upper band distance"
+    },
+    "FbUpperSignal_v3": {
+        "type": "float",
+        "name": "Fibonacci Upper Channel Signal 4.236",
+        "comment": "Scaled signal for 4.236 Fibonacci upper band distance"
+    },
+    "VixBw": {
+        "type": "float",
+        "name": "VIX Bandwidth Proxy",
+        "comment": "Volatile directional bandwidth proxy"
+    },
     "bb_width": {
         "type": "float",
         "name": "Bollinger Band Width for Signals",
         "comment": "Standard Bollinger Band Width used for signals"
+    },
+    "bb_width_q20": {
+        "type": "float",
+        "name": "Bollinger Width 20th Percentile",
+        "comment": "100-bar rolling 20th percentile of bb_width"
+    },
+    "bb_width_sma20": {
+        "type": "float",
+        "name": "20-Bar Average Bollinger Width",
+        "comment": "20-bar simple moving average of bb_width"
+    },
+    "atr_sma20": {
+        "type": "float",
+        "name": "20-Bar Average ATR",
+        "comment": "20-bar simple moving average of atr"
     },
     "kc_mid": {
         "type": "float",
@@ -298,21 +478,6 @@
         "type": "float",
         "name": "Hurst Exponent Proxy for Signals",
         "comment": "Hurst Exponent Proxy over 20 periods"
-    },
-    "bb_width_q20": {
-        "type": "float",
-        "name": "Bollinger Width 20th Percentile",
-        "comment": "100-bar rolling 20th percentile of bb_width"
-    },
-    "bb_width_sma20": {
-        "type": "float",
-        "name": "20-Bar Average Bollinger Width",
-        "comment": "20-bar simple moving average of bb_width"
-    },
-    "atr_sma20": {
-        "type": "float",
-        "name": "20-Bar Average ATR",
-        "comment": "20-bar simple moving average of atr"
     },
     "atr_14": {
         "type": "float",
