@@ -3,27 +3,17 @@ import pandas as pd
 from autofcholv.config.config import Config
 
 
-def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
+def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     """
     Calculate candlestick geometric features (vectorized).
-
-    Features:
-        body        : Close - Open (positive = green, negative = red)
-        height      : High - Low
-        upwick      : upper wick
-        lowwick     : lower wick
-        upwick_rate : upper wick / candle height % ratio
-        lowwick_rate: lower wick / candle height % ratio
-        ibs         : Internal Bar Strength
-        color       : 'green' | 'red' | 'doji'
     """
     epsilon = 1e-6
 
     df['body'] = df['Close'] - df['Open']
     df['height'] = df['High'] - df['Low']
     df["body_abs"] = df["body"].abs()
-    df["body_abs_sma20"] = df["body_abs"].rolling(20).mean()
-    df["range_sma20"] = df["height"].rolling(20).mean()
+    df["body_abs_sma20"] = df["body_abs"].rolling(config.medium_lookback).mean()
+    df["range_sma20"] = df["height"].rolling(config.medium_lookback).mean()
 
     body_top = df[['Open', 'Close']].max(axis=1)
     body_bottom = df[['Open', 'Close']].min(axis=1)
