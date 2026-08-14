@@ -496,21 +496,6 @@ def test_load_config_from_json_file():
         os.unlink(json_path)
 
 
-def test_load_config_from_json_file_supports_list_values():
-    custom = dict(DEFAULT_CONFIG)
-    custom["MULTI_RSI"] = [14, 50, 42]
-
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
-        json.dump(custom, f)
-        json_path = f.name
-
-    try:
-        config = load_config(json_path)
-        assert config.multi_rsi == [14, 50, 42]
-    finally:
-        os.unlink(json_path)
-
-
 def test_load_config_from_json_file_coerces_numeric_strings():
     custom = dict(DEFAULT_CONFIG)
     custom["ONE_DAY_BARS"] = "49"
@@ -527,14 +512,16 @@ def test_load_config_from_json_file_coerces_numeric_strings():
         os.unlink(json_path)
 
 
-def test_load_config_from_yaml_file_supports_list_values():
+def test_load_config_from_yaml_file():
     with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
-        f.write("MULTI_RSI:\n  - 14\n  - 50\n  - 42\n")
+        f.write("SELECTED_TIME_FRAME: 15m\nONE_DAY_BARS: 49\nMICRO_LOOKBACK: 5\n")
         yaml_path = f.name
 
     try:
         config = load_config(yaml_path)
-        assert config.multi_rsi == [14, 50, 42]
+        assert config.selected_time_frame == "15m"
+        assert config.one_day_bars == 49
+        assert config.micro_lookback == 5
     finally:
         os.unlink(yaml_path)
 

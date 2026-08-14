@@ -24,7 +24,6 @@ class Config:
     slow_trend_lookback: int = 245
     ibs_lookback: int = 5
     drop_first_rows: int = 245
-    multi_rsi: list[int] = field(default_factory=lambda: [14, 50, 42])
 
 
 CONFIG_FIELD_NAMES = {field_name for field_name in Config.__dataclass_fields__}
@@ -47,7 +46,6 @@ CONFIG_KEY_ALIASES = {
     "SLOW_TREND_LOOKBACK": "slow_trend_lookback",
     "IBS_LOOKBACK": "ibs_lookback",
     "DROP_FIRST_ROWS": "drop_first_rows",
-    "MULTI_RSI": "multi_rsi",
 }
 FIELD_TO_CONFIG_KEY = {field: key for key, field in CONFIG_KEY_ALIASES.items()}
 DEFAULT_CONFIG = {
