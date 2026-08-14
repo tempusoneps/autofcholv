@@ -9,55 +9,130 @@
         "name": "Previous Close Price Change",
         "comment": "Previous value of price_change"
     },
-    "return_5": {
+    "return_micro": {
         "type": "float",
-        "name": "5-Bar Return",
-        "comment": "Close percent change over 5 bars"
+        "name": "Micro Return",
+        "comment": "Close percent change over micro lookback"
     },
-    "return_10": {
+    "return_short": {
         "type": "float",
-        "name": "10-Bar Return",
-        "comment": "Close percent change over 10 bars"
+        "name": "Short Return",
+        "comment": "Close percent change over short lookback"
     },
-    "sma20": {
+    "return_medium": {
         "type": "float",
-        "name": "20-Bar SMA",
-        "comment": "20-bar simple moving average of Close"
+        "name": "Medium Return",
+        "comment": "Close percent change over medium lookback"
     },
-    "sma50": {
+    "return_long": {
         "type": "float",
-        "name": "50-Bar SMA",
-        "comment": "50-bar simple moving average of Close"
+        "name": "Long Return",
+        "comment": "Close percent change over long lookback"
     },
-    "std5": {
+    "return_macro": {
         "type": "float",
-        "name": "5-Bar Close Std",
-        "comment": "5-bar rolling standard deviation of Close"
+        "name": "Macro Return",
+        "comment": "Close percent change over macro lookback"
     },
-    "std10": {
+    "sma_micro": {
         "type": "float",
-        "name": "10-Bar Close Std",
-        "comment": "10-bar rolling standard deviation of Close"
+        "name": "Micro SMA",
+        "comment": "Micro lookback simple moving average of Close"
     },
-    "std20": {
+    "sma_short": {
         "type": "float",
-        "name": "20-Bar Close Std",
-        "comment": "20-bar rolling standard deviation of Close"
+        "name": "Short SMA",
+        "comment": "Short lookback simple moving average of Close"
     },
-    "std50": {
+    "sma_medium": {
         "type": "float",
-        "name": "50-Bar Close Std",
-        "comment": "50-bar rolling standard deviation of Close"
+        "name": "Medium SMA",
+        "comment": "Medium lookback simple moving average of Close"
     },
-    "close_min_10": {
+    "sma_long": {
         "type": "float",
-        "name": "10-Bar Close Low",
-        "comment": "10-bar rolling minimum of Close"
+        "name": "Long SMA",
+        "comment": "Long lookback simple moving average of Close"
     },
-    "close_max_10": {
+    "sma_macro": {
         "type": "float",
-        "name": "10-Bar Close High",
-        "comment": "10-bar rolling maximum of Close"
+        "name": "Macro SMA",
+        "comment": "Macro lookback simple moving average of Close"
+    },
+    "std_micro": {
+        "type": "float",
+        "name": "Micro Close Std",
+        "comment": "Micro lookback rolling standard deviation of Close"
+    },
+    "std_short": {
+        "type": "float",
+        "name": "Short Close Std",
+        "comment": "Short lookback rolling standard deviation of Close"
+    },
+    "std_medium": {
+        "type": "float",
+        "name": "Medium Close Std",
+        "comment": "Medium lookback rolling standard deviation of Close"
+    },
+    "std_long": {
+        "type": "float",
+        "name": "Long Close Std",
+        "comment": "Long lookback rolling standard deviation of Close"
+    },
+    "std_macro": {
+        "type": "float",
+        "name": "Macro Close Std",
+        "comment": "Macro lookback rolling standard deviation of Close"
+    },
+    "close_min_micro": {
+        "type": "float",
+        "name": "Micro Close Low",
+        "comment": "Micro lookback rolling minimum of Close"
+    },
+    "close_min_short": {
+        "type": "float",
+        "name": "Short Close Low",
+        "comment": "Short lookback rolling minimum of Close"
+    },
+    "close_min_medium": {
+        "type": "float",
+        "name": "Medium Close Low",
+        "comment": "Medium lookback rolling minimum of Close"
+    },
+    "close_min_long": {
+        "type": "float",
+        "name": "Long Close Low",
+        "comment": "Long lookback rolling minimum of Close"
+    },
+    "close_min_macro": {
+        "type": "float",
+        "name": "Macro Close Low",
+        "comment": "Macro lookback rolling minimum of Close"
+    },
+    "close_max_micro": {
+        "type": "float",
+        "name": "Micro Close High",
+        "comment": "Micro lookback rolling maximum of Close"
+    },
+    "close_max_short": {
+        "type": "float",
+        "name": "Short Close High",
+        "comment": "Short lookback rolling maximum of Close"
+    },
+    "close_max_medium": {
+        "type": "float",
+        "name": "Medium Close High",
+        "comment": "Medium lookback rolling maximum of Close"
+    },
+    "close_max_long": {
+        "type": "float",
+        "name": "Long Close High",
+        "comment": "Long lookback rolling maximum of Close"
+    },
+    "close_max_macro": {
+        "type": "float",
+        "name": "Macro Close High",
+        "comment": "Macro lookback rolling maximum of Close"
     },
     "ema_fast": {
         "type": "float",
@@ -69,15 +144,35 @@
         "name": "Slow Exponential Moving Average",
         "comment": "EMA slow = ta.ema(close, length=n) with n = SLOW_TREND_LOOKBACK"
     },
-    "rsi": {
+    "rsi_micro": {
         "type": "float",
-        "name": "Relative Strength Index",
-        "comment": "RSI = ta.rsi(close, length=n) with n = MOMENTUM_LOOKBACK"
+        "name": "Micro Relative Strength Index",
+        "comment": "RSI = ta.rsi(close, length=n) with n = MICRO_LOOKBACK"
     },
-    "rsi_slope": {
+    "rsi_short": {
         "type": "float",
-        "name": "RSI Slope",
-        "comment": "df['rsi'].diff()"
+        "name": "Short Relative Strength Index",
+        "comment": "RSI = ta.rsi(close, length=n) with n = SHORT_LOOKBACK"
+    },
+    "rsi_medium": {
+        "type": "float",
+        "name": "Medium Relative Strength Index",
+        "comment": "RSI = ta.rsi(close, length=n) with n = MEDIUM_LOOKBACK"
+    },
+    "rsi_long": {
+        "type": "float",
+        "name": "Long Relative Strength Index",
+        "comment": "RSI = ta.rsi(close, length=n) with n = LONG_LOOKBACK"
+    },
+    "rsi_macro": {
+        "type": "float",
+        "name": "Macro Relative Strength Index",
+        "comment": "RSI = ta.rsi(close, length=n) with n = MACRO_LOOKBACK"
+    },
+    "rsi_slope_medium": {
+        "type": "float",
+        "name": "Medium RSI Slope",
+        "comment": "df['rsi_medium'].diff()"
     },
     "tsi": {
         "type": "float",
@@ -884,10 +979,10 @@
         "name": "Awesome Oscillator for Signals",
         "comment": "Awesome Oscillator (5-34)"
     },
-    "roc10": {
+    "roc_short": {
         "type": "float",
-        "name": "ROC 10 for Signals",
-        "comment": "Rate of change over 10 periods"
+        "name": "Short ROC for Signals",
+        "comment": "Rate of change over short lookback"
     },
     "ultimate_osc": {
         "type": "float",
@@ -904,35 +999,15 @@
         "name": "StochRSI D for Signals",
         "comment": "StochRSI D line"
     },
-    "rsi_5": {
-        "type": "float",
-        "name": "RSI 5",
-        "comment": "Relative Strength Index over 5 periods"
-    },
-    "rsi_8": {
-        "type": "float",
-        "name": "RSI 8",
-        "comment": "Relative Strength Index over 8 periods"
-    },
-    "rsi_14": {
-        "type": "float",
-        "name": "RSI 14",
-        "comment": "Relative Strength Index over 14 periods"
-    },
-    "rsi_21": {
-        "type": "float",
-        "name": "RSI 21",
-        "comment": "Relative Strength Index over 21 periods"
-    },
     "williams_r_14": {
         "type": "float",
         "name": "Williams %R 14",
         "comment": "Williams %R over 14 periods"
     },
-    "bb_percent_b_20_2": {
+    "bb_percent_b_medium_2": {
         "type": "float",
-        "name": "Bollinger Percent B 20 2",
-        "comment": "Bollinger Band percent B with length 20 and 2 standard deviations"
+        "name": "Bollinger Percent B Medium 2",
+        "comment": "Bollinger Band percent B with medium lookback and 2 standard deviations"
     },
     "macd_hist_12_26_9": {
         "type": "float",

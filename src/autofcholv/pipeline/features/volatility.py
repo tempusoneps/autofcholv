@@ -170,17 +170,27 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
 
     atr_tr = get_true_range(df)
-    atr_val = get_atr(df, volatility_n)
-    atr_pct = atr_val / (df["Close"] + EPS)
-    atr_middle = get_sma_close(df, volatility_n)
-    df["atr"] = atr_val / (atr_middle + EPS)
+
+    # 5-tier ATR
+    df["atr_micro"] = get_atr(df, config.micro_lookback)
+    df["atr_short"] = get_atr(df, config.short_lookback)
+    df["atr_medium"] = get_atr(df, config.medium_lookback)
+    df["atr_long"] = get_atr(df, config.long_lookback)
+    df["atr_macro"] = get_atr(df, config.macro_lookback)
+
+    # 5-tier ATR Pct
+    df["atr_pct_micro"] = df["atr_micro"] / (df["Close"] + EPS)
+    df["atr_pct_short"] = df["atr_short"] / (df["Close"] + EPS)
+    df["atr_pct_medium"] = df["atr_medium"] / (df["Close"] + EPS)
+    df["atr_pct_long"] = df["atr_long"] / (df["Close"] + EPS)
+    df["atr_pct_macro"] = df["atr_macro"] / (df["Close"] + EPS)
+
     pfe_direct = (df["Close"] - df["Close"].shift(volatility_n - 1))
     pfe_direct = (pfe_direct ** 2 + (volatility_n - 1) ** 2) ** 0.5
     pfe_each = (df["Close"].diff() ** 2 + 1.0) ** 0.5
     pfe_actual = pfe_each.rolling(max(1, volatility_n - 1)).sum()
     df["pfe"] = 100.0 * (pfe_direct / (pfe_actual + EPS)) * df["Close"].pct_change(volatility_n - 1)
     df["change_std"] = df["Close"].pct_change(volatility_n) * df["Close"].pct_change().rolling(volatility_n).std(ddof=0)
-    df["atr_pct"] = atr_pct
 
     rwi_atr = atr_tr.rolling(volatility_n, min_periods=1).mean()
     df["rwi_high"] = (df["High"] - df["Low"].shift(1)) / (rwi_atr * np.sqrt(volatility_n) + EPS)
@@ -213,8 +223,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     kc_upper = kc_middle + 2.0 * atr
     kc_lower = kc_middle - 2.0 * atr
     df["kc_signal"] = (df["Close"] - kc_middle + 2.0 * atr) / (4.0 * atr + EPS)
-    df["atr_upper"] = (df["Low"].rolling(max(1, volatility_n // 2), min_periods=1).min() + 3.0 * atr) / (df["Close"].rolling(volatility_n, min_periods=1).mean() + EPS)
-    df["atr_lower"] = (df["Close"].rolling(volatility_n, min_periods=1).mean() - 0.2 * volatility_n * atr) / (df["Close"].rolling(volatility_n, min_periods=1).mean() + EPS)
+    df["atr_upper_medium"] = (df["Low"].rolling(max(1, volatility_n // 2), min_periods=1).min() + 3.0 * atr) / (df["Close"].rolling(volatility_n, min_periods=1).mean() + EPS)
+    df["atr_lower_medium"] = (df["Close"].rolling(volatility_n, min_periods=1).mean() - 0.2 * volatility_n * atr) / (df["Close"].rolling(volatility_n, min_periods=1).mean() + EPS)
 
     fb_middle = df["Close"].rolling(volatility_n, min_periods=1).mean()
     fb_upper = fb_middle + 1.618 * atr
@@ -496,12 +506,12 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     df["bb_width"] = (df["ub"] - df["lb"]) / df["mb"].replace(0, np.nan)
     df["bb_width_q20"] = df["bb_width"].rolling(100).quantile(0.2)
-    df["bb_width_sma20"] = df["bb_width"].rolling(20).mean()
-    df["atr_sma20"] = df["atr"].rolling(20).mean()
+    df["bb_width_sma_medium"] = df["bb_width"].rolling(config.medium_lookback).mean()
+    df["atr_sma_medium"] = df["atr_medium"].rolling(config.medium_lookback).mean()
 
-    ema20 = ta.ema(df["Close"], length=20)
+    ema20 = ta.ema(df["Close"], length=config.medium_lookback)
     kc_mid = ema20 if ema20 is not None else pd.Series(np.nan, index=df.index)
-    atr_local = get_atr(df, volatility_n)
+    atr_local = df["atr_medium"]
 
     df["kc_mid"] = kc_mid
     df["kc_upper"] = kc_mid + 2 * atr_local
@@ -517,29 +527,27 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         df["chop14"] = np.nan
 
     # Hurst proxy
-    lagged_diff = df["Close"].diff().abs().rolling(20).sum()
-    displacement = df["Close"].diff(20).abs()
+    lagged_diff = df["Close"].diff().abs().rolling(config.medium_lookback).sum()
+    displacement = df["Close"].diff(config.medium_lookback).abs()
     df["hurst_proxy"] = displacement / lagged_diff.replace(0, np.nan)
 
-    atr_14 = ta.atr(df["High"], df["Low"], df["Close"], length=14)
-    df["atr_14"] = atr_14 if atr_14 is not None else np.nan
-    df["body_atr_ratio"] = (df["Close"] - df["Open"]) / df["atr_14"].replace(0, np.nan)
+    df["body_atr_ratio"] = (df["Close"] - df["Open"]) / df["atr_medium"].replace(0, np.nan)
 
-    keltner_20_2 = ta.kc(df["High"], df["Low"], df["Close"], length=20, scalar=2.0)
+    keltner_20_2 = ta.kc(df["High"], df["Low"], df["Close"], length=config.medium_lookback, scalar=2.0)
     if keltner_20_2 is not None and not keltner_20_2.empty:
         upper_cols = [col for col in keltner_20_2.columns if col.startswith("KCU")]
         lower_cols = [col for col in keltner_20_2.columns if col.startswith("KCL")]
-        df["keltner_upper_20_2"] = keltner_20_2[upper_cols[0]] if upper_cols else np.nan
-        df["keltner_lower_20_2"] = keltner_20_2[lower_cols[0]] if lower_cols else np.nan
+        df["keltner_upper_medium_2"] = keltner_20_2[upper_cols[0]] if upper_cols else np.nan
+        df["keltner_lower_medium_2"] = keltner_20_2[lower_cols[0]] if lower_cols else np.nan
     else:
-        df["keltner_upper_20_2"] = np.nan
-        df["keltner_lower_20_2"] = np.nan
+        df["keltner_upper_medium_2"] = np.nan
+        df["keltner_lower_medium_2"] = np.nan
 
-    df["donchian_high_10_shift1"] = df["High"].rolling(10).max().shift(1)
-    df["donchian_low_10_shift1"] = df["Low"].rolling(10).min().shift(1)
+    df["donchian_high_short_shift1"] = df["High"].rolling(config.short_lookback).max().shift(1)
+    df["donchian_low_short_shift1"] = df["Low"].rolling(config.short_lookback).min().shift(1)
     df["donchian_high_30_shift1"] = df["High"].rolling(30).max().shift(1)
     df["donchian_low_30_shift1"] = df["Low"].rolling(30).min().shift(1)
-    df["close_donchian_high_20_shift1"] = df["Close"].rolling(20).max().shift(1)
-    df["close_donchian_low_20_shift1"] = df["Close"].rolling(20).min().shift(1)
+    df["close_donchian_high_medium_shift1"] = df["Close"].rolling(config.medium_lookback).max().shift(1)
+    df["close_donchian_low_medium_shift1"] = df["Close"].rolling(config.medium_lookback).min().shift(1)
 
     return df

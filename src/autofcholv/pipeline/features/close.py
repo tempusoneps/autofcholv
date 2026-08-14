@@ -35,22 +35,51 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     df["price_change"] = df["Close"].diff()
     df["price_change_lag1"] = df["price_change"].shift(1)
-    df["return_5"] = df["Close"].pct_change(config.micro_lookback)
-    df["return_10"] = df["Close"].pct_change(config.short_lookback)
-    df["sma20"] = df["Close"].rolling(config.medium_lookback).mean()
-    df["sma50"] = df["Close"].rolling(config.long_lookback).mean()
-    df["std5"] = df["Close"].rolling(config.micro_lookback).std()
-    df["std10"] = df["Close"].rolling(config.short_lookback).std()
-    df["std20"] = df["Close"].rolling(config.medium_lookback).std()
-    df["std50"] = df["Close"].rolling(config.long_lookback).std()
-    df["close_min_10"] = df["Close"].rolling(config.short_lookback).min()
-    df["close_max_10"] = df["Close"].rolling(config.short_lookback).max()
+
+    # 5-tier Returns
+    df["return_micro"] = df["Close"].pct_change(config.micro_lookback)
+    df["return_short"] = df["Close"].pct_change(config.short_lookback)
+    df["return_medium"] = df["Close"].pct_change(config.medium_lookback)
+    df["return_long"] = df["Close"].pct_change(config.long_lookback)
+    df["return_macro"] = df["Close"].pct_change(config.macro_lookback)
+
+    # 5-tier SMA
+    df["sma_micro"] = df["Close"].rolling(config.micro_lookback).mean()
+    df["sma_short"] = df["Close"].rolling(config.short_lookback).mean()
+    df["sma_medium"] = df["Close"].rolling(config.medium_lookback).mean()
+    df["sma_long"] = df["Close"].rolling(config.long_lookback).mean()
+    df["sma_macro"] = df["Close"].rolling(config.macro_lookback).mean()
+
+    # 5-tier STD
+    df["std_micro"] = df["Close"].rolling(config.micro_lookback).std()
+    df["std_short"] = df["Close"].rolling(config.short_lookback).std()
+    df["std_medium"] = df["Close"].rolling(config.medium_lookback).std()
+    df["std_long"] = df["Close"].rolling(config.long_lookback).std()
+    df["std_macro"] = df["Close"].rolling(config.macro_lookback).std()
+
+    # 5-tier Close Min / Max
+    df["close_min_micro"] = df["Close"].rolling(config.micro_lookback).min()
+    df["close_min_short"] = df["Close"].rolling(config.short_lookback).min()
+    df["close_min_medium"] = df["Close"].rolling(config.medium_lookback).min()
+    df["close_min_long"] = df["Close"].rolling(config.long_lookback).min()
+    df["close_min_macro"] = df["Close"].rolling(config.macro_lookback).min()
+
+    df["close_max_micro"] = df["Close"].rolling(config.micro_lookback).max()
+    df["close_max_short"] = df["Close"].rolling(config.short_lookback).max()
+    df["close_max_medium"] = df["Close"].rolling(config.medium_lookback).max()
+    df["close_max_long"] = df["Close"].rolling(config.long_lookback).max()
+    df["close_max_macro"] = df["Close"].rolling(config.macro_lookback).max()
 
     df["ema_fast"] = ta.ema(df["Close"], length=fast_n)
     df["ema_slow"] = ta.ema(df["Close"], length=slow_n)
 
-    df["rsi"] = ta.rsi(df["Close"], length=momentum_n)
-    df["rsi_slope"] = df["rsi"].diff()
+    # 5-tier RSI
+    df["rsi_micro"] = ta.rsi(df["Close"], length=config.micro_lookback)
+    df["rsi_short"] = ta.rsi(df["Close"], length=config.short_lookback)
+    df["rsi_medium"] = ta.rsi(df["Close"], length=config.medium_lookback)
+    df["rsi_long"] = ta.rsi(df["Close"], length=config.long_lookback)
+    df["rsi_macro"] = ta.rsi(df["Close"], length=config.macro_lookback)
+    df["rsi_slope_medium"] = df["rsi_medium"].diff()
 
     tsi_result = ta.tsi(df["Close"])
     if tsi_result is not None and not tsi_result.empty:
@@ -323,7 +352,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["bollinger_percent_b"] = (df["Close"] - df["lb"]) / (boll_width + epsilon)
 
 
-    rsi_frac = df["rsi"] / 100.0
+    rsi_frac = df["rsi_medium"] / 100.0
     df["rsi_mean"] = rsi_frac.rolling(momentum_n, min_periods=1).mean()
     rsi_price_line = rsi_frac.ewm(span=momentum_n, adjust=False).mean()
     rsi_signal_line = rsi_frac.ewm(span=2 * momentum_n, adjust=False).mean()
@@ -1066,14 +1095,14 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     # --- Indicator features used by signal.py ---
 
-    rolling_max_rsi = df["rsi"].rolling(14).max()
-    rolling_min_rsi = df["rsi"].rolling(14).min()
-    df["stoch_rsi"] = (df["rsi"] - rolling_min_rsi) / (rolling_max_rsi - rolling_min_rsi).replace(0, np.nan)
+    rolling_max_rsi = df["rsi_medium"].rolling(14).max()
+    rolling_min_rsi = df["rsi_medium"].rolling(14).min()
+    df["stoch_rsi"] = (df["rsi_medium"] - rolling_min_rsi) / (rolling_max_rsi - rolling_min_rsi).replace(0, np.nan)
 
     typical_price_ao = (df["High"] + df["Low"] + df["Close"]) / 3.0
     df["awesome_oscillator"] = typical_price_ao.rolling(5).mean() - typical_price_ao.rolling(34).mean()
 
-    df["roc10"] = ta.roc(df["Close"], length=10)
+    df["roc_short"] = ta.roc(df["Close"], length=config.short_lookback)
 
     prev_close_uo_fixed = df["Close"].shift(1)
     uo_buying_pressure = df["Close"] - np.minimum(df["Low"], prev_close_uo_fixed)
@@ -1094,18 +1123,14 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         df["stochrsi_k"] = np.nan
         df["stochrsi_d"] = np.nan
 
-    df["rsi_5"] = ta.rsi(df["Close"], length=5)
-    df["rsi_8"] = ta.rsi(df["Close"], length=8)
-    df["rsi_14"] = ta.rsi(df["Close"], length=14)
-    df["rsi_21"] = ta.rsi(df["Close"], length=21)
     williams_r = ta.willr(df["High"], df["Low"], df["Close"], length=14)
     df["williams_r_14"] = williams_r if williams_r is not None else np.nan
-    bbands = ta.bbands(df["Close"], length=20, std=2.0)
+    bbands = ta.bbands(df["Close"], length=config.medium_lookback, std=2.0)
     if bbands is not None and not bbands.empty:
         bbp_cols = [col for col in bbands.columns if col.startswith("BBP_")]
-        df["bb_percent_b_20_2"] = bbands[bbp_cols[0]] if bbp_cols else np.nan
+        df["bb_percent_b_medium_2"] = bbands[bbp_cols[0]] if bbp_cols else np.nan
     else:
-        df["bb_percent_b_20_2"] = np.nan
+        df["bb_percent_b_medium_2"] = np.nan
     macd_12_26_9 = ta.macd(df["Close"], fast=12, slow=26, signal=9)
     if macd_12_26_9 is not None and not macd_12_26_9.empty:
         macdh_cols = [col for col in macd_12_26_9.columns if "MACDh" in col]

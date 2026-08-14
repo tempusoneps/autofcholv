@@ -30,6 +30,19 @@ def get_1D_data(df: pd.DataFrame) -> pd.DataFrame:
     daily_data["prev_day_low"] = daily_data["day_low"].shift(1)
     daily_data["prev_day_volume"] = daily_data["day_volume"].shift(1)
     daily_data["prev_day_pivot"] = daily_data["day_pivot"].shift(1)
+    daily_data["prev_day_r1"] = (
+        2.0 * daily_data["prev_day_pivot"] - daily_data["prev_day_low"]
+    )
+    daily_data["prev_day_s1"] = (
+        2.0 * daily_data["prev_day_pivot"] - daily_data["prev_day_high"]
+    )
+
+    day_ema = daily_data["day_close"].ewm(span=20, adjust=False).mean()
+    day_bias = pd.Series(0, index=daily_data.index)
+    day_bias[daily_data["day_close"] > day_ema] = 1
+    day_bias[daily_data["day_close"] < day_ema] = -1
+    daily_data["prev_day_ema_bias_20"] = day_bias.shift(1)
+
     return daily_data[
         [
             "prev_day_close",
@@ -38,6 +51,9 @@ def get_1D_data(df: pd.DataFrame) -> pd.DataFrame:
             "prev_day_low",
             "prev_day_volume",
             "prev_day_pivot",
+            "prev_day_r1",
+            "prev_day_s1",
+            "prev_day_ema_bias_20",
         ]
     ]
 
@@ -123,28 +139,6 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
     merged_data = pd.merge(data, daily_data, left_on="time_d", right_index=True, how="left")
     merged_data = merged_data.drop(columns=["time_d"])
     merged_data.index = data.index
-
-    trade_date = pd.Series(merged_data.index.normalize(), index=merged_data.index)
-    grouped = merged_data.groupby(trade_date)
-    trading_daily = grouped.agg(
-        day_high=("High", "max"),
-        day_low=("Low", "min"),
-        day_close=("Close", "last"),
-    )
-    prev_trading_daily = trading_daily.shift(1)
-    merged_data["prev_trading_day_high"] = trade_date.map(prev_trading_daily["day_high"])
-    merged_data["prev_trading_day_low"] = trade_date.map(prev_trading_daily["day_low"])
-    merged_data["prev_trading_day_close"] = trade_date.map(prev_trading_daily["day_close"])
-    prev = prev_trading_daily
-    pp = (prev["day_high"] + prev["day_low"] + prev["day_close"]) / 3.0
-    merged_data["prev_day_r1"] = trade_date.map(2.0 * pp - prev["day_low"])
-    merged_data["prev_day_s1"] = trade_date.map(2.0 * pp - prev["day_high"])
-
-    day_ema = trading_daily["day_close"].ewm(span=20, adjust=False).mean()
-    day_bias = pd.Series(0, index=trading_daily.index)
-    day_bias[trading_daily["day_close"] > day_ema] = 1
-    day_bias[trading_daily["day_close"] < day_ema] = -1
-    merged_data["prev_day_ema_bias_20"] = trade_date.map(day_bias.shift(1))
 
     # Resample Higher Timeframe Features (15m, 30m, 1H)
     for freq, prefix, delta in [

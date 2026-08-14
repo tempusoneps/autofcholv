@@ -36,9 +36,9 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
         df["ibs_lag1"] = df["ibs"].shift(1)
 
     # 3. Momentum & Oscillator Lags & Acceleration Deltas
-    if "rsi" in df.columns:
-        df["rsi_lag1"] = df["rsi"].shift(1)
-        df["rsi_delta"] = df["rsi"] - df["rsi_lag1"]
+    if "rsi_medium" in df.columns:
+        df["rsi_medium_lag1"] = df["rsi_medium"].shift(1)
+        df["rsi_medium_delta"] = df["rsi_medium"] - df["rsi_medium_lag1"]
     if "macd_hist" in df.columns:
         df["macd_hist_lag1"] = df["macd_hist"].shift(1)
         df["macd_hist_delta"] = df["macd_hist"] - df["macd_hist_lag1"]
@@ -55,9 +55,9 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
         df["vwap_lag1"] = df[vwap_col].shift(1)
 
     # 5. Volatility Lags & Volatility Expansion Metrics
-    if "atr" in df.columns:
-        df["atr_lag1"] = df["atr"].shift(1)
-        df["volatility_expansion_ratio"] = (df["High"] - df["Low"]) / df["atr_lag1"].replace(0, pd.NA)
+    if "atr_medium" in df.columns:
+        df["atr_medium_lag1"] = df["atr_medium"].shift(1)
+        df["volatility_expansion_ratio"] = (df["High"] - df["Low"]) / df["atr_medium_lag1"].replace(0, pd.NA)
     bbw_col = "bbw" if "bbw" in df.columns else ("bollinger_width" if "bollinger_width" in df.columns else None)
     if bbw_col:
         df["bbw_lag1"] = df[bbw_col].shift(1)

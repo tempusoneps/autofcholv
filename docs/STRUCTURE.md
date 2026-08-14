@@ -38,6 +38,7 @@
 │       ├── core.py                   # Public extract_features(df) API.
 │       │
 │       ├── config/                   # Configuration support.
+│       │   ├── config.default.json   # Packaged default configuration.
 │       │   └── config.py             # Default config values and config loading.
 │       │
 │       ├── pipeline/                 # OHLCV processing pipeline.

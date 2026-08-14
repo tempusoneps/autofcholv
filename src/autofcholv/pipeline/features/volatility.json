@@ -114,15 +114,55 @@
         "name": "Donchian Mid Signal",
         "comment": "Close minus Donchian channel midpoint"
     },
-    "atr": {
+    "atr_micro": {
         "type": "float",
-        "name": "Average True Range",
-        "comment": "atr = ta.atr(high, low, close, length=n) with n = VOLATILITY_LOOKBACK"
+        "name": "Micro Average True Range",
+        "comment": "atr = ta.atr(high, low, close, length=n) with n = MICRO_LOOKBACK"
     },
-    "atr_pct": {
+    "atr_short": {
         "type": "float",
-        "name": "ATR Percent",
-        "comment": "ATR divided by close"
+        "name": "Short Average True Range",
+        "comment": "atr = ta.atr(high, low, close, length=n) with n = SHORT_LOOKBACK"
+    },
+    "atr_medium": {
+        "type": "float",
+        "name": "Medium Average True Range",
+        "comment": "atr = ta.atr(high, low, close, length=n) with n = MEDIUM_LOOKBACK"
+    },
+    "atr_long": {
+        "type": "float",
+        "name": "Long Average True Range",
+        "comment": "atr = ta.atr(high, low, close, length=n) with n = LONG_LOOKBACK"
+    },
+    "atr_macro": {
+        "type": "float",
+        "name": "Macro Average True Range",
+        "comment": "atr = ta.atr(high, low, close, length=n) with n = MACRO_LOOKBACK"
+    },
+    "atr_pct_micro": {
+        "type": "float",
+        "name": "Micro ATR Percent",
+        "comment": "Micro ATR divided by close"
+    },
+    "atr_pct_short": {
+        "type": "float",
+        "name": "Short ATR Percent",
+        "comment": "Short ATR divided by close"
+    },
+    "atr_pct_medium": {
+        "type": "float",
+        "name": "Medium ATR Percent",
+        "comment": "Medium ATR divided by close"
+    },
+    "atr_pct_long": {
+        "type": "float",
+        "name": "Long ATR Percent",
+        "comment": "Long ATR divided by close"
+    },
+    "atr_pct_macro": {
+        "type": "float",
+        "name": "Macro ATR Percent",
+        "comment": "Macro ATR divided by close"
     },
     "rwi_high": {
         "type": "float",
@@ -144,14 +184,14 @@
         "name": "Keltner Channel Signal",
         "comment": "(Close - kc_middle + 2 * kc_atr) / (4 * kc_atr + epsilon)"
     },
-    "atr_upper": {
+    "atr_upper_medium": {
         "type": "float",
-        "name": "ATR Upper",
+        "name": "Medium ATR Upper",
         "comment": "ATR-based upper channel ratio normalized by moving average"
     },
-    "atr_lower": {
+    "atr_lower_medium": {
         "type": "float",
-        "name": "ATR Lower",
+        "name": "Medium ATR Lower",
         "comment": "ATR-based lower channel ratio normalized by moving average"
     },
     "fb_upper_signal": {
@@ -424,30 +464,30 @@
         "name": "Bollinger Width 20th Percentile",
         "comment": "100-bar rolling 20th percentile of bb_width"
     },
-    "bb_width_sma20": {
+    "bb_width_sma_medium": {
         "type": "float",
-        "name": "20-Bar Average Bollinger Width",
-        "comment": "20-bar simple moving average of bb_width"
+        "name": "Medium-Lookback Average Bollinger Width",
+        "comment": "Medium lookback simple moving average of bb_width"
     },
-    "atr_sma20": {
+    "atr_sma_medium": {
         "type": "float",
-        "name": "20-Bar Average ATR",
-        "comment": "20-bar simple moving average of atr"
+        "name": "Medium-Lookback Average ATR",
+        "comment": "Medium lookback simple moving average of atr_medium"
     },
     "kc_mid": {
         "type": "float",
         "name": "Keltner Channel Mid for Signals",
-        "comment": "Keltner Channel mid line (EMA 20)"
+        "comment": "Keltner Channel mid line (EMA medium lookback)"
     },
     "kc_upper": {
         "type": "float",
         "name": "Keltner Channel Upper for Signals",
-        "comment": "Keltner Channel upper band (mid + 2 * ATR)"
+        "comment": "Keltner Channel upper band (mid + 2 * atr_medium)"
     },
     "kc_lower": {
         "type": "float",
         "name": "Keltner Channel Lower for Signals",
-        "comment": "Keltner Channel lower band (mid - 2 * ATR)"
+        "comment": "Keltner Channel lower band (mid - 2 * atr_medium)"
     },
     "chop14": {
         "type": "float",
@@ -457,37 +497,32 @@
     "hurst_proxy": {
         "type": "float",
         "name": "Hurst Exponent Proxy for Signals",
-        "comment": "Hurst Exponent Proxy over 20 periods"
-    },
-    "atr_14": {
-        "type": "float",
-        "name": "ATR 14",
-        "comment": "Average True Range over 14 periods"
+        "comment": "Hurst Exponent Proxy over medium lookback"
     },
     "body_atr_ratio": {
         "type": "float",
         "name": "Body ATR Ratio",
-        "comment": "Close minus Open divided by ATR 14"
+        "comment": "Close minus Open divided by atr_medium"
     },
-    "keltner_upper_20_2": {
+    "keltner_upper_medium_2": {
         "type": "float",
-        "name": "Keltner Upper 20 2",
-        "comment": "Keltner upper band with length 20 and scalar 2"
+        "name": "Keltner Upper Medium 2",
+        "comment": "Keltner upper band with medium lookback and scalar 2"
     },
-    "keltner_lower_20_2": {
+    "keltner_lower_medium_2": {
         "type": "float",
-        "name": "Keltner Lower 20 2",
-        "comment": "Keltner lower band with length 20 and scalar 2"
+        "name": "Keltner Lower Medium 2",
+        "comment": "Keltner lower band with medium lookback and scalar 2"
     },
-    "donchian_high_10_shift1": {
+    "donchian_high_short_shift1": {
         "type": "float",
-        "name": "Donchian High 10 Shift 1",
-        "comment": "10-bar rolling High maximum shifted one bar"
+        "name": "Donchian High Short Shift 1",
+        "comment": "Short lookback rolling High maximum shifted one bar"
     },
-    "donchian_low_10_shift1": {
+    "donchian_low_short_shift1": {
         "type": "float",
-        "name": "Donchian Low 10 Shift 1",
-        "comment": "10-bar rolling Low minimum shifted one bar"
+        "name": "Donchian Low Short Shift 1",
+        "comment": "Short lookback rolling Low minimum shifted one bar"
     },
     "donchian_high_30_shift1": {
         "type": "float",
@@ -499,14 +534,14 @@
         "name": "Donchian Low 30 Shift 1",
         "comment": "30-bar rolling Low minimum shifted one bar"
     },
-    "close_donchian_high_20_shift1": {
+    "close_donchian_high_medium_shift1": {
         "type": "float",
-        "name": "Close Donchian High 20 Shift 1",
-        "comment": "20-bar rolling Close maximum shifted one bar"
+        "name": "Close Donchian High Medium Shift 1",
+        "comment": "Medium lookback rolling Close maximum shifted one bar"
     },
-    "close_donchian_low_20_shift1": {
+    "close_donchian_low_medium_shift1": {
         "type": "float",
-        "name": "Close Donchian Low 20 Shift 1",
-        "comment": "20-bar rolling Close minimum shifted one bar"
+        "name": "Close Donchian Low Medium Shift 1",
+        "comment": "Medium lookback rolling Close minimum shifted one bar"
     }
 }

@@ -35,7 +35,7 @@ Feature extraction is intentionally wide and expensive, so avoid running the ful
 - When a test needs the full pipeline, compute it once per test module with a pytest fixture, for example a `@pytest.fixture(scope="module")` or `@pytest.fixture(scope="session")`, and return `result.copy()` to each test that mutates the DataFrame.
 - Do not call `extract_features(make_ohlcv(...))` independently in many tests for column-presence assertions. Combine broad column-contract assertions into a small number of tests, or reuse the cached full-pipeline fixture.
 - Keep synthetic datasets as small as the feature under test allows. Only use long datasets for features that truly need long lookbacks such as slow trend windows; document the lookback reason in the fixture name or test comment.
-- For TDD and debugging, first run the smallest relevant test selection, such as `uv run pytest tests/test_core.py::test_name -q`, then run a focused file, and run `uv run pytest` only before final handoff or when the change touches shared pipeline behavior.
+- For TDD and debugging, first run the smallest relevant test selection, such as `uv run pytest tests/test_core.py::test_name -q`. Do NOT run the full test suite (`uv run pytest`) automatically without asking and receiving explicit user confirmation.
 - For CLI tests, avoid exercising the complete wide feature catalog unless the test is explicitly checking end-to-end extraction. Prefer mocking or a minimal configuration path when testing argument parsing, logging, validation errors, or file handling.
 - Treat performance regressions in tests as maintenance issues. If a new test adds another full-pipeline extraction, consider whether it can reuse an existing fixture or test the owning feature module directly.
 
@@ -154,6 +154,7 @@ AI agents must **NOT** create git commits automatically (`git commit`). Always a
 │       ├── core.py                   # Public extract_features(df) API.
 │       │
 │       ├── config/                   # Configuration support.
+│       │   ├── config.default.json   # Packaged default configuration.
 │       │   └── config.py             # Default config values and config loading.
 │       │
 │       ├── pipeline/                 # OHLCV processing pipeline.
