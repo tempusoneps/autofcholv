@@ -15,13 +15,13 @@
         "buy_condition": "Đường EMA nhanh cắt lên đường EMA chậm.",
         "sell_condition": "Đường EMA nhanh cắt xuống đường EMA chậm."
     },
-    "min_max_10_signal": {
+    "min_max_short_signal": {
         "no": 3,
         "type": "str",
-        "name": "Min Max 10 Signal",
-        "comment": "Signal of min max 10 Close (min or max)",
-        "buy_condition": "Giá tạo đáy thấp nhất trong 10 phiên gần nhất kết hợp RSI < 30 (quá bán).",
-        "sell_condition": "Giá tạo đỉnh cao nhất trong 10 phiên gần nhất kết hợp RSI > 70 (quá mua)."
+        "name": "Min Max Short Signal",
+        "comment": "Signal of min max short lookback Close (min or max)",
+        "buy_condition": "Giá tạo đáy thấp nhất trong short lookback kết hợp RSI medium < 30 (quá bán).",
+        "sell_condition": "Giá tạo đỉnh cao nhất trong short lookback kết hợp RSI medium > 70 (quá mua)."
     },
     "macd_histogram_reversal_signal": {
         "no": 4,

@@ -12,8 +12,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df['body'] = df['Close'] - df['Open']
     df['height'] = df['High'] - df['Low']
     df["body_abs"] = df["body"].abs()
-    df["body_abs_sma20"] = df["body_abs"].rolling(config.medium_lookback).mean()
-    df["range_sma20"] = df["height"].rolling(config.medium_lookback).mean()
+    df["body_abs_sma_medium"] = df["body_abs"].rolling(config.medium_lookback).mean()
+    df["range_sma_medium"] = df["height"].rolling(config.medium_lookback).mean()
 
     body_top = df[['Open', 'Close']].max(axis=1)
     body_bottom = df[['Open', 'Close']].min(axis=1)

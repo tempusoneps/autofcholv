@@ -106,10 +106,10 @@ def test_cli_successful_extraction():
             "prev_day_high", "prev_day_close",    # resample.py
             "prev_15m_close", "prev_30m_close", "prev_1h_close", # resample.py HTF
             "body", "color",                      # candlestick.py
-            "ema_fast", "ema_slow", "rsi",        # close.py
+            "ema_fast", "ema_slow", "rsi_medium",        # close.py
             "volume_avg", "volume_zscore",        # volume.py
-            "close_lag1", "rsi_lag1",             # lag.py
-            "atr", "vwap", "custom_001",          # mix.py
+            "close_lag1", "rsi_medium_lag1",             # lag.py
+            "atr_medium", "vwap", "custom_001",          # mix.py
             "volume_group", "vol_high_pattern",   # group.py
             "couple_cs_signal", "ema_cross_signal",  # signal.py
         ]

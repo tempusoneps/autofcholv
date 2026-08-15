@@ -64,20 +64,20 @@
         "name": "Previous Inside Bar",
         "comment": "Previous bar high-low range is inside the bar before it"
     },
-    "is_max_4": {
+    "is_max_micro": {
         "type": "bool",
-        "name": "Is Max High in 4 Bars",
-        "comment": "High is higher than the max High of the previous 3 bars"
+        "name": "Is Micro High Maximum",
+        "comment": "High is higher than the max High of the previous micro lookback bars"
     },
-    "is_max_10": {
+    "is_max_short": {
         "type": "bool",
-        "name": "Is 10-Bar High Maximum",
-        "comment": "True if High is greater than maximum High of previous 9 bars"
+        "name": "Is Short High Maximum",
+        "comment": "True if High is greater than maximum High of previous short lookback bars"
     },
-    "is_min_10": {
+    "is_min_short": {
         "type": "bool",
-        "name": "Is 10-Bar Low Minimum",
-        "comment": "True if Low is less than minimum Low of previous 9 bars"
+        "name": "Is Short Low Minimum",
+        "comment": "True if Low is less than minimum Low of previous short lookback bars"
     },
     "mfi_group": {
         "type": "str",

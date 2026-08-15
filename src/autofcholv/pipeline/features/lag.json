@@ -59,15 +59,15 @@
         "name": "IBS of previous candlestick",
         "comment": "Internal Bar Strength phiên trước"
     },
-    "rsi_lag1": {
+    "rsi_medium_lag1": {
         "type": "float",
-        "name": "RSI of previous candlestick",
-        "comment": "RSI phiên trước"
+        "name": "Medium RSI of previous candlestick",
+        "comment": "RSI medium phiên trước"
     },
-    "rsi_delta": {
+    "rsi_medium_delta": {
         "type": "float",
-        "name": "RSI Acceleration Delta",
-        "comment": "Độ dốc/Gia tốc RSI (rsi - rsi_lag1)"
+        "name": "Medium RSI Acceleration Delta",
+        "comment": "Độ dốc/Gia tốc RSI medium (rsi_medium - rsi_medium_lag1)"
     },
     "macd_hist_lag1": {
         "type": "float",
@@ -99,15 +99,15 @@
         "name": "VWAP of previous candlestick",
         "comment": "VWAP phiên trước"
     },
-    "atr_lag1": {
+    "atr_medium_lag1": {
         "type": "float",
-        "name": "ATR of previous candlestick",
-        "comment": "ATR phiên trước"
+        "name": "Medium ATR of previous candlestick",
+        "comment": "ATR medium phiên trước"
     },
     "volatility_expansion_ratio": {
         "type": "float",
         "name": "Volatility Expansion Ratio",
-        "comment": "Tỷ lệ bùng nổ biến động thanh nến hiện tại so với ATR phiên trước"
+        "comment": "Tỷ lệ bùng nổ biến động thanh nến hiện tại so với ATR medium phiên trước"
     },
     "bbw_lag1": {
         "type": "float",

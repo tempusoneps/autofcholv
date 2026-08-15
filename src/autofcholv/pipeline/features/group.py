@@ -6,7 +6,7 @@ from autofcholv.config.config import Config
 
 def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     cols = ['high_lag1', 'low_lag1', 'volume_lag1', 'ibs', 'ibs_lag1',
-            'upwick', 'lowwick', 'rsi', 'rsi_lag1', 'volume_avg', 'ub', 'lb']
+            'upwick', 'lowwick', 'rsi_medium', 'rsi_medium_lag1', 'volume_avg', 'ub', 'lb']
     missing_cols = [col for col in cols if col not in df.columns]
     if missing_cols:
         raise ValueError(f"Missing columns: {missing_cols}")
@@ -14,7 +14,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     vol_state  = np.where(df["Volume"] > df["volume_lag1"], "VolUp", "VolDown")
     high_state = np.where(df["High"]   > df["high_lag1"],  "HighUp", "HighDown")
     ibs_state  = np.where(df["ibs"]    > df["ibs_lag1"],   "IBSUp",  "IBSDown")
-    rsi_state  = np.where(df["rsi"]    > df["rsi_lag1"],   "RSIUp",  "RSIDown")
+    rsi_state  = np.where(df["rsi_medium"] > df["rsi_medium_lag1"], "RSIUp", "RSIDown")
 
     df['volume_group']     = vol_state
     df['upper_wick_group'] = np.where(df["upwick"] > df["upwick"].shift(1), "Increase", "Not Increase")
@@ -31,10 +31,10 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["equal_high"] = (df["High"] - df["high_lag1"]).abs() < (0.001 * df["Close"])
     df["inside_bar_prev"] = (df["high_lag1"] < df["High"].shift(2)) & (df["low_lag1"] > df["Low"].shift(2))
 
-    # New TODO features
-    df['is_max_4'] = df["High"] > df["High"].shift(1).rolling(max(2, config.micro_lookback - 2)).max()
-    df['is_max_10'] = df["High"] > df["High"].shift(1).rolling(max(3, config.short_lookback - 1)).max()
-    df['is_min_10'] = df["Low"] < df["Low"].shift(1).rolling(max(3, config.short_lookback - 1)).min()
+    # New features
+    df['is_max_micro'] = df["High"] > df["High"].shift(1).rolling(max(2, config.micro_lookback - 2)).max()
+    df['is_max_short'] = df["High"] > df["High"].shift(1).rolling(max(3, config.short_lookback - 1)).max()
+    df['is_min_short'] = df["Low"] < df["Low"].shift(1).rolling(max(3, config.short_lookback - 1)).min()
     mfi_col = "mfi14" if "mfi14" in df.columns else ("mfi" if "mfi" in df.columns else None)
     if mfi_col:
         df['mfi_group'] = np.where(df[mfi_col] > df[mfi_col].shift(1), "Increase", "Not Increase")
@@ -87,8 +87,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df['ibs_vol_group'] = np.select(ibs_conds, ibs_choices, default="Vol down, ibs decr")
 
     # rsi_area
-    rsi_col = "rsi" if "rsi" in df.columns else ("rsi20" if "rsi20" in df.columns else None)
-    rsi_val = df[rsi_col] if rsi_col else df["rsi"]
+    rsi_col = "rsi_medium" if "rsi_medium" in df.columns else ("rsi" if "rsi" in df.columns else None)
+    rsi_val = df[rsi_col] if rsi_col else df["rsi_medium"]
     rsi_conds = [rsi_val > 55, rsi_val < 45]
     rsi_choices = [">55", "<45"]
     df['rsi_area'] = np.select(rsi_conds, rsi_choices, default="45-55")

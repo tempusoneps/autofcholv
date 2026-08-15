@@ -14,15 +14,15 @@
         "name": "Absolute Candle Body",
         "comment": "Absolute candlestick body length"
     },
-    "body_abs_sma20": {
+    "body_abs_sma_medium": {
         "type": "float",
-        "name": "20-Bar Average Absolute Body",
-        "comment": "20-bar simple moving average of absolute body length"
+        "name": "Medium-Lookback Average Absolute Body",
+        "comment": "Medium lookback simple moving average of absolute body length"
     },
-    "range_sma20": {
+    "range_sma_medium": {
         "type": "float",
-        "name": "20-Bar Average Range",
-        "comment": "20-bar simple moving average of High minus Low"
+        "name": "Medium-Lookback Average Range",
+        "comment": "Medium lookback simple moving average of High minus Low"
     },
     "upwick": {
         "type": "float",
