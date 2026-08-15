@@ -24,7 +24,6 @@ class Config:
     slow_trend_lookback: int = 245
     ibs_lookback: int = 5
     drop_first_rows: int = 245
-    multi_rsi: list[int] = field(default_factory=lambda: [14, 50, 42])
 
 
 CONFIG_FIELD_NAMES = {field_name for field_name in Config.__dataclass_fields__}
@@ -47,7 +46,6 @@ CONFIG_KEY_ALIASES = {
     "SLOW_TREND_LOOKBACK": "slow_trend_lookback",
     "IBS_LOOKBACK": "ibs_lookback",
     "DROP_FIRST_ROWS": "drop_first_rows",
-    "MULTI_RSI": "multi_rsi",
 }
 FIELD_TO_CONFIG_KEY = {field: key for key, field in CONFIG_KEY_ALIASES.items()}
 DEFAULT_CONFIG = {
@@ -55,11 +53,25 @@ DEFAULT_CONFIG = {
     for field_name, value in asdict(Config()).items()
 }
 
+DEFAULT_CONFIG_FILENAME = "config.default.json"
+PACKAGE_DEFAULT_CONFIG_PATH = Path(__file__).resolve().parent / DEFAULT_CONFIG_FILENAME
+
+
 def load_config(config_file: Optional[str] = None) -> Config:
     """
-    Load config from JSON/YAML file or built-in defaults.
+    Load config from JSON/YAML file, or default config file (config.default.json), or built-in defaults.
     """
-    return _load_from_file(config_file) if config_file else Config()
+    if config_file:
+        return _load_from_file(config_file)
+
+    local_default = Path(DEFAULT_CONFIG_FILENAME)
+    if local_default.exists() and local_default.is_file():
+        return _load_from_file(str(local_default))
+
+    if PACKAGE_DEFAULT_CONFIG_PATH.exists() and PACKAGE_DEFAULT_CONFIG_PATH.is_file():
+        return _load_from_file(str(PACKAGE_DEFAULT_CONFIG_PATH))
+
+    return Config()
 
 def generate_default_config_file(path: Optional[str] = None) -> bool:
     if not path:

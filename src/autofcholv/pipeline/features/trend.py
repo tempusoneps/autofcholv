@@ -708,11 +708,11 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     # --- Indicator features used by signal.py ---
     # They use fixed windows rather than config-based lookbacks.
 
-    hma_20 = ta.hma(df["Close"], length=20)
-    df["hma20"] = hma_20 if hma_20 is not None else np.nan
+    hma_medium = ta.hma(df["Close"], length=config.medium_lookback)
+    df["hma_medium"] = hma_medium if hma_medium is not None else np.nan
 
-    kama_10 = ta.kama(df["Close"], length=10)
-    df["kama10"] = kama_10 if kama_10 is not None else np.nan
+    kama_short = ta.kama(df["Close"], length=config.short_lookback)
+    df["kama_short"] = kama_short if kama_short is not None else np.nan
 
     trix_result = ta.trix(df["Close"], length=15, signal=9)
     if trix_result is not None and not trix_result.empty:
@@ -742,32 +742,46 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         df["span_a"] = np.nan
         df["span_b"] = np.nan
 
-    df["linreg_slope20"] = _linear_regression_slope(df["Close"], 20)
-    df["linreg_mid20"] = _linear_regression_midline(df["Close"], 20)
-    df["linreg_upper20"] = df["linreg_mid20"] + 2 * df["std20"]
-    df["linreg_lower20"] = df["linreg_mid20"] - 2 * df["std20"]
+    std_med = df["std_medium"] if "std_medium" in df.columns else df["Close"].rolling(config.medium_lookback).std()
+    df["linreg_slope_medium"] = _linear_regression_slope(df["Close"], config.medium_lookback)
+    df["linreg_mid_medium"] = _linear_regression_midline(df["Close"], config.medium_lookback)
+    df["linreg_upper_medium"] = df["linreg_mid_medium"] + 2 * std_med
+    df["linreg_lower_medium"] = df["linreg_mid_medium"] - 2 * std_med
 
-    df["tma10"] = df["Close"].rolling(10).mean().rolling(10).mean()
+    df["tma_short"] = df["Close"].rolling(config.short_lookback).mean().rolling(config.short_lookback).mean()
 
-    df["high_5"] = df["High"].rolling(5).max()
-    df["low_5"] = df["Low"].rolling(5).min()
-    df["high_10"] = df["High"].rolling(10).max()
-    df["low_10"] = df["Low"].rolling(10).min()
-    df["high_20"] = df["High"].rolling(20).max()
-    df["low_20"] = df["Low"].rolling(20).min()
-    df["range_mid_10"] = (df["high_10"] + df["low_10"]) / 2.0
-    df["recent_high"] = df["High"].rolling(20).max().shift(1)
-    df["recent_low"] = df["Low"].rolling(20).min().shift(1)
-    df["recent_high_prev"] = df["recent_high"].shift(5)
-    df["recent_low_prev"] = df["recent_low"].shift(5)
-    df["prev_5_low"] = df["low_5"].shift(1)
-    df["prev_5_high"] = df["high_5"].shift(1)
-    df["prev_10_low"] = df["low_10"].shift(1)
-    df["prev_10_high"] = df["high_10"].shift(1)
-    df["prev_20_low"] = df["low_20"].shift(1)
-    df["prev_20_high"] = df["high_20"].shift(1)
-    df["lower_range_pos"] = df["low_10"] + (df["high_10"] - df["low_10"]) * 0.3
-    df["upper_range_pos"] = df["high_10"] - (df["high_10"] - df["low_10"]) * 0.3
+    # 5-tier High / Low
+    df["high_micro"] = df["High"].rolling(config.micro_lookback).max()
+    df["low_micro"] = df["Low"].rolling(config.micro_lookback).min()
+    df["high_short"] = df["High"].rolling(config.short_lookback).max()
+    df["low_short"] = df["Low"].rolling(config.short_lookback).min()
+    df["high_medium"] = df["High"].rolling(config.medium_lookback).max()
+    df["low_medium"] = df["Low"].rolling(config.medium_lookback).min()
+    df["high_long"] = df["High"].rolling(config.long_lookback).max()
+    df["low_long"] = df["Low"].rolling(config.long_lookback).min()
+    df["high_macro"] = df["High"].rolling(config.macro_lookback).max()
+    df["low_macro"] = df["Low"].rolling(config.macro_lookback).min()
+
+    df["range_mid_short"] = (df["high_short"] + df["low_short"]) / 2.0
+    df["recent_high"] = df["High"].rolling(config.medium_lookback).max().shift(1)
+    df["recent_low"] = df["Low"].rolling(config.medium_lookback).min().shift(1)
+    df["recent_high_prev"] = df["recent_high"].shift(config.micro_lookback)
+    df["recent_low_prev"] = df["recent_low"].shift(config.micro_lookback)
+
+    # 5-tier Prev High / Low
+    df["prev_micro_low"] = df["low_micro"].shift(1)
+    df["prev_micro_high"] = df["high_micro"].shift(1)
+    df["prev_short_low"] = df["low_short"].shift(1)
+    df["prev_short_high"] = df["high_short"].shift(1)
+    df["prev_medium_low"] = df["low_medium"].shift(1)
+    df["prev_medium_high"] = df["high_medium"].shift(1)
+    df["prev_long_low"] = df["low_long"].shift(1)
+    df["prev_long_high"] = df["high_long"].shift(1)
+    df["prev_macro_low"] = df["low_macro"].shift(1)
+    df["prev_macro_high"] = df["high_macro"].shift(1)
+
+    df["lower_range_pos"] = df["low_short"] + (df["high_short"] - df["low_short"]) * 0.3
+    df["upper_range_pos"] = df["high_short"] - (df["high_short"] - df["low_short"]) * 0.3
 
     df["ema_8"] = ta.ema(df["Close"], length=8)
     df["ema_20"] = ta.ema(df["Close"], length=20)
@@ -809,7 +823,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         df["psar_bull"] = False
         df["psar_bear"] = False
 
-    df["linear_regression_slope_5"] = ta.slope(df["Close"], length=5)
+    df["linear_regression_slope_micro"] = ta.slope(df["Close"], length=config.micro_lookback)
     df["linear_regression_slope_8"] = ta.slope(df["Close"], length=8)
 
     return df

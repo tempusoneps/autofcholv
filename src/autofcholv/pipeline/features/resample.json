@@ -29,21 +29,6 @@
         "name": "Previous Day Pivot",
         "comment": "day_pivot.shift(1)"
     },
-    "prev_trading_day_high": {
-        "type": "float",
-        "name": "Previous Trading Day High",
-        "comment": "Completed previous trading day's high"
-    },
-    "prev_trading_day_low": {
-        "type": "float",
-        "name": "Previous Trading Day Low",
-        "comment": "Completed previous trading day's low"
-    },
-    "prev_trading_day_close": {
-        "type": "float",
-        "name": "Previous Trading Day Close",
-        "comment": "Completed previous trading day's close"
-    },
     "prev_day_r1": {
         "type": "float",
         "name": "Previous Day R1",

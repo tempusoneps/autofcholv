@@ -4,10 +4,10 @@
         "name": "Volume Average",
         "comment": "Trung bình khối lượng n phiên"
     },
-    "volume_sma20": {
+    "volume_sma_medium": {
         "type": "float",
-        "name": "20-Bar Volume SMA",
-        "comment": "20-bar simple moving average of Volume"
+        "name": "Medium-Lookback Volume SMA",
+        "comment": "Medium lookback simple moving average of Volume"
     },
     "volume_zscore": {
         "type": "float",

@@ -32,9 +32,6 @@ The pipeline executes in the order listed below.
 | `prev_day_low` | float | day_low.shift(1) |
 | `prev_day_volume` | float | day_volume.shift(1) |
 | `prev_day_pivot` | float | day_pivot.shift(1) |
-| `prev_trading_day_high` | float | Completed previous trading day's high |
-| `prev_trading_day_low` | float | Completed previous trading day's low |
-| `prev_trading_day_close` | float | Completed previous trading day's close |
 | `prev_day_r1` | float | Pivot resistance R1 from completed previous trading day |
 | `prev_day_s1` | float | Pivot support S1 from completed previous trading day |
 | `prev_day_ema_bias_20` | float | Previous trading day close versus its 20-day EMA, encoded as 1, -1, or 0 |
@@ -78,8 +75,8 @@ The pipeline executes in the order listed below.
 | `body` | float | candlestick body length (include both negative & positive values) |
 | `height` | float | candlestick height = high - low |
 | `body_abs` | float | Absolute candlestick body length |
-| `body_abs_sma20` | float | 20-bar simple moving average of absolute body length |
-| `range_sma20` | float | 20-bar simple moving average of High minus Low |
+| `body_abs_sma_medium` | float | Medium lookback simple moving average of absolute body length |
+| `range_sma_medium` | float | Medium lookback simple moving average of High minus Low |
 | `upwick` | float | candlestick upper wick length = high - max(open, close) |
 | `lowwick` | float | candlestick lower wick length = min(open, close) - low |
 | `upwick_rate` | float | upper wick rate = upper wick / height |
@@ -108,20 +105,39 @@ The pipeline executes in the order listed below.
 |---|---|---|
 | `price_change` | float | One-bar difference of Close |
 | `price_change_lag1` | float | Previous value of price_change |
-| `return_5` | float | Close percent change over 5 bars |
-| `return_10` | float | Close percent change over 10 bars |
-| `sma20` | float | 20-bar simple moving average of Close |
-| `sma50` | float | 50-bar simple moving average of Close |
-| `std5` | float | 5-bar rolling standard deviation of Close |
-| `std10` | float | 10-bar rolling standard deviation of Close |
-| `std20` | float | 20-bar rolling standard deviation of Close |
-| `std50` | float | 50-bar rolling standard deviation of Close |
-| `close_min_10` | float | 10-bar rolling minimum of Close |
-| `close_max_10` | float | 10-bar rolling maximum of Close |
+| `return_micro` | float | Close percent change over micro lookback |
+| `return_short` | float | Close percent change over short lookback |
+| `return_medium` | float | Close percent change over medium lookback |
+| `return_long` | float | Close percent change over long lookback |
+| `return_macro` | float | Close percent change over macro lookback |
+| `sma_micro` | float | Micro lookback simple moving average of Close |
+| `sma_short` | float | Short lookback simple moving average of Close |
+| `sma_medium` | float | Medium lookback simple moving average of Close |
+| `sma_long` | float | Long lookback simple moving average of Close |
+| `sma_macro` | float | Macro lookback simple moving average of Close |
+| `std_micro` | float | Micro lookback rolling standard deviation of Close |
+| `std_short` | float | Short lookback rolling standard deviation of Close |
+| `std_medium` | float | Medium lookback rolling standard deviation of Close |
+| `std_long` | float | Long lookback rolling standard deviation of Close |
+| `std_macro` | float | Macro lookback rolling standard deviation of Close |
+| `close_min_micro` | float | Micro lookback rolling minimum of Close |
+| `close_min_short` | float | Short lookback rolling minimum of Close |
+| `close_min_medium` | float | Medium lookback rolling minimum of Close |
+| `close_min_long` | float | Long lookback rolling minimum of Close |
+| `close_min_macro` | float | Macro lookback rolling minimum of Close |
+| `close_max_micro` | float | Micro lookback rolling maximum of Close |
+| `close_max_short` | float | Short lookback rolling maximum of Close |
+| `close_max_medium` | float | Medium lookback rolling maximum of Close |
+| `close_max_long` | float | Long lookback rolling maximum of Close |
+| `close_max_macro` | float | Macro lookback rolling maximum of Close |
 | `ema_fast` | float | EMA fast = ta.ema(close, length=n) with n = FAST_TREND_LOOKBACK |
 | `ema_slow` | float | EMA slow = ta.ema(close, length=n) with n = SLOW_TREND_LOOKBACK |
-| `rsi` | float | RSI = ta.rsi(close, length=n) with n = MOMENTUM_LOOKBACK |
-| `rsi_slope` | float | df['rsi'].diff() |
+| `rsi_micro` | float | RSI = ta.rsi(close, length=n) with n = MICRO_LOOKBACK |
+| `rsi_short` | float | RSI = ta.rsi(close, length=n) with n = SHORT_LOOKBACK |
+| `rsi_medium` | float | RSI = ta.rsi(close, length=n) with n = MEDIUM_LOOKBACK |
+| `rsi_long` | float | RSI = ta.rsi(close, length=n) with n = LONG_LOOKBACK |
+| `rsi_macro` | float | RSI = ta.rsi(close, length=n) with n = MACRO_LOOKBACK |
+| `rsi_slope_medium` | float | df['rsi_medium'].diff() |
 | `tsi` | float | TSI = ta.tsi(close, length=n) with n = MOMENTUM_LOOKBACK |
 | `roc_close` | float | ROC = ta.roc(close, length=1) |
 | `close_zscore` | float | Z-score of Close = ta.zscore(close, length=n) with n = MOMENTUM_LOOKBACK |
@@ -283,16 +299,12 @@ The pipeline executes in the order listed below.
 | `amplitude` | float | amplitude = (High / Low) - 1.0 |
 | `stoch_rsi` | float | Stochastic RSI of Close |
 | `awesome_oscillator` | float | Awesome Oscillator (5-34) |
-| `roc10` | float | Rate of change over 10 periods |
+| `roc_short` | float | Rate of change over short lookback |
 | `ultimate_osc` | float | Ultimate Oscillator (7-14-28) |
 | `stochrsi_k` | float | StochRSI K line |
 | `stochrsi_d` | float | StochRSI D line |
-| `rsi_5` | float | Relative Strength Index over 5 periods |
-| `rsi_8` | float | Relative Strength Index over 8 periods |
-| `rsi_14` | float | Relative Strength Index over 14 periods |
-| `rsi_21` | float | Relative Strength Index over 21 periods |
 | `williams_r_14` | float | Williams %R over 14 periods |
-| `bb_percent_b_20_2` | float | Bollinger Band percent B with length 20 and 2 standard deviations |
+| `bb_percent_b_medium_2` | float | Bollinger Band percent B with medium lookback and 2 standard deviations |
 | `macd_hist_12_26_9` | float | MACD histogram with fast 12, slow 26, signal 9 |
 
 ---
@@ -449,8 +461,8 @@ The pipeline executes in the order listed below.
 | `turtle` | float | Source turtle-channel breakout distance normalized by channel width |
 | `vidya` | float | Close relative to the source VIDYA baseline |
 | `t3` | float | Close divided by Tillson T3 minus 1 |
-| `hma20` | float | Hull Moving Average over 20 periods |
-| `kama10` | float | Kaufman Adaptive Moving Average over 10 periods |
+| `hma_medium` | float | Hull Moving Average over medium lookback |
+| `kama_short` | float | Kaufman Adaptive Moving Average over short lookback |
 | `trix15` | float | TRIX indicator over 15 periods |
 | `trix15_signal` | float | TRIX 15 signal line |
 | `supertrend_dir` | float | SuperTrend direction component |
@@ -458,30 +470,38 @@ The pipeline executes in the order listed below.
 | `kijun` | float | Ichimoku Kijun-sen component |
 | `span_a` | float | Ichimoku Senkou Span A component |
 | `span_b` | float | Ichimoku Senkou Span B component |
-| `linreg_slope20` | float | Linear regression slope over 20 periods |
-| `linreg_mid20` | float | Linear regression midline over 20 periods |
-| `linreg_upper20` | float | linreg_mid20 plus two times std20 |
-| `linreg_lower20` | float | linreg_mid20 minus two times std20 |
-| `tma10` | float | Triangular Moving Average over 10 periods |
-| `high_5` | float | 5-bar rolling maximum of High |
-| `low_5` | float | 5-bar rolling minimum of Low |
-| `high_10` | float | 10-bar rolling maximum of High |
-| `low_10` | float | 10-bar rolling minimum of Low |
-| `high_20` | float | 20-bar rolling maximum of High |
-| `low_20` | float | 20-bar rolling minimum of Low |
-| `range_mid_10` | float | Midpoint between high_10 and low_10 |
-| `recent_high` | float | 20-bar rolling High shifted by one bar |
-| `recent_low` | float | 20-bar rolling Low shifted by one bar |
-| `recent_high_prev` | float | recent_high shifted by 5 bars |
-| `recent_low_prev` | float | recent_low shifted by 5 bars |
-| `prev_5_low` | float | low_5 shifted by one bar |
-| `prev_5_high` | float | high_5 shifted by one bar |
-| `prev_10_low` | float | low_10 shifted by one bar |
-| `prev_10_high` | float | high_10 shifted by one bar |
-| `prev_20_low` | float | low_20 shifted by one bar |
-| `prev_20_high` | float | high_20 shifted by one bar |
-| `lower_range_pos` | float | 30 percent level above low_10 within the 10-bar high-low range |
-| `upper_range_pos` | float | 30 percent level below high_10 within the 10-bar high-low range |
+| `linreg_slope_medium` | float | Linear regression slope over medium lookback |
+| `linreg_mid_medium` | float | Linear regression midline over medium lookback |
+| `linreg_upper_medium` | float | linreg_mid_medium plus two times std_medium |
+| `linreg_lower_medium` | float | linreg_mid_medium minus two times std_medium |
+| `tma_short` | float | Triangular Moving Average over short lookback |
+| `high_micro` | float | Micro lookback rolling maximum of High |
+| `low_micro` | float | Micro lookback rolling minimum of Low |
+| `high_short` | float | Short lookback rolling maximum of High |
+| `low_short` | float | Short lookback rolling minimum of Low |
+| `high_medium` | float | Medium lookback rolling maximum of High |
+| `low_medium` | float | Medium lookback rolling minimum of Low |
+| `high_long` | float | Long lookback rolling maximum of High |
+| `low_long` | float | Long lookback rolling minimum of Low |
+| `high_macro` | float | Macro lookback rolling maximum of High |
+| `low_macro` | float | Macro lookback rolling minimum of Low |
+| `range_mid_short` | float | Midpoint between high_short and low_short |
+| `recent_high` | float | Medium lookback rolling High shifted by one bar |
+| `recent_low` | float | Medium lookback rolling Low shifted by one bar |
+| `recent_high_prev` | float | recent_high shifted by micro lookback |
+| `recent_low_prev` | float | recent_low shifted by micro lookback |
+| `prev_micro_low` | float | low_micro shifted by one bar |
+| `prev_micro_high` | float | high_micro shifted by one bar |
+| `prev_short_low` | float | low_short shifted by one bar |
+| `prev_short_high` | float | high_short shifted by one bar |
+| `prev_medium_low` | float | low_medium shifted by one bar |
+| `prev_medium_high` | float | high_medium shifted by one bar |
+| `prev_long_low` | float | low_long shifted by one bar |
+| `prev_long_high` | float | high_long shifted by one bar |
+| `prev_macro_low` | float | low_macro shifted by one bar |
+| `prev_macro_high` | float | high_macro shifted by one bar |
+| `lower_range_pos` | float | 30 percent level above low_short within the short high-low range |
+| `upper_range_pos` | float | 30 percent level below high_short within the short high-low range |
 | `ema_8` | float | Exponential moving average of Close over 8 periods |
 | `ema_20` | float | Exponential moving average of Close over 20 periods |
 | `ema_21` | float | Exponential moving average of Close over 21 periods |
@@ -495,7 +515,7 @@ The pipeline executes in the order listed below.
 | `adx_42` | float | Average Directional Index over 42 periods |
 | `psar_bull` | bool | True when Parabolic SAR indicates a bullish leg |
 | `psar_bear` | bool | True when Parabolic SAR indicates a bearish leg |
-| `linear_regression_slope_5` | float | Linear regression slope of Close over 5 periods |
+| `linear_regression_slope_micro` | float | Linear regression slope of Close over micro lookback |
 | `linear_regression_slope_8` | float | Linear regression slope of Close over 8 periods |
 
 ---
@@ -527,14 +547,22 @@ The pipeline executes in the order listed below.
 | `fibonacci_band_width` | float | Fibonacci ATR channel width normalized by rolling close mean |
 | `fibonacci_band_position` | float | Close position inside first Fibonacci ATR channel |
 | `donchian_mid_signal` | float | Close minus Donchian channel midpoint |
-| `atr` | float | atr = ta.atr(high, low, close, length=n) with n = VOLATILITY_LOOKBACK |
-| `atr_pct` | float | ATR divided by close |
+| `atr_micro` | float | atr = ta.atr(high, low, close, length=n) with n = MICRO_LOOKBACK |
+| `atr_short` | float | atr = ta.atr(high, low, close, length=n) with n = SHORT_LOOKBACK |
+| `atr_medium` | float | atr = ta.atr(high, low, close, length=n) with n = MEDIUM_LOOKBACK |
+| `atr_long` | float | atr = ta.atr(high, low, close, length=n) with n = LONG_LOOKBACK |
+| `atr_macro` | float | atr = ta.atr(high, low, close, length=n) with n = MACRO_LOOKBACK |
+| `atr_pct_micro` | float | Micro ATR divided by close |
+| `atr_pct_short` | float | Short ATR divided by close |
+| `atr_pct_medium` | float | Medium ATR divided by close |
+| `atr_pct_long` | float | Long ATR divided by close |
+| `atr_pct_macro` | float | Macro ATR divided by close |
 | `rwi_high` | float | RWI high component based on upward range |
 | `rwi_low` | float | RWI low component based on downward range |
 | `bbw_signal` | float | Bollinger bandwidth change times n-period momentum and RSI-like close pressure |
 | `kc_signal` | float | (Close - kc_middle + 2 * kc_atr) / (4 * kc_atr + epsilon) |
-| `atr_upper` | float | ATR-based upper channel ratio normalized by moving average |
-| `atr_lower` | float | ATR-based lower channel ratio normalized by moving average |
+| `atr_upper_medium` | float | ATR-based upper channel ratio normalized by moving average |
+| `atr_lower_medium` | float | ATR-based lower channel ratio normalized by moving average |
 | `fb_upper_signal` | float | Scaled signal for 1.618 Fibonacci upper band distance |
 | `pac_width_signal` | float | PAC width normalized by its rolling mean minus 1 |
 | `volume_std` | float | Rolling standard deviation of Volume |
@@ -589,23 +617,22 @@ The pipeline executes in the order listed below.
 | `fb_upper_signal_v3` | float | Scaled signal for 4.236 Fibonacci upper band distance |
 | `bb_width` | float | Standard Bollinger Band Width used for signals |
 | `bb_width_q20` | float | 100-bar rolling 20th percentile of bb_width |
-| `bb_width_sma20` | float | 20-bar simple moving average of bb_width |
-| `atr_sma20` | float | 20-bar simple moving average of atr |
-| `kc_mid` | float | Keltner Channel mid line (EMA 20) |
-| `kc_upper` | float | Keltner Channel upper band (mid + 2 * ATR) |
-| `kc_lower` | float | Keltner Channel lower band (mid - 2 * ATR) |
+| `bb_width_sma_medium` | float | Medium lookback simple moving average of bb_width |
+| `atr_sma_medium` | float | Medium lookback simple moving average of atr_medium |
+| `kc_mid` | float | Keltner Channel mid line (EMA medium lookback) |
+| `kc_upper` | float | Keltner Channel upper band (mid + 2 * atr_medium) |
+| `kc_lower` | float | Keltner Channel lower band (mid - 2 * atr_medium) |
 | `chop14` | float | Choppiness Index over 14 periods |
-| `hurst_proxy` | float | Hurst Exponent Proxy over 20 periods |
-| `atr_14` | float | Average True Range over 14 periods |
-| `body_atr_ratio` | float | Close minus Open divided by ATR 14 |
-| `keltner_upper_20_2` | float | Keltner upper band with length 20 and scalar 2 |
-| `keltner_lower_20_2` | float | Keltner lower band with length 20 and scalar 2 |
-| `donchian_high_10_shift1` | float | 10-bar rolling High maximum shifted one bar |
-| `donchian_low_10_shift1` | float | 10-bar rolling Low minimum shifted one bar |
+| `hurst_proxy` | float | Hurst Exponent Proxy over medium lookback |
+| `body_atr_ratio` | float | Close minus Open divided by atr_medium |
+| `keltner_upper_medium_2` | float | Keltner upper band with medium lookback and scalar 2 |
+| `keltner_lower_medium_2` | float | Keltner lower band with medium lookback and scalar 2 |
+| `donchian_high_short_shift1` | float | Short lookback rolling High maximum shifted one bar |
+| `donchian_low_short_shift1` | float | Short lookback rolling Low minimum shifted one bar |
 | `donchian_high_30_shift1` | float | 30-bar rolling High maximum shifted one bar |
 | `donchian_low_30_shift1` | float | 30-bar rolling Low minimum shifted one bar |
-| `close_donchian_high_20_shift1` | float | 20-bar rolling Close maximum shifted one bar |
-| `close_donchian_low_20_shift1` | float | 20-bar rolling Close minimum shifted one bar |
+| `close_donchian_high_medium_shift1` | float | Medium lookback rolling Close maximum shifted one bar |
+| `close_donchian_low_medium_shift1` | float | Medium lookback rolling Close minimum shifted one bar |
 
 ---
 
@@ -614,7 +641,7 @@ The pipeline executes in the order listed below.
 | Column | Type | Description |
 |---|---|---|
 | `volume_avg` | float | Trung bình khối lượng n phiên |
-| `volume_sma20` | float | 20-bar simple moving average of Volume |
+| `volume_sma_medium` | float | Medium lookback simple moving average of Volume |
 | `volume_zscore` | float | Z-score khối lượng |
 | `roc_volume` | float | Volume / Volume.shift(n) - 1 |
 | `quote_volume_sum` | float | Rolling sum of Close * Volume quote-volume proxy |
@@ -727,16 +754,16 @@ The pipeline executes in the order listed below.
 | `upwick_rate_lag1` | float | Tỷ lệ bóng trên phiên trước |
 | `clv_lag1` | float | Close Location Value phiên trước |
 | `ibs_lag1` | float | Internal Bar Strength phiên trước |
-| `rsi_lag1` | float | RSI phiên trước |
-| `rsi_delta` | float | Độ dốc/Gia tốc RSI (rsi - rsi_lag1) |
+| `rsi_medium_lag1` | float | RSI medium phiên trước |
+| `rsi_medium_delta` | float | Độ dốc/Gia tốc RSI medium (rsi_medium - rsi_medium_lag1) |
 | `macd_hist_lag1` | float | MACD Histogram phiên trước |
 | `macd_hist_delta` | float | Độ dốc/Gia tốc MACD Histogram (macd_hist - macd_hist_lag1) |
 | `kdj_j_lag1` | float | KDJ J phiên trước |
 | `ema_fast_lag1` | float | EMA Fast phiên trước |
 | `ema_slow_lag1` | float | EMA Slow phiên trước |
 | `vwap_lag1` | float | VWAP phiên trước |
-| `atr_lag1` | float | ATR phiên trước |
-| `volatility_expansion_ratio` | float | Tỷ lệ bùng nổ biến động thanh nến hiện tại so với ATR phiên trước |
+| `atr_medium_lag1` | float | ATR medium phiên trước |
+| `volatility_expansion_ratio` | float | Tỷ lệ bùng nổ biến động thanh nến hiện tại so với ATR medium phiên trước |
 | `bbw_lag1` | float | Độ rộng băng Bollinger phiên trước |
 | `volume_avg_lag1` | float | Khối lượng trung bình phiên trước |
 | `volume_ratio_lag1` | float | Tỷ lệ khối lượng phiên hiện tại so với phiên trước |
@@ -799,9 +826,9 @@ The pipeline executes in the order listed below.
 | `equal_low` | bool | Low is approximately equal to low_lag1 within 0.1 percent of Close |
 | `equal_high` | bool | High is approximately equal to high_lag1 within 0.1 percent of Close |
 | `inside_bar_prev` | bool | Previous bar high-low range is inside the bar before it |
-| `is_max_4` | bool | High is higher than the max High of the previous 3 bars |
-| `is_max_10` | bool | True if High is greater than maximum High of previous 9 bars |
-| `is_min_10` | bool | True if Low is less than minimum Low of previous 9 bars |
+| `is_max_micro` | bool | High is higher than the max High of the previous micro lookback bars |
+| `is_max_short` | bool | True if High is greater than maximum High of previous short lookback bars |
+| `is_min_short` | bool | True if Low is less than minimum Low of previous short lookback bars |
 | `mfi_group` | str | compare(MFI, prev_MFI) = Increase \| Not Increase |
 | `higher_high_lower_vol` | bool | High > high_lag1 AND Volume < volume_lag1 |
 | `lower_low_lower_vol` | bool | Low < low_lag1 AND Volume < volume_lag1 |
@@ -824,7 +851,7 @@ The pipeline executes in the order listed below.
 |---|---|---|
 | `couple_cs_signal` | str | Signal of couple candlestick pattern (Both Green or Both Red) |
 | `ema_cross_signal` | str | Signal of EMA cross pattern (cross up or cross down) |
-| `min_max_10_signal` | str | Signal of min max 10 Close (min or max) |
+| `min_max_short_signal` | str | Signal of min max short lookback Close (min or max) |
 | `macd_histogram_reversal_signal` | str | Tín hiệu sớm về sự suy yếu của lực đẩy |
 | `bb_rejection_signal` | str | Signal of BB rejection pattern |
 | `bb_squeeze_signal` | str | Tín hiệu dự báo bùng nổ biến động khi giá đi ngang quá lâu |

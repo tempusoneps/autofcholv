@@ -158,6 +158,7 @@ def test_extract_features_resample_columns():
     expected = [
         "prev_day_open", "prev_day_high", "prev_day_low", "prev_day_close",
         "prev_day_volume", "prev_day_pivot",
+        "prev_day_r1", "prev_day_s1", "prev_day_ema_bias_20",
         "prev_15m_open", "prev_15m_high", "prev_15m_low", "prev_15m_close",
         "prev_15m_volume", "prev_15m_pivot", "prev_15m_r1", "prev_15m_s1",
         "prev_15m_return", "prev_15m_ema_bias_20",
@@ -227,7 +228,7 @@ def test_extract_features_candlestick_columns():
 def test_extract_features_close_columns():
     result = extract_features(make_ohlcv(300))
     expected = [
-        "ema_fast", "ema_slow", "rsi", "rsi_slope", "tsi", "roc_close",
+        "ema_fast", "ema_slow", "rsi_medium", "rsi_slope_medium", "tsi", "roc_close",
         "close_zscore", "efficiency_ratio", "macd", "macd_line", "macd_hist", "ppo",
         "ppo_line", "ppo_hist", "ulcer_index", "cmo", "roc_skew", "roc_kurt",
         "mb", "std", "ub", "lb", "cci", "kdj_k",
@@ -285,7 +286,7 @@ def test_extract_features_volatility_columns():
         "apz_width", "pac_width_bias", "pac_position", "env_position",
         "realized_volatility", "realized_volatility_zscore",
         "rwi", "mssi", "vix_bw",
-        "adaptive_bollinger_width", "vwap_bbw_efficiency", "chaikin_volatility", "keltner_width", "keltner_upper_signal", "keltner_lower_signal", "env_upper_signal", "env_lower_signal", "fibonacci_band_width", "fibonacci_band_position", "donchian_mid_signal", "bbw_signal", "kc_signal", "atr_upper", "atr_lower", "fb_upper_signal", "pac_width_signal", "volume_std", "grid", "lcsd",
+        "adaptive_bollinger_width", "vwap_bbw_efficiency", "chaikin_volatility", "keltner_width", "keltner_upper_signal", "keltner_lower_signal", "env_upper_signal", "env_lower_signal", "fibonacci_band_width", "fibonacci_band_position", "donchian_mid_signal", "bbw_signal", "kc_signal", "atr_upper_medium", "atr_lower_medium", "fb_upper_signal", "pac_width_signal", "volume_std", "grid", "lcsd",
     ]
     for col in expected:
         assert col in result.columns, f"Missing volatility column: '{col}'"
@@ -338,9 +339,9 @@ def test_extract_features_lag_columns():
         "open_lag1", "high_lag1", "low_lag1", "close_lag1",
         "volume_lag1", "body_lag1", "upwick_lag1", "lowwick_lag1",
         "lowwick_rate_lag1", "upwick_rate_lag1", "clv_lag1", "ibs_lag1",
-        "rsi_lag1", "rsi_delta", "macd_hist_lag1", "macd_hist_delta",
+        "rsi_medium_lag1", "rsi_medium_delta", "macd_hist_lag1", "macd_hist_delta",
         "kdj_j_lag1", "ema_fast_lag1", "ema_slow_lag1", "vwap_lag1",
-        "atr_lag1", "volatility_expansion_ratio", "bbw_lag1",
+        "atr_medium_lag1", "volatility_expansion_ratio", "bbw_lag1",
         "volume_avg_lag1", "volume_ratio_lag1",
     ]
     for col in expected:
@@ -352,8 +353,8 @@ def test_extract_features_mix_columns():
     result = extract_features(make_ohlcv(300))
     expected = [
         "ibs_n", "is_fvg",
-        "ulti_osci", "vwap", "atr", "adx",
-        "atr_pct",
+        "ulti_osci", "vwap", "atr_medium", "adx",
+        "atr_pct_medium",
         "dm",
         "direction", "streak",
         "custom_001", "custom_002",
@@ -390,17 +391,21 @@ def test_extract_features_signal_columns():
 
 def test_extract_features_signal_context_helper_columns():
     result = extract_features(make_ohlcv(300))
-    expected = [ "body_abs", "body_abs_sma20", "range_sma20", "candle_range_ratio",
+    expected = [ "body_abs", "body_abs_sma_medium", "range_sma_medium", "candle_range_ratio",
         "midpoint", "close_vs_mid",
-        "price_change", "price_change_lag1", "return_5", "return_10",
-        "sma20", "sma50", "std5", "std10", "std20", "std50",
-        "close_min_10", "close_max_10",
-        "bb_width_q20", "bb_width_sma20", "atr_sma20",
-        "high_5", "low_5", "high_10", "low_10", "high_20", "low_20",
-        "range_mid_10", "recent_high", "recent_low", "recent_high_prev", "recent_low_prev",
-        "prev_5_low", "prev_5_high", "prev_10_low", "prev_10_high", "prev_20_low", "prev_20_high",
-        "lower_range_pos", "upper_range_pos", "linreg_upper20", "linreg_lower20",
-        "volume_sma20", "equal_low", "equal_high", "inside_bar_prev",
+        "price_change", "price_change_lag1",
+        "return_micro", "return_short", "return_medium", "return_long", "return_macro",
+        "sma_micro", "sma_short", "sma_medium", "sma_long", "sma_macro",
+        "std_micro", "std_short", "std_medium", "std_long", "std_macro",
+        "close_min_micro", "close_min_short", "close_min_medium", "close_min_long", "close_min_macro",
+        "close_max_micro", "close_max_short", "close_max_medium", "close_max_long", "close_max_macro",
+        "rsi_micro", "rsi_short", "rsi_medium", "rsi_long", "rsi_macro",
+        "bb_width_q20", "bb_width_sma_medium", "atr_sma_medium",
+        "high_micro", "low_micro", "high_short", "low_short", "high_medium", "low_medium",
+        "range_mid_short", "recent_high", "recent_low", "recent_high_prev", "recent_low_prev",
+        "prev_micro_low", "prev_micro_high", "prev_short_low", "prev_short_high", "prev_medium_low", "prev_medium_high",
+        "lower_range_pos", "upper_range_pos", "linreg_upper_medium", "linreg_lower_medium",
+        "volume_sma_medium", "equal_low", "equal_high", "inside_bar_prev",
     ]
     for col in expected:
         assert col in result.columns, f"Missing moved signal helper column: '{col}'"
@@ -423,8 +428,8 @@ def test_extract_features_direction_values():
 
 def test_extract_features_signal_values():
     result = extract_features(make_ohlcv(300))
-    assert set(result["couple_cs_signal"].unique()).issubset({"None", "Buy", "Sell"})
-    assert set(result["ema_cross_signal"].unique()).issubset({"None", "Buy", "Sell"})
+    assert set(result["couple_cs_signal"].unique()).issubset({1, -1, 0})
+    assert set(result["ema_cross_signal"].unique()).issubset({1, -1, 0})
 
 
 def test_extract_features_candlestick_non_negative():
@@ -491,21 +496,6 @@ def test_load_config_from_json_file():
         os.unlink(json_path)
 
 
-def test_load_config_from_json_file_supports_list_values():
-    custom = dict(DEFAULT_CONFIG)
-    custom["MULTI_RSI"] = [14, 50, 42]
-
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
-        json.dump(custom, f)
-        json_path = f.name
-
-    try:
-        config = load_config(json_path)
-        assert config.multi_rsi == [14, 50, 42]
-    finally:
-        os.unlink(json_path)
-
-
 def test_load_config_from_json_file_coerces_numeric_strings():
     custom = dict(DEFAULT_CONFIG)
     custom["ONE_DAY_BARS"] = "49"
@@ -522,14 +512,16 @@ def test_load_config_from_json_file_coerces_numeric_strings():
         os.unlink(json_path)
 
 
-def test_load_config_from_yaml_file_supports_list_values():
+def test_load_config_from_yaml_file():
     with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
-        f.write("MULTI_RSI:\n  - 14\n  - 50\n  - 42\n")
+        f.write("SELECTED_TIME_FRAME: 15m\nONE_DAY_BARS: 49\nMICRO_LOOKBACK: 5\n")
         yaml_path = f.name
 
     try:
         config = load_config(yaml_path)
-        assert config.multi_rsi == [14, 50, 42]
+        assert config.selected_time_frame == "15m"
+        assert config.one_day_bars == 49
+        assert config.micro_lookback == 5
     finally:
         os.unlink(yaml_path)
 
@@ -555,12 +547,22 @@ def test_load_config_does_not_read_environment_variables():
         os.environ.pop("SELECTED_TIME_FRAME", None)
 
 
+def test_load_config_loads_local_default_config_file_when_present(tmp_path, monkeypatch):
+    custom_default = dict(DEFAULT_CONFIG)
+    custom_default["MOMENTUM_LOOKBACK"] = 48
+    config_file = tmp_path / "config.default.json"
+    config_file.write_text(json.dumps(custom_default), encoding="utf-8")
+
+    monkeypatch.chdir(tmp_path)
+    config = load_config()
+    assert config.momentum_lookback == 48
+
 
 def test_extract_features_todo_group_columns():
     df = make_ohlcv(300)
     result = extract_features(df)
     new_cols = [
-        "is_max_4", "upper_wick_group", "mfi_group", "higher_high_lower_vol",
+        "is_max_micro", "upper_wick_group", "mfi_group", "higher_high_lower_vol",
         "volume_higher_avg", "volume_vs_prev_vol", "volume_avg_group",
         "close_price_group", "open_price_group", "high_position",
         "bb_rejection", "lower_shadow_group", "ibs_vol_group",
@@ -570,7 +572,7 @@ def test_extract_features_todo_group_columns():
         assert col in result.columns, f"Missing expected column: '{col}'"
 
     # Specific assertion checks
-    assert result["is_max_4"].dtype == bool
+    assert result["is_max_micro"].dtype == bool
     assert result["higher_high_lower_vol"].dtype == bool
     assert result["bb_rejection"].dtype == bool
     assert result["lower_low_lower_vol"].dtype == bool
@@ -590,15 +592,15 @@ def test_group_features_module_direct_extraction():
     df['lowwick'] = df[['Open', 'Close']].min(axis=1) - df['Low']
     df['ibs'] = (df['Close'] - df['Low']) / (df['High'] - df['Low'] + 1e-9)
     df['ibs_lag1'] = df['ibs'].shift(1)
-    df['rsi'] = 50.0
-    df['rsi_lag1'] = 50.0
+    df['rsi_medium'] = 50.0
+    df['rsi_medium_lag1'] = 50.0
     df['volume_avg'] = df['Volume'].rolling(10, min_periods=1).mean()
     df['ub'] = df['Close'] * 1.02
     df['lb'] = df['Close'] * 0.98
 
     res = group_features.extract_features(df, Config())
     new_cols = [
-        "is_max_4", "upper_wick_group", "mfi_group", "higher_high_lower_vol",
+        "is_max_micro", "upper_wick_group", "mfi_group", "higher_high_lower_vol",
         "volume_higher_avg", "volume_vs_prev_vol", "volume_avg_group",
         "close_price_group", "open_price_group", "high_position",
         "bb_rejection", "lower_shadow_group", "ibs_vol_group",
