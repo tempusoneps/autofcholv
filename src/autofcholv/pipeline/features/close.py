@@ -348,6 +348,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     pfe_direction = df["Close"].pct_change(momentum_n - 1)
     df["pfe"] = pfe_raw * pfe_direction
 
+    df = df.copy()
+
     high_ma = df["High"].rolling(fast_n, min_periods=1).mean()
     df["high_ma_bias"] = (df["High"] - high_ma) / (high_ma + epsilon)
 
@@ -605,9 +607,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     mtm_v12 = mtm_v12 * taker_buy_quote_asset_volume / (taker_buy_quote_mean + epsilon)
     df["mtmmean_v12"] = mtm_v12.rolling(window=momentum_n, min_periods=1).mean()
 
-
-
-
+    df = df.copy()
 
     close_dif = df["Close"].diff()
     up = pd.Series(np.where(close_dif > 0, close_dif, 0.0), index=df.index)
@@ -847,6 +847,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     rv_plus = pd.Series(rv_pos, index=df.index).pow(2).rolling(momentum_n, min_periods=1).sum()
     rv_minus = pd.Series(rv_neg, index=df.index).pow(2).rolling(momentum_n, min_periods=1).sum()
     df["rsj"] = (rv_plus - rv_minus) / (rv + epsilon)
+
+    df = df.copy()
 
     mtm = df["Close"] / df["Close"].shift(momentum_n) - 1.0
     df["mtm_max"] = mtm - mtm.rolling(window=momentum_n, min_periods=1).max().shift(1)

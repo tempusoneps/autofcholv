@@ -35,6 +35,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     volatility_n = config.volatility_lookback
     one_day_bars = config.one_day_bars
 
+    df = df.copy()
+
     rolling_low  = df["Low"].rolling(ibs_n).min()
     rolling_high = df["High"].rolling(ibs_n).max()
     denom        = rolling_high - rolling_low
