@@ -87,6 +87,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     """
     trend_n = config.fast_trend_lookback
 
+    df = df.copy()
+
     ema_1 = df["Close"].ewm(span=trend_n, adjust=False).mean()
     ema_2 = ema_1.ewm(span=trend_n, adjust=False).mean()
     ema_3 = ema_2.ewm(span=trend_n, adjust=False).mean()
@@ -139,6 +141,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["aroon_up"] = aroon_up
     df["aroon_down"] = aroon_down
     df["aroon_osc"] = aroon_up - aroon_down
+
+    df = df.copy()
 
     prev_close = df["Close"].shift(1)
     true_range = pd.concat(
@@ -252,6 +256,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["turtle_breakout"] = turtle_distance / (turtle_width + EPS)
     df["turtle_distance"] = turtle_distance
 
+    df = df.copy()
+
 
     ma_base = df["Close"].rolling(trend_n, min_periods=1).mean()
     ma_double = ma_base.rolling(trend_n, min_periods=1).mean()
@@ -301,6 +307,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     reg_v3_line = df["Close"].rolling(trend_n, min_periods=trend_n).apply(_rolling_regression_last, raw=True)
     df["reg_v3"] = df["Close"] / (reg_v3_line + EPS) - 1.0
+
+    df = df.copy()
 
     df["diff_ema"] = diff_ema
     df["diff_ema_ratio"] = diff_ema / (diff_ema.ewm(span=trend_n, adjust=False).mean() + EPS) - 1.0
@@ -503,6 +511,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     arron_raw = (high_len - low_len) * 100.0 / trend_n
     df["arron"] = _scale_01(pd.Series(arron_raw, index=df.index), trend_n)
 
+    df = df.copy()
+
     ma = df["Close"].rolling(trend_n, min_periods=1).mean()
     df["ma"] = _scale_01(ma, trend_n)
 
@@ -670,6 +680,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     tema2_ema3 = tema2_ema2.ewm(span=trend_n, adjust=False).mean()
     tema2_val = 3.0 * tema2_ema1 - 3.0 * tema2_ema2 + tema2_ema3
     df["tema_v2"] = 100.0 * (df["Close"] - tema2_val) / (tema2_val + EPS)
+
+    df = df.copy()
 
     tma_ma1 = df["Close"].rolling(trend_n, min_periods=1).mean()
     tma_ma2 = tma_ma1.rolling(trend_n, min_periods=1).mean()
