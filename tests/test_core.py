@@ -538,6 +538,132 @@ def test_load_config_env_file_is_not_supported():
         os.unlink(env_path)
 
 
+def test_load_config_classic_indicators():
+    config = load_config()
+    assert hasattr(config, "classic_indicators")
+    assert config.classic_indicators["RSI"] == 14
+    assert config.classic_indicators["MACD"] == [12, 26, 9]
+
+    custom = dict(DEFAULT_CONFIG)
+    custom["CLASSIC_INDICATORS"] = {"RSI": 10, "MACD": [10, 20, 5]}
+
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+        json.dump(custom, f)
+        json_path = f.name
+
+    try:
+        cfg = load_config(json_path)
+        assert cfg.classic_indicators["RSI"] == 10
+        assert cfg.classic_indicators["MACD"] == [10, 20, 5]
+    finally:
+        os.unlink(json_path)
+
+
+def test_classic_indicators_custom_params_used():
+    cfg_custom = Config(
+        classic_indicators={
+            "RSI": 14,
+            "STOCHRSI": 14,
+            "MACD": [5, 10, 3],
+            "PPO": [5, 10, 3],
+            "WILLIAMS_R": 10,
+            "AO": [3, 10],
+            "UO": [5, 10, 20],
+            "MFI": 10,
+            "SUPERTREND": [5, 2.0],
+            "TRIX": [10, 5],
+        }
+    )
+    from autofcholv.pipeline.features import close as close_features
+    from autofcholv.pipeline.features import trend as trend_features
+    from autofcholv.pipeline.features import volume as volume_features
+
+    df = make_ohlcv(60)
+    df_close = close_features.extract_features(df, cfg_custom)
+    df_trend = trend_features.extract_features(df, cfg_custom)
+    df_volume = volume_features.extract_features(df, cfg_custom)
+
+    assert "macd" in df_close.columns
+    assert "trix15" in df_trend.columns
+    assert "mfi14" in df_volume.columns
+
+
+def test_5tier_and_session_bars_config_propagation():
+    cfg = Config(
+        micro_lookback=4,
+        short_lookback=8,
+        medium_lookback=16,
+        macro_lookback=80,
+        morning_bars=25,
+        one_hour_bars=10,
+    )
+    from autofcholv.pipeline.features import volatility as vol_features
+    from autofcholv.pipeline.features import mix as mix_features
+    from autofcholv.pipeline.features import resample as resample_features
+    from autofcholv.pipeline.features import trend as trend_features
+
+    df = make_ohlcv(120)
+    df["ub"] = df["Close"] * 1.02
+    df["lb"] = df["Close"] * 0.98
+    df["mb"] = df["Close"]
+    df["atr_medium"] = 1.0
+    df["low_short"] = df["Low"]
+    df["high_short"] = df["High"]
+    df["low_micro"] = df["Low"]
+    df["high_micro"] = df["High"]
+    df["low_medium"] = df["Low"]
+    df["high_medium"] = df["High"]
+    df["low_long"] = df["Low"]
+    df["high_long"] = df["High"]
+    df["low_macro"] = df["Low"]
+    df["high_macro"] = df["High"]
+    df["session_open"] = df["Open"].iloc[0]
+    df["roc_close"] = df["Close"].pct_change()
+    df["streak"] = 1
+    df["body_lag1"] = df["Close"].shift(1) - df["Open"].shift(1)
+    df["open_lag1"] = df["Open"].shift(1)
+    df["close_lag1"] = df["Close"].shift(1)
+    df["high_lag1"] = df["High"].shift(1)
+    df["low_lag1"] = df["Low"].shift(1)
+    df["volume_lag1"] = df["Volume"].shift(1)
+    df["ibs"] = (df["Close"] - df["Low"]) / (df["High"] - df["Low"] + 1e-9)
+    df["ibs_lag1"] = df["ibs"].shift(1)
+    df["vbr"] = 1.0
+    df["body"] = df["Close"] - df["Open"]
+
+    df_vol = vol_features.extract_features(df, cfg)
+    df_mix = mix_features.extract_features(df, cfg)
+    df_resample = resample_features.extract_features(df, cfg)
+    df_trend = trend_features.extract_features(df, cfg)
+
+    assert "bb_width_q20" in df_vol.columns
+    assert "donchian_high_30_shift1" in df_vol.columns
+    assert "persist_short_12_shift1" in df_mix.columns
+    assert "connors_rsi" in df_mix.columns
+    assert "prev_day_ema_bias_20" in df_resample.columns
+    assert "ema_20" in df_trend.columns
+
+
+def test_dynamic_ema_and_classic_trend_lookbacks():
+    cfg = Config(
+        ema_windows=[9, 13, 34],
+        classic_indicators={"ADX": [10, 30], "SLOPE": 12},
+    )
+    from autofcholv.pipeline.features import trend as trend_features
+    df = make_ohlcv(50)
+    df_trend = trend_features.extract_features(df, cfg)
+
+    assert "ema_9" in df_trend.columns
+    assert "ema_13" in df_trend.columns
+    assert "ema_34" in df_trend.columns
+    assert "adx_14" in df_trend.columns
+    assert "linear_regression_slope_8" in df_trend.columns
+
+
+
+
+
+
 def test_load_config_does_not_read_environment_variables():
     os.environ["SELECTED_TIME_FRAME"] = "1h"
     try:

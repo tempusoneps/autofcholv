@@ -1,10 +1,11 @@
 import numpy as np
 import pandas as pd
 
-from autofcholv.config.config import Config
+from autofcholv.config.config import Config, ensure_config
 
 
-def get_1D_data(df: pd.DataFrame) -> pd.DataFrame:
+def get_1D_data(df: pd.DataFrame, config: Config | None = None) -> pd.DataFrame:
+    config = ensure_config(config)
     tmp_data = df.copy()
     tmp_data["day_high"] = tmp_data["High"]
     tmp_data["day_low"] = tmp_data["Low"]
@@ -37,7 +38,7 @@ def get_1D_data(df: pd.DataFrame) -> pd.DataFrame:
         2.0 * daily_data["prev_day_pivot"] - daily_data["prev_day_high"]
     )
 
-    day_ema = daily_data["day_close"].ewm(span=20, adjust=False).mean()
+    day_ema = daily_data["day_close"].ewm(span=config.medium_lookback, adjust=False).mean()
     day_bias = pd.Series(0, index=daily_data.index)
     day_bias[daily_data["day_close"] > day_ema] = 1
     day_bias[daily_data["day_close"] < day_ema] = -1
@@ -59,8 +60,9 @@ def get_1D_data(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _get_htf_data(
-    df: pd.DataFrame, freq: str, prefix: str, delta: pd.Timedelta
+    df: pd.DataFrame, freq: str, prefix: str, delta: pd.Timedelta, config: Config | None = None
 ) -> pd.DataFrame:
+    config = ensure_config(config)
     tmp_data = df[["Open", "High", "Low", "Close", "Volume"]].copy()
     htf = tmp_data.resample(freq).agg(
         {
@@ -92,7 +94,7 @@ def _get_htf_data(
     htf["s1"] = 2.0 * htf["pivot"] - htf["High"]
     htf["return"] = (htf["Close"] - htf["Open"]) / htf["Open"].replace(0, np.nan)
 
-    ema20 = htf["Close"].ewm(span=20, adjust=False).mean()
+    ema20 = htf["Close"].ewm(span=config.medium_lookback, adjust=False).mean()
     bias = pd.Series(0, index=htf.index)
     bias[htf["Close"] > ema20] = 1
     bias[htf["Close"] < ema20] = -1
@@ -131,8 +133,8 @@ def _get_htf_data(
     return htf[cols]
 
 
-def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
-    daily_data = get_1D_data(df)
+def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
+    daily_data = get_1D_data(df, config)
     data = df.copy()
     data = data.assign(time_d=pd.PeriodIndex(data.index, freq="1D").to_timestamp())
 
@@ -146,7 +148,7 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
         ("30min", "prev_30m", pd.Timedelta(minutes=30)),
         ("1h", "prev_1h", pd.Timedelta(hours=1)),
     ]:
-        htf_df = _get_htf_data(df, freq, prefix, delta)
+        htf_df = _get_htf_data(df, freq, prefix, delta, config)
         if not htf_df.empty:
             merged_data = pd.merge_asof(
                 merged_data,
@@ -160,3 +162,4 @@ def extract_features(df: pd.DataFrame, _config: Config) -> pd.DataFrame:
                 merged_data[col] = np.nan
 
     return merged_data
+

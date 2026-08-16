@@ -16,5 +16,26 @@
   "FAST_TREND_LOOKBACK": 24,
   "SLOW_TREND_LOOKBACK": 245,
   "IBS_LOOKBACK": 5,
-  "DROP_FIRST_ROWS": 245
+  "DROP_FIRST_ROWS": 245,
+  "CLASSIC_INDICATORS": {
+    "RSI": 14,
+    "STOCHRSI": 14,
+    "MACD": [12, 26, 9],
+    "PPO": [12, 26, 9],
+    "WILLIAMS_R": 14,
+    "AO": [5, 34],
+    "UO": [7, 14, 28],
+    "MFI": 14,
+    "SUPERTREND": [10, 3.0],
+    "TRIX": [15, 9],
+    "ADX": [14, 42],
+    "SLOPE": 8,
+    "CHOP": 14,
+    "BIAS36": [3, 6],
+    "CONNORS_RSI": [3, 2]
+  },
+  "EMA_WINDOWS": [8, 20, 21, 55, 250]
 }
+
+
+

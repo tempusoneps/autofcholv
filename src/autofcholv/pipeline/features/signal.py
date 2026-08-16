@@ -165,19 +165,19 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         (df["Close"] == df["close_max_short"]) & (df["rsi_medium"] > 70),
     )
 
-    is_max_macd_hist = df["macd_hist"] == df["macd_hist"].rolling(10).max()
-    is_min_macd_hist = df["macd_hist"] == df["macd_hist"].rolling(10).min()
+    is_max_macd_hist = df["macd_hist"] == df["macd_hist"].rolling(config.short_lookback).max()
+    is_min_macd_hist = df["macd_hist"] == df["macd_hist"].rolling(config.short_lookback).min()
     df["macd_histogram_reversal_signal"] = _signal_from_conditions(
         (df["open_lag1"] >= df["close_lag1"])
         & (df["macd_hist"] < 0)
         & is_min_macd_hist.shift(1, fill_value=False)
-        & (df["macd_hist"].rolling(5).sum() < 0)
+        & (df["macd_hist"].rolling(config.micro_lookback).sum() < 0)
         & (df["Close"] > df["open_lag1"])
         & ((df["Close"] - df["low_lag1"]) < 5),
         (df["open_lag1"] <= df["close_lag1"])
         & (df["macd_hist"] > 0)
         & is_max_macd_hist.shift(1, fill_value=False)
-        & (df["macd_hist"].rolling(5).sum() > 0)
+        & (df["macd_hist"].rolling(config.micro_lookback).sum() > 0)
         & (df["Close"] < df["open_lag1"])
         & ((df["high_lag1"] - df["Close"]) < 5),
     )

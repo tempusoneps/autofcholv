@@ -542,7 +542,9 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     # --- Indicator features used by signal.py ---
 
-    mfi_val = ta.mfi(df["High"], df["Low"], df["Close"], df["Volume"], length=14)
+    mfi_param = config.classic_indicators.get("MFI", 14)
+    mfi_len = mfi_param[0] if isinstance(mfi_param, list) else int(mfi_param)
+    mfi_val = ta.mfi(df["High"], df["Low"], df["Close"], df["Volume"], length=mfi_len)
     df["mfi14"] = mfi_val if mfi_val is not None else np.nan
 
     vpt_increment = df["Volume"] * df["Close"].pct_change().fillna(0.0)

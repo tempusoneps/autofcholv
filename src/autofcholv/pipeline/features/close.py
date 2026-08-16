@@ -94,13 +94,17 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     volatility = change.rolling(momentum_n).sum()
     df["efficiency_ratio"] = net_change / volatility
 
-    macd_result = ta.macd(df["Close"], fast=12, slow=26, signal=9)
+    macd_params = config.classic_indicators.get("MACD", [12, 26, 9])
+    fast, slow, signal = macd_params[0], macd_params[1], macd_params[2]
+    macd_result = ta.macd(df["Close"], fast=fast, slow=slow, signal=signal)
     if macd_result is not None and not macd_result.empty:
         df["macd"]        = macd_result.iloc[:, 0]
         df["macd_hist"]   = macd_result.iloc[:, 1]
         df["macd_line"] = macd_result.iloc[:, 2]
 
-    ppo_result = ta.ppo(df["Close"], fast=12, slow=26, signal=9)
+    ppo_params = config.classic_indicators.get("PPO", [12, 26, 9])
+    ppo_fast, ppo_slow, ppo_signal = ppo_params[0], ppo_params[1], ppo_params[2]
+    ppo_result = ta.ppo(df["Close"], fast=ppo_fast, slow=ppo_slow, signal=ppo_signal)
     if ppo_result is not None and not ppo_result.empty:
         df["ppo"]        = ppo_result.iloc[:, 0]
         df["ppo_hist"]   = ppo_result.iloc[:, 1]
@@ -408,7 +412,10 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     pos_max = pos_price.rolling(momentum_n, min_periods=momentum_n).max()
     df["pos"] = (pos_price - pos_min) / (pos_max - pos_min + epsilon)
 
-    bias36 = df["Close"].rolling(3, min_periods=1).mean() - df["Close"].rolling(6, min_periods=1).mean()
+    bias36_params = config.classic_indicators.get("BIAS36", [3, 6])
+    b3 = bias36_params[0] if isinstance(bias36_params, list) else int(bias36_params)
+    b6 = bias36_params[1] if isinstance(bias36_params, list) and len(bias36_params) > 1 else 6
+    bias36 = df["Close"].rolling(b3, min_periods=1).mean() - df["Close"].rolling(b6, min_periods=1).mean()
     bias36_centered = bias36 - bias36.rolling(momentum_n, min_periods=1).mean()
     df["bias36"] = (bias36_centered - bias36_centered.rolling(momentum_n, min_periods=1).min()) / (
         bias36_centered.rolling(momentum_n, min_periods=1).max()
@@ -547,7 +554,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     bias_v14_base = (fast_bias_ma / (bias_ma + epsilon) - 1.0) * quote_volume_proxy / (quote_volume_mean + epsilon)
     df["bias_v14"] = bias_v14_base.rolling(momentum_n, min_periods=1).mean()
 
-    bias36_raw = df["Close"].rolling(3, min_periods=1).mean() - df["Close"].rolling(6, min_periods=1).mean()
+    bias36_raw = df["Close"].rolling(b3, min_periods=1).mean() - df["Close"].rolling(b6, min_periods=1).mean()
     df["bias36ma"] = bias36_raw.rolling(momentum_n, min_periods=1).mean()
 
     four_price = (df["Open"] + df["High"] + df["Low"] + df["Close"]) / 4.0
@@ -1095,27 +1102,42 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     # --- Indicator features used by signal.py ---
 
-    rolling_max_rsi = df["rsi_medium"].rolling(14).max()
-    rolling_min_rsi = df["rsi_medium"].rolling(14).min()
+    stochrsi_param = config.classic_indicators.get("STOCHRSI", 14)
+    stochrsi_len = stochrsi_param[0] if isinstance(stochrsi_param, list) else int(stochrsi_param)
+    rolling_max_rsi = df["rsi_medium"].rolling(stochrsi_len).max()
+    rolling_min_rsi = df["rsi_medium"].rolling(stochrsi_len).min()
     df["stoch_rsi"] = (df["rsi_medium"] - rolling_min_rsi) / (rolling_max_rsi - rolling_min_rsi).replace(0, np.nan)
 
+    ao_params = config.classic_indicators.get("AO", [5, 34])
+    ao_fast, ao_slow = ao_params[0], ao_params[1]
     typical_price_ao = (df["High"] + df["Low"] + df["Close"]) / 3.0
-    df["awesome_oscillator"] = typical_price_ao.rolling(5).mean() - typical_price_ao.rolling(34).mean()
+    df["awesome_oscillator"] = typical_price_ao.rolling(ao_fast).mean() - typical_price_ao.rolling(ao_slow).mean()
 
     df["roc_short"] = ta.roc(df["Close"], length=config.short_lookback)
 
     prev_close_uo_fixed = df["Close"].shift(1)
     uo_buying_pressure = df["Close"] - np.minimum(df["Low"], prev_close_uo_fixed)
     uo_true_range = np.maximum(df["High"], prev_close_uo_fixed) - np.minimum(df["Low"], prev_close_uo_fixed)
-    bp7 = uo_buying_pressure.rolling(7).sum()
-    bp14 = uo_buying_pressure.rolling(14).sum()
-    bp28 = uo_buying_pressure.rolling(28).sum()
-    tr7 = uo_true_range.rolling(7).sum()
-    tr14 = uo_true_range.rolling(14).sum()
-    tr28 = uo_true_range.rolling(28).sum()
+    uo_params = config.classic_indicators.get("UO", [7, 14, 28])
+    uo_p1, uo_p2, uo_p3 = uo_params[0], uo_params[1], uo_params[2]
+    bp7 = uo_buying_pressure.rolling(uo_p1).sum()
+    bp14 = uo_buying_pressure.rolling(uo_p2).sum()
+    bp28 = uo_buying_pressure.rolling(uo_p3).sum()
+    tr7 = uo_true_range.rolling(uo_p1).sum()
+    tr14 = uo_true_range.rolling(uo_p2).sum()
+    tr28 = uo_true_range.rolling(uo_p3).sum()
     df["ultimate_osc"] = 100 * ((4 * (bp7 / tr7.replace(0, np.nan))) + (2 * (bp14 / tr14.replace(0, np.nan))) + (bp28 / tr28.replace(0, np.nan))) / 7
 
-    stochrsi_res = ta.stochrsi(df["Close"], length=14, rsi_length=14, k=3, d=3)
+    stochrsi_params = config.classic_indicators.get("STOCHRSI", [14, 14, 3, 3])
+    if isinstance(stochrsi_params, list):
+        s_len = stochrsi_params[0]
+        s_rsi_len = stochrsi_params[1] if len(stochrsi_params) > 1 else s_len
+        s_k = stochrsi_params[2] if len(stochrsi_params) > 2 else 3
+        s_d = stochrsi_params[3] if len(stochrsi_params) > 3 else 3
+    else:
+        s_len = s_rsi_len = int(stochrsi_params)
+        s_k = s_d = 3
+    stochrsi_res = ta.stochrsi(df["Close"], length=s_len, rsi_length=s_rsi_len, k=s_k, d=s_d)
     if stochrsi_res is not None and not stochrsi_res.empty:
         df["stochrsi_k"] = stochrsi_res.iloc[:, 0]
         df["stochrsi_d"] = stochrsi_res.iloc[:, 1]
@@ -1123,7 +1145,9 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         df["stochrsi_k"] = np.nan
         df["stochrsi_d"] = np.nan
 
-    williams_r = ta.willr(df["High"], df["Low"], df["Close"], length=14)
+    willr_param = config.classic_indicators.get("WILLIAMS_R", 14)
+    willr_len = willr_param[0] if isinstance(willr_param, list) else int(willr_param)
+    williams_r = ta.willr(df["High"], df["Low"], df["Close"], length=willr_len)
     df["williams_r_14"] = williams_r if williams_r is not None else np.nan
     bbands = ta.bbands(df["Close"], length=config.medium_lookback, std=2.0)
     if bbands is not None and not bbands.empty:
@@ -1131,7 +1155,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         df["bb_percent_b_medium_2"] = bbands[bbp_cols[0]] if bbp_cols else np.nan
     else:
         df["bb_percent_b_medium_2"] = np.nan
-    macd_12_26_9 = ta.macd(df["Close"], fast=12, slow=26, signal=9)
+    macd_12_26_9 = ta.macd(df["Close"], fast=fast, slow=slow, signal=signal)
     if macd_12_26_9 is not None and not macd_12_26_9.empty:
         macdh_cols = [col for col in macd_12_26_9.columns if "MACDh" in col]
         df["macd_hist_12_26_9"] = macd_12_26_9[macdh_cols[0]] if macdh_cols else np.nan
