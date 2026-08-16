@@ -504,11 +504,6 @@
         "name": "Return Position",
         "comment": "Position of current n-period return within its rolling min-max range"
     },
-    "bias36": {
-        "type": "float",
-        "name": "Bias36",
-        "comment": "Rolling-normalized difference between 3-bar and 6-bar moving-average spread and its mean"
-    },
     "swing_index": {
         "type": "float",
         "name": "Swing Index",
@@ -623,11 +618,6 @@
         "type": "float",
         "name": "Bias v14",
         "comment": "Rolling fast/slow MA bias weighted by quote-volume proxy"
-    },
-    "bias36ma": {
-        "type": "float",
-        "name": "Bias36 MA",
-        "comment": "Rolling mean of the 3-period minus 6-period close MA spread"
     },
     "bir": {
         "type": "float",
@@ -1008,10 +998,5 @@
         "type": "float",
         "name": "Bollinger Percent B Medium 2",
         "comment": "Bollinger Band percent B with medium lookback and 2 standard deviations"
-    },
-    "macd_hist_12_26_9": {
-        "type": "float",
-        "name": "MACD Histogram 12 26 9",
-        "comment": "MACD histogram with fast 12, slow 26, signal 9"
     }
 }

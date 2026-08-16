@@ -412,17 +412,6 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     pos_max = pos_price.rolling(momentum_n, min_periods=momentum_n).max()
     df["pos"] = (pos_price - pos_min) / (pos_max - pos_min + epsilon)
 
-    bias36_params = config.classic_indicators.get("BIAS36", [3, 6])
-    b3 = bias36_params[0] if isinstance(bias36_params, list) else int(bias36_params)
-    b6 = bias36_params[1] if isinstance(bias36_params, list) and len(bias36_params) > 1 else 6
-    bias36 = df["Close"].rolling(b3, min_periods=1).mean() - df["Close"].rolling(b6, min_periods=1).mean()
-    bias36_centered = bias36 - bias36.rolling(momentum_n, min_periods=1).mean()
-    df["bias36"] = (bias36_centered - bias36_centered.rolling(momentum_n, min_periods=1).min()) / (
-        bias36_centered.rolling(momentum_n, min_periods=1).max()
-        - bias36_centered.rolling(momentum_n, min_periods=1).min()
-        + epsilon
-    )
-
     si_a = (df["High"] - df["Close"].shift(1)).abs()
     si_b = (df["Low"] - df["Close"].shift(1)).abs()
     si_c = (df["High"] - df["Low"].shift(1)).abs()
@@ -553,9 +542,6 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     fast_bias_ma = df["Close"].rolling(max(1, momentum_n // 2), min_periods=1).mean()
     bias_v14_base = (fast_bias_ma / (bias_ma + epsilon) - 1.0) * quote_volume_proxy / (quote_volume_mean + epsilon)
     df["bias_v14"] = bias_v14_base.rolling(momentum_n, min_periods=1).mean()
-
-    bias36_raw = df["Close"].rolling(b3, min_periods=1).mean() - df["Close"].rolling(b6, min_periods=1).mean()
-    df["bias36ma"] = bias36_raw.rolling(momentum_n, min_periods=1).mean()
 
     four_price = (df["Open"] + df["High"] + df["Low"] + df["Close"]) / 4.0
     four_price_max = four_price.rolling(momentum_n, min_periods=1).max()
@@ -1155,11 +1141,5 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         df["bb_percent_b_medium_2"] = bbands[bbp_cols[0]] if bbp_cols else np.nan
     else:
         df["bb_percent_b_medium_2"] = np.nan
-    macd_12_26_9 = ta.macd(df["Close"], fast=fast, slow=slow, signal=signal)
-    if macd_12_26_9 is not None and not macd_12_26_9.empty:
-        macdh_cols = [col for col in macd_12_26_9.columns if "MACDh" in col]
-        df["macd_hist_12_26_9"] = macd_12_26_9[macdh_cols[0]] if macdh_cols else np.nan
-    else:
-        df["macd_hist_12_26_9"] = np.nan
 
     return df

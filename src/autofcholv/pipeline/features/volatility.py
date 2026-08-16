@@ -546,8 +546,6 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     df["donchian_high_short_shift1"] = df["High"].rolling(config.short_lookback).max().shift(1)
     df["donchian_low_short_shift1"] = df["Low"].rolling(config.short_lookback).min().shift(1)
-    df["donchian_high_30_shift1"] = df["High"].rolling(config.morning_bars).max().shift(1)
-    df["donchian_low_30_shift1"] = df["Low"].rolling(config.morning_bars).min().shift(1)
     df["close_donchian_high_medium_shift1"] = df["Close"].rolling(config.medium_lookback).max().shift(1)
     df["close_donchian_low_medium_shift1"] = df["Close"].rolling(config.medium_lookback).min().shift(1)
 

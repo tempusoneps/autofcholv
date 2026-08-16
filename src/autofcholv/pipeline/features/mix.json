@@ -149,11 +149,6 @@
         "name": "CoppAtrBull",
         "comment": "Coppock momentum times ATR times taker buy activity"
     },
-    "persist_short_12_shift1": {
-        "type": "float",
-        "name": "Persist Short 12 Shift 1",
-        "comment": "12-bar rolling share of closes below session_open shifted one bar"
-    },
     "connors_rsi": {
         "type": "float",
         "name": "Connors RSI for Signals",
