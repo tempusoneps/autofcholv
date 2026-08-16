@@ -38,12 +38,6 @@ def get_1D_data(df: pd.DataFrame, config: Config | None = None) -> pd.DataFrame:
         2.0 * daily_data["prev_day_pivot"] - daily_data["prev_day_high"]
     )
 
-    day_ema = daily_data["day_close"].ewm(span=config.medium_lookback, adjust=False).mean()
-    day_bias = pd.Series(0, index=daily_data.index)
-    day_bias[daily_data["day_close"] > day_ema] = 1
-    day_bias[daily_data["day_close"] < day_ema] = -1
-    daily_data["prev_day_ema_bias_20"] = day_bias.shift(1)
-
     return daily_data[
         [
             "prev_day_close",
@@ -54,7 +48,6 @@ def get_1D_data(df: pd.DataFrame, config: Config | None = None) -> pd.DataFrame:
             "prev_day_pivot",
             "prev_day_r1",
             "prev_day_s1",
-            "prev_day_ema_bias_20",
         ]
     ]
 
@@ -85,7 +78,6 @@ def _get_htf_data(
             f"{prefix}_r1",
             f"{prefix}_s1",
             f"{prefix}_return",
-            f"{prefix}_ema_bias_20",
         ]
         return pd.DataFrame(columns=cols, index=df.index)
 
@@ -93,12 +85,6 @@ def _get_htf_data(
     htf["r1"] = 2.0 * htf["pivot"] - htf["Low"]
     htf["s1"] = 2.0 * htf["pivot"] - htf["High"]
     htf["return"] = (htf["Close"] - htf["Open"]) / htf["Open"].replace(0, np.nan)
-
-    ema20 = htf["Close"].ewm(span=config.medium_lookback, adjust=False).mean()
-    bias = pd.Series(0, index=htf.index)
-    bias[htf["Close"] > ema20] = 1
-    bias[htf["Close"] < ema20] = -1
-    htf["ema_bias_20"] = bias
 
     # Shift completion timestamp by delta so that bar starting at T completes at T + delta
     htf.index = htf.index + delta
@@ -114,7 +100,6 @@ def _get_htf_data(
             "r1": f"{prefix}_r1",
             "s1": f"{prefix}_s1",
             "return": f"{prefix}_return",
-            "ema_bias_20": f"{prefix}_ema_bias_20",
         }
     )
 
@@ -128,7 +113,6 @@ def _get_htf_data(
         f"{prefix}_r1",
         f"{prefix}_s1",
         f"{prefix}_return",
-        f"{prefix}_ema_bias_20",
     ]
     return htf[cols]
 

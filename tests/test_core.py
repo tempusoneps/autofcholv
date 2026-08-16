@@ -158,16 +158,16 @@ def test_extract_features_resample_columns():
     expected = [
         "prev_day_open", "prev_day_high", "prev_day_low", "prev_day_close",
         "prev_day_volume", "prev_day_pivot",
-        "prev_day_r1", "prev_day_s1", "prev_day_ema_bias_20",
+        "prev_day_r1", "prev_day_s1",
         "prev_15m_open", "prev_15m_high", "prev_15m_low", "prev_15m_close",
         "prev_15m_volume", "prev_15m_pivot", "prev_15m_r1", "prev_15m_s1",
-        "prev_15m_return", "prev_15m_ema_bias_20",
+        "prev_15m_return",
         "prev_30m_open", "prev_30m_high", "prev_30m_low", "prev_30m_close",
         "prev_30m_volume", "prev_30m_pivot", "prev_30m_r1", "prev_30m_s1",
-        "prev_30m_return", "prev_30m_ema_bias_20",
+        "prev_30m_return",
         "prev_1h_open", "prev_1h_high", "prev_1h_low", "prev_1h_close",
         "prev_1h_volume", "prev_1h_pivot", "prev_1h_r1", "prev_1h_s1",
-        "prev_1h_return", "prev_1h_ema_bias_20",
+        "prev_1h_return",
     ]
     for col in expected:
         assert col in result.columns, f"Missing resample column: '{col}'"
@@ -239,7 +239,7 @@ def test_extract_features_close_columns():
         "rmi", "tii", "ar", "br", "cr", "adtm",
         "qstick", "mtm", "bias", "rbias", "mtm_mean", "mtm_max_diff",
         "sroc", "rsi_mean", "tdi", "osc", "short_quiet_momentum", "long_quiet_momentum",
-        "price_volume_momentum", "dbcd", "pmarp", "pos", "bias36", "swing_index",
+        "price_volume_momentum", "dbcd", "pmarp", "pos", "swing_index",
         "rsi_v2", "cmo_v2", "bias_v13", "abs_chg", "stc", "return_autocorr_2",
         "erbull", "erbear", "er_balance", "burr", "do", "po",
         "cci_magic", "cs_mtm", "cs_mtm_v2", "rsi_bbw", "rccd", "rccd_v2",
@@ -247,7 +247,7 @@ def test_extract_features_close_columns():
         "adtm_v3", "mtm_mean_gap", "cmo_v3", "rsis_v2", "mtm_vol_resonance", "tii_signal",
         "tii_signal_v2", "macd_v2", "ppo_v1", "sroc_v2", "pmo_tema", "fisher_v2",
         "fisher_v3", "arbr_ar", "arbr_br", "bias_v3", "bias_v4", "bias_v11",
-        "bias_v14", "bias36ma", "bir", "copp_v3", "roc", "cci_v2",
+        "bias_v14", "bir", "copp_v3", "roc", "cci_v2",
         "cci_v3", "rsimean", "dbcd_v3", "micd", "rsj", "mtm_max",
         "bias_v2", "rsiv", "rsih", "fi", "fi_rsi", "force",
         "ko", "vramt", "rsis", "pmarp_yidai_v1", "dbcd_v2", "smi_v2",
@@ -637,17 +637,14 @@ def test_5tier_and_session_bars_config_propagation():
     df_trend = trend_features.extract_features(df, cfg)
 
     assert "bb_width_q20" in df_vol.columns
-    assert "donchian_high_30_shift1" in df_vol.columns
-    assert "persist_short_12_shift1" in df_mix.columns
     assert "connors_rsi" in df_mix.columns
-    assert "prev_day_ema_bias_20" in df_resample.columns
     assert "ema_20" in df_trend.columns
 
 
 def test_dynamic_ema_and_classic_trend_lookbacks():
     cfg = Config(
         ema_windows=[9, 13, 34],
-        classic_indicators={"ADX": [10, 30], "SLOPE": 12},
+        classic_indicators={"ADX": 10},
     )
     from autofcholv.pipeline.features import trend as trend_features
     df = make_ohlcv(50)
@@ -657,7 +654,6 @@ def test_dynamic_ema_and_classic_trend_lookbacks():
     assert "ema_13" in df_trend.columns
     assert "ema_34" in df_trend.columns
     assert "adx_14" in df_trend.columns
-    assert "linear_regression_slope_8" in df_trend.columns
 
 
 

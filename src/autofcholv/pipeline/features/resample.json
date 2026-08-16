@@ -39,11 +39,6 @@
         "name": "Previous Day S1",
         "comment": "Pivot support S1 from completed previous trading day"
     },
-    "prev_day_ema_bias_20": {
-        "type": "float",
-        "name": "Previous Day EMA Bias 20",
-        "comment": "Previous trading day close versus its 20-day EMA, encoded as 1, -1, or 0"
-    },
     "prev_15m_open": {
         "type": "float",
         "name": "Previous 15m Open",
@@ -88,11 +83,6 @@
         "type": "float",
         "name": "Previous 15m Return",
         "comment": "Return ratio of completed 15-minute bar"
-    },
-    "prev_15m_ema_bias_20": {
-        "type": "float",
-        "name": "Previous 15m EMA Bias 20",
-        "comment": "Completed 15-minute close versus its 20-period EMA, encoded as 1, -1, or 0"
     },
     "prev_30m_open": {
         "type": "float",
@@ -139,11 +129,6 @@
         "name": "Previous 30m Return",
         "comment": "Return ratio of completed 30-minute bar"
     },
-    "prev_30m_ema_bias_20": {
-        "type": "float",
-        "name": "Previous 30m EMA Bias 20",
-        "comment": "Completed 30-minute close versus its 20-period EMA, encoded as 1, -1, or 0"
-    },
     "prev_1h_open": {
         "type": "float",
         "name": "Previous 1H Open",
@@ -188,10 +173,5 @@
         "type": "float",
         "name": "Previous 1H Return",
         "comment": "Return ratio of completed 1-hour bar"
-    },
-    "prev_1h_ema_bias_20": {
-        "type": "float",
-        "name": "Previous 1H EMA Bias 20",
-        "comment": "Completed 1-hour close versus its 20-period EMA, encoded as 1, -1, or 0"
     }
 }

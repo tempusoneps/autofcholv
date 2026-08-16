@@ -235,9 +235,6 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["copp_atr_bull"] = rc_mean * wd_atr * taker_ratio
 
 
-    below_open = (df["Close"] < df["session_open"]).astype(float)
-    df["persist_short_12_shift1"] = below_open.rolling(config.one_hour_bars).mean().shift(1)
-
     # --- Signal-support indicators ---
     # Connors RSI is consumed by signal.py
     price_rank = df["roc_close"].rolling(config.macro_lookback).rank(pct=True) * 100

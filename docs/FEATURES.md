@@ -34,7 +34,6 @@ The pipeline executes in the order listed below.
 | `prev_day_pivot` | float | day_pivot.shift(1) |
 | `prev_day_r1` | float | Pivot resistance R1 from completed previous trading day |
 | `prev_day_s1` | float | Pivot support S1 from completed previous trading day |
-| `prev_day_ema_bias_20` | float | Previous trading day close versus its 20-day EMA, encoded as 1, -1, or 0 |
 | `prev_15m_open` | float | Open price of completed 15-minute bar |
 | `prev_15m_high` | float | High price of completed 15-minute bar |
 | `prev_15m_low` | float | Low price of completed 15-minute bar |
@@ -44,7 +43,6 @@ The pipeline executes in the order listed below.
 | `prev_15m_r1` | float | Pivot resistance R1 of completed 15-minute bar |
 | `prev_15m_s1` | float | Pivot support S1 of completed 15-minute bar |
 | `prev_15m_return` | float | Return ratio of completed 15-minute bar |
-| `prev_15m_ema_bias_20` | float | Completed 15-minute close versus its 20-period EMA, encoded as 1, -1, or 0 |
 | `prev_30m_open` | float | Open price of completed 30-minute bar |
 | `prev_30m_high` | float | High price of completed 30-minute bar |
 | `prev_30m_low` | float | Low price of completed 30-minute bar |
@@ -54,7 +52,6 @@ The pipeline executes in the order listed below.
 | `prev_30m_r1` | float | Pivot resistance R1 of completed 30-minute bar |
 | `prev_30m_s1` | float | Pivot support S1 of completed 30-minute bar |
 | `prev_30m_return` | float | Return ratio of completed 30-minute bar |
-| `prev_30m_ema_bias_20` | float | Completed 30-minute close versus its 20-period EMA, encoded as 1, -1, or 0 |
 | `prev_1h_open` | float | Open price of completed 1-hour bar |
 | `prev_1h_high` | float | High price of completed 1-hour bar |
 | `prev_1h_low` | float | Low price of completed 1-hour bar |
@@ -64,7 +61,6 @@ The pipeline executes in the order listed below.
 | `prev_1h_r1` | float | Pivot resistance R1 of completed 1-hour bar |
 | `prev_1h_s1` | float | Pivot support S1 of completed 1-hour bar |
 | `prev_1h_return` | float | Return ratio of completed 1-hour bar |
-| `prev_1h_ema_bias_20` | float | Completed 1-hour close versus its 20-period EMA, encoded as 1, -1, or 0 |
 
 ---
 
@@ -204,7 +200,6 @@ The pipeline executes in the order listed below.
 | `dbcd` | float | Rolling average of close moving-average bias divergence |
 | `pmarp` | float | Percentile rank of absolute close-to-moving-average ratio |
 | `pos` | float | Position of current n-period return within its rolling min-max range |
-| `bias36` | float | Rolling-normalized difference between 3-bar and 6-bar moving-average spread and its mean |
 | `swing_index` | float | Weighted price movement index adapted from quant-ohlcv Si |
 | `rsi_v2` | float | Rolling-sum RSI variant using up/down close moves |
 | `cmo_v2` | float | Rolling-sum CMO variant using up/down close moves |
@@ -228,7 +223,6 @@ The pipeline executes in the order listed below.
 | `bias_v4` | float | Typical price divided by its moving average minus 1 |
 | `bias_v11` | float | EMA-smoothed close bias weighted by quote-volume proxy |
 | `bias_v14` | float | Rolling fast/slow MA bias weighted by quote-volume proxy |
-| `bias36ma` | float | Rolling mean of the 3-period minus 6-period close MA spread |
 | `bir` | float | Four-price average breakout pressure over rolling extrema |
 | `copp_v3` | float | Coppock-style average of N and 1.618N close rates of change |
 | `do` | float | Double-smoothed RSI variant |
@@ -305,7 +299,6 @@ The pipeline executes in the order listed below.
 | `stochrsi_d` | float | StochRSI D line |
 | `williams_r_14` | float | Williams %R over 14 periods |
 | `bb_percent_b_medium_2` | float | Bollinger Band percent B with medium lookback and 2 standard deviations |
-| `macd_hist_12_26_9` | float | MACD histogram with fast 12, slow 26, signal 9 |
 
 ---
 
@@ -507,16 +500,12 @@ The pipeline executes in the order listed below.
 | `ema_21` | float | Exponential moving average of Close over 21 periods |
 | `ema_55` | float | Exponential moving average of Close over 55 periods |
 | `ema_250` | float | Exponential moving average of Close over 250 periods |
-| `ema_20_cross_above_ema_250` | bool | True when EMA 20 crosses above EMA 250 on the current bar |
-| `ema_20_cross_below_ema_250` | bool | True when EMA 20 crosses below EMA 250 on the current bar |
 | `adx_14` | float | Average Directional Index over 14 periods |
 | `dmp_14` | float | Positive directional movement over 14 periods |
 | `dmn_14` | float | Negative directional movement over 14 periods |
-| `adx_42` | float | Average Directional Index over 42 periods |
 | `psar_bull` | bool | True when Parabolic SAR indicates a bullish leg |
 | `psar_bear` | bool | True when Parabolic SAR indicates a bearish leg |
 | `linear_regression_slope_micro` | float | Linear regression slope of Close over micro lookback |
-| `linear_regression_slope_8` | float | Linear regression slope of Close over 8 periods |
 
 ---
 
@@ -629,8 +618,6 @@ The pipeline executes in the order listed below.
 | `keltner_lower_medium_2` | float | Keltner lower band with medium lookback and scalar 2 |
 | `donchian_high_short_shift1` | float | Short lookback rolling High maximum shifted one bar |
 | `donchian_low_short_shift1` | float | Short lookback rolling Low minimum shifted one bar |
-| `donchian_high_30_shift1` | float | 30-bar rolling High maximum shifted one bar |
-| `donchian_low_30_shift1` | float | 30-bar rolling Low minimum shifted one bar |
 | `close_donchian_high_medium_shift1` | float | Medium lookback rolling Close maximum shifted one bar |
 | `close_donchian_low_medium_shift1` | float | Medium lookback rolling Close minimum shifted one bar |
 
@@ -804,7 +791,6 @@ The pipeline executes in the order listed below.
 | `mtam` | float | Momentum times taker buy ratio times ATR volatility composite |
 | `msbt` | float | Momentum, std momentum, BBW, and taker buy composite |
 | `copp_atr_bull` | float | Coppock momentum times ATR times taker buy activity |
-| `persist_short_12_shift1` | float | 12-bar rolling share of closes below session_open shifted one bar |
 | `connors_rsi` | float | ConnorsRSI indicator (RSI(3) + StreakRSI(2) + PriceRank) |
 
 ---

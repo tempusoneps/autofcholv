@@ -36,10 +36,8 @@ class Config:
             "MFI": 14,
             "SUPERTREND": [10, 3.0],
             "TRIX": [15, 9],
-            "ADX": [14, 42],
-            "SLOPE": 8,
+            "ADX": 14,
             "CHOP": 14,
-            "BIAS36": [3, 6],
             "CONNORS_RSI": [3, 2],
         }
     )
