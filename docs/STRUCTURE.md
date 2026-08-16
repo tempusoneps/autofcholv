@@ -16,7 +16,6 @@
 │   ├── FEATURES_OVERVIEW.md          # High-level feature set overview.
 │   ├── INSTALLATION.md               # Install instructions for pip, uv, and source installs.
 │   ├── REF.md                        # Short project references and notes.
-│   ├── REPORT_HARDCODED_LOOKBACKS.md # Report of features with fixed lookback windows.
 │   ├── RESOURCES.md                  # Links to related project docs.
 │   ├── RULE.md                       # Project rules or conventions.
 │   ├── STRUCTURE.md                  # This repository structure guide.

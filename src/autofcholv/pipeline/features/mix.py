@@ -236,13 +236,16 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
 
     below_open = (df["Close"] < df["session_open"]).astype(float)
-    df["persist_short_12_shift1"] = below_open.rolling(12).mean().shift(1)
+    df["persist_short_12_shift1"] = below_open.rolling(config.one_hour_bars).mean().shift(1)
 
     # --- Signal-support indicators ---
     # Connors RSI is consumed by signal.py
-    price_rank = df["roc_close"].rolling(100).rank(pct=True) * 100
-    rsi3 = ta.rsi(df["Close"], length=3)
-    streak_rsi2 = ta.rsi(df["streak"].astype(float), length=2)
+    price_rank = df["roc_close"].rolling(config.macro_lookback).rank(pct=True) * 100
+    crsi_params = config.classic_indicators.get("CONNORS_RSI", [3, 2])
+    crsi_len1 = crsi_params[0] if isinstance(crsi_params, list) else int(crsi_params)
+    crsi_len2 = crsi_params[1] if isinstance(crsi_params, list) and len(crsi_params) > 1 else 2
+    rsi3 = ta.rsi(df["Close"], length=crsi_len1)
+    streak_rsi2 = ta.rsi(df["streak"].astype(float), length=crsi_len2)
     df["connors_rsi"] = (rsi3 + streak_rsi2 + price_rank) / 3.0
 
     return df
