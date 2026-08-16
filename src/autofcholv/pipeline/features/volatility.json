@@ -524,16 +524,6 @@
         "name": "Donchian Low Short Shift 1",
         "comment": "Short lookback rolling Low minimum shifted one bar"
     },
-    "donchian_high_30_shift1": {
-        "type": "float",
-        "name": "Donchian High 30 Shift 1",
-        "comment": "30-bar rolling High maximum shifted one bar"
-    },
-    "donchian_low_30_shift1": {
-        "type": "float",
-        "name": "Donchian Low 30 Shift 1",
-        "comment": "30-bar rolling Low minimum shifted one bar"
-    },
     "close_donchian_high_medium_shift1": {
         "type": "float",
         "name": "Close Donchian High Medium Shift 1",

@@ -799,23 +799,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     for w in ema_windows:
         df[f"ema_{w}"] = ta.ema(df["Close"], length=w)
 
-    ema_20_series = df.get("ema_20", df.get(f"ema_{config.medium_lookback}", ta.ema(df["Close"], length=config.medium_lookback)))
-    ema_250_series = df.get("ema_250", ta.ema(df["Close"], length=250))
-    df["ema_20_cross_above_ema_250"] = (
-        (ema_20_series.shift(1) < ema_250_series.shift(1))
-        & (ema_20_series > ema_250_series)
-    )
-    df["ema_20_cross_below_ema_250"] = (
-        (ema_20_series.shift(1) > ema_250_series.shift(1))
-        & (ema_20_series < ema_250_series)
-    )
-
-    adx_params = config.classic_indicators.get("ADX", [14, 42])
-    if isinstance(adx_params, list):
-        adx_len1 = adx_params[0]
-        adx_len2 = adx_params[1] if len(adx_params) > 1 else 42
-    else:
-        adx_len1, adx_len2 = int(adx_params), 42
+    adx_params = config.classic_indicators.get("ADX", 14)
+    adx_len1 = adx_params[0] if isinstance(adx_params, list) else int(adx_params)
 
     adx_14 = ta.adx(df["High"], df["Low"], df["Close"], length=adx_len1)
     if adx_14 is not None and not adx_14.empty:
@@ -830,13 +815,6 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         df["dmp_14"] = np.nan
         df["dmn_14"] = np.nan
 
-    adx_42 = ta.adx(df["High"], df["Low"], df["Close"], length=adx_len2)
-    if adx_42 is not None and not adx_42.empty:
-        adx42_cols = [c for c in adx_42.columns if c.startswith("ADX_")]
-        df["adx_42"] = adx_42[adx42_cols[0]] if adx42_cols else adx_42.iloc[:, 0]
-    else:
-        df["adx_42"] = np.nan
-
     psar = ta.psar(df["High"], df["Low"], df["Close"])
     if psar is not None and not psar.empty:
         bull_cols = [col for col in psar.columns if "PSARl" in col]
@@ -848,8 +826,5 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         df["psar_bear"] = False
 
     df["linear_regression_slope_micro"] = ta.slope(df["Close"], length=config.micro_lookback)
-    slope_len = config.classic_indicators.get("SLOPE", 8)
-    slope_len = slope_len[0] if isinstance(slope_len, list) else int(slope_len)
-    df["linear_regression_slope_8"] = ta.slope(df["Close"], length=slope_len)
 
     return df

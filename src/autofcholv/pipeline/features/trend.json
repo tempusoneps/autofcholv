@@ -739,16 +739,6 @@
         "name": "EMA 250",
         "comment": "Exponential moving average of Close over 250 periods"
     },
-    "ema_20_cross_above_ema_250": {
-        "type": "bool",
-        "name": "EMA 20 Cross Above EMA 250",
-        "comment": "True when EMA 20 crosses above EMA 250 on the current bar"
-    },
-    "ema_20_cross_below_ema_250": {
-        "type": "bool",
-        "name": "EMA 20 Cross Below EMA 250",
-        "comment": "True when EMA 20 crosses below EMA 250 on the current bar"
-    },
     "adx_14": {
         "type": "float",
         "name": "ADX 14",
@@ -764,11 +754,6 @@
         "name": "DMN 14",
         "comment": "Negative directional movement over 14 periods"
     },
-    "adx_42": {
-        "type": "float",
-        "name": "ADX 42",
-        "comment": "Average Directional Index over 42 periods"
-    },
     "psar_bull": {
         "type": "bool",
         "name": "PSAR Bull",
@@ -783,10 +768,5 @@
         "type": "float",
         "name": "Micro Linear Regression Slope",
         "comment": "Linear regression slope of Close over micro lookback"
-    },
-    "linear_regression_slope_8": {
-        "type": "float",
-        "name": "Linear Regression Slope 8",
-        "comment": "Linear regression slope of Close over 8 periods"
     }
 }
