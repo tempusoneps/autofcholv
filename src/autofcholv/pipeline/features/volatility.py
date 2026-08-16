@@ -505,7 +505,7 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     # --- Indicator features used by signal.py ---
 
     df["bb_width"] = (df["ub"] - df["lb"]) / df["mb"].replace(0, np.nan)
-    df["bb_width_q20"] = df["bb_width"].rolling(100).quantile(0.2)
+    df["bb_width_q20"] = df["bb_width"].rolling(config.macro_lookback).quantile(0.2)
     df["bb_width_sma_medium"] = df["bb_width"].rolling(config.medium_lookback).mean()
     df["atr_sma_medium"] = df["atr_medium"].rolling(config.medium_lookback).mean()
 
@@ -518,11 +518,12 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["kc_lower"] = kc_mid - 2 * atr_local
 
     # Choppiness 14
-    diff_chop = (df["High"].rolling(14).max() - df["Low"].rolling(14).min()).replace(0, np.nan)
+    chop_len = int(config.classic_indicators.get("CHOP", 14)) if hasattr(config, "classic_indicators") else 14
+    diff_chop = (df["High"].rolling(chop_len).max() - df["Low"].rolling(chop_len).min()).replace(0, np.nan)
     atr_chop_series = ta.atr(df["High"], df["Low"], df["Close"], length=1)
     if atr_chop_series is not None and not atr_chop_series.empty:
-        atr_chop_sum = atr_chop_series.rolling(14).sum().replace(0, np.nan)
-        df["chop14"] = 100.0 * (np.log10(atr_chop_sum) - np.log10(diff_chop)) / np.log10(14)
+        atr_chop_sum = atr_chop_series.rolling(chop_len).sum().replace(0, np.nan)
+        df["chop14"] = 100.0 * (np.log10(atr_chop_sum) - np.log10(diff_chop)) / np.log10(chop_len)
     else:
         df["chop14"] = np.nan
 
@@ -545,8 +546,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
 
     df["donchian_high_short_shift1"] = df["High"].rolling(config.short_lookback).max().shift(1)
     df["donchian_low_short_shift1"] = df["Low"].rolling(config.short_lookback).min().shift(1)
-    df["donchian_high_30_shift1"] = df["High"].rolling(30).max().shift(1)
-    df["donchian_low_30_shift1"] = df["Low"].rolling(30).min().shift(1)
+    df["donchian_high_30_shift1"] = df["High"].rolling(config.morning_bars).max().shift(1)
+    df["donchian_low_30_shift1"] = df["Low"].rolling(config.morning_bars).min().shift(1)
     df["close_donchian_high_medium_shift1"] = df["Close"].rolling(config.medium_lookback).max().shift(1)
     df["close_donchian_low_medium_shift1"] = df["Close"].rolling(config.medium_lookback).min().shift(1)
 

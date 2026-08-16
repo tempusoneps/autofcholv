@@ -24,6 +24,26 @@ class Config:
     slow_trend_lookback: int = 245
     ibs_lookback: int = 5
     drop_first_rows: int = 245
+    classic_indicators: Dict[str, Any] = field(
+        default_factory=lambda: {
+            "RSI": 14,
+            "STOCHRSI": 14,
+            "MACD": [12, 26, 9],
+            "PPO": [12, 26, 9],
+            "WILLIAMS_R": 14,
+            "AO": [5, 34],
+            "UO": [7, 14, 28],
+            "MFI": 14,
+            "SUPERTREND": [10, 3.0],
+            "TRIX": [15, 9],
+            "ADX": [14, 42],
+            "SLOPE": 8,
+            "CHOP": 14,
+            "BIAS36": [3, 6],
+            "CONNORS_RSI": [3, 2],
+        }
+    )
+    ema_windows: list[int] = field(default_factory=lambda: [8, 20, 21, 55, 250])
 
 
 CONFIG_FIELD_NAMES = {field_name for field_name in Config.__dataclass_fields__}
@@ -46,6 +66,8 @@ CONFIG_KEY_ALIASES = {
     "SLOW_TREND_LOOKBACK": "slow_trend_lookback",
     "IBS_LOOKBACK": "ibs_lookback",
     "DROP_FIRST_ROWS": "drop_first_rows",
+    "CLASSIC_INDICATORS": "classic_indicators",
+    "EMA_WINDOWS": "ema_windows",
 }
 FIELD_TO_CONFIG_KEY = {field: key for key, field in CONFIG_KEY_ALIASES.items()}
 DEFAULT_CONFIG = {
@@ -134,7 +156,7 @@ def _coerce_config_value(value: Any, field_type: Any) -> Any:
         return int(value)
     if field_type is str:
         return str(value)
-    if get_origin(field_type) is list:
+    if get_origin(field_type) in (list, tuple) or field_type is list:
         if isinstance(value, str):
             value = [item.strip() for item in value.split(",") if item.strip()]
         return [int(item) for item in value]

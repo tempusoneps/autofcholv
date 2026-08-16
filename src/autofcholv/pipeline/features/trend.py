@@ -714,7 +714,12 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     kama_short = ta.kama(df["Close"], length=config.short_lookback)
     df["kama_short"] = kama_short if kama_short is not None else np.nan
 
-    trix_result = ta.trix(df["Close"], length=15, signal=9)
+    trix_params = config.classic_indicators.get("TRIX", [15, 9])
+    if isinstance(trix_params, list):
+        trix_len, trix_sig = trix_params[0], trix_params[1] if len(trix_params) > 1 else 9
+    else:
+        trix_len, trix_sig = int(trix_params), 9
+    trix_result = ta.trix(df["Close"], length=trix_len, signal=trix_sig)
     if trix_result is not None and not trix_result.empty:
         df["trix15"] = trix_result.iloc[:, 0]
         df["trix15_signal"] = trix_result.iloc[:, 1]
@@ -722,7 +727,14 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         df["trix15"] = np.nan
         df["trix15_signal"] = np.nan
 
-    supertrend_result = ta.supertrend(df["High"], df["Low"], df["Close"], length=10, multiplier=3.0)
+    st_params = config.classic_indicators.get("SUPERTREND", [10, 3.0])
+    if isinstance(st_params, list):
+        st_len = st_params[0]
+        st_mult = st_params[1] if len(st_params) > 1 else 3.0
+    else:
+        st_len = int(st_params)
+        st_mult = 3.0
+    supertrend_result = ta.supertrend(df["High"], df["Low"], df["Close"], length=st_len, multiplier=st_mult)
     if supertrend_result is not None and not supertrend_result.empty:
         df["supertrend_dir"] = supertrend_result.iloc[:, 1]
     else:
@@ -783,33 +795,45 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["lower_range_pos"] = df["low_short"] + (df["high_short"] - df["low_short"]) * 0.3
     df["upper_range_pos"] = df["high_short"] - (df["high_short"] - df["low_short"]) * 0.3
 
-    df["ema_8"] = ta.ema(df["Close"], length=8)
-    df["ema_20"] = ta.ema(df["Close"], length=20)
-    df["ema_21"] = ta.ema(df["Close"], length=21)
-    df["ema_55"] = ta.ema(df["Close"], length=55)
-    df["ema_250"] = ta.ema(df["Close"], length=250)
+    ema_windows = getattr(config, "ema_windows", [8, 20, 21, 55, 250])
+    for w in ema_windows:
+        df[f"ema_{w}"] = ta.ema(df["Close"], length=w)
+
+    ema_20_series = df.get("ema_20", df.get(f"ema_{config.medium_lookback}", ta.ema(df["Close"], length=config.medium_lookback)))
+    ema_250_series = df.get("ema_250", ta.ema(df["Close"], length=250))
     df["ema_20_cross_above_ema_250"] = (
-        (df["ema_20"].shift(1) < df["ema_250"].shift(1))
-        & (df["ema_20"] > df["ema_250"])
+        (ema_20_series.shift(1) < ema_250_series.shift(1))
+        & (ema_20_series > ema_250_series)
     )
     df["ema_20_cross_below_ema_250"] = (
-        (df["ema_20"].shift(1) > df["ema_250"].shift(1))
-        & (df["ema_20"] < df["ema_250"])
+        (ema_20_series.shift(1) > ema_250_series.shift(1))
+        & (ema_20_series < ema_250_series)
     )
 
-    adx_14 = ta.adx(df["High"], df["Low"], df["Close"], length=14)
+    adx_params = config.classic_indicators.get("ADX", [14, 42])
+    if isinstance(adx_params, list):
+        adx_len1 = adx_params[0]
+        adx_len2 = adx_params[1] if len(adx_params) > 1 else 42
+    else:
+        adx_len1, adx_len2 = int(adx_params), 42
+
+    adx_14 = ta.adx(df["High"], df["Low"], df["Close"], length=adx_len1)
     if adx_14 is not None and not adx_14.empty:
-        df["adx_14"] = adx_14["ADX_14"] if "ADX_14" in adx_14 else np.nan
-        df["dmp_14"] = adx_14["DMP_14"] if "DMP_14" in adx_14 else np.nan
-        df["dmn_14"] = adx_14["DMN_14"] if "DMN_14" in adx_14 else np.nan
+        adx_cols = [c for c in adx_14.columns if c.startswith("ADX_")]
+        dmp_cols = [c for c in adx_14.columns if c.startswith("DMP_")]
+        dmn_cols = [c for c in adx_14.columns if c.startswith("DMN_")]
+        df["adx_14"] = adx_14[adx_cols[0]] if adx_cols else adx_14.iloc[:, 0]
+        df["dmp_14"] = adx_14[dmp_cols[0]] if dmp_cols else adx_14.iloc[:, 1]
+        df["dmn_14"] = adx_14[dmn_cols[0]] if dmn_cols else adx_14.iloc[:, 2]
     else:
         df["adx_14"] = np.nan
         df["dmp_14"] = np.nan
         df["dmn_14"] = np.nan
 
-    adx_42 = ta.adx(df["High"], df["Low"], df["Close"], length=42)
-    if adx_42 is not None and not adx_42.empty and "ADX_42" in adx_42:
-        df["adx_42"] = adx_42["ADX_42"]
+    adx_42 = ta.adx(df["High"], df["Low"], df["Close"], length=adx_len2)
+    if adx_42 is not None and not adx_42.empty:
+        adx42_cols = [c for c in adx_42.columns if c.startswith("ADX_")]
+        df["adx_42"] = adx_42[adx42_cols[0]] if adx42_cols else adx_42.iloc[:, 0]
     else:
         df["adx_42"] = np.nan
 
@@ -824,6 +848,8 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         df["psar_bear"] = False
 
     df["linear_regression_slope_micro"] = ta.slope(df["Close"], length=config.micro_lookback)
-    df["linear_regression_slope_8"] = ta.slope(df["Close"], length=8)
+    slope_len = config.classic_indicators.get("SLOPE", 8)
+    slope_len = slope_len[0] if isinstance(slope_len, list) else int(slope_len)
+    df["linear_regression_slope_8"] = ta.slope(df["Close"], length=slope_len)
 
     return df
