@@ -15,6 +15,7 @@
 │   ├── FEATURES.md                   # Generated catalog of feature columns from JSON metadata.
 │   ├── FEATURES_OVERVIEW.md          # High-level feature set overview.
 │   ├── INSTALLATION.md               # Install instructions for pip, uv, and source installs.
+│   ├── PLAN_v0.4.0.md                # Implementation plan for version 0.4.0 features.
 │   ├── REF.md                        # Short project references and notes.
 │   ├── RESOURCES.md                  # Links to related project docs.
 │   ├── RULE.md                       # Project rules or conventions.
