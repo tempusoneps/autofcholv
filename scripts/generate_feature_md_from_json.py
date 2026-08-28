@@ -26,7 +26,6 @@ PIPELINE_ORDER = [
     "lag",
     "mix",
     "group",
-    "signal",
 ]
 
 MODULE_TITLES = {
@@ -42,7 +41,6 @@ MODULE_TITLES = {
     "lag": "Lag Features",
     "mix": "Mixed / Advanced Indicators",
     "group": "Group / Pattern Features",
-    "signal": "Signals",
 }
 
 

@@ -67,8 +67,6 @@
 │       │       ├── price.json        # Price feature metadata.
 │       │       ├── resample.py       # Daily resample and previous-day features.
 │       │       ├── resample.json     # Resample feature metadata.
-│       │       ├── signal.py         # Signal/idea features.
-│       │       ├── signal.json       # Signal feature metadata.
 │       │       ├── time.py           # Time/session features.
 │       │       ├── time.json         # Time feature metadata.
 │       │       ├── trend.py          # Trend and moving-average features.

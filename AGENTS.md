@@ -59,12 +59,6 @@ This includes adding, deleting, moving, or renaming files and directories.
 
 Any change that adds, removes, or renames generated feature columns in `src/autofcholv/pipeline/features/*.py` must update the matching `src/autofcholv/pipeline/features/*.json` file.
 
-## Keep Signal And Strategy Modules Signal-Only
-
-Do not write code that creates new indicators or non-signal features in `src/autofcholv/pipeline/features/signal.py` or `src/autofcholv/pipeline/features/strategy.py`.
-
-These files must only create signal columns and signal-calculation helpers derived from features or indicators that were already created by earlier pipeline modules.
-
 ## Regenerate Generated Documentation
 
 When feature metadata changes, regenerate the feature catalog:
@@ -183,8 +177,6 @@ AI agents must **NOT** create git commits automatically (`git commit`). Always a
 │       │       ├── price.json        # Price feature metadata.
 │       │       ├── resample.py       # Daily resample and previous-day features.
 │       │       ├── resample.json     # Resample feature metadata.
-│       │       ├── signal.py         # Signal/idea features.
-│       │       ├── signal.json       # Signal feature metadata.
 │       │       ├── time.py           # Time/session features.
 │       │       ├── time.json         # Time feature metadata.
 │       │       ├── trend.py          # Trend and moving-average features.

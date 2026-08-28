@@ -21,11 +21,10 @@ EOF
 
 for doc in "${DOCS[@]}"; do
   echo "" >> "$AGENTS"
-  echo "" >> "$GEMINI"
-  echo "" >> "$CLAUDE"
   cat "$ROOT_DIR/$doc" >> "$AGENTS"
-  cat "$ROOT_DIR/$doc" >> "$GEMINI"
-  cat "$ROOT_DIR/$doc" >> "$CLAUDE"
 done
+
+cp "$AGENTS" "$GEMINI"
+cp "$AGENTS" "$CLAUDE"
 
 echo "Generated AGENTS.md, GEMINI.md, CLAUDE.md"

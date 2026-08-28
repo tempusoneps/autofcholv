@@ -56,7 +56,7 @@ Returns a validation report without mutating the DataFrame.
 
 **Entry point:** `build_features(df, config) → df`
 
-Runs 9 sub-modules in order. Each module adds columns according to its `.json` specification (see [`features/README.md`](features/README.md)).
+Runs 12 sub-modules in order. Each module adds columns according to its `.json` specification.
 
 | # | Module | File | Key outputs |
 |---|---|---|---|
@@ -64,11 +64,14 @@ Runs 9 sub-modules in order. Each module adds columns according to its `.json` s
 | 2 | Resample | `resample.py` | `prev_day_*` daily aggregates |
 | 3 | Candlestick | `candlestick.py` | `body`, `height`, `upwick`, `lowwick`, `ibs`, `clv`, `body_rate`, `vbr`, … |
 | 4 | Close | `close.py` | `ema_fast`, `ema_slow`, `rsi`, `macd`, `mb`, `ub`, `lb`, … |
-| 5 | Volume | `volume.py` | `volume_avg`, `volume_zscore` |
-| 6 | Lag | `lag.py` | `*_lag1` columns for OHLCV, body, wicks, ibs, rsi |
-| 7 | Mix | `mix.py` | `ibs_n`, `is_fvg`, `vwap`, `atr`, `adx`, `direction`, `streak`, … |
-| 8 | Group | `group.py` | `volume_group`, `vol_high_pattern`, `ibs_volume_pattern`, `high_rsi_pattern`, `high_ub_pattern`, … |
-| 9 | Signal | `signal.py` | `couple_cs_signal`, `ema_cross_signal` |
+| 5 | Price | `price.py` | `vwap`, `typical_to_vwap`, `avgprice`, … |
+| 6 | Trend | `trend.py` | `regression_bias`, `adx_strength`, `ma_signal`, … |
+| 7 | Volatility | `volatility.py` | `atr`, `bollinger_*`, `keltner_*`, … |
+| 8 | Volume | `volume.py` | `volume_avg`, `volume_zscore` |
+| 9 | Liquidity | `liquidity.py` | `amihud`, `bidask_spread`, `market_placement`, … |
+| 10 | Lag | `lag.py` | `*_lag1` columns for OHLCV, body, wicks, ibs, rsi |
+| 11 | Mix | `mix.py` | `ibs_n`, `is_fvg`, `vwap`, `atr`, `adx`, `direction`, `streak`, … |
+| 12 | Group | `group.py` | `volume_group`, `vol_high_pattern`, `ibs_volume_pattern`, `high_rsi_pattern`, `high_ub_pattern`, … |
 
 ---
 

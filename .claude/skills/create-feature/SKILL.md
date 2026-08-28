@@ -25,8 +25,8 @@ Clarify all of the following before writing any code:
 **Current pipeline order** (dependencies must come BEFORE):
 ```
 1. time        2. resample    3. candlestick  4. close
-5. volume      6. lag         7. mix          8. group
-9. signal
+5. price       6. trend       7. volatility   8. volume
+9. liquidity  10. lag        11. mix         12. group
 ```
 
 ---

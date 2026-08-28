@@ -379,16 +379,6 @@ def test_extract_features_group_columns():
         assert col in result.columns, f"Missing group column: '{col}'"
 
 
-def test_extract_features_signal_columns():
-    result = extract_features(make_ohlcv(300))
-    expected = [
-        "couple_cs_signal",
-        "ema_cross_signal",
-    ]
-    for col in expected:
-        assert col in result.columns, f"Missing signal column: '{col}'"
-
-
 def test_extract_features_signal_context_helper_columns():
     result = extract_features(make_ohlcv(300))
     expected = [ "body_abs", "body_abs_sma_medium", "range_sma_medium", "candle_range_ratio",
@@ -424,12 +414,6 @@ def test_extract_features_color_values():
 def test_extract_features_direction_values():
     result = extract_features(make_ohlcv(300))
     assert set(result["direction"].unique()).issubset({1, -1})
-
-
-def test_extract_features_signal_values():
-    result = extract_features(make_ohlcv(300))
-    assert set(result["couple_cs_signal"].unique()).issubset({1, -1, 0})
-    assert set(result["ema_cross_signal"].unique()).issubset({1, -1, 0})
 
 
 def test_extract_features_candlestick_non_negative():

@@ -12,7 +12,6 @@ from autofcholv.pipeline.features.candlestick import extract_features as extract
 from autofcholv.pipeline.features.lag import extract_features as extract_lag_features
 from autofcholv.pipeline.features.liquidity import extract_features as extract_liquidity_features
 from autofcholv.pipeline.features.group import extract_features as extract_group_features
-from autofcholv.pipeline.features.signal import extract_features as extract_signal_features
 from autofcholv.pipeline.features.volume import extract_features as extract_volume_features
 from autofcholv.utils.timing import timing, timeit
 
@@ -29,7 +28,6 @@ FEATURE_STEPS = [
     ("lag_features", extract_lag_features),
     ("mix_features", extract_mix_features),
     ("group_features", extract_group_features),
-    ("signal_features", extract_signal_features),
 ]
 
 

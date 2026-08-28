@@ -111,7 +111,6 @@ def test_cli_successful_extraction():
             "close_lag1", "rsi_medium_lag1",             # lag.py
             "atr_medium", "vwap", "custom_001",          # mix.py
             "volume_group", "vol_high_pattern",   # group.py
-            "couple_cs_signal", "ema_cross_signal",  # signal.py
         ]
         for col in expected_cols:
             assert col in out_df.columns, f"Missing output column: '{col}'"
