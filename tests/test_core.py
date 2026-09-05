@@ -286,6 +286,8 @@ def test_extract_features_volatility_columns():
         "apz_width", "pac_width_bias", "pac_position", "env_position",
         "realized_volatility", "realized_volatility_zscore",
         "rwi", "mssi", "vix_bw",
+        "parkinson_vol", "garman_klass_vol", "rogers_satchell_vol", "yang_zhang_vol", "volatility_ratio_yz",
+        "squeeze_on", "squeeze_off", "squeeze_count", "squeeze_momentum", "hvr", "rvi_14", "is_choppy", "is_trending",
         "adaptive_bollinger_width", "vwap_bbw_efficiency", "chaikin_volatility", "keltner_width", "keltner_upper_signal", "keltner_lower_signal", "env_upper_signal", "env_lower_signal", "fibonacci_band_width", "fibonacci_band_position", "donchian_mid_signal", "bbw_signal", "kc_signal", "atr_upper_medium", "atr_lower_medium", "fb_upper_signal", "pac_width_signal", "volume_std", "grid", "lcsd",
     ]
     for col in expected:
@@ -328,6 +330,7 @@ def test_extract_features_liquidity_columns():
     expected = [
         "market_placement", "path_liquidity", "spread_proxy",
         "spread_volatility_ratio", "price_volume_resistance", "coppock_atr_volume", "bidask_spread", "market_placement_v2", "liquidity_v3", "amihud", "apz", "apz_upper", "apz_lower", "bolling", "bolling_width", "cv", "dc", "dc_signal", "dc_v2", "kcupper", "kclower", "pac", "pacupper", "paclower", "pacupper_v2", "paclower_v2",
+        "corwin_schultz_spread", "roll_spread", "kyles_lambda", "amihud_illiq", "amihud_zscore",
     ]
     for col in expected:
         assert col in result.columns, f"Missing liquidity column: '{col}'"
@@ -362,6 +365,9 @@ def test_extract_features_mix_columns():
         "keltner_position",
         "true_range_pct", "gap_pct", "range_position", "body_to_true_range", "fear_greed_yidai_v1", "damaov10", "adx_mtm", "mtam", "msbt", "copp_atr_bull", "adx_mtm_neg",
         "cvr_v0", "cbr_v1", "fbnq_pct_v5", "price_volume_resist",
+        "liquidity_sweep_high", "liquidity_sweep_low",
+        "fvg_bullish", "fvg_bearish", "fvg_gap_pct",
+        "equal_highs", "equal_lows",
     ]
     for col in expected:
         assert col in result.columns, f"Missing mix column: '{col}'"

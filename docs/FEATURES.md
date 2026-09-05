@@ -620,6 +620,19 @@ The pipeline executes in the order listed below.
 | `donchian_low_short_shift1` | float | Short lookback rolling Low minimum shifted one bar |
 | `close_donchian_high_medium_shift1` | float | Medium lookback rolling Close maximum shifted one bar |
 | `close_donchian_low_medium_shift1` | float | Medium lookback rolling Close minimum shifted one bar |
+| `parkinson_vol` | float | Rolling Parkinson (1980) High-Low volatility = sqrt(1/(4*ln(2)*n) * sum(ln(High/Low)^2)) with n = VOLATILITY_LOOKBACK |
+| `garman_klass_vol` | float | Rolling Garman-Klass (1980) OHLC volatility with n = VOLATILITY_LOOKBACK |
+| `rogers_satchell_vol` | float | Rolling Rogers-Satchell (1991) OHLC drift-independent volatility with n = VOLATILITY_LOOKBACK |
+| `yang_zhang_vol` | float | Rolling Yang-Zhang (2000) overnight jump and drift-independent volatility with n = VOLATILITY_LOOKBACK |
+| `volatility_ratio_yz` | float | Ratio of Yang-Zhang volatility to close-to-close rolling standard deviation |
+| `squeeze_on` | bool | True when Bollinger Bands are completely inside Keltner Channel (ub < kc_upper and lb > kc_lower) |
+| `squeeze_off` | bool | True when Bollinger Bands expand outside Keltner Channel (~squeeze_on) |
+| `squeeze_count` | int | Cumulative count of consecutive bars in squeeze_on state |
+| `squeeze_momentum` | float | Rolling linear regression slope of Close - (DonchianMid + SMA) / 2 over VOLATILITY_LOOKBACK |
+| `hvr` | float | Ratio of short-term HV (SHORT_LOOKBACK) to long-term HV (LONG_LOOKBACK) |
+| `rvi_14` | float | Relative Volatility Index (Dorsey, 1993) measuring 10-period standard deviation directionality smoothed over 14-period EMA |
+| `is_choppy` | bool | True when Choppiness Index chop14 > 61.8 (consolidation / sideway market) |
+| `is_trending` | bool | True when Choppiness Index chop14 < 38.2 (strong directional trend) |
 
 ---
 
@@ -722,6 +735,11 @@ The pipeline executes in the order listed below.
 | `liquidity_v3` | float | Volume divided by log spread and return volatility proxy |
 | `coppock_atr_volume` | float | Coppock momentum multiplied by normalized ATR and volume pressure |
 | `amihud` | float | Amihud illiquidity proxy using intraday shortest price path |
+| `corwin_schultz_spread` | float | Corwin-Schultz (2012) 2-day high-low bid-ask spread estimator with VOLUME_LOOKBACK rolling window |
+| `roll_spread` | float | Roll (1984) effective bid-ask spread estimator based on serial covariance of price changes |
+| `kyles_lambda` | float | Kyle (1985) lambda regression slope of price return against signed volume over VOLUME_LOOKBACK |
+| `amihud_illiq` | float | Amihud (2002) return-to-dollar-volume illiquidity ratio rolling mean over VOLUME_LOOKBACK |
+| `amihud_zscore` | float | Rolling Z-score of Amihud illiquidity ratio over VOLUME_LOOKBACK |
 
 ---
 
@@ -792,6 +810,13 @@ The pipeline executes in the order listed below.
 | `msbt` | float | Momentum, std momentum, BBW, and taker buy composite |
 | `copp_atr_bull` | float | Coppock momentum times ATR times taker buy activity |
 | `connors_rsi` | float | ConnorsRSI indicator (RSI(3) + StreakRSI(2) + PriceRank) |
+| `liquidity_sweep_high` | bool | True when High exceeds previous swing high but Close settles back below it |
+| `liquidity_sweep_low` | bool | True when Low drops below previous swing low but Close settles back above it |
+| `fvg_bullish` | bool | True when Low is greater than High from 2 bars ago |
+| `fvg_bearish` | bool | True when High is lower than Low from 2 bars ago |
+| `fvg_gap_pct` | float | Magnitude of Fair Value Gap divided by Close price |
+| `equal_highs` | bool | True when High matches previous High within 0.05% tolerance (liquidity pool) |
+| `equal_lows` | bool | True when Low matches previous Low within 0.05% tolerance (liquidity pool) |
 
 ---
 

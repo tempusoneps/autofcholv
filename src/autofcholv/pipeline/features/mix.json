@@ -153,5 +153,40 @@
         "type": "float",
         "name": "Connors RSI for Signals",
         "comment": "ConnorsRSI indicator (RSI(3) + StreakRSI(2) + PriceRank)"
+    },
+    "liquidity_sweep_high": {
+        "type": "bool",
+        "name": "Liquidity Sweep High",
+        "comment": "True when High exceeds previous swing high but Close settles back below it"
+    },
+    "liquidity_sweep_low": {
+        "type": "bool",
+        "name": "Liquidity Sweep Low",
+        "comment": "True when Low drops below previous swing low but Close settles back above it"
+    },
+    "fvg_bullish": {
+        "type": "bool",
+        "name": "Bullish Fair Value Gap",
+        "comment": "True when Low is greater than High from 2 bars ago"
+    },
+    "fvg_bearish": {
+        "type": "bool",
+        "name": "Bearish Fair Value Gap",
+        "comment": "True when High is lower than Low from 2 bars ago"
+    },
+    "fvg_gap_pct": {
+        "type": "float",
+        "name": "Fair Value Gap Size Pct",
+        "comment": "Magnitude of Fair Value Gap divided by Close price"
+    },
+    "equal_highs": {
+        "type": "bool",
+        "name": "Equal Highs",
+        "comment": "True when High matches previous High within 0.05% tolerance (liquidity pool)"
+    },
+    "equal_lows": {
+        "type": "bool",
+        "name": "Equal Lows",
+        "comment": "True when Low matches previous Low within 0.05% tolerance (liquidity pool)"
     }
 }

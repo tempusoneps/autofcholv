@@ -533,5 +533,70 @@
         "type": "float",
         "name": "Close Donchian Low Medium Shift 1",
         "comment": "Medium lookback rolling Close minimum shifted one bar"
+    },
+    "parkinson_vol": {
+        "type": "float",
+        "name": "Parkinson Volatility",
+        "comment": "Rolling Parkinson (1980) High-Low volatility = sqrt(1/(4*ln(2)*n) * sum(ln(High/Low)^2)) with n = VOLATILITY_LOOKBACK"
+    },
+    "garman_klass_vol": {
+        "type": "float",
+        "name": "Garman-Klass Volatility",
+        "comment": "Rolling Garman-Klass (1980) OHLC volatility with n = VOLATILITY_LOOKBACK"
+    },
+    "rogers_satchell_vol": {
+        "type": "float",
+        "name": "Rogers-Satchell Volatility",
+        "comment": "Rolling Rogers-Satchell (1991) OHLC drift-independent volatility with n = VOLATILITY_LOOKBACK"
+    },
+    "yang_zhang_vol": {
+        "type": "float",
+        "name": "Yang-Zhang Volatility",
+        "comment": "Rolling Yang-Zhang (2000) overnight jump and drift-independent volatility with n = VOLATILITY_LOOKBACK"
+    },
+    "volatility_ratio_yz": {
+        "type": "float",
+        "name": "Yang-Zhang to Close-to-Close Volatility Ratio",
+        "comment": "Ratio of Yang-Zhang volatility to close-to-close rolling standard deviation"
+    },
+    "squeeze_on": {
+        "type": "bool",
+        "name": "TTM Squeeze On",
+        "comment": "True when Bollinger Bands are completely inside Keltner Channel (ub < kc_upper and lb > kc_lower)"
+    },
+    "squeeze_off": {
+        "type": "bool",
+        "name": "TTM Squeeze Off",
+        "comment": "True when Bollinger Bands expand outside Keltner Channel (~squeeze_on)"
+    },
+    "squeeze_count": {
+        "type": "int",
+        "name": "TTM Squeeze Consecutive Count",
+        "comment": "Cumulative count of consecutive bars in squeeze_on state"
+    },
+    "squeeze_momentum": {
+        "type": "float",
+        "name": "TTM Squeeze Momentum",
+        "comment": "Rolling linear regression slope of Close - (DonchianMid + SMA) / 2 over VOLATILITY_LOOKBACK"
+    },
+    "hvr": {
+        "type": "float",
+        "name": "Historical Volatility Ratio",
+        "comment": "Ratio of short-term HV (SHORT_LOOKBACK) to long-term HV (LONG_LOOKBACK)"
+    },
+    "rvi_14": {
+        "type": "float",
+        "name": "Relative Volatility Index (14)",
+        "comment": "Relative Volatility Index (Dorsey, 1993) measuring 10-period standard deviation directionality smoothed over 14-period EMA"
+    },
+    "is_choppy": {
+        "type": "bool",
+        "name": "Choppy Market Regime",
+        "comment": "True when Choppiness Index chop14 > 61.8 (consolidation / sideway market)"
+    },
+    "is_trending": {
+        "type": "bool",
+        "name": "Trending Market Regime",
+        "comment": "True when Choppiness Index chop14 < 38.2 (strong directional trend)"
     }
 }

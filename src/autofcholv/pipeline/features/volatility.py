@@ -14,6 +14,59 @@ def _scale_01(series: pd.Series, window: int) -> pd.Series:
     return (series - low) / (high - low + EPS)
 
 
+def calc_parkinson_vol(df: pd.DataFrame, window: int) -> pd.Series:
+    window = max(1, window)
+    min_p = min(2, window)
+    hl_ratio = np.log(df["High"] / (df["Low"] + EPS))
+    var = (hl_ratio ** 2).rolling(window, min_periods=min_p).mean() / (4.0 * np.log(2.0))
+    return np.sqrt(np.maximum(0.0, var))
+
+
+
+def calc_garman_klass_vol(df: pd.DataFrame, window: int) -> pd.Series:
+    window = max(1, window)
+    min_p = min(2, window)
+    hl_ratio = np.log(df["High"] / (df["Low"] + EPS))
+    co_ratio = np.log(df["Close"] / (df["Open"] + EPS))
+    term1 = 0.5 * (hl_ratio ** 2)
+    term2 = (2.0 * np.log(2.0) - 1.0) * (co_ratio ** 2)
+    var = (term1 - term2).rolling(window, min_periods=min_p).mean()
+    return np.sqrt(np.maximum(0.0, var))
+
+
+def calc_rogers_satchell_vol(df: pd.DataFrame, window: int) -> pd.Series:
+    window = max(1, window)
+    min_p = min(2, window)
+    hc = np.log(df["High"] / (df["Close"] + EPS))
+    ho = np.log(df["High"] / (df["Open"] + EPS))
+    lc = np.log(df["Low"] / (df["Close"] + EPS))
+    lo = np.log(df["Low"] / (df["Open"] + EPS))
+    rs = hc * ho + lc * lo
+    var = rs.rolling(window, min_periods=min_p).mean()
+    return np.sqrt(np.maximum(0.0, var))
+
+
+def calc_yang_zhang_vol(df: pd.DataFrame, window: int) -> pd.Series:
+    window = max(1, window)
+    min_p = min(2, window)
+    prev_close = df["Close"].shift(1)
+    overnight = np.log(df["Open"] / (prev_close + EPS))
+    open_to_close = np.log(df["Close"] / (df["Open"] + EPS))
+
+    vo = overnight.rolling(window, min_periods=min_p).var(ddof=1)
+    vc = open_to_close.rolling(window, min_periods=min_p).var(ddof=1)
+
+    hc = np.log(df["High"] / (df["Close"] + EPS))
+    ho = np.log(df["High"] / (df["Open"] + EPS))
+    lc = np.log(df["Low"] / (df["Close"] + EPS))
+    lo = np.log(df["Low"] / (df["Open"] + EPS))
+    vrs = (hc * ho + lc * lo).rolling(window, min_periods=min_p).mean()
+
+    k = 0.34 / (1.34 + (window + 1.0) / (window - 1.0)) if window > 1 else 0.5
+    var = vo + k * vc + (1.0 - k) * vrs
+    return np.sqrt(np.maximum(0.0, var))
+
+
 def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     """
     Calculate volatility and channel features adapted from quant-ohlcv-feature.
@@ -26,6 +79,15 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
         DataFrame with new features.
     """
     volatility_n = config.volatility_lookback
+
+    df["parkinson_vol"] = calc_parkinson_vol(df, volatility_n)
+    df["garman_klass_vol"] = calc_garman_klass_vol(df, volatility_n)
+    df["rogers_satchell_vol"] = calc_rogers_satchell_vol(df, volatility_n)
+    df["yang_zhang_vol"] = calc_yang_zhang_vol(df, volatility_n)
+
+    cc_log_return = np.log(df["Close"] / (df["Close"].shift(1) + EPS))
+    cc_vol = cc_log_return.rolling(volatility_n, min_periods=min(2, volatility_n)).std(ddof=1)
+    df["volatility_ratio_yz"] = df["yang_zhang_vol"] / (cc_vol + EPS)
 
     quote_volume_proxy = df["Close"] * df["Volume"]
     df["quote_volume_std"] = quote_volume_proxy.rolling(volatility_n, min_periods=2).std()
@@ -548,5 +610,61 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["donchian_low_short_shift1"] = df["Low"].rolling(config.short_lookback).min().shift(1)
     df["close_donchian_high_medium_shift1"] = df["Close"].rolling(config.medium_lookback).max().shift(1)
     df["close_donchian_low_medium_shift1"] = df["Close"].rolling(config.medium_lookback).min().shift(1)
+
+    # TTM Squeeze
+    if "ub" in df.columns and "lb" in df.columns and "kc_upper" in df.columns and "kc_lower" in df.columns:
+        squeeze_on = (df["ub"] < df["kc_upper"]) & (df["lb"] > df["kc_lower"])
+    else:
+        squeeze_on = pd.Series(False, index=df.index)
+
+    df["squeeze_on"] = squeeze_on
+    df["squeeze_off"] = ~squeeze_on
+
+    # Squeeze count: consecutive count of squeeze_on
+    squeeze_int = squeeze_on.astype(int)
+    squeeze_block = (~squeeze_on).cumsum()
+    df["squeeze_count"] = squeeze_int.groupby(squeeze_block).cumsum()
+
+    # Squeeze momentum: linear regression slope of delta = Close - (DonchianMid + SMA)/2
+    donchian_mid = (df["High"].rolling(volatility_n, min_periods=1).max() + df["Low"].rolling(volatility_n, min_periods=1).min()) / 2.0
+    sma_close = df["Close"].rolling(volatility_n, min_periods=1).mean()
+    delta = df["Close"] - (donchian_mid + sma_close) / 2.0
+    def _rolling_slope(series_window):
+        if len(series_window) < 2:
+            return 0.0
+        n_w = len(series_window)
+        xw = np.arange(n_w)
+        xw_mean = xw.mean()
+        xw_var = ((xw - xw_mean) ** 2).sum()
+        if xw_var == 0:
+            return 0.0
+        return ((xw - xw_mean) * (series_window - series_window.mean())).sum() / xw_var
+
+    df["squeeze_momentum"] = delta.rolling(volatility_n, min_periods=2).apply(_rolling_slope, raw=True).fillna(0.0)
+
+    # Historical Volatility Ratio (HVR)
+    short_w = max(2, config.short_lookback)
+    long_w = max(2, config.long_lookback)
+    log_ret = np.log(df["Close"] / (df["Close"].shift(1) + EPS))
+    hv_short = log_ret.rolling(short_w, min_periods=2).std(ddof=1)
+    hv_long = log_ret.rolling(long_w, min_periods=2).std(ddof=1)
+    df["hvr"] = hv_short / (hv_long + EPS)
+
+    # Relative Volatility Index (RVI 14)
+    std_10 = df["Close"].rolling(10, min_periods=2).std(ddof=0)
+    change = df["Close"].diff()
+    rvi_u = np.where(change > 0, std_10, 0.0)
+    rvi_d = np.where(change < 0, std_10, 0.0)
+    ema_u = pd.Series(rvi_u, index=df.index).ewm(span=14, adjust=False).mean()
+    ema_d = pd.Series(rvi_d, index=df.index).ewm(span=14, adjust=False).mean()
+    df["rvi_14"] = 100.0 * ema_u / (ema_u + ema_d + EPS)
+
+    # Regime states from chop14
+    if "chop14" in df.columns:
+        df["is_choppy"] = df["chop14"] > 61.8
+        df["is_trending"] = df["chop14"] < 38.2
+    else:
+        df["is_choppy"] = False
+        df["is_trending"] = False
 
     return df

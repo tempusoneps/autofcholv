@@ -192,7 +192,11 @@ AI agents must **NOT** create git commits automatically (`git commit`). Always a
 │
 └── tests/                            # Automated tests.
     ├── test_cli.py                   # CLI tests.
-    └── test_core.py                  # Core extraction and feature coverage tests.
+    ├── test_core.py                  # Core extraction and feature coverage tests.
+    ├── test_liquidity_proxies.py     # Fast isolated tests for liquidity and microstructure proxies.
+    ├── test_regime_squeeze.py        # Fast isolated tests for TTM Squeeze and regime features.
+    ├── test_smc_structure.py         # Fast isolated tests for SMC and price action structure features.
+    └── test_volatility_estimators.py # Fast isolated tests for range-based volatility estimators.
 ```
 
 ## Notes

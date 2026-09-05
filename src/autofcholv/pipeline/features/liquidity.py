@@ -125,6 +125,57 @@ def edge_rolling(df: pd.DataFrame, window: int, sign: bool = False, **kwargs) ->
     return pd.Series(s, index=df.index)
 
 
+def calc_corwin_schultz_spread(df: pd.DataFrame, window: int) -> pd.Series:
+    h = df["High"]
+    l = df["Low"]
+    h_prev = h.shift(1)
+    l_prev = l.shift(1)
+
+    hl_ratio_t = np.log(h / (l + EPS))
+    hl_ratio_prev = np.log(h_prev / (l_prev + EPS))
+    beta = hl_ratio_prev ** 2 + hl_ratio_t ** 2
+
+    h2 = np.maximum(h, h_prev)
+    l2 = np.minimum(l, l_prev)
+    gamma = np.log(h2 / (l2 + EPS)) ** 2
+
+    c = 3.0 - 2.0 * np.sqrt(2.0)
+    alpha = (np.sqrt(2.0 * beta) - np.sqrt(beta)) / c - np.sqrt(gamma / c)
+    exp_alpha = np.exp(alpha)
+    raw_spread = 2.0 * (exp_alpha - 1.0) / (1.0 + exp_alpha)
+    clamped_spread = np.maximum(0.0, raw_spread)
+    return pd.Series(clamped_spread, index=df.index).rolling(window, min_periods=2).mean()
+
+
+def calc_roll_spread(df: pd.DataFrame, window: int) -> pd.Series:
+    dp = df["Close"].diff()
+    dp_prev = dp.shift(1)
+    cov = dp.rolling(window, min_periods=2).cov(dp_prev)
+    roll_s = 2.0 * np.sqrt(np.maximum(0.0, -cov))
+    mean_p = df["Close"].rolling(window, min_periods=1).mean()
+    return roll_s / (mean_p + EPS)
+
+
+def calc_kyles_lambda(df: pd.DataFrame, window: int) -> pd.Series:
+    close_prev = df["Close"].shift(1)
+    ret = (df["Close"] - close_prev) / (close_prev + EPS)
+    signed_vol = np.sign(ret) * df["Volume"]
+    cov = ret.rolling(window, min_periods=2).cov(signed_vol)
+    var = signed_vol.rolling(window, min_periods=2).var()
+    return cov / (var + EPS)
+
+
+def calc_amihud_metrics(df: pd.DataFrame, window: int) -> tuple[pd.Series, pd.Series]:
+    close_prev = df["Close"].shift(1)
+    ret = (df["Close"] - close_prev) / (close_prev + EPS)
+    dollar_vol = df["Close"] * df["Volume"]
+    raw_illiq = ret.abs() / (dollar_vol + EPS)
+    illiq_mean = raw_illiq.rolling(window, min_periods=2).mean()
+    illiq_std = raw_illiq.rolling(window, min_periods=2).std(ddof=1)
+    zscore = (raw_illiq - illiq_mean) / (illiq_std + EPS)
+    return illiq_mean, zscore
+
+
 def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     """
     Calculate liquidity and price-volume composite features adapted from quant-ohlcv-feature.
@@ -215,6 +266,9 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     amihud_premium = (df["Close"] * df["Volume"]) / (normalized_shortest_path + EPS)
     df["amihud"] = pd.Series(amihud_premium, index=df.index).rolling(n, min_periods=2).mean()
 
-
+    df["corwin_schultz_spread"] = calc_corwin_schultz_spread(df, n)
+    df["roll_spread"] = calc_roll_spread(df, n)
+    df["kyles_lambda"] = calc_kyles_lambda(df, n)
+    df["amihud_illiq"], df["amihud_zscore"] = calc_amihud_metrics(df, n)
 
     return df

@@ -46,6 +46,27 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     low_lag2     = df["Low"].shift(2)
     df["is_fvg"] = (high_lag2 < df["Low"]) | (low_lag2 > df["High"])
 
+    # FVG detailed metrics
+    fvg_bullish = (df["Low"] > high_lag2).fillna(False).astype(bool)
+    fvg_bearish = (df["High"] < low_lag2).fillna(False).astype(bool)
+    df["fvg_bullish"] = fvg_bullish
+    df["fvg_bearish"] = fvg_bearish
+    gap_bull = (df["Low"] - high_lag2) / (df["Close"] + EPS)
+    gap_bear = (low_lag2 - df["High"]) / (df["Close"] + EPS)
+    df["fvg_gap_pct"] = np.where(fvg_bullish, gap_bull, np.where(fvg_bearish, gap_bear, 0.0))
+
+    # Liquidity sweeps (Stop Hunts / False Breakouts)
+    short_n = config.short_lookback
+    prev_swing_high = df["High"].shift(1).rolling(short_n, min_periods=1).max()
+    prev_swing_low = df["Low"].shift(1).rolling(short_n, min_periods=1).min()
+    df["liquidity_sweep_high"] = ((df["High"] > prev_swing_high) & (df["Close"] < prev_swing_high)).fillna(False).astype(bool)
+    df["liquidity_sweep_low"] = ((df["Low"] < prev_swing_low) & (df["Close"] > prev_swing_low)).fillna(False).astype(bool)
+
+    # Equal Highs / Lows (Liquidity pools with 0.05% tolerance)
+    eq_tol = 0.0005
+    df["equal_highs"] = (df["High"].shift(1).notna() & (((df["High"] - df["High"].shift(1)).abs() / (df["High"].shift(1) + EPS)) <= eq_tol)).fillna(False).astype(bool)
+    df["equal_lows"] = (df["Low"].shift(1).notna() & (((df["Low"] - df["Low"].shift(1)).abs() / (df["Low"].shift(1) + EPS)) <= eq_tol)).fillna(False).astype(bool)
+
     ulti = ta.uo(df["High"], df["Low"], df["Close"], fast=volatility_n // 2,
                  medium=volatility_n, slow=volatility_n * 2)
     if ulti is not None and not ulti.empty:

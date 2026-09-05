@@ -48,5 +48,30 @@
         "type": "float",
         "name": "Amihud",
         "comment": "Amihud illiquidity proxy using intraday shortest price path"
+    },
+    "corwin_schultz_spread": {
+        "type": "float",
+        "name": "Corwin-Schultz Bid-Ask Spread",
+        "comment": "Corwin-Schultz (2012) 2-day high-low bid-ask spread estimator with VOLUME_LOOKBACK rolling window"
+    },
+    "roll_spread": {
+        "type": "float",
+        "name": "Roll Effective Spread",
+        "comment": "Roll (1984) effective bid-ask spread estimator based on serial covariance of price changes"
+    },
+    "kyles_lambda": {
+        "type": "float",
+        "name": "Kyle's Lambda Price Impact",
+        "comment": "Kyle (1985) lambda regression slope of price return against signed volume over VOLUME_LOOKBACK"
+    },
+    "amihud_illiq": {
+        "type": "float",
+        "name": "Amihud Illiquidity Ratio",
+        "comment": "Amihud (2002) return-to-dollar-volume illiquidity ratio rolling mean over VOLUME_LOOKBACK"
+    },
+    "amihud_zscore": {
+        "type": "float",
+        "name": "Amihud Illiquidity Z-Score",
+        "comment": "Rolling Z-score of Amihud illiquidity ratio over VOLUME_LOOKBACK"
     }
 }
