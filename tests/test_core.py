@@ -885,6 +885,281 @@ def test_gmm_custom_config():
     assert set(res["my_gmm_cluster"].unique()) == {0, 1}
 
 
+def test_dbscan_features_direct_extraction():
+    from autofcholv.pipeline.features import dbscan as dbscan_features
+    df = make_ohlcv(100)
+    cols_to_add = [
+        "body_rate", "upwick_rate", "lowwick_rate", "body_abs", "ibs",
+        "adx_14", "adxr", "aroon_osc", "dmp_14", "rsi_slope_medium", "close_zscore",
+        "rsi_medium", "stochrsi_k", "return_micro", "return_short", "return_medium", "return_long",
+        "atr_pct_medium", "atr_pct_long", "bb_width", "realized_volatility", "chaikin_volatility",
+        "volume_ratio", "volume_zscore", "volume_up_ratio", "volume_down_ratio", "mfi_standard", "force_ratio",
+        "close_to_vwap", "vwap_bias", "env_position", "pac_position", "pac_width_bias",
+        "amihud", "market_placement", "path_liquidity", "spread_proxy"
+    ]
+    rng = np.random.default_rng(42)
+    for col in cols_to_add:
+        df[col] = rng.standard_normal(len(df))
+
+    res = dbscan_features.extract_features(df, Config())
+    expected_clusters = [
+        "dbscan_regime_core",
+        "dbscan_price_volume_anatomy",
+        "dbscan_candle_shape_rejection",
+        "dbscan_multi_horizon_momentum",
+        "dbscan_breakout_volatility_squeeze",
+        "dbscan_trend_exhaustion_divergence",
+        "dbscan_market_microstructure",
+        "dbscan_mean_reversion_extremes",
+        "dbscan_order_flow_impulse",
+        "dbscan_macro_risk_regime",
+    ]
+    for c in expected_clusters:
+        assert c in res.columns
+        assert res[c].dtype == np.int32
+
+
+def test_dbscan_custom_config():
+    from autofcholv.pipeline.features.dbscan import run_dbscan_clustering
+    df = make_ohlcv(50)
+    n = len(df)
+    half = n // 2
+    rng = np.random.default_rng(42)
+    df["f1"] = np.concatenate([rng.normal(0, 0.2, half), rng.normal(10, 0.2, n - half)])
+    df["f2"] = np.concatenate([rng.normal(0, 0.2, half), rng.normal(10, 0.2, n - half)])
+
+    custom_cfg = {
+        "my_dbscan_cluster": {
+            "features": ["f1", "f2"],
+            "eps": 1.0,
+            "min_samples": 5,
+        }
+    }
+    res = run_dbscan_clustering(df, clusters_config=custom_cfg)
+    assert "my_dbscan_cluster" in res.columns
+    non_noise = res.loc[res["my_dbscan_cluster"] >= 0, "my_dbscan_cluster"]
+    assert len(non_noise.unique()) >= 2
+
+
+def test_agglomerative_features_direct_extraction():
+    from autofcholv.pipeline.features import agglomerative as agglomerative_features
+    df = make_ohlcv(100)
+    cols_to_add = [
+        "body_rate", "upwick_rate", "lowwick_rate", "body_abs", "ibs",
+        "adx_14", "adxr", "aroon_osc", "dmp_14", "rsi_slope_medium", "close_zscore",
+        "rsi_medium", "stochrsi_k", "return_micro", "return_short", "return_medium", "return_long",
+        "atr_pct_medium", "atr_pct_long", "bb_width", "realized_volatility", "chaikin_volatility",
+        "volume_ratio", "volume_zscore", "volume_up_ratio", "volume_down_ratio", "mfi_standard", "force_ratio",
+        "close_to_vwap", "vwap_bias", "env_position", "pac_position", "pac_width_bias",
+        "amihud", "market_placement", "path_liquidity", "spread_proxy"
+    ]
+    rng = np.random.default_rng(42)
+    for col in cols_to_add:
+        df[col] = rng.standard_normal(len(df))
+
+    res = agglomerative_features.extract_features(df, Config())
+    expected_clusters = [
+        "agglomerative_regime_core",
+        "agglomerative_price_volume_anatomy",
+        "agglomerative_candle_shape_rejection",
+        "agglomerative_multi_horizon_momentum",
+        "agglomerative_breakout_volatility_squeeze",
+        "agglomerative_trend_exhaustion_divergence",
+        "agglomerative_market_microstructure",
+        "agglomerative_mean_reversion_extremes",
+        "agglomerative_order_flow_impulse",
+        "agglomerative_macro_risk_regime",
+    ]
+    for c in expected_clusters:
+        assert c in res.columns
+        assert res[c].nunique() > 1
+
+
+def test_agglomerative_custom_config():
+    from autofcholv.pipeline.features.agglomerative import run_agglomerative_clustering
+    df = make_ohlcv(50)
+    n = len(df)
+    half = n // 2
+    rng = np.random.default_rng(42)
+    df["f1"] = np.concatenate([rng.normal(0, 0.2, half), rng.normal(10, 0.2, n - half)])
+    df["f2"] = np.concatenate([rng.normal(0, 0.2, half), rng.normal(10, 0.2, n - half)])
+
+    custom_cfg = {
+        "my_agg_cluster": {
+            "features": ["f1", "f2"],
+            "n_clusters": 2,
+        }
+    }
+    res = run_agglomerative_clustering(df, clusters_config=custom_cfg)
+    assert "my_agg_cluster" in res.columns
+    assert set(res["my_agg_cluster"].unique()) == {0, 1}
+
+
+def test_birch_features_direct_extraction():
+    from autofcholv.pipeline.features import birch as birch_features
+    df = make_ohlcv(100)
+    cols_to_add = [
+        "body_rate", "upwick_rate", "lowwick_rate", "body_abs", "ibs",
+        "adx_14", "adxr", "aroon_osc", "dmp_14", "rsi_slope_medium", "close_zscore",
+        "rsi_medium", "stochrsi_k", "return_micro", "return_short", "return_medium", "return_long",
+        "atr_pct_medium", "atr_pct_long", "bb_width", "realized_volatility", "chaikin_volatility",
+        "volume_ratio", "volume_zscore", "volume_up_ratio", "volume_down_ratio", "mfi_standard", "force_ratio",
+        "close_to_vwap", "vwap_bias", "env_position", "pac_position", "pac_width_bias",
+        "amihud", "market_placement", "path_liquidity", "spread_proxy"
+    ]
+    rng = np.random.default_rng(42)
+    for col in cols_to_add:
+        df[col] = rng.standard_normal(len(df))
+
+    res = birch_features.extract_features(df, Config())
+    expected_clusters = [
+        "birch_regime_core",
+        "birch_price_volume_anatomy",
+        "birch_candle_shape_rejection",
+        "birch_multi_horizon_momentum",
+        "birch_breakout_volatility_squeeze",
+        "birch_trend_exhaustion_divergence",
+        "birch_market_microstructure",
+        "birch_mean_reversion_extremes",
+        "birch_order_flow_impulse",
+        "birch_macro_risk_regime",
+    ]
+    for c in expected_clusters:
+        assert c in res.columns
+        assert res[c].nunique() > 1
+
+
+def test_birch_custom_config():
+    from autofcholv.pipeline.features.birch import run_birch_clustering
+    df = make_ohlcv(50)
+    n = len(df)
+    half = n // 2
+    rng = np.random.default_rng(42)
+    df["f1"] = np.concatenate([rng.normal(0, 0.2, half), rng.normal(10, 0.2, n - half)])
+    df["f2"] = np.concatenate([rng.normal(0, 0.2, half), rng.normal(10, 0.2, n - half)])
+
+    custom_cfg = {
+        "my_birch_cluster": {
+            "features": ["f1", "f2"],
+            "n_clusters": 2,
+        }
+    }
+    res = run_birch_clustering(df, clusters_config=custom_cfg)
+    assert "my_birch_cluster" in res.columns
+    assert set(res["my_birch_cluster"].unique()) == {0, 1}
+
+
+def test_optics_features_direct_extraction():
+    from autofcholv.pipeline.features import optics as optics_features
+    df = make_ohlcv(100)
+    cols_to_add = [
+        "body_rate", "upwick_rate", "lowwick_rate", "body_abs", "ibs",
+        "adx_14", "adxr", "aroon_osc", "dmp_14", "rsi_slope_medium", "close_zscore",
+        "rsi_medium", "stochrsi_k", "return_micro", "return_short", "return_medium", "return_long",
+        "atr_pct_medium", "atr_pct_long", "bb_width", "realized_volatility", "chaikin_volatility",
+        "volume_ratio", "volume_zscore", "volume_up_ratio", "volume_down_ratio", "mfi_standard", "force_ratio",
+        "close_to_vwap", "vwap_bias", "env_position", "pac_position", "pac_width_bias",
+        "amihud", "market_placement", "path_liquidity", "spread_proxy"
+    ]
+    rng = np.random.default_rng(42)
+    for col in cols_to_add:
+        df[col] = rng.standard_normal(len(df))
+
+    res = optics_features.extract_features(df, Config())
+    expected_clusters = [
+        "optics_regime_core",
+        "optics_price_volume_anatomy",
+        "optics_candle_shape_rejection",
+        "optics_multi_horizon_momentum",
+        "optics_breakout_volatility_squeeze",
+        "optics_trend_exhaustion_divergence",
+        "optics_market_microstructure",
+        "optics_mean_reversion_extremes",
+        "optics_order_flow_impulse",
+        "optics_macro_risk_regime",
+    ]
+    for c in expected_clusters:
+        assert c in res.columns
+        assert res[c].dtype == np.int32
+
+
+def test_optics_custom_config():
+    from autofcholv.pipeline.features.optics import run_optics_clustering
+    df = make_ohlcv(50)
+    n = len(df)
+    half = n // 2
+    rng = np.random.default_rng(42)
+    df["f1"] = np.concatenate([rng.normal(0, 0.2, half), rng.normal(10, 0.2, n - half)])
+    df["f2"] = np.concatenate([rng.normal(0, 0.2, half), rng.normal(10, 0.2, n - half)])
+
+    custom_cfg = {
+        "my_optics_cluster": {
+            "features": ["f1", "f2"],
+            "min_samples": 5,
+        }
+    }
+    res = run_optics_clustering(df, clusters_config=custom_cfg)
+    assert "my_optics_cluster" in res.columns
+    non_noise = res.loc[res["my_optics_cluster"] >= 0, "my_optics_cluster"]
+    assert len(non_noise.unique()) >= 2
+
+
+def test_spectral_features_direct_extraction():
+    from autofcholv.pipeline.features import spectral as spectral_features
+    df = make_ohlcv(100)
+    cols_to_add = [
+        "body_rate", "upwick_rate", "lowwick_rate", "body_abs", "ibs",
+        "adx_14", "adxr", "aroon_osc", "dmp_14", "rsi_slope_medium", "close_zscore",
+        "rsi_medium", "stochrsi_k", "return_micro", "return_short", "return_medium", "return_long",
+        "atr_pct_medium", "atr_pct_long", "bb_width", "realized_volatility", "chaikin_volatility",
+        "volume_ratio", "volume_zscore", "volume_up_ratio", "volume_down_ratio", "mfi_standard", "force_ratio",
+        "close_to_vwap", "vwap_bias", "env_position", "pac_position", "pac_width_bias",
+        "amihud", "market_placement", "path_liquidity", "spread_proxy"
+    ]
+    rng = np.random.default_rng(42)
+    for col in cols_to_add:
+        df[col] = rng.standard_normal(len(df))
+
+    res = spectral_features.extract_features(df, Config())
+    expected_clusters = [
+        "spectral_regime_core",
+        "spectral_price_volume_anatomy",
+        "spectral_candle_shape_rejection",
+        "spectral_multi_horizon_momentum",
+        "spectral_breakout_volatility_squeeze",
+        "spectral_trend_exhaustion_divergence",
+        "spectral_market_microstructure",
+        "spectral_mean_reversion_extremes",
+        "spectral_order_flow_impulse",
+        "spectral_macro_risk_regime",
+    ]
+    for c in expected_clusters:
+        assert c in res.columns
+        assert res[c].nunique() > 1
+
+
+def test_spectral_custom_config():
+    from autofcholv.pipeline.features.spectral import run_spectral_clustering
+    df = make_ohlcv(50)
+    n = len(df)
+    half = n // 2
+    rng = np.random.default_rng(42)
+    df["f1"] = np.concatenate([rng.normal(0, 0.2, half), rng.normal(10, 0.2, n - half)])
+    df["f2"] = np.concatenate([rng.normal(0, 0.2, half), rng.normal(10, 0.2, n - half)])
+
+    custom_cfg = {
+        "my_spectral_cluster": {
+            "features": ["f1", "f2"],
+            "n_clusters": 2,
+            "random_state": 42,
+        }
+    }
+    res = run_spectral_clustering(df, clusters_config=custom_cfg)
+    assert "my_spectral_cluster" in res.columns
+    assert set(res["my_spectral_cluster"].unique()) == {0, 1}
+
+
+
 
 
 

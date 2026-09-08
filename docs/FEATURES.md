@@ -855,8 +855,6 @@ The pipeline executes in the order listed below.
 | `long_trend` | str | StrongUp \| StrongDown = EMA_1month > EMA_6months \| EMA_1month < EMA_6months |
 
 ---
-<<<<<<< HEAD
-=======
 
 ## 13. K-Means Clustering Features — `kmeans.py`
 
@@ -909,87 +907,87 @@ The pipeline executes in the order listed below.
 
 ---
 
-## 16. Signals — `signal.py`
+## 16. DBSCAN Density-Based Clustering Features — `dbscan.py`
 
 | Column | Type | Description |
 |---|---|---|
-| `couple_cs_signal` | str | Signal of couple candlestick pattern (Both Green or Both Red) |
-| `ema_cross_signal` | str | Signal of EMA cross pattern (cross up or cross down) |
-| `min_max_short_signal` | str | Signal of min max short lookback Close (min or max) |
-| `macd_histogram_reversal_signal` | str | Tín hiệu sớm về sự suy yếu của lực đẩy |
-| `bb_rejection_signal` | str | Signal of BB rejection pattern |
-| `bb_squeeze_signal` | str | Tín hiệu dự báo bùng nổ biến động khi giá đi ngang quá lâu |
-| `rsi_divergence_signal` | str | Tín hiệu phân kỳ giữa giá và RSI để bắt đỉnh/đáy |
-| `atr_breakout_signal` | str | Xác nhận tín hiệu dựa trên độ biến động thực tế |
-| `vsa_confirmation_signal` | str | Xác nhận nỗ lực tăng/giảm qua khối lượng giao dịch |
-| `ichimoku_cloud_signal` | str | Tín hiệu dựa trên mây Ichimoku |
-| `ma_stretch_signal` | str | Đo lường độ căng của giá so với đường trung bình (Z-Score concept) |
-| `market_structure_break_signal` | str | Xác định sự thay đổi xu hướng từ Bearish sang Bullish và ngược lại |
-| `bollinger_band_width_signal` | str | Đo lường độ biến động (Volatility) của thị trường |
-| `volume_confirmation_signal` | bool | Xác nhận nỗ lực của giá thông qua khối lượng |
-| `mfi_rejection_signal` | str | Dòng tiền thông minh vào vùng cực đại |
-| `donchian_breakout_signal` | str | Tín hiệu thuận xu hướng dựa trên đỉnh/đáy cao nhất |
-| `hma_reversal_signal` | str | Xác định điểm xoay của xu hướng nhanh hơn EMA |
-| `adx_trend_filter` | bool | Chỉ kích hoạt giao dịch khi xu hướng đủ mạnh (> 25) |
-| `connors_rsi_signal` | str | Tín hiệu Mean Reversion cực nhanh cho scalping |
-| `choppiness_signal` | bool | Dùng để bật/tắt các signal khác. < 38.2 là có xu hướng, > 61.8 là đi ngang |
-| `keltner_channel_reversal` | str | Tín hiệu đảo chiều khi giá chạm biên Keltner |
-| `supertrend_reversal` | str | Tín hiệu đảo chiều xu hướng mạnh mẽ |
-| `aroon_oscillator_signal` | str | Xác định sức mạnh và hướng của xu hướng |
-| `chande_momentum_oscillator_signal` | str | Đo lường động lượng thị trường |
-| `ultimate_oscillator_signal` | str | Tín hiệu kết hợp 3 chu kỳ (7, 14, 28) |
-| `trix_crossover_signal` | str | Tín hiệu đảo chiều dựa trên TRIX |
-| `stochastic_rsi_signal` | str | Đo lường RSI trong vùng quá mua/quá bán |
-| `awesome_oscillator_signal` | str | Tín hiệu động lượng dựa trên nến |
-| `rate_of_change_signal` | str | Đo lường tốc độ thay đổi giá |
-| `price_channel_breakout_signal` | str | Tín hiệu breakout dựa trên kênh giá |
-| `linear_regression_slope_signal` | str | Đo lường độ dốc của đường xu hướng |
-| `kaufman_ama_signal` | str | Đường trung bình thích ứng với biến động |
-| `tma_reversal_signal` | str | Tín hiệu đảo chiều dựa trên TMA |
-| `linear_regression_channel_signal` | str | Kênh giá dựa trên hồi quy tuyến tính |
-| `hurst_exponent_signal` | bool | Xác định tính ngẫu nhiên của thị trường |
-| `vpt_divergence_signal` | str | Xác định sự phân kỳ của dòng tiền thực |
-| `liquidity_sweep_signal` | str | Quét high/low gần nhất và đảo chiều |
-| `equal_high_low_sweep_signal` | str | Quét vùng equal highs/lows |
-| `inside_bar_breakout_signal` | str | Breakout khỏi inside bar |
-| `fakey_pattern_signal` | str | False breakout |
-| `pin_bar_signal` | str | Nến rút chân mạnh |
-| `engulfing_signal` | str | Bao trùm nến trước |
-| `compression_breakout_signal` | str | Nhiều nến nhỏ → breakout |
-| `atr_expansion_signal` | str | Volatility breakout |
-| `zscore_reversion_signal` | str | Giá lệch khỏi mean |
-| `range_breakout_signal` | str | Break range |
-| `volume_spike_signal` | str | Volume đột biến |
-| `return_momentum_signal` | str | Momentum dựa trên return |
-| `volatility_break_signal` | str | Biến động vượt ngưỡng |
-| `mean_cross_signal` | str | Giá cắt MA |
-| `high_low_break_signal` | str | Phá đỉnh/đáy gần |
-| `range_compression_signal` | str | Range co hẹp |
-| `gap_up_down_signal` | str | Gap giá |
-| `body_size_signal` | str | Thân nến lớn |
-| `wick_rejection_signal` | str | Từ chối giá bằng bóng nến |
-| `trend_strength_signal` | str | Xu hướng mạnh |
-| `pullback_signal` | str | Pullback trong trend |
-| `break_retest_signal` | str | Break và retest |
-| `momentum_shift_signal` | str | Đổi chiều momentum |
-| `range_mid_reversion_signal` | str | Hồi về mid range |
-| `volatility_drop_signal` | str | Giảm biến động |
-| `price_acceleration_signal` | str | Gia tốc giá |
-| `extreme_move_signal` | str | Move lớn bất thường |
-| `mean_distance_signal` | str | Khoảng cách tới MA |
-| `range_shift_signal` | str | Dịch chuyển range |
-| `volume_trend_signal` | str | Xu hướng volume |
-| `price_rejection_signal` | str | Từ chối vùng giá |
-| `micro_trend_signal` | str | Trend ngắn hạn |
-| `micro_reversal_signal` | str | Đảo chiều ngắn hạn |
-| `range_expansion_signal` | str | Range tăng |
-| `body_direction_signal` | str | Chuỗi nến cùng màu |
-| `range_position_signal` | str | Vị trí trong range |
-| `close_strength_signal` | str | Đóng cửa gần high/low |
-| `trend_exhaustion_signal` | str | Kiệt sức xu hướng |
-| `range_flip_signal` | str | Đảo range |
-| `vol_price_divergence_signal` | str | Volume không confirm giá |
-| `final_push_signal` | str | Đẩy cuối trend |
+| `dbscan_regime_core` | int | DBSCAN density cluster mixing Trend, Volatility, and Volume (noise is -1) |
+| `dbscan_price_volume_anatomy` | int | DBSCAN density cluster mixing Price Returns and Volume Flow (noise is -1) |
+| `dbscan_candle_shape_rejection` | int | DBSCAN density cluster mixing Body, Shadows, and Bar Location (noise is -1) |
+| `dbscan_multi_horizon_momentum` | int | DBSCAN density cluster mixing Multi-horizon Returns and Oscillators (noise is -1) |
+| `dbscan_breakout_volatility_squeeze` | int | DBSCAN density cluster mixing Bollinger, ATR, Realized Vol, and Channels (noise is -1) |
+| `dbscan_trend_exhaustion_divergence` | int | DBSCAN density cluster mixing ADX, Aroon, RSI Velocity, and Z-Score (noise is -1) |
+| `dbscan_market_microstructure` | int | DBSCAN density cluster mixing Amihud, Spread, Placement, and Volume Flow (noise is -1) |
+| `dbscan_mean_reversion_extremes` | int | DBSCAN density cluster mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope (noise is -1) |
+| `dbscan_order_flow_impulse` | int | DBSCAN density cluster mixing Returns, Candle Body, Volume Shocks, and Force (noise is -1) |
+| `dbscan_macro_risk_regime` | int | DBSCAN density cluster mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP (noise is -1) |
 
 ---
->>>>>>> d1a4959 (develop(v0.4.0): add some clustering features)
+
+## 17. Agglomerative Hierarchical Clustering Features — `agglomerative.py`
+
+| Column | Type | Description |
+|---|---|---|
+| `agglomerative_regime_core` | int | Agglomerative Hierarchical cluster (k=4) mixing Trend, Volatility, and Volume |
+| `agglomerative_price_volume_anatomy` | int | Agglomerative Hierarchical cluster (k=4) mixing Price Returns and Volume Flow |
+| `agglomerative_candle_shape_rejection` | int | Agglomerative Hierarchical cluster (k=5) mixing Body, Shadows, and Bar Location |
+| `agglomerative_multi_horizon_momentum` | int | Agglomerative Hierarchical cluster (k=4) mixing Multi-horizon Returns and Oscillators |
+| `agglomerative_breakout_volatility_squeeze` | int | Agglomerative Hierarchical cluster (k=4) mixing Bollinger, ATR, Realized Vol, and Channels |
+| `agglomerative_trend_exhaustion_divergence` | int | Agglomerative Hierarchical cluster (k=4) mixing ADX, Aroon, RSI Velocity, and Z-Score |
+| `agglomerative_market_microstructure` | int | Agglomerative Hierarchical cluster (k=4) mixing Amihud, Spread, Placement, and Volume Flow |
+| `agglomerative_mean_reversion_extremes` | int | Agglomerative Hierarchical cluster (k=4) mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope |
+| `agglomerative_order_flow_impulse` | int | Agglomerative Hierarchical cluster (k=5) mixing Returns, Candle Body, Volume Shocks, and Force |
+| `agglomerative_macro_risk_regime` | int | Agglomerative Hierarchical cluster (k=5) mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP |
+
+---
+
+## 18. BIRCH Hierarchical Clustering Features — `birch.py`
+
+| Column | Type | Description |
+|---|---|---|
+| `birch_regime_core` | int | BIRCH CF-Tree cluster (k=4) mixing Trend, Volatility, and Volume |
+| `birch_price_volume_anatomy` | int | BIRCH CF-Tree cluster (k=4) mixing Price Returns and Volume Flow |
+| `birch_candle_shape_rejection` | int | BIRCH CF-Tree cluster (k=5) mixing Body, Shadows, and Bar Location |
+| `birch_multi_horizon_momentum` | int | BIRCH CF-Tree cluster (k=4) mixing Multi-horizon Returns and Oscillators |
+| `birch_breakout_volatility_squeeze` | int | BIRCH CF-Tree cluster (k=4) mixing Bollinger, ATR, Realized Vol, and Channels |
+| `birch_trend_exhaustion_divergence` | int | BIRCH CF-Tree cluster (k=4) mixing ADX, Aroon, RSI Velocity, and Z-Score |
+| `birch_market_microstructure` | int | BIRCH CF-Tree cluster (k=4) mixing Amihud, Spread, Placement, and Volume Flow |
+| `birch_mean_reversion_extremes` | int | BIRCH CF-Tree cluster (k=4) mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope |
+| `birch_order_flow_impulse` | int | BIRCH CF-Tree cluster (k=5) mixing Returns, Candle Body, Volume Shocks, and Force |
+| `birch_macro_risk_regime` | int | BIRCH CF-Tree cluster (k=5) mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP |
+
+---
+
+## 19. OPTICS Density-Based Clustering Features — `optics.py`
+
+| Column | Type | Description |
+|---|---|---|
+| `optics_regime_core` | int | OPTICS density reachability cluster mixing Trend, Volatility, and Volume (noise is -1) |
+| `optics_price_volume_anatomy` | int | OPTICS density reachability cluster mixing Price Returns and Volume Flow (noise is -1) |
+| `optics_candle_shape_rejection` | int | OPTICS density reachability cluster mixing Body, Shadows, and Bar Location (noise is -1) |
+| `optics_multi_horizon_momentum` | int | OPTICS density reachability cluster mixing Multi-horizon Returns and Oscillators (noise is -1) |
+| `optics_breakout_volatility_squeeze` | int | OPTICS density reachability cluster mixing Bollinger, ATR, Realized Vol, and Channels (noise is -1) |
+| `optics_trend_exhaustion_divergence` | int | OPTICS density reachability cluster mixing ADX, Aroon, RSI Velocity, and Z-Score (noise is -1) |
+| `optics_market_microstructure` | int | OPTICS density reachability cluster mixing Amihud, Spread, Placement, and Volume Flow (noise is -1) |
+| `optics_mean_reversion_extremes` | int | OPTICS density reachability cluster mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope (noise is -1) |
+| `optics_order_flow_impulse` | int | OPTICS density reachability cluster mixing Returns, Candle Body, Volume Shocks, and Force (noise is -1) |
+| `optics_macro_risk_regime` | int | OPTICS density reachability cluster mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP (noise is -1) |
+
+---
+
+## 20. Spectral Graph-Based Clustering Features — `spectral.py`
+
+| Column | Type | Description |
+|---|---|---|
+| `spectral_regime_core` | int | Spectral Graph Laplacian cluster (k=4) mixing Trend, Volatility, and Volume |
+| `spectral_price_volume_anatomy` | int | Spectral Graph Laplacian cluster (k=4) mixing Price Returns and Volume Flow |
+| `spectral_candle_shape_rejection` | int | Spectral Graph Laplacian cluster (k=5) mixing Body, Shadows, and Bar Location |
+| `spectral_multi_horizon_momentum` | int | Spectral Graph Laplacian cluster (k=4) mixing Multi-horizon Returns and Oscillators |
+| `spectral_breakout_volatility_squeeze` | int | Spectral Graph Laplacian cluster (k=4) mixing Bollinger, ATR, Realized Vol, and Channels |
+| `spectral_trend_exhaustion_divergence` | int | Spectral Graph Laplacian cluster (k=4) mixing ADX, Aroon, RSI Velocity, and Z-Score |
+| `spectral_market_microstructure` | int | Spectral Graph Laplacian cluster (k=4) mixing Amihud, Spread, Placement, and Volume Flow |
+| `spectral_mean_reversion_extremes` | int | Spectral Graph Laplacian cluster (k=4) mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope |
+| `spectral_order_flow_impulse` | int | Spectral Graph Laplacian cluster (k=5) mixing Returns, Candle Body, Volume Shocks, and Force |
+| `spectral_macro_risk_regime` | int | Spectral Graph Laplacian cluster (k=5) mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP |
+
+---

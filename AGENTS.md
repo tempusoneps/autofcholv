@@ -104,10 +104,6 @@ If tests cannot be run or are skipped per user instruction, note the reason in t
 
 When moving, renaming, adding, or deleting documentation/source files, update all affected links in `README.md`, `docs/*.md`, and pipeline docs.
 
-## Do Not Commit Automatically
-
-AI agents must **NOT** create git commits automatically (`git commit`). Always ask the user for confirmation and get explicit approval before executing any `git commit` command.
-
 # Project Structure
 
 ```text
@@ -163,10 +159,16 @@ AI agents must **NOT** create git commits automatically (`git commit`). Always a
 │       │   │
 │       │   └── features/             # Feature modules and their metadata.
 │       │       ├── __init__.py       # Feature package marker.
+│       │       ├── agglomerative.py  # Agglomerative hierarchical clustering features.
+│       │       ├── agglomerative.json# Agglomerative feature metadata.
+│       │       ├── birch.py          # BIRCH hierarchical clustering features.
+│       │       ├── birch.json        # BIRCH feature metadata.
 │       │       ├── candlestick.py    # Candlestick geometry features.
 │       │       ├── candlestick.json  # Candlestick feature metadata.
 │       │       ├── close.py          # Close-price momentum and oscillator features.
 │       │       ├── close.json        # Close-price feature metadata.
+│       │       ├── dbscan.py         # DBSCAN density-based clustering features.
+│       │       ├── dbscan.json       # DBSCAN feature metadata.
 │       │       ├── gmm.py            # Gaussian Mixture Model clustering and probabilistic regimes.
 │       │       ├── gmm.json          # Gaussian Mixture Model feature metadata.
 │       │       ├── group.py          # Grouped pattern/category features.
@@ -181,10 +183,19 @@ AI agents must **NOT** create git commits automatically (`git commit`). Always a
 │       │       ├── liquidity.json    # Liquidity feature metadata.
 │       │       ├── mix.py            # Mixed and advanced composite features.
 │       │       ├── mix.json          # Mixed feature metadata.
+│       │       ├── optics.py         # OPTICS density-based clustering features.
+│       │       ├── optics.json       # OPTICS feature metadata.
 │       │       ├── price.py          # Price-derived features such as VWAP and typical price.
 │       │       ├── price.json        # Price feature metadata.
 │       │       ├── resample.py       # Daily resample and previous-day features.
 │       │       ├── resample.json     # Resample feature metadata.
+<<<<<<< HEAD
+=======
+│       │       ├── signal.py         # Signal/idea features.
+│       │       ├── signal.json       # Signal feature metadata.
+│       │       ├── spectral.py       # Spectral graph-based clustering features.
+│       │       ├── spectral.json     # Spectral clustering feature metadata.
+>>>>>>> b490e87 (develop(v0.4.0): update some clustering features)
 │       │       ├── time.py           # Time/session features.
 │       │       ├── time.json         # Time feature metadata.
 │       │       ├── trend.py          # Trend and moving-average features.
@@ -295,5 +306,3 @@ All branch names must be lowercase, hyphen-separated, and prefixed with the cate
      ```
 4. **Gitignore Verification Before Commits**:
    Always check all `.gitignore` files (root `.gitignore` and any subfolder `.gitignore`) before staging or committing any file. Never force-add (`git add -f`) or commit files and directories that match `.gitignore` rules (such as `.venv`, `__pycache__`, cached data, or scratch files).
-5. **No Automatic Commits by AI Agents**:
-   AI agents must **NEVER** create git commits automatically (`git commit`). Always ask the user for confirmation and get explicit approval before executing any commit command.

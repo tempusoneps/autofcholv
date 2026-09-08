@@ -53,10 +53,16 @@
 │       │   │
 │       │   └── features/             # Feature modules and their metadata.
 │       │       ├── __init__.py       # Feature package marker.
+│       │       ├── agglomerative.py  # Agglomerative hierarchical clustering features.
+│       │       ├── agglomerative.json# Agglomerative feature metadata.
+│       │       ├── birch.py          # BIRCH hierarchical clustering features.
+│       │       ├── birch.json        # BIRCH feature metadata.
 │       │       ├── candlestick.py    # Candlestick geometry features.
 │       │       ├── candlestick.json  # Candlestick feature metadata.
 │       │       ├── close.py          # Close-price momentum and oscillator features.
 │       │       ├── close.json        # Close-price feature metadata.
+│       │       ├── dbscan.py         # DBSCAN density-based clustering features.
+│       │       ├── dbscan.json       # DBSCAN feature metadata.
 │       │       ├── gmm.py            # Gaussian Mixture Model clustering and probabilistic regimes.
 │       │       ├── gmm.json          # Gaussian Mixture Model feature metadata.
 │       │       ├── group.py          # Grouped pattern/category features.
@@ -71,10 +77,19 @@
 │       │       ├── liquidity.json    # Liquidity feature metadata.
 │       │       ├── mix.py            # Mixed and advanced composite features.
 │       │       ├── mix.json          # Mixed feature metadata.
+│       │       ├── optics.py         # OPTICS density-based clustering features.
+│       │       ├── optics.json       # OPTICS feature metadata.
 │       │       ├── price.py          # Price-derived features such as VWAP and typical price.
 │       │       ├── price.json        # Price feature metadata.
 │       │       ├── resample.py       # Daily resample and previous-day features.
 │       │       ├── resample.json     # Resample feature metadata.
+<<<<<<< HEAD
+=======
+│       │       ├── signal.py         # Signal/idea features.
+│       │       ├── signal.json       # Signal feature metadata.
+│       │       ├── spectral.py       # Spectral graph-based clustering features.
+│       │       ├── spectral.json     # Spectral clustering feature metadata.
+>>>>>>> b490e87 (develop(v0.4.0): update some clustering features)
 │       │       ├── time.py           # Time/session features.
 │       │       ├── time.json         # Time feature metadata.
 │       │       ├── trend.py          # Trend and moving-average features.

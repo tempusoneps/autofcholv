@@ -194,6 +194,276 @@ class Config:
             },
         }
     )
+    dbscan_clusters: Dict[str, Dict[str, Any]] = field(
+        default_factory=lambda: {
+            "dbscan_regime_core": {
+                "features": ["adx_14", "atr_pct_medium", "volume_ratio"],
+                "eps": 0.5,
+                "min_samples": 5,
+            },
+            "dbscan_price_volume_anatomy": {
+                "features": ["return_medium", "volume_ratio", "volume_zscore", "mfi_standard"],
+                "eps": 0.5,
+                "min_samples": 5,
+            },
+            "dbscan_candle_shape_rejection": {
+                "features": ["body_rate", "upwick_rate", "lowwick_rate", "body_abs", "ibs"],
+                "eps": 0.5,
+                "min_samples": 5,
+            },
+            "dbscan_multi_horizon_momentum": {
+                "features": ["return_micro", "return_short", "return_medium", "rsi_medium", "stochrsi_k"],
+                "eps": 0.6,
+                "min_samples": 5,
+            },
+            "dbscan_breakout_volatility_squeeze": {
+                "features": ["bb_width", "atr_pct_medium", "realized_volatility", "pac_position", "pac_width_bias", "env_position"],
+                "eps": 0.7,
+                "min_samples": 5,
+            },
+            "dbscan_trend_exhaustion_divergence": {
+                "features": ["adx_14", "adxr", "aroon_osc", "dmp_14", "rsi_slope_medium", "close_zscore"],
+                "eps": 0.7,
+                "min_samples": 5,
+            },
+            "dbscan_market_microstructure": {
+                "features": ["amihud", "market_placement", "path_liquidity", "spread_proxy", "volume_zscore", "volume_up_ratio", "volume_down_ratio"],
+                "eps": 0.8,
+                "min_samples": 5,
+            },
+            "dbscan_mean_reversion_extremes": {
+                "features": ["close_to_vwap", "vwap_bias", "close_zscore", "ibs", "env_position"],
+                "eps": 0.6,
+                "min_samples": 5,
+            },
+            "dbscan_order_flow_impulse": {
+                "features": ["return_short", "body_rate", "volume_ratio", "volume_zscore", "force_ratio", "mfi_standard", "upwick_rate"],
+                "eps": 0.8,
+                "min_samples": 5,
+            },
+            "dbscan_macro_risk_regime": {
+                "features": ["return_long", "return_medium", "atr_pct_long", "realized_volatility", "chaikin_volatility", "adx_14", "close_to_vwap"],
+                "eps": 0.8,
+                "min_samples": 5,
+            },
+        }
+    )
+    agglomerative_clusters: Dict[str, Dict[str, Any]] = field(
+        default_factory=lambda: {
+            "agglomerative_regime_core": {
+                "features": ["adx_14", "atr_pct_medium", "volume_ratio"],
+                "n_clusters": 4,
+                "linkage": "ward",
+            },
+            "agglomerative_price_volume_anatomy": {
+                "features": ["return_medium", "volume_ratio", "volume_zscore", "mfi_standard"],
+                "n_clusters": 4,
+                "linkage": "ward",
+            },
+            "agglomerative_candle_shape_rejection": {
+                "features": ["body_rate", "upwick_rate", "lowwick_rate", "body_abs", "ibs"],
+                "n_clusters": 5,
+                "linkage": "ward",
+            },
+            "agglomerative_multi_horizon_momentum": {
+                "features": ["return_micro", "return_short", "return_medium", "rsi_medium", "stochrsi_k"],
+                "n_clusters": 4,
+                "linkage": "ward",
+            },
+            "agglomerative_breakout_volatility_squeeze": {
+                "features": ["bb_width", "atr_pct_medium", "realized_volatility", "pac_position", "pac_width_bias", "env_position"],
+                "n_clusters": 4,
+                "linkage": "ward",
+            },
+            "agglomerative_trend_exhaustion_divergence": {
+                "features": ["adx_14", "adxr", "aroon_osc", "dmp_14", "rsi_slope_medium", "close_zscore"],
+                "n_clusters": 4,
+                "linkage": "ward",
+            },
+            "agglomerative_market_microstructure": {
+                "features": ["amihud", "market_placement", "path_liquidity", "spread_proxy", "volume_zscore", "volume_up_ratio", "volume_down_ratio"],
+                "n_clusters": 4,
+                "linkage": "ward",
+            },
+            "agglomerative_mean_reversion_extremes": {
+                "features": ["close_to_vwap", "vwap_bias", "close_zscore", "ibs", "env_position"],
+                "n_clusters": 4,
+                "linkage": "ward",
+            },
+            "agglomerative_order_flow_impulse": {
+                "features": ["return_short", "body_rate", "volume_ratio", "volume_zscore", "force_ratio", "mfi_standard", "upwick_rate"],
+                "n_clusters": 5,
+                "linkage": "ward",
+            },
+            "agglomerative_macro_risk_regime": {
+                "features": ["return_long", "return_medium", "atr_pct_long", "realized_volatility", "chaikin_volatility", "adx_14", "close_to_vwap"],
+                "n_clusters": 5,
+                "linkage": "ward",
+            },
+        }
+    )
+    birch_clusters: Dict[str, Dict[str, Any]] = field(
+        default_factory=lambda: {
+            "birch_regime_core": {
+                "features": ["adx_14", "atr_pct_medium", "volume_ratio"],
+                "n_clusters": 4,
+                "threshold": 0.5,
+            },
+            "birch_price_volume_anatomy": {
+                "features": ["return_medium", "volume_ratio", "volume_zscore", "mfi_standard"],
+                "n_clusters": 4,
+                "threshold": 0.5,
+            },
+            "birch_candle_shape_rejection": {
+                "features": ["body_rate", "upwick_rate", "lowwick_rate", "body_abs", "ibs"],
+                "n_clusters": 5,
+                "threshold": 0.5,
+            },
+            "birch_multi_horizon_momentum": {
+                "features": ["return_micro", "return_short", "return_medium", "rsi_medium", "stochrsi_k"],
+                "n_clusters": 4,
+                "threshold": 0.5,
+            },
+            "birch_breakout_volatility_squeeze": {
+                "features": ["bb_width", "atr_pct_medium", "realized_volatility", "pac_position", "pac_width_bias", "env_position"],
+                "n_clusters": 4,
+                "threshold": 0.5,
+            },
+            "birch_trend_exhaustion_divergence": {
+                "features": ["adx_14", "adxr", "aroon_osc", "dmp_14", "rsi_slope_medium", "close_zscore"],
+                "n_clusters": 4,
+                "threshold": 0.5,
+            },
+            "birch_market_microstructure": {
+                "features": ["amihud", "market_placement", "path_liquidity", "spread_proxy", "volume_zscore", "volume_up_ratio", "volume_down_ratio"],
+                "n_clusters": 4,
+                "threshold": 0.5,
+            },
+            "birch_mean_reversion_extremes": {
+                "features": ["close_to_vwap", "vwap_bias", "close_zscore", "ibs", "env_position"],
+                "n_clusters": 4,
+                "threshold": 0.5,
+            },
+            "birch_order_flow_impulse": {
+                "features": ["return_short", "body_rate", "volume_ratio", "volume_zscore", "force_ratio", "mfi_standard", "upwick_rate"],
+                "n_clusters": 5,
+                "threshold": 0.5,
+            },
+            "birch_macro_risk_regime": {
+                "features": ["return_long", "return_medium", "atr_pct_long", "realized_volatility", "chaikin_volatility", "adx_14", "close_to_vwap"],
+                "n_clusters": 5,
+                "threshold": 0.5,
+            },
+        }
+    )
+    optics_clusters: Dict[str, Dict[str, Any]] = field(
+        default_factory=lambda: {
+            "optics_regime_core": {
+                "features": ["adx_14", "atr_pct_medium", "volume_ratio"],
+                "min_samples": 20,
+            },
+            "optics_price_volume_anatomy": {
+                "features": ["return_medium", "volume_ratio", "volume_zscore", "mfi_standard"],
+                "min_samples": 20,
+            },
+            "optics_candle_shape_rejection": {
+                "features": ["body_rate", "upwick_rate", "lowwick_rate", "body_abs", "ibs"],
+                "min_samples": 15,
+            },
+            "optics_multi_horizon_momentum": {
+                "features": ["return_micro", "return_short", "return_medium", "rsi_medium", "stochrsi_k"],
+                "min_samples": 20,
+            },
+            "optics_breakout_volatility_squeeze": {
+                "features": ["bb_width", "atr_pct_medium", "realized_volatility", "pac_position", "pac_width_bias", "env_position"],
+                "min_samples": 20,
+            },
+            "optics_trend_exhaustion_divergence": {
+                "features": ["adx_14", "adxr", "aroon_osc", "dmp_14", "rsi_slope_medium", "close_zscore"],
+                "min_samples": 20,
+            },
+            "optics_market_microstructure": {
+                "features": ["amihud", "market_placement", "path_liquidity", "spread_proxy", "volume_zscore", "volume_up_ratio", "volume_down_ratio"],
+                "min_samples": 20,
+            },
+            "optics_mean_reversion_extremes": {
+                "features": ["close_to_vwap", "vwap_bias", "close_zscore", "ibs", "env_position"],
+                "min_samples": 20,
+            },
+            "optics_order_flow_impulse": {
+                "features": ["return_short", "body_rate", "volume_ratio", "volume_zscore", "force_ratio", "mfi_standard", "upwick_rate"],
+                "min_samples": 20,
+            },
+            "optics_macro_risk_regime": {
+                "features": ["return_long", "return_medium", "atr_pct_long", "realized_volatility", "chaikin_volatility", "adx_14", "close_to_vwap"],
+                "min_samples": 20,
+            },
+        }
+    )
+    spectral_clusters: Dict[str, Dict[str, Any]] = field(
+        default_factory=lambda: {
+            "spectral_regime_core": {
+                "features": ["adx_14", "atr_pct_medium", "volume_ratio"],
+                "n_clusters": 4,
+                "affinity": "rbf",
+                "random_state": 42,
+            },
+            "spectral_price_volume_anatomy": {
+                "features": ["return_medium", "volume_ratio", "volume_zscore", "mfi_standard"],
+                "n_clusters": 4,
+                "affinity": "rbf",
+                "random_state": 42,
+            },
+            "spectral_candle_shape_rejection": {
+                "features": ["body_rate", "upwick_rate", "lowwick_rate", "body_abs", "ibs"],
+                "n_clusters": 5,
+                "affinity": "rbf",
+                "random_state": 42,
+            },
+            "spectral_multi_horizon_momentum": {
+                "features": ["return_micro", "return_short", "return_medium", "rsi_medium", "stochrsi_k"],
+                "n_clusters": 4,
+                "affinity": "rbf",
+                "random_state": 42,
+            },
+            "spectral_breakout_volatility_squeeze": {
+                "features": ["bb_width", "atr_pct_medium", "realized_volatility", "pac_position", "pac_width_bias", "env_position"],
+                "n_clusters": 4,
+                "affinity": "rbf",
+                "random_state": 42,
+            },
+            "spectral_trend_exhaustion_divergence": {
+                "features": ["adx_14", "adxr", "aroon_osc", "dmp_14", "rsi_slope_medium", "close_zscore"],
+                "n_clusters": 4,
+                "affinity": "rbf",
+                "random_state": 42,
+            },
+            "spectral_market_microstructure": {
+                "features": ["amihud", "market_placement", "path_liquidity", "spread_proxy", "volume_zscore", "volume_up_ratio", "volume_down_ratio"],
+                "n_clusters": 4,
+                "affinity": "rbf",
+                "random_state": 42,
+            },
+            "spectral_mean_reversion_extremes": {
+                "features": ["close_to_vwap", "vwap_bias", "close_zscore", "ibs", "env_position"],
+                "n_clusters": 4,
+                "affinity": "rbf",
+                "random_state": 42,
+            },
+            "spectral_order_flow_impulse": {
+                "features": ["return_short", "body_rate", "volume_ratio", "volume_zscore", "force_ratio", "mfi_standard", "upwick_rate"],
+                "n_clusters": 5,
+                "affinity": "rbf",
+                "random_state": 42,
+            },
+            "spectral_macro_risk_regime": {
+                "features": ["return_long", "return_medium", "atr_pct_long", "realized_volatility", "chaikin_volatility", "adx_14", "close_to_vwap"],
+                "n_clusters": 5,
+                "affinity": "rbf",
+                "random_state": 42,
+            },
+        }
+    )
 
 
 CONFIG_FIELD_NAMES = {field_name for field_name in Config.__dataclass_fields__}
@@ -221,6 +491,11 @@ CONFIG_KEY_ALIASES = {
     "KMEANS_CLUSTERS": "kmeans_clusters",
     "HDBSCAN_CLUSTERS": "hdbscan_clusters",
     "GMM_CLUSTERS": "gmm_clusters",
+    "DBSCAN_CLUSTERS": "dbscan_clusters",
+    "AGGLOMERATIVE_CLUSTERS": "agglomerative_clusters",
+    "BIRCH_CLUSTERS": "birch_clusters",
+    "OPTICS_CLUSTERS": "optics_clusters",
+    "SPECTRAL_CLUSTERS": "spectral_clusters",
 }
 FIELD_TO_CONFIG_KEY = {field: key for key, field in CONFIG_KEY_ALIASES.items()}
 DEFAULT_CONFIG = {
