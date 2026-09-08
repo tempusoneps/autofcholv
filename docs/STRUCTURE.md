@@ -14,6 +14,7 @@
 │   ├── CONFIGURATION.md              # Configuration loading and priority rules.
 │   ├── FEATURES.md                   # Generated catalog of feature columns from JSON metadata.
 │   ├── FEATURES_OVERVIEW.md          # High-level feature set overview.
+│   ├── GIT_CONVENTIONS.md            # Git workflow and structured commit conventions.
 │   ├── INSTALLATION.md               # Install instructions for pip, uv, and source installs.
 │   ├── PLAN_v0.4.0.md                # Implementation plan for version 0.4.0 features.
 │   ├── REF.md                        # Short project references and notes.
@@ -56,8 +57,14 @@
 │       │       ├── candlestick.json  # Candlestick feature metadata.
 │       │       ├── close.py          # Close-price momentum and oscillator features.
 │       │       ├── close.json        # Close-price feature metadata.
+│       │       ├── gmm.py            # Gaussian Mixture Model clustering and probabilistic regimes.
+│       │       ├── gmm.json          # Gaussian Mixture Model feature metadata.
 │       │       ├── group.py          # Grouped pattern/category features.
 │       │       ├── group.json        # Group feature metadata.
+│       │       ├── hdbscan.py        # HDBSCAN density clustering and noise detection.
+│       │       ├── hdbscan.json      # HDBSCAN feature metadata.
+│       │       ├── kmeans.py         # K-Means clustering features and market regimes.
+│       │       ├── kmeans.json       # K-Means clustering feature metadata.
 │       │       ├── lag.py            # Lagged OHLCV and indicator features.
 │       │       ├── lag.json          # Lag feature metadata.
 │       │       ├── liquidity.py      # Liquidity and market placement features.

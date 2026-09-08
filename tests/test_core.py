@@ -722,4 +722,170 @@ def test_group_features_module_direct_extraction():
         assert col in res.columns
 
 
+def test_kmeans_features_direct_extraction():
+    from autofcholv.pipeline.features import kmeans as kmeans_features
+    df = make_ohlcv(100)
+    cols_to_add = [
+        "body_rate", "upwick_rate", "lowwick_rate", "body_abs", "ibs",
+        "adx_14", "adxr", "aroon_osc", "dmp_14", "rsi_slope_medium", "close_zscore",
+        "rsi_medium", "stochrsi_k", "return_micro", "return_short", "return_medium", "return_long",
+        "atr_pct_medium", "atr_pct_long", "bb_width", "realized_volatility", "chaikin_volatility",
+        "volume_ratio", "volume_zscore", "volume_up_ratio", "volume_down_ratio", "mfi_standard", "force_ratio",
+        "close_to_vwap", "vwap_bias", "env_position", "pac_position", "pac_width_bias",
+        "amihud", "market_placement", "path_liquidity", "spread_proxy"
+    ]
+    rng = np.random.default_rng(42)
+    for col in cols_to_add:
+        df[col] = rng.standard_normal(len(df))
+
+    res = kmeans_features.extract_features(df, Config())
+    expected_clusters = [
+        "cluster_regime_core",
+        "cluster_price_volume_anatomy",
+        "cluster_candle_shape_rejection",
+        "cluster_multi_horizon_momentum",
+        "cluster_breakout_volatility_squeeze",
+        "cluster_trend_exhaustion_divergence",
+        "cluster_market_microstructure",
+        "cluster_mean_reversion_extremes",
+        "cluster_order_flow_impulse",
+        "cluster_macro_risk_regime",
+    ]
+    for c in expected_clusters:
+        assert c in res.columns
+        assert res[c].nunique() > 1
+
+
+def test_kmeans_custom_config():
+    from autofcholv.pipeline.features.kmeans import run_kmeans_clustering
+    df = make_ohlcv(50)
+    df["f1"] = np.linspace(0, 10, len(df))
+    df["f2"] = np.linspace(10, 0, len(df))
+
+    custom_cfg = {
+        "my_custom_cluster": {
+            "features": ["f1", "f2"],
+            "n_clusters": 2,
+            "random_state": 42,
+        }
+    }
+    res = run_kmeans_clustering(df, clusters_config=custom_cfg)
+    assert "my_custom_cluster" in res.columns
+    assert set(res["my_custom_cluster"].unique()) == {0, 1}
+
+
+def test_hdbscan_features_direct_extraction():
+    from autofcholv.pipeline.features import hdbscan as hdbscan_features
+    df = make_ohlcv(100)
+    cols_to_add = [
+        "body_rate", "upwick_rate", "lowwick_rate", "body_abs", "ibs",
+        "adx_14", "adxr", "aroon_osc", "dmp_14", "rsi_slope_medium", "close_zscore",
+        "rsi_medium", "stochrsi_k", "return_micro", "return_short", "return_medium", "return_long",
+        "atr_pct_medium", "atr_pct_long", "bb_width", "realized_volatility", "chaikin_volatility",
+        "volume_ratio", "volume_zscore", "volume_up_ratio", "volume_down_ratio", "mfi_standard", "force_ratio",
+        "close_to_vwap", "vwap_bias", "env_position", "pac_position", "pac_width_bias",
+        "amihud", "market_placement", "path_liquidity", "spread_proxy"
+    ]
+    rng = np.random.default_rng(42)
+    for col in cols_to_add:
+        df[col] = rng.standard_normal(len(df))
+
+    res = hdbscan_features.extract_features(df, Config())
+    expected_clusters = [
+        "hdbscan_regime_core",
+        "hdbscan_price_volume_anatomy",
+        "hdbscan_candle_shape_rejection",
+        "hdbscan_multi_horizon_momentum",
+        "hdbscan_breakout_volatility_squeeze",
+        "hdbscan_trend_exhaustion_divergence",
+        "hdbscan_market_microstructure",
+        "hdbscan_mean_reversion_extremes",
+        "hdbscan_order_flow_impulse",
+        "hdbscan_macro_risk_regime",
+    ]
+    for c in expected_clusters:
+        assert c in res.columns
+        assert res[c].dtype == np.int32
+
+
+def test_hdbscan_custom_config():
+    from autofcholv.pipeline.features.hdbscan import run_hdbscan_clustering
+    df = make_ohlcv(50)
+    n = len(df)
+    half = n // 2
+    rng = np.random.default_rng(42)
+    df["f1"] = np.concatenate([rng.normal(0, 0.2, half), rng.normal(10, 0.2, n - half)])
+    df["f2"] = np.concatenate([rng.normal(0, 0.2, half), rng.normal(10, 0.2, n - half)])
+
+    custom_cfg = {
+        "my_hdbscan_cluster": {
+            "features": ["f1", "f2"],
+            "min_cluster_size": 20,
+            "min_samples": 5,
+        }
+    }
+    res = run_hdbscan_clustering(df, clusters_config=custom_cfg)
+    assert "my_hdbscan_cluster" in res.columns
+    non_noise = res.loc[res["my_hdbscan_cluster"] >= 0, "my_hdbscan_cluster"]
+    assert len(non_noise.unique()) >= 2
+
+
+def test_gmm_features_direct_extraction():
+    from autofcholv.pipeline.features import gmm as gmm_features
+    df = make_ohlcv(100)
+    cols_to_add = [
+        "body_rate", "upwick_rate", "lowwick_rate", "body_abs", "ibs",
+        "adx_14", "adxr", "aroon_osc", "dmp_14", "rsi_slope_medium", "close_zscore",
+        "rsi_medium", "stochrsi_k", "return_micro", "return_short", "return_medium", "return_long",
+        "atr_pct_medium", "atr_pct_long", "bb_width", "realized_volatility", "chaikin_volatility",
+        "volume_ratio", "volume_zscore", "volume_up_ratio", "volume_down_ratio", "mfi_standard", "force_ratio",
+        "close_to_vwap", "vwap_bias", "env_position", "pac_position", "pac_width_bias",
+        "amihud", "market_placement", "path_liquidity", "spread_proxy"
+    ]
+    rng = np.random.default_rng(42)
+    for col in cols_to_add:
+        df[col] = rng.standard_normal(len(df))
+
+    res = gmm_features.extract_features(df, Config())
+    expected_clusters = [
+        "gmm_regime_core",
+        "gmm_price_volume_anatomy",
+        "gmm_candle_shape_rejection",
+        "gmm_multi_horizon_momentum",
+        "gmm_breakout_volatility_squeeze",
+        "gmm_trend_exhaustion_divergence",
+        "gmm_market_microstructure",
+        "gmm_mean_reversion_extremes",
+        "gmm_order_flow_impulse",
+        "gmm_macro_risk_regime",
+    ]
+    for c in expected_clusters:
+        assert c in res.columns
+        assert res[c].nunique() > 1
+
+
+def test_gmm_custom_config():
+    from autofcholv.pipeline.features.gmm import run_gmm_clustering
+    df = make_ohlcv(50)
+    n = len(df)
+    half = n // 2
+    rng = np.random.default_rng(42)
+    df["f1"] = np.concatenate([rng.normal(0, 0.2, half), rng.normal(10, 0.2, n - half)])
+    df["f2"] = np.concatenate([rng.normal(0, 0.2, half), rng.normal(10, 0.2, n - half)])
+
+    custom_cfg = {
+        "my_gmm_cluster": {
+            "features": ["f1", "f2"],
+            "n_components": 2,
+            "random_state": 42,
+        }
+    }
+    res = run_gmm_clustering(df, clusters_config=custom_cfg)
+    assert "my_gmm_cluster" in res.columns
+    assert set(res["my_gmm_cluster"].unique()) == {0, 1}
+
+
+
+
+
 

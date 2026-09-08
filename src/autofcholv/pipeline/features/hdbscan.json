@@ -1,0 +1,52 @@
+{
+    "hdbscan_regime_core": {
+        "type": "int",
+        "name": "HDBSCAN Core Regime Cluster (3 features)",
+        "comment": "HDBSCAN density cluster mixing Trend, Volatility, and Volume [adx_14, atr_pct_medium, volume_ratio]"
+    },
+    "hdbscan_price_volume_anatomy": {
+        "type": "int",
+        "name": "HDBSCAN Price-Volume Dynamics Cluster (4 features)",
+        "comment": "HDBSCAN density cluster mixing Price Returns and Volume Flow [return_medium, volume_ratio, volume_zscore, mfi_standard]"
+    },
+    "hdbscan_candle_shape_rejection": {
+        "type": "int",
+        "name": "HDBSCAN Candle Geometry & Rejection Cluster (5 features)",
+        "comment": "HDBSCAN density cluster mixing Body, Shadows, and Bar Location [body_rate, upwick_rate, lowwick_rate, body_abs, ibs]"
+    },
+    "hdbscan_multi_horizon_momentum": {
+        "type": "int",
+        "name": "HDBSCAN Momentum Spectrum Cluster (5 features)",
+        "comment": "HDBSCAN density cluster mixing Multi-horizon Returns and Oscillators [return_micro, return_short, return_medium, rsi_medium, stochrsi_k]"
+    },
+    "hdbscan_breakout_volatility_squeeze": {
+        "type": "int",
+        "name": "HDBSCAN Volatility Squeeze & Expansion Cluster (6 features)",
+        "comment": "HDBSCAN density cluster mixing Bollinger, ATR, Realized Vol, and Channels [bb_width, atr_pct_medium, realized_volatility, pac_position, pac_width_bias, env_position]"
+    },
+    "hdbscan_trend_exhaustion_divergence": {
+        "type": "int",
+        "name": "HDBSCAN Trend Quality & Exhaustion Cluster (6 features)",
+        "comment": "HDBSCAN density cluster mixing ADX, Aroon, RSI Velocity, and Z-Score [adx_14, adxr, aroon_osc, dmp_14, rsi_slope_medium, close_zscore]"
+    },
+    "hdbscan_market_microstructure": {
+        "type": "int",
+        "name": "HDBSCAN Microstructure Liquidity & Order Flow Cluster (7 features)",
+        "comment": "HDBSCAN density cluster mixing Amihud, Spread, Placement, and Volume Flow [amihud, market_placement, path_liquidity, spread_proxy, volume_zscore, volume_up_ratio, volume_down_ratio]"
+    },
+    "hdbscan_mean_reversion_extremes": {
+        "type": "int",
+        "name": "HDBSCAN Mean Reversion Stretch Extremes Cluster (5 features)",
+        "comment": "HDBSCAN density cluster mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope [close_to_vwap, vwap_bias, close_zscore, ibs, env_position]"
+    },
+    "hdbscan_order_flow_impulse": {
+        "type": "int",
+        "name": "HDBSCAN Order Flow Impulse & Effort vs Result Cluster (7 features)",
+        "comment": "HDBSCAN density cluster mixing Returns, Candle Body, Volume Shocks, and Force [return_short, body_rate, volume_ratio, volume_zscore, force_ratio, mfi_standard, upwick_rate]"
+    },
+    "hdbscan_macro_risk_regime": {
+        "type": "int",
+        "name": "HDBSCAN Macro Risk & Long-Cycle Regime Cluster (7 features)",
+        "comment": "HDBSCAN density cluster mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP [return_long, return_medium, atr_pct_long, realized_volatility, chaikin_volatility, adx_14, close_to_vwap]"
+    }
+}

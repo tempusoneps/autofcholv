@@ -10,6 +10,7 @@ DOCS=(
   "docs/AI_AGENT_GUIDELINE.md"
   "docs/RULE.md"
   "docs/STRUCTURE.md"
+  "docs/GIT_CONVENTIONS.md"
 )
 
 cat > "$AGENTS" <<'EOF'
