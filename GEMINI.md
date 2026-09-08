@@ -189,13 +189,8 @@ When moving, renaming, adding, or deleting documentation/source files, update al
 │       │       ├── price.json        # Price feature metadata.
 │       │       ├── resample.py       # Daily resample and previous-day features.
 │       │       ├── resample.json     # Resample feature metadata.
-<<<<<<< HEAD
-=======
-│       │       ├── signal.py         # Signal/idea features.
-│       │       ├── signal.json       # Signal feature metadata.
 │       │       ├── spectral.py       # Spectral graph-based clustering features.
 │       │       ├── spectral.json     # Spectral clustering feature metadata.
->>>>>>> b490e87 (develop(v0.4.0): update some clustering features)
 │       │       ├── time.py           # Time/session features.
 │       │       ├── time.json         # Time feature metadata.
 │       │       ├── trend.py          # Trend and moving-average features.
