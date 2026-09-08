@@ -17,6 +17,11 @@ from autofcholv.pipeline.features.group import extract_features as extract_group
 from autofcholv.pipeline.features.kmeans import extract_features as extract_kmeans_features
 from autofcholv.pipeline.features.hdbscan import extract_features as extract_hdbscan_features
 from autofcholv.pipeline.features.gmm import extract_features as extract_gmm_features
+from autofcholv.pipeline.features.dbscan import extract_features as extract_dbscan_features
+from autofcholv.pipeline.features.agglomerative import extract_features as extract_agglomerative_features
+from autofcholv.pipeline.features.birch import extract_features as extract_birch_features
+from autofcholv.pipeline.features.optics import extract_features as extract_optics_features
+from autofcholv.pipeline.features.spectral import extract_features as extract_spectral_features
 from autofcholv.pipeline.features.signal import extract_features as extract_signal_features
 >>>>>>> d1a4959 (develop(v0.4.0): add some clustering features)
 from autofcholv.pipeline.features.volume import extract_features as extract_volume_features
@@ -40,6 +45,11 @@ FEATURE_STEPS = [
     ("kmeans_features", extract_kmeans_features),
     ("hdbscan_features", extract_hdbscan_features),
     ("gmm_features", extract_gmm_features),
+    ("dbscan_features", extract_dbscan_features),
+    ("agglomerative_features", extract_agglomerative_features),
+    ("birch_features", extract_birch_features),
+    ("optics_features", extract_optics_features),
+    ("spectral_features", extract_spectral_features),
     ("signal_features", extract_signal_features),
 >>>>>>> d1a4959 (develop(v0.4.0): add some clustering features)
 ]

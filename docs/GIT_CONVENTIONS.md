@@ -79,5 +79,3 @@ All branch names must be lowercase, hyphen-separated, and prefixed with the cate
      ```
 4. **Gitignore Verification Before Commits**:
    Always check all `.gitignore` files (root `.gitignore` and any subfolder `.gitignore`) before staging or committing any file. Never force-add (`git add -f`) or commit files and directories that match `.gitignore` rules (such as `.venv`, `__pycache__`, cached data, or scratch files).
-5. **No Automatic Commits by AI Agents**:
-   AI agents must **NEVER** create git commits automatically (`git commit`). Always ask the user for confirmation and get explicit approval before executing any commit command.

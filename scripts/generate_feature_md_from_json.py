@@ -26,13 +26,14 @@ PIPELINE_ORDER = [
     "lag",
     "mix",
     "group",
-<<<<<<< HEAD
-=======
     "kmeans",
     "hdbscan",
     "gmm",
-    "signal",
->>>>>>> d1a4959 (develop(v0.4.0): add some clustering features)
+    "dbscan",
+    "agglomerative",
+    "birch",
+    "optics",
+    "spectral"
 ]
 
 MODULE_TITLES = {
@@ -48,13 +49,15 @@ MODULE_TITLES = {
     "lag": "Lag Features",
     "mix": "Mixed / Advanced Indicators",
     "group": "Group / Pattern Features",
-<<<<<<< HEAD
-=======
     "kmeans": "K-Means Clustering Features",
     "hdbscan": "HDBSCAN Clustering Features",
     "gmm": "Gaussian Mixture Model (GMM) Clustering Features",
+    "dbscan": "DBSCAN Density-Based Clustering Features",
+    "agglomerative": "Agglomerative Hierarchical Clustering Features",
+    "birch": "BIRCH Hierarchical Clustering Features",
+    "optics": "OPTICS Density-Based Clustering Features",
+    "spectral": "Spectral Graph-Based Clustering Features",
     "signal": "Signals",
->>>>>>> d1a4959 (develop(v0.4.0): add some clustering features)
 }
 
 

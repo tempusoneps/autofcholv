@@ -1,0 +1,52 @@
+{
+    "optics_regime_core": {
+        "type": "int",
+        "name": "OPTICS Core Regime Cluster (3 features)",
+        "comment": "OPTICS density reachability cluster mixing Trend, Volatility, and Volume (noise is -1)"
+    },
+    "optics_price_volume_anatomy": {
+        "type": "int",
+        "name": "OPTICS Price-Volume Dynamics Cluster (4 features)",
+        "comment": "OPTICS density reachability cluster mixing Price Returns and Volume Flow (noise is -1)"
+    },
+    "optics_candle_shape_rejection": {
+        "type": "int",
+        "name": "OPTICS Candle Geometry & Rejection Cluster (5 features)",
+        "comment": "OPTICS density reachability cluster mixing Body, Shadows, and Bar Location (noise is -1)"
+    },
+    "optics_multi_horizon_momentum": {
+        "type": "int",
+        "name": "OPTICS Momentum Spectrum Cluster (5 features)",
+        "comment": "OPTICS density reachability cluster mixing Multi-horizon Returns and Oscillators (noise is -1)"
+    },
+    "optics_breakout_volatility_squeeze": {
+        "type": "int",
+        "name": "OPTICS Volatility Squeeze & Expansion Cluster (6 features)",
+        "comment": "OPTICS density reachability cluster mixing Bollinger, ATR, Realized Vol, and Channels (noise is -1)"
+    },
+    "optics_trend_exhaustion_divergence": {
+        "type": "int",
+        "name": "OPTICS Trend Quality & Exhaustion Cluster (6 features)",
+        "comment": "OPTICS density reachability cluster mixing ADX, Aroon, RSI Velocity, and Z-Score (noise is -1)"
+    },
+    "optics_market_microstructure": {
+        "type": "int",
+        "name": "OPTICS Microstructure Liquidity & Order Flow Cluster (7 features)",
+        "comment": "OPTICS density reachability cluster mixing Amihud, Spread, Placement, and Volume Flow (noise is -1)"
+    },
+    "optics_mean_reversion_extremes": {
+        "type": "int",
+        "name": "OPTICS Mean Reversion Stretch Extremes Cluster (5 features)",
+        "comment": "OPTICS density reachability cluster mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope (noise is -1)"
+    },
+    "optics_order_flow_impulse": {
+        "type": "int",
+        "name": "OPTICS Order Flow Impulse & Effort vs Result Cluster (7 features)",
+        "comment": "OPTICS density reachability cluster mixing Returns, Candle Body, Volume Shocks, and Force (noise is -1)"
+    },
+    "optics_macro_risk_regime": {
+        "type": "int",
+        "name": "OPTICS Macro Risk & Long-Cycle Regime Cluster (7 features)",
+        "comment": "OPTICS density reachability cluster mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP (noise is -1)"
+    }
+}

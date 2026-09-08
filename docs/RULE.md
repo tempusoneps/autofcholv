@@ -54,7 +54,3 @@ If tests cannot be run or are skipped per user instruction, note the reason in t
 ## Keep Documentation Links Valid
 
 When moving, renaming, adding, or deleting documentation/source files, update all affected links in `README.md`, `docs/*.md`, and pipeline docs.
-
-## Do Not Commit Automatically
-
-AI agents must **NOT** create git commits automatically (`git commit`). Always ask the user for confirmation and get explicit approval before executing any `git commit` command.
