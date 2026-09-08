@@ -855,3 +855,141 @@ The pipeline executes in the order listed below.
 | `long_trend` | str | StrongUp \| StrongDown = EMA_1month > EMA_6months \| EMA_1month < EMA_6months |
 
 ---
+<<<<<<< HEAD
+=======
+
+## 13. K-Means Clustering Features — `kmeans.py`
+
+| Column | Type | Description |
+|---|---|---|
+| `cluster_regime_core` | int | K-Means cluster label (k=4) mixing Trend, Volatility, and Volume [adx_14, atr_pct_medium, volume_ratio] |
+| `cluster_price_volume_anatomy` | int | K-Means cluster label (k=4) mixing Price Returns and Volume Flow [return_medium, volume_ratio, volume_zscore, mfi_standard] |
+| `cluster_candle_shape_rejection` | int | K-Means cluster label (k=5) mixing Body, Shadows, and Bar Location [body_rate, upwick_rate, lowwick_rate, body_abs, ibs] |
+| `cluster_multi_horizon_momentum` | int | K-Means cluster label (k=4) mixing Multi-timeframe Returns and Oscillators [return_micro, return_short, return_medium, rsi_medium, stochrsi_k] |
+| `cluster_breakout_volatility_squeeze` | int | K-Means cluster label (k=4) mixing Bollinger, ATR, Realized Vol, and Channels [bb_width, atr_pct_medium, realized_volatility, pac_position, pac_width_bias, env_position] |
+| `cluster_trend_exhaustion_divergence` | int | K-Means cluster label (k=4) mixing Directional Strength, Aroon, RSI Velocity, and Z-Score [adx_14, adxr, aroon_osc, dmp_14, rsi_slope_medium, close_zscore] |
+| `cluster_market_microstructure` | int | K-Means cluster label (k=4) mixing Amihud, Spread, Placement, and Volume Asymmetry [amihud, market_placement, path_liquidity, spread_proxy, volume_zscore, volume_up_ratio, volume_down_ratio] |
+| `cluster_mean_reversion_extremes` | int | K-Means cluster label (k=4) mixing VWAP Distance, Bias, Statistical Z-Score, and Channels [close_to_vwap, vwap_bias, close_zscore, ibs, env_position] |
+| `cluster_order_flow_impulse` | int | K-Means cluster label (k=5) mixing Returns, Candle Body, Volume Shocks, and Force [return_short, body_rate, volume_ratio, volume_zscore, force_ratio, mfi_standard, upwick_rate] |
+| `cluster_macro_risk_regime` | int | K-Means cluster label (k=5) mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP [return_long, return_medium, atr_pct_long, realized_volatility, chaikin_volatility, adx_14, close_to_vwap] |
+
+---
+
+## 14. HDBSCAN Clustering Features — `hdbscan.py`
+
+| Column | Type | Description |
+|---|---|---|
+| `hdbscan_regime_core` | int | HDBSCAN density cluster mixing Trend, Volatility, and Volume [adx_14, atr_pct_medium, volume_ratio] |
+| `hdbscan_price_volume_anatomy` | int | HDBSCAN density cluster mixing Price Returns and Volume Flow [return_medium, volume_ratio, volume_zscore, mfi_standard] |
+| `hdbscan_candle_shape_rejection` | int | HDBSCAN density cluster mixing Body, Shadows, and Bar Location [body_rate, upwick_rate, lowwick_rate, body_abs, ibs] |
+| `hdbscan_multi_horizon_momentum` | int | HDBSCAN density cluster mixing Multi-horizon Returns and Oscillators [return_micro, return_short, return_medium, rsi_medium, stochrsi_k] |
+| `hdbscan_breakout_volatility_squeeze` | int | HDBSCAN density cluster mixing Bollinger, ATR, Realized Vol, and Channels [bb_width, atr_pct_medium, realized_volatility, pac_position, pac_width_bias, env_position] |
+| `hdbscan_trend_exhaustion_divergence` | int | HDBSCAN density cluster mixing ADX, Aroon, RSI Velocity, and Z-Score [adx_14, adxr, aroon_osc, dmp_14, rsi_slope_medium, close_zscore] |
+| `hdbscan_market_microstructure` | int | HDBSCAN density cluster mixing Amihud, Spread, Placement, and Volume Flow [amihud, market_placement, path_liquidity, spread_proxy, volume_zscore, volume_up_ratio, volume_down_ratio] |
+| `hdbscan_mean_reversion_extremes` | int | HDBSCAN density cluster mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope [close_to_vwap, vwap_bias, close_zscore, ibs, env_position] |
+| `hdbscan_order_flow_impulse` | int | HDBSCAN density cluster mixing Returns, Candle Body, Volume Shocks, and Force [return_short, body_rate, volume_ratio, volume_zscore, force_ratio, mfi_standard, upwick_rate] |
+| `hdbscan_macro_risk_regime` | int | HDBSCAN density cluster mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP [return_long, return_medium, atr_pct_long, realized_volatility, chaikin_volatility, adx_14, close_to_vwap] |
+
+---
+
+## 15. Gaussian Mixture Model (GMM) Clustering Features — `gmm.py`
+
+| Column | Type | Description |
+|---|---|---|
+| `gmm_regime_core` | int | Gaussian Mixture Model cluster label (k=4) mixing Trend, Volatility, and Volume [adx_14, atr_pct_medium, volume_ratio] |
+| `gmm_price_volume_anatomy` | int | Gaussian Mixture Model cluster label (k=4) mixing Price Returns and Volume Flow [return_medium, volume_ratio, volume_zscore, mfi_standard] |
+| `gmm_candle_shape_rejection` | int | Gaussian Mixture Model cluster label (k=5) mixing Body, Shadows, and Bar Location [body_rate, upwick_rate, lowwick_rate, body_abs, ibs] |
+| `gmm_multi_horizon_momentum` | int | Gaussian Mixture Model cluster label (k=4) mixing Multi-horizon Returns and Oscillators [return_micro, return_short, return_medium, rsi_medium, stochrsi_k] |
+| `gmm_breakout_volatility_squeeze` | int | Gaussian Mixture Model cluster label (k=4) mixing Bollinger, ATR, Realized Vol, and Channels [bb_width, atr_pct_medium, realized_volatility, pac_position, pac_width_bias, env_position] |
+| `gmm_trend_exhaustion_divergence` | int | Gaussian Mixture Model cluster label (k=4) mixing ADX, Aroon, RSI Velocity, and Z-Score [adx_14, adxr, aroon_osc, dmp_14, rsi_slope_medium, close_zscore] |
+| `gmm_market_microstructure` | int | Gaussian Mixture Model cluster label (k=4) mixing Amihud, Spread, Placement, and Volume Flow [amihud, market_placement, path_liquidity, spread_proxy, volume_zscore, volume_up_ratio, volume_down_ratio] |
+| `gmm_mean_reversion_extremes` | int | Gaussian Mixture Model cluster label (k=4) mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope [close_to_vwap, vwap_bias, close_zscore, ibs, env_position] |
+| `gmm_order_flow_impulse` | int | Gaussian Mixture Model cluster label (k=5) mixing Returns, Candle Body, Volume Shocks, and Force [return_short, body_rate, volume_ratio, volume_zscore, force_ratio, mfi_standard, upwick_rate] |
+| `gmm_macro_risk_regime` | int | Gaussian Mixture Model cluster label (k=5) mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP [return_long, return_medium, atr_pct_long, realized_volatility, chaikin_volatility, adx_14, close_to_vwap] |
+
+---
+
+## 16. Signals — `signal.py`
+
+| Column | Type | Description |
+|---|---|---|
+| `couple_cs_signal` | str | Signal of couple candlestick pattern (Both Green or Both Red) |
+| `ema_cross_signal` | str | Signal of EMA cross pattern (cross up or cross down) |
+| `min_max_short_signal` | str | Signal of min max short lookback Close (min or max) |
+| `macd_histogram_reversal_signal` | str | Tín hiệu sớm về sự suy yếu của lực đẩy |
+| `bb_rejection_signal` | str | Signal of BB rejection pattern |
+| `bb_squeeze_signal` | str | Tín hiệu dự báo bùng nổ biến động khi giá đi ngang quá lâu |
+| `rsi_divergence_signal` | str | Tín hiệu phân kỳ giữa giá và RSI để bắt đỉnh/đáy |
+| `atr_breakout_signal` | str | Xác nhận tín hiệu dựa trên độ biến động thực tế |
+| `vsa_confirmation_signal` | str | Xác nhận nỗ lực tăng/giảm qua khối lượng giao dịch |
+| `ichimoku_cloud_signal` | str | Tín hiệu dựa trên mây Ichimoku |
+| `ma_stretch_signal` | str | Đo lường độ căng của giá so với đường trung bình (Z-Score concept) |
+| `market_structure_break_signal` | str | Xác định sự thay đổi xu hướng từ Bearish sang Bullish và ngược lại |
+| `bollinger_band_width_signal` | str | Đo lường độ biến động (Volatility) của thị trường |
+| `volume_confirmation_signal` | bool | Xác nhận nỗ lực của giá thông qua khối lượng |
+| `mfi_rejection_signal` | str | Dòng tiền thông minh vào vùng cực đại |
+| `donchian_breakout_signal` | str | Tín hiệu thuận xu hướng dựa trên đỉnh/đáy cao nhất |
+| `hma_reversal_signal` | str | Xác định điểm xoay của xu hướng nhanh hơn EMA |
+| `adx_trend_filter` | bool | Chỉ kích hoạt giao dịch khi xu hướng đủ mạnh (> 25) |
+| `connors_rsi_signal` | str | Tín hiệu Mean Reversion cực nhanh cho scalping |
+| `choppiness_signal` | bool | Dùng để bật/tắt các signal khác. < 38.2 là có xu hướng, > 61.8 là đi ngang |
+| `keltner_channel_reversal` | str | Tín hiệu đảo chiều khi giá chạm biên Keltner |
+| `supertrend_reversal` | str | Tín hiệu đảo chiều xu hướng mạnh mẽ |
+| `aroon_oscillator_signal` | str | Xác định sức mạnh và hướng của xu hướng |
+| `chande_momentum_oscillator_signal` | str | Đo lường động lượng thị trường |
+| `ultimate_oscillator_signal` | str | Tín hiệu kết hợp 3 chu kỳ (7, 14, 28) |
+| `trix_crossover_signal` | str | Tín hiệu đảo chiều dựa trên TRIX |
+| `stochastic_rsi_signal` | str | Đo lường RSI trong vùng quá mua/quá bán |
+| `awesome_oscillator_signal` | str | Tín hiệu động lượng dựa trên nến |
+| `rate_of_change_signal` | str | Đo lường tốc độ thay đổi giá |
+| `price_channel_breakout_signal` | str | Tín hiệu breakout dựa trên kênh giá |
+| `linear_regression_slope_signal` | str | Đo lường độ dốc của đường xu hướng |
+| `kaufman_ama_signal` | str | Đường trung bình thích ứng với biến động |
+| `tma_reversal_signal` | str | Tín hiệu đảo chiều dựa trên TMA |
+| `linear_regression_channel_signal` | str | Kênh giá dựa trên hồi quy tuyến tính |
+| `hurst_exponent_signal` | bool | Xác định tính ngẫu nhiên của thị trường |
+| `vpt_divergence_signal` | str | Xác định sự phân kỳ của dòng tiền thực |
+| `liquidity_sweep_signal` | str | Quét high/low gần nhất và đảo chiều |
+| `equal_high_low_sweep_signal` | str | Quét vùng equal highs/lows |
+| `inside_bar_breakout_signal` | str | Breakout khỏi inside bar |
+| `fakey_pattern_signal` | str | False breakout |
+| `pin_bar_signal` | str | Nến rút chân mạnh |
+| `engulfing_signal` | str | Bao trùm nến trước |
+| `compression_breakout_signal` | str | Nhiều nến nhỏ → breakout |
+| `atr_expansion_signal` | str | Volatility breakout |
+| `zscore_reversion_signal` | str | Giá lệch khỏi mean |
+| `range_breakout_signal` | str | Break range |
+| `volume_spike_signal` | str | Volume đột biến |
+| `return_momentum_signal` | str | Momentum dựa trên return |
+| `volatility_break_signal` | str | Biến động vượt ngưỡng |
+| `mean_cross_signal` | str | Giá cắt MA |
+| `high_low_break_signal` | str | Phá đỉnh/đáy gần |
+| `range_compression_signal` | str | Range co hẹp |
+| `gap_up_down_signal` | str | Gap giá |
+| `body_size_signal` | str | Thân nến lớn |
+| `wick_rejection_signal` | str | Từ chối giá bằng bóng nến |
+| `trend_strength_signal` | str | Xu hướng mạnh |
+| `pullback_signal` | str | Pullback trong trend |
+| `break_retest_signal` | str | Break và retest |
+| `momentum_shift_signal` | str | Đổi chiều momentum |
+| `range_mid_reversion_signal` | str | Hồi về mid range |
+| `volatility_drop_signal` | str | Giảm biến động |
+| `price_acceleration_signal` | str | Gia tốc giá |
+| `extreme_move_signal` | str | Move lớn bất thường |
+| `mean_distance_signal` | str | Khoảng cách tới MA |
+| `range_shift_signal` | str | Dịch chuyển range |
+| `volume_trend_signal` | str | Xu hướng volume |
+| `price_rejection_signal` | str | Từ chối vùng giá |
+| `micro_trend_signal` | str | Trend ngắn hạn |
+| `micro_reversal_signal` | str | Đảo chiều ngắn hạn |
+| `range_expansion_signal` | str | Range tăng |
+| `body_direction_signal` | str | Chuỗi nến cùng màu |
+| `range_position_signal` | str | Vị trí trong range |
+| `close_strength_signal` | str | Đóng cửa gần high/low |
+| `trend_exhaustion_signal` | str | Kiệt sức xu hướng |
+| `range_flip_signal` | str | Đảo range |
+| `vol_price_divergence_signal` | str | Volume không confirm giá |
+| `final_push_signal` | str | Đẩy cuối trend |
+
+---
+>>>>>>> d1a4959 (develop(v0.4.0): add some clustering features)
