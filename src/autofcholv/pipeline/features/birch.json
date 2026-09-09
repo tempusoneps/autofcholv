@@ -1,50 +1,50 @@
 {
-    "birch_regime_core": {
+    "cluster_birch_001": {
         "type": "int",
         "name": "BIRCH Core Regime Cluster (3 features)",
         "comment": "BIRCH CF-Tree cluster (k=4) mixing Trend, Volatility, and Volume"
     },
-    "birch_price_volume_anatomy": {
+    "cluster_birch_002": {
         "type": "int",
         "name": "BIRCH Price-Volume Dynamics Cluster (4 features)",
         "comment": "BIRCH CF-Tree cluster (k=4) mixing Price Returns and Volume Flow"
     },
-    "birch_candle_shape_rejection": {
+    "cluster_birch_003": {
         "type": "int",
         "name": "BIRCH Candle Geometry & Rejection Cluster (5 features)",
         "comment": "BIRCH CF-Tree cluster (k=5) mixing Body, Shadows, and Bar Location"
     },
-    "birch_multi_horizon_momentum": {
+    "cluster_birch_004": {
         "type": "int",
         "name": "BIRCH Momentum Spectrum Cluster (5 features)",
         "comment": "BIRCH CF-Tree cluster (k=4) mixing Multi-horizon Returns and Oscillators"
     },
-    "birch_breakout_volatility_squeeze": {
+    "cluster_birch_005": {
         "type": "int",
         "name": "BIRCH Volatility Squeeze & Expansion Cluster (6 features)",
         "comment": "BIRCH CF-Tree cluster (k=4) mixing Bollinger, ATR, Realized Vol, and Channels"
     },
-    "birch_trend_exhaustion_divergence": {
+    "cluster_birch_006": {
         "type": "int",
         "name": "BIRCH Trend Quality & Exhaustion Cluster (6 features)",
         "comment": "BIRCH CF-Tree cluster (k=4) mixing ADX, Aroon, RSI Velocity, and Z-Score"
     },
-    "birch_market_microstructure": {
+    "cluster_birch_007": {
         "type": "int",
         "name": "BIRCH Microstructure Liquidity & Order Flow Cluster (7 features)",
         "comment": "BIRCH CF-Tree cluster (k=4) mixing Amihud, Spread, Placement, and Volume Flow"
     },
-    "birch_mean_reversion_extremes": {
+    "cluster_birch_008": {
         "type": "int",
         "name": "BIRCH Mean Reversion Stretch Extremes Cluster (5 features)",
         "comment": "BIRCH CF-Tree cluster (k=4) mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope"
     },
-    "birch_order_flow_impulse": {
+    "cluster_birch_009": {
         "type": "int",
         "name": "BIRCH Order Flow Impulse & Effort vs Result Cluster (7 features)",
         "comment": "BIRCH CF-Tree cluster (k=5) mixing Returns, Candle Body, Volume Shocks, and Force"
     },
-    "birch_macro_risk_regime": {
+    "cluster_birch_010": {
         "type": "int",
         "name": "BIRCH Macro Risk & Long-Cycle Regime Cluster (7 features)",
         "comment": "BIRCH CF-Tree cluster (k=5) mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP"

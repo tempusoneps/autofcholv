@@ -860,16 +860,16 @@ The pipeline executes in the order listed below.
 
 | Column | Type | Description |
 |---|---|---|
-| `cluster_regime_core` | int | K-Means cluster label (k=4) mixing Trend, Volatility, and Volume [adx_14, atr_pct_medium, volume_ratio] |
-| `cluster_price_volume_anatomy` | int | K-Means cluster label (k=4) mixing Price Returns and Volume Flow [return_medium, volume_ratio, volume_zscore, mfi_standard] |
-| `cluster_candle_shape_rejection` | int | K-Means cluster label (k=5) mixing Body, Shadows, and Bar Location [body_rate, upwick_rate, lowwick_rate, body_abs, ibs] |
-| `cluster_multi_horizon_momentum` | int | K-Means cluster label (k=4) mixing Multi-timeframe Returns and Oscillators [return_micro, return_short, return_medium, rsi_medium, stochrsi_k] |
-| `cluster_breakout_volatility_squeeze` | int | K-Means cluster label (k=4) mixing Bollinger, ATR, Realized Vol, and Channels [bb_width, atr_pct_medium, realized_volatility, pac_position, pac_width_bias, env_position] |
-| `cluster_trend_exhaustion_divergence` | int | K-Means cluster label (k=4) mixing Directional Strength, Aroon, RSI Velocity, and Z-Score [adx_14, adxr, aroon_osc, dmp_14, rsi_slope_medium, close_zscore] |
-| `cluster_market_microstructure` | int | K-Means cluster label (k=4) mixing Amihud, Spread, Placement, and Volume Asymmetry [amihud, market_placement, path_liquidity, spread_proxy, volume_zscore, volume_up_ratio, volume_down_ratio] |
-| `cluster_mean_reversion_extremes` | int | K-Means cluster label (k=4) mixing VWAP Distance, Bias, Statistical Z-Score, and Channels [close_to_vwap, vwap_bias, close_zscore, ibs, env_position] |
-| `cluster_order_flow_impulse` | int | K-Means cluster label (k=5) mixing Returns, Candle Body, Volume Shocks, and Force [return_short, body_rate, volume_ratio, volume_zscore, force_ratio, mfi_standard, upwick_rate] |
-| `cluster_macro_risk_regime` | int | K-Means cluster label (k=5) mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP [return_long, return_medium, atr_pct_long, realized_volatility, chaikin_volatility, adx_14, close_to_vwap] |
+| `cluster_kmeans_001` | int | K-Means cluster label (k=4) mixing Trend, Volatility, and Volume [adx_14, atr_pct_medium, volume_ratio] |
+| `cluster_kmeans_002` | int | K-Means cluster label (k=4) mixing Price Returns and Volume Flow [return_medium, volume_ratio, volume_zscore, mfi_standard] |
+| `cluster_kmeans_003` | int | K-Means cluster label (k=5) mixing Body, Shadows, and Bar Location [body_rate, upwick_rate, lowwick_rate, body_abs, ibs] |
+| `cluster_kmeans_004` | int | K-Means cluster label (k=4) mixing Multi-timeframe Returns and Oscillators [return_micro, return_short, return_medium, rsi_medium, stochrsi_k] |
+| `cluster_kmeans_005` | int | K-Means cluster label (k=4) mixing Bollinger, ATR, Realized Vol, and Channels [bb_width, atr_pct_medium, realized_volatility, pac_position, pac_width_bias, env_position] |
+| `cluster_kmeans_006` | int | K-Means cluster label (k=4) mixing Directional Strength, Aroon, RSI Velocity, and Z-Score [adx_14, adxr, aroon_osc, dmp_14, rsi_slope_medium, close_zscore] |
+| `cluster_kmeans_007` | int | K-Means cluster label (k=4) mixing Amihud, Spread, Placement, and Volume Asymmetry [amihud, market_placement, path_liquidity, spread_proxy, volume_zscore, volume_up_ratio, volume_down_ratio] |
+| `cluster_kmeans_008` | int | K-Means cluster label (k=4) mixing VWAP Distance, Bias, Statistical Z-Score, and Channels [close_to_vwap, vwap_bias, close_zscore, ibs, env_position] |
+| `cluster_kmeans_009` | int | K-Means cluster label (k=5) mixing Returns, Candle Body, Volume Shocks, and Force [return_short, body_rate, volume_ratio, volume_zscore, force_ratio, mfi_standard, upwick_rate] |
+| `cluster_kmeans_010` | int | K-Means cluster label (k=5) mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP [return_long, return_medium, atr_pct_long, realized_volatility, chaikin_volatility, adx_14, close_to_vwap] |
 
 ---
 
@@ -877,16 +877,16 @@ The pipeline executes in the order listed below.
 
 | Column | Type | Description |
 |---|---|---|
-| `hdbscan_regime_core` | int | HDBSCAN density cluster mixing Trend, Volatility, and Volume [adx_14, atr_pct_medium, volume_ratio] |
-| `hdbscan_price_volume_anatomy` | int | HDBSCAN density cluster mixing Price Returns and Volume Flow [return_medium, volume_ratio, volume_zscore, mfi_standard] |
-| `hdbscan_candle_shape_rejection` | int | HDBSCAN density cluster mixing Body, Shadows, and Bar Location [body_rate, upwick_rate, lowwick_rate, body_abs, ibs] |
-| `hdbscan_multi_horizon_momentum` | int | HDBSCAN density cluster mixing Multi-horizon Returns and Oscillators [return_micro, return_short, return_medium, rsi_medium, stochrsi_k] |
-| `hdbscan_breakout_volatility_squeeze` | int | HDBSCAN density cluster mixing Bollinger, ATR, Realized Vol, and Channels [bb_width, atr_pct_medium, realized_volatility, pac_position, pac_width_bias, env_position] |
-| `hdbscan_trend_exhaustion_divergence` | int | HDBSCAN density cluster mixing ADX, Aroon, RSI Velocity, and Z-Score [adx_14, adxr, aroon_osc, dmp_14, rsi_slope_medium, close_zscore] |
-| `hdbscan_market_microstructure` | int | HDBSCAN density cluster mixing Amihud, Spread, Placement, and Volume Flow [amihud, market_placement, path_liquidity, spread_proxy, volume_zscore, volume_up_ratio, volume_down_ratio] |
-| `hdbscan_mean_reversion_extremes` | int | HDBSCAN density cluster mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope [close_to_vwap, vwap_bias, close_zscore, ibs, env_position] |
-| `hdbscan_order_flow_impulse` | int | HDBSCAN density cluster mixing Returns, Candle Body, Volume Shocks, and Force [return_short, body_rate, volume_ratio, volume_zscore, force_ratio, mfi_standard, upwick_rate] |
-| `hdbscan_macro_risk_regime` | int | HDBSCAN density cluster mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP [return_long, return_medium, atr_pct_long, realized_volatility, chaikin_volatility, adx_14, close_to_vwap] |
+| `cluster_hdbscan_001` | int | HDBSCAN density cluster mixing Trend, Volatility, and Volume [adx_14, atr_pct_medium, volume_ratio] |
+| `cluster_hdbscan_002` | int | HDBSCAN density cluster mixing Price Returns and Volume Flow [return_medium, volume_ratio, volume_zscore, mfi_standard] |
+| `cluster_hdbscan_003` | int | HDBSCAN density cluster mixing Body, Shadows, and Bar Location [body_rate, upwick_rate, lowwick_rate, body_abs, ibs] |
+| `cluster_hdbscan_004` | int | HDBSCAN density cluster mixing Multi-horizon Returns and Oscillators [return_micro, return_short, return_medium, rsi_medium, stochrsi_k] |
+| `cluster_hdbscan_005` | int | HDBSCAN density cluster mixing Bollinger, ATR, Realized Vol, and Channels [bb_width, atr_pct_medium, realized_volatility, pac_position, pac_width_bias, env_position] |
+| `cluster_hdbscan_006` | int | HDBSCAN density cluster mixing ADX, Aroon, RSI Velocity, and Z-Score [adx_14, adxr, aroon_osc, dmp_14, rsi_slope_medium, close_zscore] |
+| `cluster_hdbscan_007` | int | HDBSCAN density cluster mixing Amihud, Spread, Placement, and Volume Flow [amihud, market_placement, path_liquidity, spread_proxy, volume_zscore, volume_up_ratio, volume_down_ratio] |
+| `cluster_hdbscan_008` | int | HDBSCAN density cluster mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope [close_to_vwap, vwap_bias, close_zscore, ibs, env_position] |
+| `cluster_hdbscan_009` | int | HDBSCAN density cluster mixing Returns, Candle Body, Volume Shocks, and Force [return_short, body_rate, volume_ratio, volume_zscore, force_ratio, mfi_standard, upwick_rate] |
+| `cluster_hdbscan_010` | int | HDBSCAN density cluster mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP [return_long, return_medium, atr_pct_long, realized_volatility, chaikin_volatility, adx_14, close_to_vwap] |
 
 ---
 
@@ -894,16 +894,16 @@ The pipeline executes in the order listed below.
 
 | Column | Type | Description |
 |---|---|---|
-| `gmm_regime_core` | int | Gaussian Mixture Model cluster label (k=4) mixing Trend, Volatility, and Volume [adx_14, atr_pct_medium, volume_ratio] |
-| `gmm_price_volume_anatomy` | int | Gaussian Mixture Model cluster label (k=4) mixing Price Returns and Volume Flow [return_medium, volume_ratio, volume_zscore, mfi_standard] |
-| `gmm_candle_shape_rejection` | int | Gaussian Mixture Model cluster label (k=5) mixing Body, Shadows, and Bar Location [body_rate, upwick_rate, lowwick_rate, body_abs, ibs] |
-| `gmm_multi_horizon_momentum` | int | Gaussian Mixture Model cluster label (k=4) mixing Multi-horizon Returns and Oscillators [return_micro, return_short, return_medium, rsi_medium, stochrsi_k] |
-| `gmm_breakout_volatility_squeeze` | int | Gaussian Mixture Model cluster label (k=4) mixing Bollinger, ATR, Realized Vol, and Channels [bb_width, atr_pct_medium, realized_volatility, pac_position, pac_width_bias, env_position] |
-| `gmm_trend_exhaustion_divergence` | int | Gaussian Mixture Model cluster label (k=4) mixing ADX, Aroon, RSI Velocity, and Z-Score [adx_14, adxr, aroon_osc, dmp_14, rsi_slope_medium, close_zscore] |
-| `gmm_market_microstructure` | int | Gaussian Mixture Model cluster label (k=4) mixing Amihud, Spread, Placement, and Volume Flow [amihud, market_placement, path_liquidity, spread_proxy, volume_zscore, volume_up_ratio, volume_down_ratio] |
-| `gmm_mean_reversion_extremes` | int | Gaussian Mixture Model cluster label (k=4) mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope [close_to_vwap, vwap_bias, close_zscore, ibs, env_position] |
-| `gmm_order_flow_impulse` | int | Gaussian Mixture Model cluster label (k=5) mixing Returns, Candle Body, Volume Shocks, and Force [return_short, body_rate, volume_ratio, volume_zscore, force_ratio, mfi_standard, upwick_rate] |
-| `gmm_macro_risk_regime` | int | Gaussian Mixture Model cluster label (k=5) mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP [return_long, return_medium, atr_pct_long, realized_volatility, chaikin_volatility, adx_14, close_to_vwap] |
+| `cluster_gmm_001` | int | Gaussian Mixture Model cluster label (k=4) mixing Trend, Volatility, and Volume [adx_14, atr_pct_medium, volume_ratio] |
+| `cluster_gmm_002` | int | Gaussian Mixture Model cluster label (k=4) mixing Price Returns and Volume Flow [return_medium, volume_ratio, volume_zscore, mfi_standard] |
+| `cluster_gmm_003` | int | Gaussian Mixture Model cluster label (k=5) mixing Body, Shadows, and Bar Location [body_rate, upwick_rate, lowwick_rate, body_abs, ibs] |
+| `cluster_gmm_004` | int | Gaussian Mixture Model cluster label (k=4) mixing Multi-horizon Returns and Oscillators [return_micro, return_short, return_medium, rsi_medium, stochrsi_k] |
+| `cluster_gmm_005` | int | Gaussian Mixture Model cluster label (k=4) mixing Bollinger, ATR, Realized Vol, and Channels [bb_width, atr_pct_medium, realized_volatility, pac_position, pac_width_bias, env_position] |
+| `cluster_gmm_006` | int | Gaussian Mixture Model cluster label (k=4) mixing ADX, Aroon, RSI Velocity, and Z-Score [adx_14, adxr, aroon_osc, dmp_14, rsi_slope_medium, close_zscore] |
+| `cluster_gmm_007` | int | Gaussian Mixture Model cluster label (k=4) mixing Amihud, Spread, Placement, and Volume Flow [amihud, market_placement, path_liquidity, spread_proxy, volume_zscore, volume_up_ratio, volume_down_ratio] |
+| `cluster_gmm_008` | int | Gaussian Mixture Model cluster label (k=4) mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope [close_to_vwap, vwap_bias, close_zscore, ibs, env_position] |
+| `cluster_gmm_009` | int | Gaussian Mixture Model cluster label (k=5) mixing Returns, Candle Body, Volume Shocks, and Force [return_short, body_rate, volume_ratio, volume_zscore, force_ratio, mfi_standard, upwick_rate] |
+| `cluster_gmm_010` | int | Gaussian Mixture Model cluster label (k=5) mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP [return_long, return_medium, atr_pct_long, realized_volatility, chaikin_volatility, adx_14, close_to_vwap] |
 
 ---
 
@@ -911,16 +911,16 @@ The pipeline executes in the order listed below.
 
 | Column | Type | Description |
 |---|---|---|
-| `dbscan_regime_core` | int | DBSCAN density cluster mixing Trend, Volatility, and Volume (noise is -1) |
-| `dbscan_price_volume_anatomy` | int | DBSCAN density cluster mixing Price Returns and Volume Flow (noise is -1) |
-| `dbscan_candle_shape_rejection` | int | DBSCAN density cluster mixing Body, Shadows, and Bar Location (noise is -1) |
-| `dbscan_multi_horizon_momentum` | int | DBSCAN density cluster mixing Multi-horizon Returns and Oscillators (noise is -1) |
-| `dbscan_breakout_volatility_squeeze` | int | DBSCAN density cluster mixing Bollinger, ATR, Realized Vol, and Channels (noise is -1) |
-| `dbscan_trend_exhaustion_divergence` | int | DBSCAN density cluster mixing ADX, Aroon, RSI Velocity, and Z-Score (noise is -1) |
-| `dbscan_market_microstructure` | int | DBSCAN density cluster mixing Amihud, Spread, Placement, and Volume Flow (noise is -1) |
-| `dbscan_mean_reversion_extremes` | int | DBSCAN density cluster mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope (noise is -1) |
-| `dbscan_order_flow_impulse` | int | DBSCAN density cluster mixing Returns, Candle Body, Volume Shocks, and Force (noise is -1) |
-| `dbscan_macro_risk_regime` | int | DBSCAN density cluster mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP (noise is -1) |
+| `cluster_dbscan_001` | int | DBSCAN density cluster mixing Trend, Volatility, and Volume (noise is -1) |
+| `cluster_dbscan_002` | int | DBSCAN density cluster mixing Price Returns and Volume Flow (noise is -1) |
+| `cluster_dbscan_003` | int | DBSCAN density cluster mixing Body, Shadows, and Bar Location (noise is -1) |
+| `cluster_dbscan_004` | int | DBSCAN density cluster mixing Multi-horizon Returns and Oscillators (noise is -1) |
+| `cluster_dbscan_005` | int | DBSCAN density cluster mixing Bollinger, ATR, Realized Vol, and Channels (noise is -1) |
+| `cluster_dbscan_006` | int | DBSCAN density cluster mixing ADX, Aroon, RSI Velocity, and Z-Score (noise is -1) |
+| `cluster_dbscan_007` | int | DBSCAN density cluster mixing Amihud, Spread, Placement, and Volume Flow (noise is -1) |
+| `cluster_dbscan_008` | int | DBSCAN density cluster mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope (noise is -1) |
+| `cluster_dbscan_009` | int | DBSCAN density cluster mixing Returns, Candle Body, Volume Shocks, and Force (noise is -1) |
+| `cluster_dbscan_010` | int | DBSCAN density cluster mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP (noise is -1) |
 
 ---
 
@@ -928,16 +928,16 @@ The pipeline executes in the order listed below.
 
 | Column | Type | Description |
 |---|---|---|
-| `agglomerative_regime_core` | int | Agglomerative Hierarchical cluster (k=4) mixing Trend, Volatility, and Volume |
-| `agglomerative_price_volume_anatomy` | int | Agglomerative Hierarchical cluster (k=4) mixing Price Returns and Volume Flow |
-| `agglomerative_candle_shape_rejection` | int | Agglomerative Hierarchical cluster (k=5) mixing Body, Shadows, and Bar Location |
-| `agglomerative_multi_horizon_momentum` | int | Agglomerative Hierarchical cluster (k=4) mixing Multi-horizon Returns and Oscillators |
-| `agglomerative_breakout_volatility_squeeze` | int | Agglomerative Hierarchical cluster (k=4) mixing Bollinger, ATR, Realized Vol, and Channels |
-| `agglomerative_trend_exhaustion_divergence` | int | Agglomerative Hierarchical cluster (k=4) mixing ADX, Aroon, RSI Velocity, and Z-Score |
-| `agglomerative_market_microstructure` | int | Agglomerative Hierarchical cluster (k=4) mixing Amihud, Spread, Placement, and Volume Flow |
-| `agglomerative_mean_reversion_extremes` | int | Agglomerative Hierarchical cluster (k=4) mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope |
-| `agglomerative_order_flow_impulse` | int | Agglomerative Hierarchical cluster (k=5) mixing Returns, Candle Body, Volume Shocks, and Force |
-| `agglomerative_macro_risk_regime` | int | Agglomerative Hierarchical cluster (k=5) mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP |
+| `cluster_agglomerative_001` | int | Agglomerative Hierarchical cluster (k=4) mixing Trend, Volatility, and Volume |
+| `cluster_agglomerative_002` | int | Agglomerative Hierarchical cluster (k=4) mixing Price Returns and Volume Flow |
+| `cluster_agglomerative_003` | int | Agglomerative Hierarchical cluster (k=5) mixing Body, Shadows, and Bar Location |
+| `cluster_agglomerative_004` | int | Agglomerative Hierarchical cluster (k=4) mixing Multi-horizon Returns and Oscillators |
+| `cluster_agglomerative_005` | int | Agglomerative Hierarchical cluster (k=4) mixing Bollinger, ATR, Realized Vol, and Channels |
+| `cluster_agglomerative_006` | int | Agglomerative Hierarchical cluster (k=4) mixing ADX, Aroon, RSI Velocity, and Z-Score |
+| `cluster_agglomerative_007` | int | Agglomerative Hierarchical cluster (k=4) mixing Amihud, Spread, Placement, and Volume Flow |
+| `cluster_agglomerative_008` | int | Agglomerative Hierarchical cluster (k=4) mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope |
+| `cluster_agglomerative_009` | int | Agglomerative Hierarchical cluster (k=5) mixing Returns, Candle Body, Volume Shocks, and Force |
+| `cluster_agglomerative_010` | int | Agglomerative Hierarchical cluster (k=5) mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP |
 
 ---
 
@@ -945,16 +945,16 @@ The pipeline executes in the order listed below.
 
 | Column | Type | Description |
 |---|---|---|
-| `birch_regime_core` | int | BIRCH CF-Tree cluster (k=4) mixing Trend, Volatility, and Volume |
-| `birch_price_volume_anatomy` | int | BIRCH CF-Tree cluster (k=4) mixing Price Returns and Volume Flow |
-| `birch_candle_shape_rejection` | int | BIRCH CF-Tree cluster (k=5) mixing Body, Shadows, and Bar Location |
-| `birch_multi_horizon_momentum` | int | BIRCH CF-Tree cluster (k=4) mixing Multi-horizon Returns and Oscillators |
-| `birch_breakout_volatility_squeeze` | int | BIRCH CF-Tree cluster (k=4) mixing Bollinger, ATR, Realized Vol, and Channels |
-| `birch_trend_exhaustion_divergence` | int | BIRCH CF-Tree cluster (k=4) mixing ADX, Aroon, RSI Velocity, and Z-Score |
-| `birch_market_microstructure` | int | BIRCH CF-Tree cluster (k=4) mixing Amihud, Spread, Placement, and Volume Flow |
-| `birch_mean_reversion_extremes` | int | BIRCH CF-Tree cluster (k=4) mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope |
-| `birch_order_flow_impulse` | int | BIRCH CF-Tree cluster (k=5) mixing Returns, Candle Body, Volume Shocks, and Force |
-| `birch_macro_risk_regime` | int | BIRCH CF-Tree cluster (k=5) mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP |
+| `cluster_birch_001` | int | BIRCH CF-Tree cluster (k=4) mixing Trend, Volatility, and Volume |
+| `cluster_birch_002` | int | BIRCH CF-Tree cluster (k=4) mixing Price Returns and Volume Flow |
+| `cluster_birch_003` | int | BIRCH CF-Tree cluster (k=5) mixing Body, Shadows, and Bar Location |
+| `cluster_birch_004` | int | BIRCH CF-Tree cluster (k=4) mixing Multi-horizon Returns and Oscillators |
+| `cluster_birch_005` | int | BIRCH CF-Tree cluster (k=4) mixing Bollinger, ATR, Realized Vol, and Channels |
+| `cluster_birch_006` | int | BIRCH CF-Tree cluster (k=4) mixing ADX, Aroon, RSI Velocity, and Z-Score |
+| `cluster_birch_007` | int | BIRCH CF-Tree cluster (k=4) mixing Amihud, Spread, Placement, and Volume Flow |
+| `cluster_birch_008` | int | BIRCH CF-Tree cluster (k=4) mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope |
+| `cluster_birch_009` | int | BIRCH CF-Tree cluster (k=5) mixing Returns, Candle Body, Volume Shocks, and Force |
+| `cluster_birch_010` | int | BIRCH CF-Tree cluster (k=5) mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP |
 
 ---
 
@@ -962,16 +962,16 @@ The pipeline executes in the order listed below.
 
 | Column | Type | Description |
 |---|---|---|
-| `optics_regime_core` | int | OPTICS density reachability cluster mixing Trend, Volatility, and Volume (noise is -1) |
-| `optics_price_volume_anatomy` | int | OPTICS density reachability cluster mixing Price Returns and Volume Flow (noise is -1) |
-| `optics_candle_shape_rejection` | int | OPTICS density reachability cluster mixing Body, Shadows, and Bar Location (noise is -1) |
-| `optics_multi_horizon_momentum` | int | OPTICS density reachability cluster mixing Multi-horizon Returns and Oscillators (noise is -1) |
-| `optics_breakout_volatility_squeeze` | int | OPTICS density reachability cluster mixing Bollinger, ATR, Realized Vol, and Channels (noise is -1) |
-| `optics_trend_exhaustion_divergence` | int | OPTICS density reachability cluster mixing ADX, Aroon, RSI Velocity, and Z-Score (noise is -1) |
-| `optics_market_microstructure` | int | OPTICS density reachability cluster mixing Amihud, Spread, Placement, and Volume Flow (noise is -1) |
-| `optics_mean_reversion_extremes` | int | OPTICS density reachability cluster mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope (noise is -1) |
-| `optics_order_flow_impulse` | int | OPTICS density reachability cluster mixing Returns, Candle Body, Volume Shocks, and Force (noise is -1) |
-| `optics_macro_risk_regime` | int | OPTICS density reachability cluster mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP (noise is -1) |
+| `cluster_optics_001` | int | OPTICS density reachability cluster mixing Trend, Volatility, and Volume (noise is -1) |
+| `cluster_optics_002` | int | OPTICS density reachability cluster mixing Price Returns and Volume Flow (noise is -1) |
+| `cluster_optics_003` | int | OPTICS density reachability cluster mixing Body, Shadows, and Bar Location (noise is -1) |
+| `cluster_optics_004` | int | OPTICS density reachability cluster mixing Multi-horizon Returns and Oscillators (noise is -1) |
+| `cluster_optics_005` | int | OPTICS density reachability cluster mixing Bollinger, ATR, Realized Vol, and Channels (noise is -1) |
+| `cluster_optics_006` | int | OPTICS density reachability cluster mixing ADX, Aroon, RSI Velocity, and Z-Score (noise is -1) |
+| `cluster_optics_007` | int | OPTICS density reachability cluster mixing Amihud, Spread, Placement, and Volume Flow (noise is -1) |
+| `cluster_optics_008` | int | OPTICS density reachability cluster mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope (noise is -1) |
+| `cluster_optics_009` | int | OPTICS density reachability cluster mixing Returns, Candle Body, Volume Shocks, and Force (noise is -1) |
+| `cluster_optics_010` | int | OPTICS density reachability cluster mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP (noise is -1) |
 
 ---
 
@@ -979,15 +979,15 @@ The pipeline executes in the order listed below.
 
 | Column | Type | Description |
 |---|---|---|
-| `spectral_regime_core` | int | Spectral Graph Laplacian cluster (k=4) mixing Trend, Volatility, and Volume |
-| `spectral_price_volume_anatomy` | int | Spectral Graph Laplacian cluster (k=4) mixing Price Returns and Volume Flow |
-| `spectral_candle_shape_rejection` | int | Spectral Graph Laplacian cluster (k=5) mixing Body, Shadows, and Bar Location |
-| `spectral_multi_horizon_momentum` | int | Spectral Graph Laplacian cluster (k=4) mixing Multi-horizon Returns and Oscillators |
-| `spectral_breakout_volatility_squeeze` | int | Spectral Graph Laplacian cluster (k=4) mixing Bollinger, ATR, Realized Vol, and Channels |
-| `spectral_trend_exhaustion_divergence` | int | Spectral Graph Laplacian cluster (k=4) mixing ADX, Aroon, RSI Velocity, and Z-Score |
-| `spectral_market_microstructure` | int | Spectral Graph Laplacian cluster (k=4) mixing Amihud, Spread, Placement, and Volume Flow |
-| `spectral_mean_reversion_extremes` | int | Spectral Graph Laplacian cluster (k=4) mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope |
-| `spectral_order_flow_impulse` | int | Spectral Graph Laplacian cluster (k=5) mixing Returns, Candle Body, Volume Shocks, and Force |
-| `spectral_macro_risk_regime` | int | Spectral Graph Laplacian cluster (k=5) mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP |
+| `cluster_spectral_001` | int | Spectral Graph Laplacian cluster (k=4) mixing Trend, Volatility, and Volume |
+| `cluster_spectral_002` | int | Spectral Graph Laplacian cluster (k=4) mixing Price Returns and Volume Flow |
+| `cluster_spectral_003` | int | Spectral Graph Laplacian cluster (k=5) mixing Body, Shadows, and Bar Location |
+| `cluster_spectral_004` | int | Spectral Graph Laplacian cluster (k=4) mixing Multi-horizon Returns and Oscillators |
+| `cluster_spectral_005` | int | Spectral Graph Laplacian cluster (k=4) mixing Bollinger, ATR, Realized Vol, and Channels |
+| `cluster_spectral_006` | int | Spectral Graph Laplacian cluster (k=4) mixing ADX, Aroon, RSI Velocity, and Z-Score |
+| `cluster_spectral_007` | int | Spectral Graph Laplacian cluster (k=4) mixing Amihud, Spread, Placement, and Volume Flow |
+| `cluster_spectral_008` | int | Spectral Graph Laplacian cluster (k=4) mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope |
+| `cluster_spectral_009` | int | Spectral Graph Laplacian cluster (k=5) mixing Returns, Candle Body, Volume Shocks, and Force |
+| `cluster_spectral_010` | int | Spectral Graph Laplacian cluster (k=5) mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP |
 
 ---

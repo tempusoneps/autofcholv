@@ -7,61 +7,61 @@ from sklearn.preprocessing import StandardScaler
 from autofcholv.config.config import Config
 
 DEFAULT_GMM_CLUSTERS: Dict[str, Dict[str, Any]] = {
-    "gmm_regime_core": {
+    "cluster_gmm_001": {
         "features": ["adx_14", "atr_pct_medium", "volume_ratio"],
         "n_components": 4,
         "covariance_type": "full",
         "random_state": 42,
     },
-    "gmm_price_volume_anatomy": {
+    "cluster_gmm_002": {
         "features": ["return_medium", "volume_ratio", "volume_zscore", "mfi_standard"],
         "n_components": 4,
         "covariance_type": "full",
         "random_state": 42,
     },
-    "gmm_candle_shape_rejection": {
+    "cluster_gmm_003": {
         "features": ["body_rate", "upwick_rate", "lowwick_rate", "body_abs", "ibs"],
         "n_components": 5,
         "covariance_type": "full",
         "random_state": 42,
     },
-    "gmm_multi_horizon_momentum": {
+    "cluster_gmm_004": {
         "features": ["return_micro", "return_short", "return_medium", "rsi_medium", "stochrsi_k"],
         "n_components": 4,
         "covariance_type": "full",
         "random_state": 42,
     },
-    "gmm_breakout_volatility_squeeze": {
+    "cluster_gmm_005": {
         "features": ["bb_width", "atr_pct_medium", "realized_volatility", "pac_position", "pac_width_bias", "env_position"],
         "n_components": 4,
         "covariance_type": "full",
         "random_state": 42,
     },
-    "gmm_trend_exhaustion_divergence": {
+    "cluster_gmm_006": {
         "features": ["adx_14", "adxr", "aroon_osc", "dmp_14", "rsi_slope_medium", "close_zscore"],
         "n_components": 4,
         "covariance_type": "full",
         "random_state": 42,
     },
-    "gmm_market_microstructure": {
+    "cluster_gmm_007": {
         "features": ["amihud", "market_placement", "path_liquidity", "spread_proxy", "volume_zscore", "volume_up_ratio", "volume_down_ratio"],
         "n_components": 4,
         "covariance_type": "full",
         "random_state": 42,
     },
-    "gmm_mean_reversion_extremes": {
+    "cluster_gmm_008": {
         "features": ["close_to_vwap", "vwap_bias", "close_zscore", "ibs", "env_position"],
         "n_components": 4,
         "covariance_type": "full",
         "random_state": 42,
     },
-    "gmm_order_flow_impulse": {
+    "cluster_gmm_009": {
         "features": ["return_short", "body_rate", "volume_ratio", "volume_zscore", "force_ratio", "mfi_standard", "upwick_rate"],
         "n_components": 5,
         "covariance_type": "full",
         "random_state": 42,
     },
-    "gmm_macro_risk_regime": {
+    "cluster_gmm_010": {
         "features": ["return_long", "return_medium", "atr_pct_long", "realized_volatility", "chaikin_volatility", "adx_14", "close_to_vwap"],
         "n_components": 5,
         "covariance_type": "full",

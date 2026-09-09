@@ -7,52 +7,52 @@ from sklearn.preprocessing import StandardScaler
 from autofcholv.config.config import Config
 
 DEFAULT_BIRCH_CLUSTERS: Dict[str, Dict[str, Any]] = {
-    "birch_regime_core": {
+    "cluster_birch_001": {
         "features": ["adx_14", "atr_pct_medium", "volume_ratio"],
         "n_clusters": 4,
         "threshold": 0.5,
     },
-    "birch_price_volume_anatomy": {
+    "cluster_birch_002": {
         "features": ["return_medium", "volume_ratio", "volume_zscore", "mfi_standard"],
         "n_clusters": 4,
         "threshold": 0.5,
     },
-    "birch_candle_shape_rejection": {
+    "cluster_birch_003": {
         "features": ["body_rate", "upwick_rate", "lowwick_rate", "body_abs", "ibs"],
         "n_clusters": 5,
         "threshold": 0.5,
     },
-    "birch_multi_horizon_momentum": {
+    "cluster_birch_004": {
         "features": ["return_micro", "return_short", "return_medium", "rsi_medium", "stochrsi_k"],
         "n_clusters": 4,
         "threshold": 0.5,
     },
-    "birch_breakout_volatility_squeeze": {
+    "cluster_birch_005": {
         "features": ["bb_width", "atr_pct_medium", "realized_volatility", "pac_position", "pac_width_bias", "env_position"],
         "n_clusters": 4,
         "threshold": 0.5,
     },
-    "birch_trend_exhaustion_divergence": {
+    "cluster_birch_006": {
         "features": ["adx_14", "adxr", "aroon_osc", "dmp_14", "rsi_slope_medium", "close_zscore"],
         "n_clusters": 4,
         "threshold": 0.5,
     },
-    "birch_market_microstructure": {
+    "cluster_birch_007": {
         "features": ["amihud", "market_placement", "path_liquidity", "spread_proxy", "volume_zscore", "volume_up_ratio", "volume_down_ratio"],
         "n_clusters": 4,
         "threshold": 0.5,
     },
-    "birch_mean_reversion_extremes": {
+    "cluster_birch_008": {
         "features": ["close_to_vwap", "vwap_bias", "close_zscore", "ibs", "env_position"],
         "n_clusters": 4,
         "threshold": 0.5,
     },
-    "birch_order_flow_impulse": {
+    "cluster_birch_009": {
         "features": ["return_short", "body_rate", "volume_ratio", "volume_zscore", "force_ratio", "mfi_standard", "upwick_rate"],
         "n_clusters": 5,
         "threshold": 0.5,
     },
-    "birch_macro_risk_regime": {
+    "cluster_birch_010": {
         "features": ["return_long", "return_medium", "atr_pct_long", "realized_volatility", "chaikin_volatility", "adx_14", "close_to_vwap"],
         "n_clusters": 5,
         "threshold": 0.5,

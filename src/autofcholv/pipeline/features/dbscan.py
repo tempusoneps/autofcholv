@@ -7,52 +7,52 @@ from sklearn.preprocessing import StandardScaler
 from autofcholv.config.config import Config
 
 DEFAULT_DBSCAN_CLUSTERS: Dict[str, Dict[str, Any]] = {
-    "dbscan_regime_core": {
+    "cluster_dbscan_001": {
         "features": ["adx_14", "atr_pct_medium", "volume_ratio"],
         "eps": 0.5,
         "min_samples": 5,
     },
-    "dbscan_price_volume_anatomy": {
+    "cluster_dbscan_002": {
         "features": ["return_medium", "volume_ratio", "volume_zscore", "mfi_standard"],
         "eps": 0.5,
         "min_samples": 5,
     },
-    "dbscan_candle_shape_rejection": {
+    "cluster_dbscan_003": {
         "features": ["body_rate", "upwick_rate", "lowwick_rate", "body_abs", "ibs"],
         "eps": 0.5,
         "min_samples": 5,
     },
-    "dbscan_multi_horizon_momentum": {
+    "cluster_dbscan_004": {
         "features": ["return_micro", "return_short", "return_medium", "rsi_medium", "stochrsi_k"],
         "eps": 0.6,
         "min_samples": 5,
     },
-    "dbscan_breakout_volatility_squeeze": {
+    "cluster_dbscan_005": {
         "features": ["bb_width", "atr_pct_medium", "realized_volatility", "pac_position", "pac_width_bias", "env_position"],
         "eps": 0.7,
         "min_samples": 5,
     },
-    "dbscan_trend_exhaustion_divergence": {
+    "cluster_dbscan_006": {
         "features": ["adx_14", "adxr", "aroon_osc", "dmp_14", "rsi_slope_medium", "close_zscore"],
         "eps": 0.7,
         "min_samples": 5,
     },
-    "dbscan_market_microstructure": {
+    "cluster_dbscan_007": {
         "features": ["amihud", "market_placement", "path_liquidity", "spread_proxy", "volume_zscore", "volume_up_ratio", "volume_down_ratio"],
         "eps": 0.8,
         "min_samples": 5,
     },
-    "dbscan_mean_reversion_extremes": {
+    "cluster_dbscan_008": {
         "features": ["close_to_vwap", "vwap_bias", "close_zscore", "ibs", "env_position"],
         "eps": 0.6,
         "min_samples": 5,
     },
-    "dbscan_order_flow_impulse": {
+    "cluster_dbscan_009": {
         "features": ["return_short", "body_rate", "volume_ratio", "volume_zscore", "force_ratio", "mfi_standard", "upwick_rate"],
         "eps": 0.8,
         "min_samples": 5,
     },
-    "dbscan_macro_risk_regime": {
+    "cluster_dbscan_010": {
         "features": ["return_long", "return_medium", "atr_pct_long", "realized_volatility", "chaikin_volatility", "adx_14", "close_to_vwap"],
         "eps": 0.8,
         "min_samples": 5,

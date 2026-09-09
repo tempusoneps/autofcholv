@@ -7,52 +7,52 @@ from sklearn.preprocessing import StandardScaler
 from autofcholv.config.config import Config
 
 DEFAULT_HDBSCAN_CLUSTERS: Dict[str, Dict[str, Any]] = {
-    "hdbscan_regime_core": {
+    "cluster_hdbscan_001": {
         "features": ["adx_14", "atr_pct_medium", "volume_ratio"],
         "min_cluster_size": 15,
         "min_samples": 5,
     },
-    "hdbscan_price_volume_anatomy": {
+    "cluster_hdbscan_002": {
         "features": ["return_medium", "volume_ratio", "volume_zscore", "mfi_standard"],
         "min_cluster_size": 20,
         "min_samples": 5,
     },
-    "hdbscan_candle_shape_rejection": {
+    "cluster_hdbscan_003": {
         "features": ["body_rate", "upwick_rate", "lowwick_rate", "body_abs", "ibs"],
         "min_cluster_size": 15,
         "min_samples": 5,
     },
-    "hdbscan_multi_horizon_momentum": {
+    "cluster_hdbscan_004": {
         "features": ["return_micro", "return_short", "return_medium", "rsi_medium", "stochrsi_k"],
         "min_cluster_size": 20,
         "min_samples": 5,
     },
-    "hdbscan_breakout_volatility_squeeze": {
+    "cluster_hdbscan_005": {
         "features": ["bb_width", "atr_pct_medium", "realized_volatility", "pac_position", "pac_width_bias", "env_position"],
         "min_cluster_size": 15,
         "min_samples": 5,
     },
-    "hdbscan_trend_exhaustion_divergence": {
+    "cluster_hdbscan_006": {
         "features": ["adx_14", "adxr", "aroon_osc", "dmp_14", "rsi_slope_medium", "close_zscore"],
         "min_cluster_size": 20,
         "min_samples": 5,
     },
-    "hdbscan_market_microstructure": {
+    "cluster_hdbscan_007": {
         "features": ["amihud", "market_placement", "path_liquidity", "spread_proxy", "volume_zscore", "volume_up_ratio", "volume_down_ratio"],
         "min_cluster_size": 20,
         "min_samples": 5,
     },
-    "hdbscan_mean_reversion_extremes": {
+    "cluster_hdbscan_008": {
         "features": ["close_to_vwap", "vwap_bias", "close_zscore", "ibs", "env_position"],
         "min_cluster_size": 15,
         "min_samples": 5,
     },
-    "hdbscan_order_flow_impulse": {
+    "cluster_hdbscan_009": {
         "features": ["return_short", "body_rate", "volume_ratio", "volume_zscore", "force_ratio", "mfi_standard", "upwick_rate"],
         "min_cluster_size": 20,
         "min_samples": 5,
     },
-    "hdbscan_macro_risk_regime": {
+    "cluster_hdbscan_010": {
         "features": ["return_long", "return_medium", "atr_pct_long", "realized_volatility", "chaikin_volatility", "adx_14", "close_to_vwap"],
         "min_cluster_size": 20,
         "min_samples": 5,

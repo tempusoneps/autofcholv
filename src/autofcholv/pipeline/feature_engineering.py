@@ -12,8 +12,6 @@ from autofcholv.pipeline.features.candlestick import extract_features as extract
 from autofcholv.pipeline.features.lag import extract_features as extract_lag_features
 from autofcholv.pipeline.features.liquidity import extract_features as extract_liquidity_features
 from autofcholv.pipeline.features.group import extract_features as extract_group_features
-<<<<<<< HEAD
-=======
 from autofcholv.pipeline.features.kmeans import extract_features as extract_kmeans_features
 from autofcholv.pipeline.features.hdbscan import extract_features as extract_hdbscan_features
 from autofcholv.pipeline.features.gmm import extract_features as extract_gmm_features
@@ -22,8 +20,6 @@ from autofcholv.pipeline.features.agglomerative import extract_features as extra
 from autofcholv.pipeline.features.birch import extract_features as extract_birch_features
 from autofcholv.pipeline.features.optics import extract_features as extract_optics_features
 from autofcholv.pipeline.features.spectral import extract_features as extract_spectral_features
-from autofcholv.pipeline.features.signal import extract_features as extract_signal_features
->>>>>>> d1a4959 (develop(v0.4.0): add some clustering features)
 from autofcholv.pipeline.features.volume import extract_features as extract_volume_features
 from autofcholv.utils.timing import timing, timeit
 
@@ -40,8 +36,6 @@ FEATURE_STEPS = [
     ("lag_features", extract_lag_features),
     ("mix_features", extract_mix_features),
     ("group_features", extract_group_features),
-<<<<<<< HEAD
-=======
     ("kmeans_features", extract_kmeans_features),
     ("hdbscan_features", extract_hdbscan_features),
     ("gmm_features", extract_gmm_features),
@@ -50,8 +44,6 @@ FEATURE_STEPS = [
     ("birch_features", extract_birch_features),
     ("optics_features", extract_optics_features),
     ("spectral_features", extract_spectral_features),
-    ("signal_features", extract_signal_features),
->>>>>>> d1a4959 (develop(v0.4.0): add some clustering features)
 ]
 
 

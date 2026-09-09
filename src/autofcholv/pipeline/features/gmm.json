@@ -1,50 +1,50 @@
 {
-    "gmm_regime_core": {
+    "cluster_gmm_001": {
         "type": "int",
         "name": "GMM Core Regime Cluster (3 features)",
         "comment": "Gaussian Mixture Model cluster label (k=4) mixing Trend, Volatility, and Volume [adx_14, atr_pct_medium, volume_ratio]"
     },
-    "gmm_price_volume_anatomy": {
+    "cluster_gmm_002": {
         "type": "int",
         "name": "GMM Price-Volume Dynamics Cluster (4 features)",
         "comment": "Gaussian Mixture Model cluster label (k=4) mixing Price Returns and Volume Flow [return_medium, volume_ratio, volume_zscore, mfi_standard]"
     },
-    "gmm_candle_shape_rejection": {
+    "cluster_gmm_003": {
         "type": "int",
         "name": "GMM Candle Geometry & Rejection Cluster (5 features)",
         "comment": "Gaussian Mixture Model cluster label (k=5) mixing Body, Shadows, and Bar Location [body_rate, upwick_rate, lowwick_rate, body_abs, ibs]"
     },
-    "gmm_multi_horizon_momentum": {
+    "cluster_gmm_004": {
         "type": "int",
         "name": "GMM Momentum Spectrum Cluster (5 features)",
         "comment": "Gaussian Mixture Model cluster label (k=4) mixing Multi-horizon Returns and Oscillators [return_micro, return_short, return_medium, rsi_medium, stochrsi_k]"
     },
-    "gmm_breakout_volatility_squeeze": {
+    "cluster_gmm_005": {
         "type": "int",
         "name": "GMM Volatility Squeeze & Expansion Cluster (6 features)",
         "comment": "Gaussian Mixture Model cluster label (k=4) mixing Bollinger, ATR, Realized Vol, and Channels [bb_width, atr_pct_medium, realized_volatility, pac_position, pac_width_bias, env_position]"
     },
-    "gmm_trend_exhaustion_divergence": {
+    "cluster_gmm_006": {
         "type": "int",
         "name": "GMM Trend Quality & Exhaustion Cluster (6 features)",
         "comment": "Gaussian Mixture Model cluster label (k=4) mixing ADX, Aroon, RSI Velocity, and Z-Score [adx_14, adxr, aroon_osc, dmp_14, rsi_slope_medium, close_zscore]"
     },
-    "gmm_market_microstructure": {
+    "cluster_gmm_007": {
         "type": "int",
         "name": "GMM Microstructure Liquidity & Order Flow Cluster (7 features)",
         "comment": "Gaussian Mixture Model cluster label (k=4) mixing Amihud, Spread, Placement, and Volume Flow [amihud, market_placement, path_liquidity, spread_proxy, volume_zscore, volume_up_ratio, volume_down_ratio]"
     },
-    "gmm_mean_reversion_extremes": {
+    "cluster_gmm_008": {
         "type": "int",
         "name": "GMM Mean Reversion Stretch Extremes Cluster (5 features)",
         "comment": "Gaussian Mixture Model cluster label (k=4) mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope [close_to_vwap, vwap_bias, close_zscore, ibs, env_position]"
     },
-    "gmm_order_flow_impulse": {
+    "cluster_gmm_009": {
         "type": "int",
         "name": "GMM Order Flow Impulse & Effort vs Result Cluster (7 features)",
         "comment": "Gaussian Mixture Model cluster label (k=5) mixing Returns, Candle Body, Volume Shocks, and Force [return_short, body_rate, volume_ratio, volume_zscore, force_ratio, mfi_standard, upwick_rate]"
     },
-    "gmm_macro_risk_regime": {
+    "cluster_gmm_010": {
         "type": "int",
         "name": "GMM Macro Risk & Long-Cycle Regime Cluster (7 features)",
         "comment": "Gaussian Mixture Model cluster label (k=5) mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP [return_long, return_medium, atr_pct_long, realized_volatility, chaikin_volatility, adx_14, close_to_vwap]"

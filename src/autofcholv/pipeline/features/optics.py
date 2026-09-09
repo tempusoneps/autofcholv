@@ -1,3 +1,4 @@
+import warnings
 from typing import Any, Dict, Optional
 import numpy as np
 import pandas as pd
@@ -7,43 +8,43 @@ from sklearn.preprocessing import StandardScaler
 from autofcholv.config.config import Config
 
 DEFAULT_OPTICS_CLUSTERS: Dict[str, Dict[str, Any]] = {
-    "optics_regime_core": {
+    "cluster_optics_001": {
         "features": ["adx_14", "atr_pct_medium", "volume_ratio"],
         "min_samples": 20,
     },
-    "optics_price_volume_anatomy": {
+    "cluster_optics_002": {
         "features": ["return_medium", "volume_ratio", "volume_zscore", "mfi_standard"],
         "min_samples": 20,
     },
-    "optics_candle_shape_rejection": {
+    "cluster_optics_003": {
         "features": ["body_rate", "upwick_rate", "lowwick_rate", "body_abs", "ibs"],
         "min_samples": 15,
     },
-    "optics_multi_horizon_momentum": {
+    "cluster_optics_004": {
         "features": ["return_micro", "return_short", "return_medium", "rsi_medium", "stochrsi_k"],
         "min_samples": 20,
     },
-    "optics_breakout_volatility_squeeze": {
+    "cluster_optics_005": {
         "features": ["bb_width", "atr_pct_medium", "realized_volatility", "pac_position", "pac_width_bias", "env_position"],
         "min_samples": 20,
     },
-    "optics_trend_exhaustion_divergence": {
+    "cluster_optics_006": {
         "features": ["adx_14", "adxr", "aroon_osc", "dmp_14", "rsi_slope_medium", "close_zscore"],
         "min_samples": 20,
     },
-    "optics_market_microstructure": {
+    "cluster_optics_007": {
         "features": ["amihud", "market_placement", "path_liquidity", "spread_proxy", "volume_zscore", "volume_up_ratio", "volume_down_ratio"],
         "min_samples": 25,
     },
-    "optics_mean_reversion_extremes": {
+    "cluster_optics_008": {
         "features": ["close_to_vwap", "vwap_bias", "close_zscore", "ibs", "env_position"],
         "min_samples": 20,
     },
-    "optics_order_flow_impulse": {
+    "cluster_optics_009": {
         "features": ["return_short", "body_rate", "volume_ratio", "volume_zscore", "force_ratio", "mfi_standard", "upwick_rate"],
         "min_samples": 25,
     },
-    "optics_macro_risk_regime": {
+    "cluster_optics_010": {
         "features": ["return_long", "return_medium", "atr_pct_long", "realized_volatility", "chaikin_volatility", "adx_14", "close_to_vwap"],
         "min_samples": 25,
     },
@@ -81,6 +82,7 @@ def run_optics_clustering(
         min_samples = int(cluster_cfg.get("min_samples", 20))
         max_eps = float(cluster_cfg.get("max_eps", np.inf))
         metric = str(cluster_cfg.get("metric", "euclidean"))
+        max_train_samples = int(cluster_cfg.get("max_train_samples", 5000))
 
         sub_df = df[features]
         valid_mask = sub_df.notna().all(axis=1) & np.isfinite(sub_df).all(axis=1)
@@ -90,8 +92,22 @@ def run_optics_clustering(
         if n_valid >= min_samples and min_samples > 1:
             scaler = StandardScaler()
             scaled_features = scaler.fit_transform(sub_df.loc[valid_mask])
-            optics = OPTICS(min_samples=min_samples, max_eps=max_eps, metric=metric)
-            cluster_series.loc[valid_mask] = optics.fit_predict(scaled_features).astype("int32")
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=RuntimeWarning, message=".*divide by zero.*")
+                if n_valid > max_train_samples and max_train_samples > min_samples:
+                    # Subsample evenly across the time series to avoid O(N^2) memory and runtime explosion
+                    sample_idx = np.linspace(0, n_valid - 1, max_train_samples, dtype=int)
+                    train_data = scaled_features[sample_idx]
+                    optics = OPTICS(min_samples=min_samples, max_eps=max_eps, metric=metric)
+                    sample_labels = optics.fit_predict(train_data)
+
+                    from sklearn.neighbors import KNeighborsClassifier
+                    knn = KNeighborsClassifier(n_neighbors=1)
+                    knn.fit(train_data, sample_labels)
+                    cluster_series.loc[valid_mask] = knn.predict(scaled_features).astype("int32")
+                else:
+                    optics = OPTICS(min_samples=min_samples, max_eps=max_eps, metric=metric)
+                    cluster_series.loc[valid_mask] = optics.fit_predict(scaled_features).astype("int32")
 
         df[cluster_col] = cluster_series
 

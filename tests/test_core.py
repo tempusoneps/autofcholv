@@ -740,16 +740,16 @@ def test_kmeans_features_direct_extraction():
 
     res = kmeans_features.extract_features(df, Config())
     expected_clusters = [
-        "cluster_regime_core",
-        "cluster_price_volume_anatomy",
-        "cluster_candle_shape_rejection",
-        "cluster_multi_horizon_momentum",
-        "cluster_breakout_volatility_squeeze",
-        "cluster_trend_exhaustion_divergence",
-        "cluster_market_microstructure",
-        "cluster_mean_reversion_extremes",
-        "cluster_order_flow_impulse",
-        "cluster_macro_risk_regime",
+        "cluster_kmeans_001",
+        "cluster_kmeans_002",
+        "cluster_kmeans_003",
+        "cluster_kmeans_004",
+        "cluster_kmeans_005",
+        "cluster_kmeans_006",
+        "cluster_kmeans_007",
+        "cluster_kmeans_008",
+        "cluster_kmeans_009",
+        "cluster_kmeans_010",
     ]
     for c in expected_clusters:
         assert c in res.columns
@@ -792,16 +792,16 @@ def test_hdbscan_features_direct_extraction():
 
     res = hdbscan_features.extract_features(df, Config())
     expected_clusters = [
-        "hdbscan_regime_core",
-        "hdbscan_price_volume_anatomy",
-        "hdbscan_candle_shape_rejection",
-        "hdbscan_multi_horizon_momentum",
-        "hdbscan_breakout_volatility_squeeze",
-        "hdbscan_trend_exhaustion_divergence",
-        "hdbscan_market_microstructure",
-        "hdbscan_mean_reversion_extremes",
-        "hdbscan_order_flow_impulse",
-        "hdbscan_macro_risk_regime",
+        "cluster_hdbscan_001",
+        "cluster_hdbscan_002",
+        "cluster_hdbscan_003",
+        "cluster_hdbscan_004",
+        "cluster_hdbscan_005",
+        "cluster_hdbscan_006",
+        "cluster_hdbscan_007",
+        "cluster_hdbscan_008",
+        "cluster_hdbscan_009",
+        "cluster_hdbscan_010",
     ]
     for c in expected_clusters:
         assert c in res.columns
@@ -848,16 +848,16 @@ def test_gmm_features_direct_extraction():
 
     res = gmm_features.extract_features(df, Config())
     expected_clusters = [
-        "gmm_regime_core",
-        "gmm_price_volume_anatomy",
-        "gmm_candle_shape_rejection",
-        "gmm_multi_horizon_momentum",
-        "gmm_breakout_volatility_squeeze",
-        "gmm_trend_exhaustion_divergence",
-        "gmm_market_microstructure",
-        "gmm_mean_reversion_extremes",
-        "gmm_order_flow_impulse",
-        "gmm_macro_risk_regime",
+        "cluster_gmm_001",
+        "cluster_gmm_002",
+        "cluster_gmm_003",
+        "cluster_gmm_004",
+        "cluster_gmm_005",
+        "cluster_gmm_006",
+        "cluster_gmm_007",
+        "cluster_gmm_008",
+        "cluster_gmm_009",
+        "cluster_gmm_010",
     ]
     for c in expected_clusters:
         assert c in res.columns
@@ -903,16 +903,16 @@ def test_dbscan_features_direct_extraction():
 
     res = dbscan_features.extract_features(df, Config())
     expected_clusters = [
-        "dbscan_regime_core",
-        "dbscan_price_volume_anatomy",
-        "dbscan_candle_shape_rejection",
-        "dbscan_multi_horizon_momentum",
-        "dbscan_breakout_volatility_squeeze",
-        "dbscan_trend_exhaustion_divergence",
-        "dbscan_market_microstructure",
-        "dbscan_mean_reversion_extremes",
-        "dbscan_order_flow_impulse",
-        "dbscan_macro_risk_regime",
+        "cluster_dbscan_001",
+        "cluster_dbscan_002",
+        "cluster_dbscan_003",
+        "cluster_dbscan_004",
+        "cluster_dbscan_005",
+        "cluster_dbscan_006",
+        "cluster_dbscan_007",
+        "cluster_dbscan_008",
+        "cluster_dbscan_009",
+        "cluster_dbscan_010",
     ]
     for c in expected_clusters:
         assert c in res.columns
@@ -959,16 +959,16 @@ def test_agglomerative_features_direct_extraction():
 
     res = agglomerative_features.extract_features(df, Config())
     expected_clusters = [
-        "agglomerative_regime_core",
-        "agglomerative_price_volume_anatomy",
-        "agglomerative_candle_shape_rejection",
-        "agglomerative_multi_horizon_momentum",
-        "agglomerative_breakout_volatility_squeeze",
-        "agglomerative_trend_exhaustion_divergence",
-        "agglomerative_market_microstructure",
-        "agglomerative_mean_reversion_extremes",
-        "agglomerative_order_flow_impulse",
-        "agglomerative_macro_risk_regime",
+        "cluster_agglomerative_001",
+        "cluster_agglomerative_002",
+        "cluster_agglomerative_003",
+        "cluster_agglomerative_004",
+        "cluster_agglomerative_005",
+        "cluster_agglomerative_006",
+        "cluster_agglomerative_007",
+        "cluster_agglomerative_008",
+        "cluster_agglomerative_009",
+        "cluster_agglomerative_010",
     ]
     for c in expected_clusters:
         assert c in res.columns
@@ -1013,16 +1013,16 @@ def test_birch_features_direct_extraction():
 
     res = birch_features.extract_features(df, Config())
     expected_clusters = [
-        "birch_regime_core",
-        "birch_price_volume_anatomy",
-        "birch_candle_shape_rejection",
-        "birch_multi_horizon_momentum",
-        "birch_breakout_volatility_squeeze",
-        "birch_trend_exhaustion_divergence",
-        "birch_market_microstructure",
-        "birch_mean_reversion_extremes",
-        "birch_order_flow_impulse",
-        "birch_macro_risk_regime",
+        "cluster_birch_001",
+        "cluster_birch_002",
+        "cluster_birch_003",
+        "cluster_birch_004",
+        "cluster_birch_005",
+        "cluster_birch_006",
+        "cluster_birch_007",
+        "cluster_birch_008",
+        "cluster_birch_009",
+        "cluster_birch_010",
     ]
     for c in expected_clusters:
         assert c in res.columns
@@ -1067,16 +1067,16 @@ def test_optics_features_direct_extraction():
 
     res = optics_features.extract_features(df, Config())
     expected_clusters = [
-        "optics_regime_core",
-        "optics_price_volume_anatomy",
-        "optics_candle_shape_rejection",
-        "optics_multi_horizon_momentum",
-        "optics_breakout_volatility_squeeze",
-        "optics_trend_exhaustion_divergence",
-        "optics_market_microstructure",
-        "optics_mean_reversion_extremes",
-        "optics_order_flow_impulse",
-        "optics_macro_risk_regime",
+        "cluster_optics_001",
+        "cluster_optics_002",
+        "cluster_optics_003",
+        "cluster_optics_004",
+        "cluster_optics_005",
+        "cluster_optics_006",
+        "cluster_optics_007",
+        "cluster_optics_008",
+        "cluster_optics_009",
+        "cluster_optics_010",
     ]
     for c in expected_clusters:
         assert c in res.columns
@@ -1122,16 +1122,16 @@ def test_spectral_features_direct_extraction():
 
     res = spectral_features.extract_features(df, Config())
     expected_clusters = [
-        "spectral_regime_core",
-        "spectral_price_volume_anatomy",
-        "spectral_candle_shape_rejection",
-        "spectral_multi_horizon_momentum",
-        "spectral_breakout_volatility_squeeze",
-        "spectral_trend_exhaustion_divergence",
-        "spectral_market_microstructure",
-        "spectral_mean_reversion_extremes",
-        "spectral_order_flow_impulse",
-        "spectral_macro_risk_regime",
+        "cluster_spectral_001",
+        "cluster_spectral_002",
+        "cluster_spectral_003",
+        "cluster_spectral_004",
+        "cluster_spectral_005",
+        "cluster_spectral_006",
+        "cluster_spectral_007",
+        "cluster_spectral_008",
+        "cluster_spectral_009",
+        "cluster_spectral_010",
     ]
     for c in expected_clusters:
         assert c in res.columns

@@ -1,50 +1,50 @@
 {
-    "dbscan_regime_core": {
+    "cluster_dbscan_001": {
         "type": "int",
         "name": "DBSCAN Core Regime Cluster (3 features)",
         "comment": "DBSCAN density cluster mixing Trend, Volatility, and Volume (noise is -1)"
     },
-    "dbscan_price_volume_anatomy": {
+    "cluster_dbscan_002": {
         "type": "int",
         "name": "DBSCAN Price-Volume Dynamics Cluster (4 features)",
         "comment": "DBSCAN density cluster mixing Price Returns and Volume Flow (noise is -1)"
     },
-    "dbscan_candle_shape_rejection": {
+    "cluster_dbscan_003": {
         "type": "int",
         "name": "DBSCAN Candle Geometry & Rejection Cluster (5 features)",
         "comment": "DBSCAN density cluster mixing Body, Shadows, and Bar Location (noise is -1)"
     },
-    "dbscan_multi_horizon_momentum": {
+    "cluster_dbscan_004": {
         "type": "int",
         "name": "DBSCAN Momentum Spectrum Cluster (5 features)",
         "comment": "DBSCAN density cluster mixing Multi-horizon Returns and Oscillators (noise is -1)"
     },
-    "dbscan_breakout_volatility_squeeze": {
+    "cluster_dbscan_005": {
         "type": "int",
         "name": "DBSCAN Volatility Squeeze & Expansion Cluster (6 features)",
         "comment": "DBSCAN density cluster mixing Bollinger, ATR, Realized Vol, and Channels (noise is -1)"
     },
-    "dbscan_trend_exhaustion_divergence": {
+    "cluster_dbscan_006": {
         "type": "int",
         "name": "DBSCAN Trend Quality & Exhaustion Cluster (6 features)",
         "comment": "DBSCAN density cluster mixing ADX, Aroon, RSI Velocity, and Z-Score (noise is -1)"
     },
-    "dbscan_market_microstructure": {
+    "cluster_dbscan_007": {
         "type": "int",
         "name": "DBSCAN Microstructure Liquidity & Order Flow Cluster (7 features)",
         "comment": "DBSCAN density cluster mixing Amihud, Spread, Placement, and Volume Flow (noise is -1)"
     },
-    "dbscan_mean_reversion_extremes": {
+    "cluster_dbscan_008": {
         "type": "int",
         "name": "DBSCAN Mean Reversion Stretch Extremes Cluster (5 features)",
         "comment": "DBSCAN density cluster mixing VWAP Distance, Bias, Statistical Z-Score, and Envelope (noise is -1)"
     },
-    "dbscan_order_flow_impulse": {
+    "cluster_dbscan_009": {
         "type": "int",
         "name": "DBSCAN Order Flow Impulse & Effort vs Result Cluster (7 features)",
         "comment": "DBSCAN density cluster mixing Returns, Candle Body, Volume Shocks, and Force (noise is -1)"
     },
-    "dbscan_macro_risk_regime": {
+    "cluster_dbscan_010": {
         "type": "int",
         "name": "DBSCAN Macro Risk & Long-Cycle Regime Cluster (7 features)",
         "comment": "DBSCAN density cluster mixing Multi-horizon Returns, Volatilities, ADX, and Macro VWAP (noise is -1)"
