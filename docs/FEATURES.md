@@ -310,6 +310,11 @@ The pipeline executes in the order listed below.
 | `weighted_close` | float | weighted_close = (High + Low + 2 * Close) / 4 |
 | `midpoint` | float | Midpoint of High and Low |
 | `close_vs_mid` | float | Close minus the High-Low midpoint |
+| `wc_median_micro` | float | Micro lookback rolling median of weighted_close |
+| `wc_median_short` | float | Short lookback rolling median of weighted_close |
+| `wc_median_medium` | float | Medium lookback rolling median of weighted_close |
+| `wc_median_long` | float | Long lookback rolling median of weighted_close |
+| `wc_median_macro` | float | Macro lookback rolling median of weighted_close |
 | `typical_price_momentum` | float | Z-scored spread between fast EMA and slow EMA of typical_price |
 | `weighted_close_bias` | float | weighted_close EMA(n) / weighted_close EMA(2n) - 1 with n = MOMENTUM_LOOKBACK |
 | `rolling_vwap` | float | rolling_vwap = rolling sum(typical_price * Volume) / rolling sum(Volume) |

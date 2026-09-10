@@ -28,6 +28,13 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["midpoint"] = midpoint
     df["close_vs_mid"] = df["Close"] - midpoint
 
+    # 5-tier rolling median of weighted_close
+    df["wc_median_micro"] = weighted_close.rolling(config.micro_lookback).median()
+    df["wc_median_short"] = weighted_close.rolling(config.short_lookback).median()
+    df["wc_median_medium"] = weighted_close.rolling(config.medium_lookback).median()
+    df["wc_median_long"] = weighted_close.rolling(config.long_lookback).median()
+    df["wc_median_macro"] = weighted_close.rolling(config.macro_lookback).median()
+
     typ_fast = typical_price.ewm(span=momentum_n, adjust=False).mean()
     typ_slow = typical_price.ewm(span=momentum_n * 3, adjust=False).mean()
     typ_diff = typ_fast - typ_slow
@@ -106,14 +113,16 @@ def extract_features(df: pd.DataFrame, config: Config) -> pd.DataFrame:
     df["session_range_pct"] = 100.0 * session_range / df["session_open"].replace(0, np.nan)
     df["session_body_pct"] = 100.0 * (df["Close"] - df["session_open"]) / df["session_open"].replace(0, np.nan)
 
-    prev_range = (df["prev_day_high"] - df["prev_day_low"]).replace(0, np.nan)
-    df["session_body_rate"] = (df["Close"] - df["session_open"]) / prev_range
-    df["session_mom_y"] = (
-        100.0 * (df["Close"] - df["prev_day_close"]) / df["prev_day_close"].replace(0, np.nan)
-    )
-    df["mom_y"] = (
-        100.0 * (df["Close"] - df["prev_day_close"]) / df["prev_day_close"].replace(0, np.nan)
-    )
+    if "prev_day_high" in df.columns and "prev_day_low" in df.columns:
+        prev_range = (df["prev_day_high"] - df["prev_day_low"]).replace(0, np.nan)
+        df["session_body_rate"] = (df["Close"] - df["session_open"]) / prev_range
+    if "prev_day_close" in df.columns:
+        df["session_mom_y"] = (
+            100.0 * (df["Close"] - df["prev_day_close"]) / df["prev_day_close"].replace(0, np.nan)
+        )
+        df["mom_y"] = (
+            100.0 * (df["Close"] - df["prev_day_close"]) / df["prev_day_close"].replace(0, np.nan)
+        )
 
     pv = df["Close"] * df["Volume"]
     pv2 = df["Close"].pow(2) * df["Volume"]

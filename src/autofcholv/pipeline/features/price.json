@@ -19,6 +19,31 @@
         "name": "Close Versus Midpoint",
         "comment": "Close minus the High-Low midpoint"
     },
+    "wc_median_micro": {
+        "type": "float",
+        "name": "Micro Weighted Close Median",
+        "comment": "Micro lookback rolling median of weighted_close"
+    },
+    "wc_median_short": {
+        "type": "float",
+        "name": "Short Weighted Close Median",
+        "comment": "Short lookback rolling median of weighted_close"
+    },
+    "wc_median_medium": {
+        "type": "float",
+        "name": "Medium Weighted Close Median",
+        "comment": "Medium lookback rolling median of weighted_close"
+    },
+    "wc_median_long": {
+        "type": "float",
+        "name": "Long Weighted Close Median",
+        "comment": "Long lookback rolling median of weighted_close"
+    },
+    "wc_median_macro": {
+        "type": "float",
+        "name": "Macro Weighted Close Median",
+        "comment": "Macro lookback rolling median of weighted_close"
+    },
     "typical_price_momentum": {
         "type": "float",
         "name": "Typical Price Momentum",

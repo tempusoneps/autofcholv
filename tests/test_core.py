@@ -320,9 +320,36 @@ def test_extract_features_price_columns():
         "rolling_vwap", "vwap_bias", "close_to_vwap",
         "vwap_range_position", "vwap_to_high", "vwap_to_low",
         "close_ma_price", "typical_to_vwap", "avgprice", "avgpricetohigh", "avgpricetolow", "lowprice", "typ", "vwap_signal", "wvad", "vwap_bias", "wc",
+        "wc_median_micro", "wc_median_short", "wc_median_medium", "wc_median_long", "wc_median_macro",
     ]
     for col in expected:
         assert col in result.columns, f"Missing price column: '{col}'"
+
+
+def test_price_weighted_close_medians():
+    from autofcholv.pipeline.features.price import extract_features as extract_price_features
+
+    df = make_ohlcv(120)
+    cfg = Config(
+        micro_lookback=4,
+        short_lookback=8,
+        medium_lookback=16,
+        long_lookback=30,
+        macro_lookback=50,
+    )
+    result = extract_price_features(df, cfg)
+    for col in [
+        "wc_median_micro",
+        "wc_median_short",
+        "wc_median_medium",
+        "wc_median_long",
+        "wc_median_macro",
+    ]:
+        assert col in result.columns
+
+    expected_micro = ((df["High"] + df["Low"] + 2.0 * df["Close"]) / 4.0).rolling(4).median()
+    pd.testing.assert_series_equal(result["wc_median_micro"], expected_micro, check_names=False)
+
 
 
 def test_extract_features_liquidity_columns():
