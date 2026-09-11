@@ -3,9 +3,8 @@ import sys
 import time
 import pandas as pd
 from pathlib import Path
-from autofcholv import extract_features
-from autofcholv import __version__
-from autofcholv.core import EXTRACT_PROGRESS_STEPS
+from autofcholv import __version__, extract_features
+from autofcholv.core import EXTRACT_PROGRESS_STEPS, get_extract_progress_steps
 from autofcholv.config.config import generate_default_config_file, load_config
 
 
@@ -147,7 +146,7 @@ def main():
         print("Extracting features...")
         start_time = time.time()
         progress = ProgressBar(
-            EXTRACT_PROGRESS_STEPS,
+            get_extract_progress_steps(config),
             enabled=not args.no_progress and sys.stderr.isatty(),
         )
         try:

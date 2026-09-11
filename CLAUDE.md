@@ -207,6 +207,7 @@ When moving, renaming, adding, or deleting documentation/source files, update al
 └── tests/                            # Automated tests.
     ├── test_cli.py                   # CLI tests.
     ├── test_core.py                  # Core extraction and feature coverage tests.
+    ├── test_disable_modules.py       # Fast isolated tests for DISABLE_MODULES feature filtering.
     ├── test_liquidity_proxies.py     # Fast isolated tests for liquidity and microstructure proxies.
     ├── test_regime_squeeze.py        # Fast isolated tests for TTM Squeeze and regime features.
     ├── test_smc_structure.py         # Fast isolated tests for SMC and price action structure features.

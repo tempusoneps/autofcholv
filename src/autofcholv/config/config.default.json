@@ -988,5 +988,6 @@
       "affinity": "rbf",
       "random_state": 42
     }
-  }
+  },
+  "DISABLE_MODULES": []
 }

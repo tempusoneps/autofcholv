@@ -15,3 +15,18 @@ MEDIUM_LOOKBACK: 20
 LONG_LOOKBACK: 50
 MACRO_LOOKBACK: 100
 ```
+
+### Disabling Heavy or Unneeded Feature Modules
+
+You can disable specific feature modules (such as heavy clustering algorithms) by specifying `DISABLE_MODULES` in your config file. Both module short names (e.g. `"agglomerative"`, `"optics"`, `"spectral"`) and full step names (e.g. `"agglomerative_features"`) are supported:
+
+```json
+{
+  "DISABLE_MODULES": [
+    "agglomerative",
+    "optics",
+    "spectral",
+    "hdbscan"
+  ]
+}
+```

@@ -47,13 +47,46 @@ FEATURE_STEPS = [
 ]
 
 
+def get_feature_steps(config: Config | None = None) -> list[tuple[str, Callable]]:
+    """Return active feature extraction steps filtered by config.disable_modules."""
+    if config is None:
+        return list(FEATURE_STEPS)
+
+    raw_disabled = getattr(config, "disable_modules", None)
+    if not raw_disabled:
+        return list(FEATURE_STEPS)
+
+    disabled = set()
+    if isinstance(raw_disabled, dict):
+        for k, v in raw_disabled.items():
+            if v:
+                disabled.add(str(k).strip().lower())
+    elif isinstance(raw_disabled, (list, tuple, set)):
+        for item in raw_disabled:
+            disabled.add(str(item).strip().lower())
+    elif isinstance(raw_disabled, str):
+        for item in raw_disabled.split(","):
+            if item.strip():
+                disabled.add(item.strip().lower())
+
+    active_steps = []
+    for name, func in FEATURE_STEPS:
+        base_name = name[:-9] if name.endswith("_features") else name
+        if name.lower() in disabled or base_name.lower() in disabled:
+            continue
+        active_steps.append((name, func))
+
+    return active_steps
+
+
 @timing
 def build_features(
     df: pd.DataFrame,
     config: Config,
     progress_callback: Callable[[str], None] | None = None,
 ) -> pd.DataFrame:
-    for name, func in FEATURE_STEPS:
+    steps = get_feature_steps(config)
+    for name, func in steps:
         with timeit(name):
             df = func(df, config).copy()
         if progress_callback:

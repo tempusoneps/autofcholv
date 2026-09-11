@@ -1,7 +1,7 @@
 import json
 from dataclasses import asdict, dataclass, field, fields
 from pathlib import Path
-from typing import Any, Dict, Optional, get_origin
+from typing import Any, Dict, Optional, get_args, get_origin
 
 
 @dataclass(frozen=True)
@@ -464,6 +464,7 @@ class Config:
             },
         }
     )
+    disable_modules: list[str] = field(default_factory=list)
 
 
 CONFIG_FIELD_NAMES = {field_name for field_name in Config.__dataclass_fields__}
@@ -496,6 +497,8 @@ CONFIG_KEY_ALIASES = {
     "BIRCH_CLUSTERS": "birch_clusters",
     "OPTICS_CLUSTERS": "optics_clusters",
     "SPECTRAL_CLUSTERS": "spectral_clusters",
+    "DISABLE _MODULES": "disable_modules",
+    "DISABLE_MODULES": "disable_modules",
 }
 FIELD_TO_CONFIG_KEY = {field: key for key, field in CONFIG_KEY_ALIASES.items()}
 DEFAULT_CONFIG = {
@@ -585,9 +588,21 @@ def _coerce_config_value(value: Any, field_type: Any) -> Any:
     if field_type is str:
         return str(value)
     if get_origin(field_type) in (list, tuple) or field_type is list:
+        args = get_args(field_type)
+        elem_type = args[0] if args else int
         if isinstance(value, str):
             value = [item.strip() for item in value.split(",") if item.strip()]
-        return [int(item) for item in value]
+        elif isinstance(value, dict):
+            value = [k for k, v in value.items() if v]
+        elif isinstance(value, (set, tuple)):
+            value = list(value)
+        if isinstance(value, list):
+            if elem_type is str:
+                return [str(item).strip() for item in value if str(item).strip()]
+            if elem_type is int:
+                return [int(item) for item in value]
+            return value
+        return value
     return value
 
 
