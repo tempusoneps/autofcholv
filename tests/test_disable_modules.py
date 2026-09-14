@@ -29,8 +29,30 @@ def _make_sample_df(n_bars: int = 300) -> pd.DataFrame:
     return df
 
 
-def test_default_config_disable_modules_empty():
+def test_default_config_disables_heavy_clustering():
     cfg = Config()
+    assert set(cfg.disable_modules) == {
+        "agglomerative", "birch", "dbscan", "gmm", "hdbscan", "optics", "spectral"
+    }
+    steps = get_feature_steps(cfg)
+    step_names = [s[0] for s in steps]
+    assert "kmeans_features" in step_names
+    assert "agglomerative_features" not in step_names
+    assert "spectral_features" not in step_names
+    assert "hdbscan_features" not in step_names
+    assert len(steps) == len(FEATURE_STEPS) - 7
+    assert get_extract_progress_steps(cfg) == 3 + len(FEATURE_STEPS) - 7
+
+
+def test_package_default_config_file_disables_heavy_clustering():
+    cfg = load_config()
+    assert set(cfg.disable_modules) == {
+        "agglomerative", "birch", "dbscan", "gmm", "hdbscan", "optics", "spectral"
+    }
+
+
+def test_config_disable_modules_explicit_empty():
+    cfg = Config(disable_modules=[])
     assert cfg.disable_modules == []
     steps = get_feature_steps(cfg)
     assert len(steps) == len(FEATURE_STEPS)
@@ -138,3 +160,26 @@ def test_cli_with_config_disable_modules():
         assert "rsi_medium" in out_df.columns
         for col in out_df.columns:
             assert not col.startswith("cluster_"), f"Unexpected clustering col: {col}"
+
+
+def test_default_extract_features_keeps_kmeans_and_skips_heavy_clustering():
+    df = _make_sample_df(300)
+    res = extract_features(df)
+
+    # Base features should be present
+    assert "rsi_medium" in res.columns
+    assert "body" in res.columns
+
+    # KMeans should be present (kept by default)
+    assert "cluster_kmeans_001" in res.columns
+
+    # Heavy clustering features should NOT be present
+    for col in res.columns:
+        assert not col.startswith("cluster_hdbscan"), f"Unexpected column: {col}"
+        assert not col.startswith("cluster_gmm"), f"Unexpected column: {col}"
+        assert not col.startswith("cluster_dbscan"), f"Unexpected column: {col}"
+        assert not col.startswith("cluster_agglomerative"), f"Unexpected column: {col}"
+        assert not col.startswith("cluster_birch"), f"Unexpected column: {col}"
+        assert not col.startswith("cluster_optics"), f"Unexpected column: {col}"
+        assert not col.startswith("cluster_spectral"), f"Unexpected column: {col}"
+

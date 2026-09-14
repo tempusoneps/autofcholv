@@ -4,6 +4,17 @@ from pathlib import Path
 from typing import Any, Dict, Optional, get_args, get_origin
 
 
+DEFAULT_DISABLED_MODULES: list[str] = [
+    "agglomerative",
+    "birch",
+    "dbscan",
+    "gmm",
+    "hdbscan",
+    "optics",
+    "spectral",
+]
+
+
 @dataclass(frozen=True)
 class Config:
     selected_time_frame: str = "5m"
@@ -464,7 +475,7 @@ class Config:
             },
         }
     )
-    disable_modules: list[str] = field(default_factory=list)
+    disable_modules: list[str] = field(default_factory=lambda: list(DEFAULT_DISABLED_MODULES))
 
 
 CONFIG_FIELD_NAMES = {field_name for field_name in Config.__dataclass_fields__}
