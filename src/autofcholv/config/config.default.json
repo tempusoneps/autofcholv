@@ -989,5 +989,13 @@
       "random_state": 42
     }
   },
-  "DISABLE_MODULES": []
+  "DISABLE_MODULES": [
+    "agglomerative",
+    "birch",
+    "dbscan",
+    "gmm",
+    "hdbscan",
+    "optics",
+    "spectral"
+  ]
 }

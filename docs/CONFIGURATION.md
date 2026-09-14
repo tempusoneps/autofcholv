@@ -18,15 +18,23 @@ MACRO_LOOKBACK: 100
 
 ### Disabling Heavy or Unneeded Feature Modules
 
-You can disable specific feature modules (such as heavy clustering algorithms) by specifying `DISABLE_MODULES` in your config file. Both module short names (e.g. `"agglomerative"`, `"optics"`, `"spectral"`) and full step names (e.g. `"agglomerative_features"`) are supported:
+You can disable specific feature modules (such as heavy clustering algorithms) by specifying `DISABLE_MODULES` in your config file. Both module short names (e.g. `"agglomerative"`, `"optics"`, `"spectral"`) and full step names (e.g. `"agglomerative_features"`) are supported.
+
+By default, heavy clustering algorithms are disabled in `config.default.json` and default `Config` to optimize extraction performance and prevent high memory/CPU usage, while `kmeans` is kept enabled:
 
 ```json
 {
   "DISABLE_MODULES": [
     "agglomerative",
+    "birch",
+    "dbscan",
+    "gmm",
+    "hdbscan",
     "optics",
-    "spectral",
-    "hdbscan"
+    "spectral"
   ]
 }
 ```
+
+To enable all modules, set `"DISABLE_MODULES": []` in your custom config.
+
